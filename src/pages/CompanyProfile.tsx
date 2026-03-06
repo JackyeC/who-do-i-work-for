@@ -294,6 +294,16 @@ export default function CompanyProfile() {
                 )}
               </div>
             )}
+
+            {/* Social & Media Monitor */}
+            <div className="mt-6">
+              <SocialMonitorCard
+                companyId={company.id}
+                companyName={company.name}
+                executiveNames={company.executives.map(e => e.name)}
+                dbCompanyId={dbCompanyId}
+              />
+            </div>
           </div>
 
           {/* Executive Donors */}
