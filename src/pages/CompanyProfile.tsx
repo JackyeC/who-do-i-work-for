@@ -134,6 +134,30 @@ export default function CompanyProfile() {
             </Card>
           </div>
 
+          {/* ── SCORING & INTELLIGENCE ─────────────────────────────── */}
+          {(company.influenceROI || company.hypocrisyIndex || company.politicalRisk || company.benchmark) && (
+            <div className="mb-10">
+              <h2 className="text-xl font-bold text-foreground mb-1 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-primary" />
+                Intelligence Scores
+              </h2>
+              <p className="text-sm text-muted-foreground mb-4">Predictive risk scores, ROI metrics, and peer benchmarking.</p>
+              <div className="grid lg:grid-cols-2 gap-6">
+                {company.influenceROI && <InfluenceROICard data={company.influenceROI} />}
+                {company.hypocrisyIndex && <HypocrisyIndexCard data={company.hypocrisyIndex} />}
+                {company.politicalRisk && <PoliticalRiskCard data={company.politicalRisk} />}
+                {company.benchmark && (
+                  <BenchmarkCard data={{
+                    ...company.benchmark,
+                    companyCivicFootprint: company.civicFootprintScore,
+                    companyLobbying: company.lobbyingSpend || 0,
+                    companyPacSpending: company.totalPacSpending,
+                  }} />
+                )}
+              </div>
+            </div>
+          )}
+
           {/* ── SECTION 1: Money Trail ─────────────────────────────────── */}
           <div className="mb-10">
             <h2 className="text-xl font-bold text-foreground mb-1 flex items-center gap-2">
