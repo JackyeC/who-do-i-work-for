@@ -538,6 +538,72 @@ export type Database = {
           },
         ]
       }
+      company_ideology_flags: {
+        Row: {
+          amount: number | null
+          category: string
+          company_id: string
+          confidence: string
+          created_at: string
+          description: string | null
+          detected_by: string
+          evidence_url: string | null
+          id: string
+          org_name: string
+          relationship_type: string
+          scan_date: string
+          severity: string
+          watchlist_org_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          category: string
+          company_id: string
+          confidence?: string
+          created_at?: string
+          description?: string | null
+          detected_by?: string
+          evidence_url?: string | null
+          id?: string
+          org_name: string
+          relationship_type: string
+          scan_date?: string
+          severity?: string
+          watchlist_org_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          category?: string
+          company_id?: string
+          confidence?: string
+          created_at?: string
+          description?: string | null
+          detected_by?: string
+          evidence_url?: string | null
+          id?: string
+          org_name?: string
+          relationship_type?: string
+          scan_date?: string
+          severity?: string
+          watchlist_org_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_ideology_flags_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "company_ideology_flags_watchlist_org_id_fkey"
+            columns: ["watchlist_org_id"]
+            isOneToOne: false
+            referencedRelation: "ideology_watchlist"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_influence_roi: {
         Row: {
           company_id: string
@@ -1064,6 +1130,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ideology_watchlist: {
+        Row: {
+          adl_designated: boolean
+          aliases: string[] | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          org_name: string
+          severity: string
+          splc_designated: boolean
+          subcategory: string | null
+          tracking_source: string | null
+          website: string | null
+        }
+        Insert: {
+          adl_designated?: boolean
+          aliases?: string[] | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          org_name: string
+          severity?: string
+          splc_designated?: boolean
+          subcategory?: string | null
+          tracking_source?: string | null
+          website?: string | null
+        }
+        Update: {
+          adl_designated?: boolean
+          aliases?: string[] | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          org_name?: string
+          severity?: string
+          splc_designated?: boolean
+          subcategory?: string | null
+          tracking_source?: string | null
+          website?: string | null
+        }
+        Relationships: []
       }
       scan_alerts: {
         Row: {
