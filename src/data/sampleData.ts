@@ -499,6 +499,10 @@ export const companies: Company[] = [
     ],
     workerRelevance: "As the nation's largest private employer, Walmart's lobbying on labor policy, minimum wage, and union rights directly affects millions of workers.",
     consumerRelevance: "Purchases support a company with significant political influence through lobbying, PAC spending, and Walton family personal donations.",
+    influenceROI: { totalPoliticalSpending: 19500000, totalGovernmentBenefits: 2090000000, roiRatio: 107.2, policyWinRate: 74, grade: "A+" },
+    hypocrisyIndex: { chiScore: 72, grade: "F", directConflicts: 1, indirectConflicts: 1, alignedStances: 0, totalStances: 2 },
+    politicalRisk: { riskScore: 52, grade: "C", revolvingDoorCount: 1, darkMoneyPercentage: 0, stakeholderDisconnect: 50, flaggedOrgCount: 1 },
+    benchmark: { industry: "Retail", transparencyGrade: "B+", cpaZicklinScore: 70, industryRank: 2, industryTotal: 8, peerAvgCivicFootprint: 45, peerAvgLobbying: 3500000, peerAvgPacSpending: 2800000, isIndustryLeader: false },
   },
   {
     id: "patagonia",
