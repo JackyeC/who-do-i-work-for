@@ -15,6 +15,10 @@ import { Footer } from "@/components/Footer";
 import { CivicFootprintBadge } from "@/components/CivicFootprintBadge";
 import { companies, formatCurrency, getFootprintLabel } from "@/data/sampleData";
 import { cn } from "@/lib/utils";
+import { InfluenceROICard } from "@/components/InfluenceROICard";
+import { HypocrisyIndexCard } from "@/components/HypocrisyIndexCard";
+import { PoliticalRiskCard } from "@/components/PoliticalRiskCard";
+import { BenchmarkCard } from "@/components/BenchmarkCard";
 
 export default function CompanyProfile() {
   const { id } = useParams();
