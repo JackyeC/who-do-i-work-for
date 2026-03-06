@@ -559,6 +559,29 @@ export const companies: Company[] = [
     hypocrisyIndex: { chiScore: 72, grade: "F", directConflicts: 1, indirectConflicts: 1, alignedStances: 0, totalStances: 2 },
     politicalRisk: { riskScore: 52, grade: "C", revolvingDoorCount: 1, darkMoneyPercentage: 0, stakeholderDisconnect: 50, flaggedOrgCount: 1 },
     benchmark: { industry: "Retail", transparencyGrade: "B+", cpaZicklinScore: 70, industryRank: 2, industryTotal: 8, peerAvgCivicFootprint: 45, peerAvgLobbying: 3500000, peerAvgPacSpending: 2800000, isIndustryLeader: false },
+    roiPipeline: {
+      totalSpending: 19500000, totalBenefits: 2090000000,
+      moneyIn: [
+        { label: "Corporate PAC", amount: 3800000, type: "PAC" },
+        { label: "Lobbying", amount: 8200000, type: "Lobbying" },
+        { label: "Alice Walton (Personal)", amount: 7500000, type: "Executive" },
+      ],
+      network: [
+        { label: "Sen. Tom Cotton", role: "Armed Services & Banking Committees", type: "Recipient" },
+        { label: "Congressional Leadership Fund", role: "Super PAC — Alice Walton top donor", type: "Super PAC" },
+        { label: "Walmart Gov Affairs Team", role: "Former Hill staffers → corporate lobbying", type: "Revolving Door" },
+      ],
+      benefitsOut: [
+        { label: "Federal Contracts", amount: 1200000000, type: "Contracts" },
+        { label: "State/Local Subsidies", amount: 890000000, type: "Subsidies" },
+      ],
+      linkages: [
+        { source: "Walmart PAC", target: "Sen. Tom Cotton (AR)", description: "$15K donation; Cotton represents Walmart's home state, sits on Banking Committee", confidence: 1.0 },
+        { source: "Alice Walton", target: "Congressional Leadership Fund", description: "$2.5M personal donation to Republican House Super PAC", confidence: 1.0 },
+        { source: "Walmart Lobbying ($8.2M)", target: "Minimum Wage Legislation", description: "Lobbied against federal $15/hr minimum wage increase", confidence: 0.9 },
+        { source: "Federal & State Procurement", target: "Walmart", description: "$1.2B federal + $890M state subsidies and tax incentives", confidence: 1.0 },
+      ],
+    },
   },
   {
     id: "patagonia",
