@@ -87,6 +87,25 @@ Deno.serve(async (req) => {
       } catch (e) {
         results.push({ company: company.name, scan: 'agency', success: false, error: String(e) });
       }
+
+      // Run ideology scan
+      try {
+        const ideoResp = await fetch(`${supabaseUrl}/functions/v1/ideology-scan`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            companyId: company.id,
+            companyName: company.name,
+          }),
+        });
+        const ideoData = await ideoResp.json();
+        results.push({ company: company.name, scan: 'ideology', success: ideoData.success });
+      } catch (e) {
+        results.push({ company: company.name, scan: 'ideology', success: false, error: String(e) });
+      }
     }
 
     return new Response(JSON.stringify({ success: true, results }), {
