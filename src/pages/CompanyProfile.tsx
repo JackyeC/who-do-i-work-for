@@ -305,6 +305,14 @@ export default function CompanyProfile() {
                 dbCompanyId={dbCompanyId}
               />
             </div>
+
+            {/* Agency Contracts & Global Footprint */}
+            <div className="mt-6">
+              <AgencyContractsCard
+                companyName={company.name}
+                dbCompanyId={dbCompanyId}
+              />
+            </div>
           </div>
 
           {/* Executive Donors */}
