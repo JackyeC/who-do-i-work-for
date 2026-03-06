@@ -314,6 +314,14 @@ export default function CompanyProfile() {
                 dbCompanyId={dbCompanyId}
               />
             </div>
+
+            {/* Ideological Alignment Tracker */}
+            <div className="mt-6">
+              <IdeologyFlagsCard
+                companyName={company.name}
+                dbCompanyId={dbCompanyId}
+              />
+            </div>
           </div>
 
           {/* Executive Donors */}
