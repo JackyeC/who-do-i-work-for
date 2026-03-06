@@ -273,6 +273,28 @@ export const companies: Company[] = [
     hypocrisyIndex: { chiScore: 68, grade: "D", directConflicts: 1, indirectConflicts: 0, alignedStances: 0, totalStances: 1 },
     politicalRisk: { riskScore: 62, grade: "D", revolvingDoorCount: 1, darkMoneyPercentage: 0, stakeholderDisconnect: 55, flaggedOrgCount: 1 },
     benchmark: { industry: "Retail", transparencyGrade: "B", cpaZicklinScore: 65, industryRank: 3, industryTotal: 8, peerAvgCivicFootprint: 45, peerAvgLobbying: 3500000, peerAvgPacSpending: 2800000, isIndustryLeader: false },
+    roiPipeline: {
+      totalSpending: 39300000, totalBenefits: 630000000,
+      moneyIn: [
+        { label: "Corporate PAC", amount: 4200000, type: "PAC" },
+        { label: "Lobbying", amount: 3100000, type: "Lobbying" },
+        { label: "Bernard Marcus (Personal)", amount: 32000000, type: "Executive" },
+      ],
+      network: [
+        { label: "Sen. Ted Cruz", role: "Commerce Committee", type: "Recipient" },
+        { label: "National Retail Federation", role: "Trade Assoc — lobbies on labor & trade", type: "Trade Group" },
+        { label: "Craig Menear", role: "Former CEO → NRF Board", type: "Revolving Door" },
+      ],
+      benefitsOut: [
+        { label: "Federal Contracts", amount: 450000000, type: "Contracts" },
+        { label: "State/Local Subsidies", amount: 180000000, type: "Subsidies" },
+      ],
+      linkages: [
+        { source: "Home Depot PAC", target: "Sen. Ted Cruz", description: "$15K donation; Cruz sits on Commerce Committee overseeing retail regulation", confidence: 1.0 },
+        { source: "NRF Lobbying", target: "Labor Committee", description: "NRF lobbied against minimum wage increase; Home Depot is top member", confidence: 0.8 },
+        { source: "Federal Procurement", target: "Home Depot", description: "$450M in government supply contracts for facilities maintenance", confidence: 1.0 },
+      ],
+    },
   },
   {
     id: "chick-fil-a",
