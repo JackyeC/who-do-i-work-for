@@ -19,6 +19,7 @@ import { InfluenceROICard } from "@/components/InfluenceROICard";
 import { HypocrisyIndexCard } from "@/components/HypocrisyIndexCard";
 import { PoliticalRiskCard } from "@/components/PoliticalRiskCard";
 import { BenchmarkCard } from "@/components/BenchmarkCard";
+import { ROIPipelineCard } from "@/components/ROIPipelineCard";
 
 export default function CompanyProfile() {
   const { id } = useParams();
