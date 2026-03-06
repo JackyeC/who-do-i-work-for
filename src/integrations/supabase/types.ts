@@ -92,6 +92,56 @@ export type Database = {
         }
         Relationships: []
       }
+      company_advisory_committees: {
+        Row: {
+          agency: string
+          appointment_year: number | null
+          committee_name: string
+          company_id: string
+          confidence: string
+          created_at: string
+          id: string
+          person: string
+          regulatory_relevance: string | null
+          source: string | null
+          title_at_company: string
+        }
+        Insert: {
+          agency: string
+          appointment_year?: number | null
+          committee_name: string
+          company_id: string
+          confidence?: string
+          created_at?: string
+          id?: string
+          person: string
+          regulatory_relevance?: string | null
+          source?: string | null
+          title_at_company: string
+        }
+        Update: {
+          agency?: string
+          appointment_year?: number | null
+          committee_name?: string
+          company_id?: string
+          confidence?: string
+          created_at?: string
+          id?: string
+          person?: string
+          regulatory_relevance?: string | null
+          source?: string | null
+          title_at_company?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_advisory_committees_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_benchmarks: {
         Row: {
           company_id: string
@@ -332,6 +382,59 @@ export type Database = {
           },
         ]
       }
+      company_foundation_grants: {
+        Row: {
+          amount: number
+          company_id: string
+          confidence: string
+          created_at: string
+          foundation_name: string
+          id: string
+          political_relevance: string | null
+          recipient_district: string | null
+          recipient_org: string
+          relevant_committee: string | null
+          source: string | null
+          year: number
+        }
+        Insert: {
+          amount?: number
+          company_id: string
+          confidence?: string
+          created_at?: string
+          foundation_name: string
+          id?: string
+          political_relevance?: string | null
+          recipient_district?: string | null
+          recipient_org: string
+          relevant_committee?: string | null
+          source?: string | null
+          year: number
+        }
+        Update: {
+          amount?: number
+          company_id?: string
+          confidence?: string
+          created_at?: string
+          foundation_name?: string
+          id?: string
+          political_relevance?: string | null
+          recipient_district?: string | null
+          recipient_org?: string
+          relevant_committee?: string | null
+          source?: string | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_foundation_grants_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_hypocrisy_index: {
         Row: {
           aligned_stances: number
@@ -412,6 +515,53 @@ export type Database = {
             foreignKeyName: "company_influence_roi_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_international_influence: {
+        Row: {
+          amount: number | null
+          company_id: string
+          confidence: string
+          country: string
+          created_at: string
+          description: string | null
+          entity_name: string | null
+          id: string
+          influence_type: string
+          registry_source: string | null
+        }
+        Insert: {
+          amount?: number | null
+          company_id: string
+          confidence?: string
+          country: string
+          created_at?: string
+          description?: string | null
+          entity_name?: string | null
+          id?: string
+          influence_type: string
+          registry_source?: string | null
+        }
+        Update: {
+          amount?: number | null
+          company_id?: string
+          confidence?: string
+          country?: string
+          created_at?: string
+          description?: string | null
+          entity_name?: string | null
+          id?: string
+          influence_type?: string
+          registry_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_international_influence_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
             referencedRelation: "companies"
             referencedColumns: ["id"]
           },
@@ -601,6 +751,53 @@ export type Database = {
           },
         ]
       }
+      company_state_lobbying: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          issues: string[] | null
+          lobbying_spend: number
+          lobbyist_count: number | null
+          source: string | null
+          state: string
+          state_contracts_value: number | null
+          year: number
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          issues?: string[] | null
+          lobbying_spend?: number
+          lobbyist_count?: number | null
+          source?: string | null
+          state: string
+          state_contracts_value?: number | null
+          year: number
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          issues?: string[] | null
+          lobbying_spend?: number
+          lobbyist_count?: number | null
+          source?: string | null
+          state?: string
+          state_contracts_value?: number | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_state_lobbying_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_super_pacs: {
         Row: {
           amount: number
@@ -668,6 +865,68 @@ export type Database = {
           },
         ]
       }
+      entity_linkages: {
+        Row: {
+          amount: number | null
+          company_id: string
+          confidence_score: number
+          created_at: string
+          description: string | null
+          id: string
+          link_type: Database["public"]["Enums"]["link_type"]
+          metadata: Json | null
+          source_citation: Json | null
+          source_entity_id: string | null
+          source_entity_name: string
+          source_entity_type: string
+          target_entity_id: string | null
+          target_entity_name: string
+          target_entity_type: string
+        }
+        Insert: {
+          amount?: number | null
+          company_id: string
+          confidence_score?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          link_type: Database["public"]["Enums"]["link_type"]
+          metadata?: Json | null
+          source_citation?: Json | null
+          source_entity_id?: string | null
+          source_entity_name: string
+          source_entity_type: string
+          target_entity_id?: string | null
+          target_entity_name: string
+          target_entity_type: string
+        }
+        Update: {
+          amount?: number | null
+          company_id?: string
+          confidence_score?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          link_type?: Database["public"]["Enums"]["link_type"]
+          metadata?: Json | null
+          source_citation?: Json | null
+          source_entity_id?: string | null
+          source_entity_name?: string
+          source_entity_type?: string
+          target_entity_id?: string | null
+          target_entity_name?: string
+          target_entity_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entity_linkages_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       executive_recipients: {
         Row: {
           amount: number
@@ -708,7 +967,19 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      link_type:
+        | "donation_to_member"
+        | "member_on_committee"
+        | "committee_oversight_of_contract"
+        | "lobbying_on_bill"
+        | "revolving_door"
+        | "foundation_grant_to_district"
+        | "trade_association_lobbying"
+        | "dark_money_channel"
+        | "advisory_committee_appointment"
+        | "interlocking_directorate"
+        | "state_lobbying_contract"
+        | "international_influence"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -835,6 +1106,21 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      link_type: [
+        "donation_to_member",
+        "member_on_committee",
+        "committee_oversight_of_contract",
+        "lobbying_on_bill",
+        "revolving_door",
+        "foundation_grant_to_district",
+        "trade_association_lobbying",
+        "dark_money_channel",
+        "advisory_committee_appointment",
+        "interlocking_directorate",
+        "state_lobbying_contract",
+        "international_influence",
+      ],
+    },
   },
 } as const

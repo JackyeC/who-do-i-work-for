@@ -53,6 +53,18 @@ export interface Company {
   hypocrisyIndex?: HypocrisyIndexData;
   politicalRisk?: PoliticalRiskData;
   benchmark?: BenchmarkData;
+
+  // ROI Pipeline (connective tissue)
+  roiPipeline?: ROIPipelineData;
+}
+
+export interface ROIPipelineData {
+  moneyIn: { label: string; amount: number; type: string }[];
+  network: { label: string; role: string; type: string }[];
+  benefitsOut: { label: string; amount: number; type: string }[];
+  linkages: { source: string; target: string; description: string; confidence: number }[];
+  totalSpending: number;
+  totalBenefits: number;
 }
 
 export interface Candidate {
@@ -261,6 +273,28 @@ export const companies: Company[] = [
     hypocrisyIndex: { chiScore: 68, grade: "D", directConflicts: 1, indirectConflicts: 0, alignedStances: 0, totalStances: 1 },
     politicalRisk: { riskScore: 62, grade: "D", revolvingDoorCount: 1, darkMoneyPercentage: 0, stakeholderDisconnect: 55, flaggedOrgCount: 1 },
     benchmark: { industry: "Retail", transparencyGrade: "B", cpaZicklinScore: 65, industryRank: 3, industryTotal: 8, peerAvgCivicFootprint: 45, peerAvgLobbying: 3500000, peerAvgPacSpending: 2800000, isIndustryLeader: false },
+    roiPipeline: {
+      totalSpending: 39300000, totalBenefits: 630000000,
+      moneyIn: [
+        { label: "Corporate PAC", amount: 4200000, type: "PAC" },
+        { label: "Lobbying", amount: 3100000, type: "Lobbying" },
+        { label: "Bernard Marcus (Personal)", amount: 32000000, type: "Executive" },
+      ],
+      network: [
+        { label: "Sen. Ted Cruz", role: "Commerce Committee", type: "Recipient" },
+        { label: "National Retail Federation", role: "Trade Assoc — lobbies on labor & trade", type: "Trade Group" },
+        { label: "Craig Menear", role: "Former CEO → NRF Board", type: "Revolving Door" },
+      ],
+      benefitsOut: [
+        { label: "Federal Contracts", amount: 450000000, type: "Contracts" },
+        { label: "State/Local Subsidies", amount: 180000000, type: "Subsidies" },
+      ],
+      linkages: [
+        { source: "Home Depot PAC", target: "Sen. Ted Cruz", description: "$15K donation; Cruz sits on Commerce Committee overseeing retail regulation", confidence: 1.0 },
+        { source: "NRF Lobbying", target: "Labor Committee", description: "NRF lobbied against minimum wage increase; Home Depot is top member", confidence: 0.8 },
+        { source: "Federal Procurement", target: "Home Depot", description: "$450M in government supply contracts for facilities maintenance", confidence: 1.0 },
+      ],
+    },
   },
   {
     id: "chick-fil-a",
@@ -434,6 +468,28 @@ export const companies: Company[] = [
     hypocrisyIndex: { chiScore: 55, grade: "D", directConflicts: 1, indirectConflicts: 1, alignedStances: 0, totalStances: 2 },
     politicalRisk: { riskScore: 35, grade: "B", revolvingDoorCount: 1, darkMoneyPercentage: 0, stakeholderDisconnect: 30, flaggedOrgCount: 0 },
     benchmark: { industry: "Technology", transparencyGrade: "A", cpaZicklinScore: 82, industryRank: 2, industryTotal: 15, peerAvgCivicFootprint: 30, peerAvgLobbying: 8000000, peerAvgPacSpending: 3000000, isIndustryLeader: true },
+    roiPipeline: {
+      totalSpending: 18750000, totalBenefits: 2700000000,
+      moneyIn: [
+        { label: "Corporate PAC", amount: 5100000, type: "PAC" },
+        { label: "Lobbying", amount: 13400000, type: "Lobbying" },
+        { label: "Sundar Pichai (Personal)", amount: 250000, type: "Executive" },
+      ],
+      network: [
+        { label: "Sen. Mark Warner", role: "Intelligence Committee — tech oversight", type: "Recipient" },
+        { label: "Susan Molinari", role: "Former Rep (R-NY) → Google VP of Public Policy", type: "Revolving Door" },
+        { label: "Business Roundtable", role: "Lobbies on antitrust & AI regulation", type: "Trade Group" },
+      ],
+      benefitsOut: [
+        { label: "Federal Cloud Contracts", amount: 2700000000, type: "Contracts" },
+      ],
+      linkages: [
+        { source: "Google PAC", target: "Sen. Mark Warner", description: "$15K donation; Warner on Intelligence Committee overseeing tech surveillance", confidence: 1.0 },
+        { source: "Susan Molinari", target: "Google Policy Team", description: "Former congresswoman hired to lead Google's DC lobbying operation", confidence: 1.0 },
+        { source: "Google Lobbying ($13.4M)", target: "Antitrust Legislation", description: "Lobbied against antitrust bills targeting search dominance", confidence: 0.9 },
+        { source: "Federal Cloud Services", target: "Google Cloud", description: "$2.7B in federal cloud infrastructure contracts (DoD, civilian)", confidence: 1.0 },
+      ],
+    },
   },
   {
     id: "walmart",
@@ -503,6 +559,29 @@ export const companies: Company[] = [
     hypocrisyIndex: { chiScore: 72, grade: "F", directConflicts: 1, indirectConflicts: 1, alignedStances: 0, totalStances: 2 },
     politicalRisk: { riskScore: 52, grade: "C", revolvingDoorCount: 1, darkMoneyPercentage: 0, stakeholderDisconnect: 50, flaggedOrgCount: 1 },
     benchmark: { industry: "Retail", transparencyGrade: "B+", cpaZicklinScore: 70, industryRank: 2, industryTotal: 8, peerAvgCivicFootprint: 45, peerAvgLobbying: 3500000, peerAvgPacSpending: 2800000, isIndustryLeader: false },
+    roiPipeline: {
+      totalSpending: 19500000, totalBenefits: 2090000000,
+      moneyIn: [
+        { label: "Corporate PAC", amount: 3800000, type: "PAC" },
+        { label: "Lobbying", amount: 8200000, type: "Lobbying" },
+        { label: "Alice Walton (Personal)", amount: 7500000, type: "Executive" },
+      ],
+      network: [
+        { label: "Sen. Tom Cotton", role: "Armed Services & Banking Committees", type: "Recipient" },
+        { label: "Congressional Leadership Fund", role: "Super PAC — Alice Walton top donor", type: "Super PAC" },
+        { label: "Walmart Gov Affairs Team", role: "Former Hill staffers → corporate lobbying", type: "Revolving Door" },
+      ],
+      benefitsOut: [
+        { label: "Federal Contracts", amount: 1200000000, type: "Contracts" },
+        { label: "State/Local Subsidies", amount: 890000000, type: "Subsidies" },
+      ],
+      linkages: [
+        { source: "Walmart PAC", target: "Sen. Tom Cotton (AR)", description: "$15K donation; Cotton represents Walmart's home state, sits on Banking Committee", confidence: 1.0 },
+        { source: "Alice Walton", target: "Congressional Leadership Fund", description: "$2.5M personal donation to Republican House Super PAC", confidence: 1.0 },
+        { source: "Walmart Lobbying ($8.2M)", target: "Minimum Wage Legislation", description: "Lobbied against federal $15/hr minimum wage increase", confidence: 0.9 },
+        { source: "Federal & State Procurement", target: "Walmart", description: "$1.2B federal + $890M state subsidies and tax incentives", confidence: 1.0 },
+      ],
+    },
   },
   {
     id: "patagonia",
@@ -625,6 +704,30 @@ export const companies: Company[] = [
     hypocrisyIndex: { chiScore: 50, grade: "D", directConflicts: 1, indirectConflicts: 0, alignedStances: 1, totalStances: 2 },
     politicalRisk: { riskScore: 92, grade: "F", revolvingDoorCount: 2, darkMoneyPercentage: 78, stakeholderDisconnect: 70, flaggedOrgCount: 2 },
     benchmark: { industry: "Conglomerate", transparencyGrade: "F", industryRank: 10, industryTotal: 10, peerAvgCivicFootprint: 40, peerAvgLobbying: 5000000, peerAvgPacSpending: 3000000, isIndustryLeader: false },
+    roiPipeline: {
+      totalSpending: 63700000, totalBenefits: 350000000,
+      moneyIn: [
+        { label: "Corporate PAC", amount: 6200000, type: "PAC" },
+        { label: "Lobbying", amount: 12500000, type: "Lobbying" },
+        { label: "Charles Koch (Personal)", amount: 45000000, type: "Executive" },
+      ],
+      network: [
+        { label: "Americans for Prosperity", role: "Koch-founded 501(c)(4) — $400M+ political spending", type: "Dark Money" },
+        { label: "Marc Short", role: "VP Pence Chief of Staff → Koch network", type: "Revolving Door" },
+        { label: "EPA Appointees", role: "Koch employees → Trump EPA officials", type: "Revolving Door" },
+        { label: "Sen. Mike Lee", role: "Judiciary Committee — deregulation ally", type: "Recipient" },
+      ],
+      benefitsOut: [
+        { label: "Federal Contracts", amount: 350000000, type: "Contracts" },
+      ],
+      linkages: [
+        { source: "Koch PAC", target: "Sen. Mike Lee", description: "$20K donation; Lee on Judiciary Committee pushing deregulation agenda aligned with Koch interests", confidence: 1.0 },
+        { source: "Koch Network", target: "Americans for Prosperity", description: "$400M+ channeled through 501(c)(4) for political advocacy without donor disclosure", confidence: 0.9 },
+        { source: "Marc Short", target: "VP Pence's Office → Koch Ops", description: "Revolving door between White House and Koch political network", confidence: 1.0 },
+        { source: "Koch Employees", target: "EPA Appointments", description: "Multiple Koch-linked individuals placed at EPA, which regulates Koch's petrochemical operations", confidence: 0.7 },
+        { source: "Federal Procurement", target: "Koch Industries", description: "$350M in federal contracts across subsidiaries", confidence: 1.0 },
+      ],
+    },
   },
   {
     id: "costco",
