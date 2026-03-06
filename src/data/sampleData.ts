@@ -95,10 +95,7 @@ export function searchCompanies(query: string): Company[] {
   );
 }
 
-export const industries = (() => {
-  const set = new Set(companies.map((c) => c.industry));
-  return [...set].sort();
-})();
+// industries is computed lazily after companies array below
 
 // ─── Sample Data ─────────────────────────────────────────────────────────────
 
