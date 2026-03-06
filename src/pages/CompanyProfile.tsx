@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import {
   Building2, ArrowLeft, Calendar, DollarSign, Users, Flag,
   Network, Scale, MessageSquareWarning, ExternalLink, Shield, Megaphone,
-  AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark, FileText
+  AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark, FileText,
+  BarChart3
 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
