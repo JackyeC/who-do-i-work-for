@@ -549,6 +549,10 @@ export const companies: Company[] = [
     ],
     workerRelevance: "Company's political activity is minimal and focused on environmental causes. Ownership structure donates profits to environmental nonprofits.",
     consumerRelevance: "Purchases support a company whose profits now fund environmental nonprofits through its ownership structure.",
+    influenceROI: { totalPoliticalSpending: 50000, totalGovernmentBenefits: 0, roiRatio: 0, grade: "N/A" },
+    hypocrisyIndex: { chiScore: 0, grade: "A+", directConflicts: 0, indirectConflicts: 0, alignedStances: 1, totalStances: 1 },
+    politicalRisk: { riskScore: 5, grade: "A+", revolvingDoorCount: 0, darkMoneyPercentage: 0, stakeholderDisconnect: 0, flaggedOrgCount: 0 },
+    benchmark: { industry: "Retail / Apparel", transparencyGrade: "A+", cpaZicklinScore: 95, industryRank: 1, industryTotal: 5, peerAvgCivicFootprint: 30, peerAvgLobbying: 500000, peerAvgPacSpending: 200000, isIndustryLeader: true },
   },
   {
     id: "koch-industries",
