@@ -366,6 +366,10 @@ export const companies: Company[] = [
     ],
     workerRelevance: "Company has successfully argued for religious exemptions that affect employee healthcare benefits (contraceptive coverage).",
     consumerRelevance: "Revenue directly supports a family-owned business whose leadership funds organizations opposing LGBTQ+ rights and reproductive healthcare access.",
+    influenceROI: { totalPoliticalSpending: 18000000, totalGovernmentBenefits: 0, roiRatio: 0, grade: "N/A" },
+    hypocrisyIndex: { chiScore: 0, grade: "A+", directConflicts: 0, indirectConflicts: 0, alignedStances: 2, totalStances: 2 },
+    politicalRisk: { riskScore: 78, grade: "F", revolvingDoorCount: 0, darkMoneyPercentage: 28, stakeholderDisconnect: 65, flaggedOrgCount: 2 },
+    benchmark: { industry: "Retail", transparencyGrade: "F", industryRank: 8, industryTotal: 8, peerAvgCivicFootprint: 45, peerAvgLobbying: 3500000, peerAvgPacSpending: 2800000, isIndustryLeader: false },
   },
   {
     id: "google",
