@@ -704,6 +704,30 @@ export const companies: Company[] = [
     hypocrisyIndex: { chiScore: 50, grade: "D", directConflicts: 1, indirectConflicts: 0, alignedStances: 1, totalStances: 2 },
     politicalRisk: { riskScore: 92, grade: "F", revolvingDoorCount: 2, darkMoneyPercentage: 78, stakeholderDisconnect: 70, flaggedOrgCount: 2 },
     benchmark: { industry: "Conglomerate", transparencyGrade: "F", industryRank: 10, industryTotal: 10, peerAvgCivicFootprint: 40, peerAvgLobbying: 5000000, peerAvgPacSpending: 3000000, isIndustryLeader: false },
+    roiPipeline: {
+      totalSpending: 63700000, totalBenefits: 350000000,
+      moneyIn: [
+        { label: "Corporate PAC", amount: 6200000, type: "PAC" },
+        { label: "Lobbying", amount: 12500000, type: "Lobbying" },
+        { label: "Charles Koch (Personal)", amount: 45000000, type: "Executive" },
+      ],
+      network: [
+        { label: "Americans for Prosperity", role: "Koch-founded 501(c)(4) — $400M+ political spending", type: "Dark Money" },
+        { label: "Marc Short", role: "VP Pence Chief of Staff → Koch network", type: "Revolving Door" },
+        { label: "EPA Appointees", role: "Koch employees → Trump EPA officials", type: "Revolving Door" },
+        { label: "Sen. Mike Lee", role: "Judiciary Committee — deregulation ally", type: "Recipient" },
+      ],
+      benefitsOut: [
+        { label: "Federal Contracts", amount: 350000000, type: "Contracts" },
+      ],
+      linkages: [
+        { source: "Koch PAC", target: "Sen. Mike Lee", description: "$20K donation; Lee on Judiciary Committee pushing deregulation agenda aligned with Koch interests", confidence: 1.0 },
+        { source: "Koch Network", target: "Americans for Prosperity", description: "$400M+ channeled through 501(c)(4) for political advocacy without donor disclosure", confidence: 0.9 },
+        { source: "Marc Short", target: "VP Pence's Office → Koch Ops", description: "Revolving door between White House and Koch political network", confidence: 1.0 },
+        { source: "Koch Employees", target: "EPA Appointments", description: "Multiple Koch-linked individuals placed at EPA, which regulates Koch's petrochemical operations", confidence: 0.7 },
+        { source: "Federal Procurement", target: "Koch Industries", description: "$350M in federal contracts across subsidiaries", confidence: 1.0 },
+      ],
+    },
   },
   {
     id: "costco",
