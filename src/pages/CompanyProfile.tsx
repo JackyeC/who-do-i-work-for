@@ -21,6 +21,7 @@ import { PoliticalRiskCard } from "@/components/PoliticalRiskCard";
 import { BenchmarkCard } from "@/components/BenchmarkCard";
 import { ROIPipelineCard } from "@/components/ROIPipelineCard";
 import { SocialMonitorCard } from "@/components/SocialMonitorCard";
+import { AgencyContractsCard } from "@/components/AgencyContractsCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 
 export default function CompanyProfile() {
@@ -301,6 +302,14 @@ export default function CompanyProfile() {
                 companyId={company.id}
                 companyName={company.name}
                 executiveNames={company.executives.map(e => e.name)}
+                dbCompanyId={dbCompanyId}
+              />
+            </div>
+
+            {/* Agency Contracts & Global Footprint */}
+            <div className="mt-6">
+              <AgencyContractsCard
+                companyName={company.name}
                 dbCompanyId={dbCompanyId}
               />
             </div>
