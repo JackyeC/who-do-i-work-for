@@ -257,6 +257,10 @@ export const companies: Company[] = [
     ],
     workerRelevance: "Leadership spending may signal likely positions on labor rights, union policy, and workplace protections. Co-founder's significant political spending is personal, not corporate.",
     consumerRelevance: "Purchases support a company whose PAC leans Republican and whose co-founder is a major conservative donor.",
+    influenceROI: { totalPoliticalSpending: 39300000, totalGovernmentBenefits: 630000000, roiRatio: 16.0, policyWinRate: 72, grade: "A+" },
+    hypocrisyIndex: { chiScore: 68, grade: "D", directConflicts: 1, indirectConflicts: 0, alignedStances: 0, totalStances: 1 },
+    politicalRisk: { riskScore: 62, grade: "D", revolvingDoorCount: 1, darkMoneyPercentage: 0, stakeholderDisconnect: 55, flaggedOrgCount: 1 },
+    benchmark: { industry: "Retail", transparencyGrade: "B", cpaZicklinScore: 65, industryRank: 3, industryTotal: 8, peerAvgCivicFootprint: 45, peerAvgLobbying: 3500000, peerAvgPacSpending: 2800000, isIndustryLeader: false },
   },
   {
     id: "chick-fil-a",
