@@ -430,6 +430,10 @@ export const companies: Company[] = [
     ],
     workerRelevance: "PAC spending is broadly distributed across both parties. Significant lobbying budget focused on tech regulation and antitrust. Generally considered a progressive employer.",
     consumerRelevance: "Using Google products supports a company with massive lobbying influence on tech regulation, privacy, and antitrust policy.",
+    influenceROI: { totalPoliticalSpending: 18750000, totalGovernmentBenefits: 2700000000, roiRatio: 144.0, policyWinRate: 68, grade: "A+" },
+    hypocrisyIndex: { chiScore: 55, grade: "D", directConflicts: 1, indirectConflicts: 1, alignedStances: 0, totalStances: 2 },
+    politicalRisk: { riskScore: 35, grade: "B", revolvingDoorCount: 1, darkMoneyPercentage: 0, stakeholderDisconnect: 30, flaggedOrgCount: 0 },
+    benchmark: { industry: "Technology", transparencyGrade: "A", cpaZicklinScore: 82, industryRank: 2, industryTotal: 15, peerAvgCivicFootprint: 30, peerAvgLobbying: 8000000, peerAvgPacSpending: 3000000, isIndustryLeader: true },
   },
   {
     id: "walmart",
