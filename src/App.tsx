@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import CompanyProfile from "./pages/CompanyProfile";
 import SearchResults from "./pages/SearchResults";
 import Browse from "./pages/Browse";
+import Methodology from "./pages/Methodology";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/company/:id" element={<CompanyProfile />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/browse" element={<Browse />} />
+          <Route path="/methodology" element={<Methodology />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
