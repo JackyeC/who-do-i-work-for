@@ -116,6 +116,46 @@ export interface PublicStance {
   gap: "aligned" | "mixed" | "contradictory";
 }
 
+// ─── Scoring Interfaces ──────────────────────────────────────────────────────
+
+export interface InfluenceROIData {
+  totalPoliticalSpending: number;
+  totalGovernmentBenefits: number;
+  roiRatio: number;
+  policyWinRate?: number;
+  grade: string;
+}
+
+export interface HypocrisyIndexData {
+  chiScore: number;
+  grade: string;
+  directConflicts: number;
+  indirectConflicts: number;
+  alignedStances: number;
+  totalStances: number;
+}
+
+export interface PoliticalRiskData {
+  riskScore: number;
+  grade: string;
+  revolvingDoorCount: number;
+  darkMoneyPercentage: number;
+  stakeholderDisconnect: number;
+  flaggedOrgCount: number;
+}
+
+export interface BenchmarkData {
+  industry: string;
+  transparencyGrade: string;
+  cpaZicklinScore?: number;
+  industryRank?: number;
+  industryTotal?: number;
+  peerAvgCivicFootprint: number;
+  peerAvgLobbying: number;
+  peerAvgPacSpending: number;
+  isIndustryLeader: boolean;
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 export function getFootprintLabel(score: number): { label: string; description: string; color: string } {
