@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft, ClipboardCheck, Building2, Share2, Bookmark,
   BookmarkCheck, Loader2, Sparkles, Crown, Download, GitCompareArrows,
-  AlertTriangle, Clock
+  AlertTriangle, Clock, Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,7 @@ import { PremiumGate } from "@/components/PremiumGate";
 import { useOfferCheck } from "@/hooks/use-offer-check";
 import { usePremium } from "@/hooks/use-premium";
 import { useAuth } from "@/contexts/AuthContext";
+import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -281,6 +282,16 @@ export default function OfferCheck() {
               </Button>
             </CardContent>
           </Card>
+        )}
+
+        {/* Signal Timeline Link + Watch */}
+        {companyId && (
+          <div className="flex items-center gap-3 mb-5">
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => navigate(`/company/${company.slug}`)}>
+              <Eye className="w-3.5 h-3.5" /> View Signal Timeline
+            </Button>
+            <WatchCompanyButton companyId={companyId} companyName={company.name} />
+          </div>
         )}
 
         {/* Report Sections */}

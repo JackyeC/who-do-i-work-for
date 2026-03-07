@@ -38,6 +38,8 @@ import { HiringTransparencyCard } from "@/components/HiringTransparencyCard";
 import { CompensationTransparencyCard } from "@/components/CompensationTransparencyCard";
 import { CompanyIntelligenceScanCard } from "@/components/CompanyIntelligenceScanCard";
 import { ScanDebugPanel } from "@/components/ScanDebugPanel";
+import { SignalTimeline } from "@/components/SignalTimeline";
+import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { TransparencyIndex } from "@/components/TransparencyIndex";
 import { supabase } from "@/integrations/supabase/client";
@@ -460,6 +462,7 @@ export default function CompanyProfile() {
                       partyBreakdown: dbPartyBreakdown?.map(p => ({ party: p.party, amount: p.amount, color: p.color })),
                     }} />
                     <EmbedBadge slug={dbCompany.slug} companyName={dbCompany.name} />
+                    <WatchCompanyButton companyId={dbCompany.id} companyName={dbCompany.name} />
                     <Button
                       onClick={handleEnrich}
                       disabled={isEnriching}
@@ -625,6 +628,11 @@ export default function CompanyProfile() {
             {/* Transparency Index */}
             <div className="mb-6">
               <TransparencyIndex categories={transparencyCategories} />
+            </div>
+
+            {/* Signal Timeline */}
+            <div className="mb-6">
+              <SignalTimeline companyId={dbCompany.id} />
             </div>
 
             {/* Debug Panel */}
