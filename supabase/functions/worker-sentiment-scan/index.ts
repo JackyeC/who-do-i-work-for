@@ -48,7 +48,9 @@ Deno.serve(async (req) => {
     ];
 
     const allResults: any[] = [];
+    let creditExhausted = false;
     for (const query of searchQueries) {
+      if (creditExhausted) break;
       try {
         console.log(`Searching: ${query}`);
         const searchResp = await fetch('https://api.firecrawl.dev/v1/search', {
@@ -62,6 +64,12 @@ Deno.serve(async (req) => {
             limit: 5,
           }),
         });
+
+        if (searchResp.status === 402) {
+          creditExhausted = true;
+          console.error('Firecrawl credits exhausted');
+          break;
+        }
 
         const searchData = await searchResp.json();
         console.log(`Search response for "${query.slice(0, 40)}...": status=${searchResp.status}, success=${searchData.success}, results=${searchData.data?.length || 0}`);
@@ -82,6 +90,26 @@ Deno.serve(async (req) => {
       }
     }
     console.log(`Total results collected: ${allResults.length}`);
+
+    if (creditExhausted) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Firecrawl credits exhausted. Please upgrade your Firecrawl plan to continue scanning. Use coupon LOVABLE50 for 50% off your first 3 months at firecrawl.dev/pricing'
+      }), {
+        status: 402,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (allResults.length === 0) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'No search results found. The web search returned no data for this company.'
+      }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
 
     // 2. Get company's public labor stances from DB for hypocrisy comparison
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
