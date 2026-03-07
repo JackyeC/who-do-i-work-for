@@ -11,7 +11,7 @@ import SearchResults from "./pages/SearchResults";
 import Browse from "./pages/Browse";
 import Methodology from "./pages/Methodology";
 import Login from "./pages/Login";
-import VoterLookup from "./pages/VoterLookup";
+import WhoDoIWorkFor from "./pages/WhoDoIWorkFor";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
