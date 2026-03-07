@@ -41,7 +41,7 @@ export default function CompanyProfile() {
   const queryClient = useQueryClient();
   const [isEnriching, setIsEnriching] = useState(false);
 
-  // Try to load from DB by slug if not in sample data
+  // Always try to load from DB by slug to get real UUID for chain tracing etc.
   const { data: dbCompany, isLoading: dbLoading } = useQuery({
     queryKey: ["company-profile", id],
     queryFn: async () => {
@@ -53,11 +53,12 @@ export default function CompanyProfile() {
       if (error) throw error;
       return data;
     },
-    enabled: !company && !!id,
+    enabled: !!id,
   });
 
-  // Load related data for DB companies
-  const dbCompanyId = company ? undefined : dbCompany?.id;
+  // For DB-only companies (no sample data), use DB data for related queries
+  // For sample data companies, still use the DB UUID for features that need it
+  const dbCompanyId = dbCompany?.id;
 
   const { data: dbCandidates } = useQuery({
     queryKey: ["company-candidates", dbCompanyId],
