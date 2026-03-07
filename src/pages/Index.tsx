@@ -24,7 +24,13 @@ const Index = () => {
     fetchData();
   }, []);
 
-  return (
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
