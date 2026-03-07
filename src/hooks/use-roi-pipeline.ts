@@ -115,6 +115,7 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
   return {
     ...query,
     autoScanning,
+    hasBeenScanned,
     triggerScan,
   };
 }
