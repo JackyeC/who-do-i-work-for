@@ -123,7 +123,7 @@ export function CompensationTransparencyCard({ companyName, dbCompanyId }: Props
           <div className="text-center py-6 text-muted-foreground">
             <Scale className="w-8 h-8 mx-auto mb-2 opacity-40" />
             <p className="text-sm">
-              We scanned public sources and did not detect pay equity or compensation transparency signals yet.
+              No public evidence detected in scanned sources for pay equity or compensation transparency.
             </p>
             <p className="text-xs mt-1">Click Scan to search public sources for this company.</p>
           </div>

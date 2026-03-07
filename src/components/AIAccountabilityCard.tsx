@@ -211,7 +211,7 @@ export function AIAccountabilityCard({ companyName, dbCompanyId }: AIAccountabil
                   SafePath Risk Alert
                 </h4>
                 <p className="text-xs text-muted-foreground mb-2">
-                  The following AI tools used by this company have been flagged for potential algorithmic bias risks:
+                  The following vendor references include signals associated with algorithmic risk categories:
                 </p>
                 <div className="space-y-1.5">
                   {safepathRisks.map((s: any, i: number) => {

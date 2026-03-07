@@ -241,8 +241,8 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
             {result.topPraises.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold flex items-center gap-1.5 text-green-600 dark:text-green-400">
-                  <TrendingUp className="w-4 h-4" />
-                  What Workers Like ({result.topPraises.length})
+                   <TrendingUp className="w-4 h-4" />
+                   Positive Sentiment Signals ({result.topPraises.length})
                 </h4>
                 <div className="space-y-1">
                   {result.topPraises.map((p, i) => (

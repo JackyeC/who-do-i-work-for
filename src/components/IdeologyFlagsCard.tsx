@@ -237,8 +237,7 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
         )}
 
         <p className="text-xs text-muted-foreground mt-4 border-t border-border pt-3">
-          Sources: SPLC Hate Map, ADL Extremism Database, OpenSecrets, InfluenceWatch, FEC filings, news reports.
-          AI-powered analysis cross-references curated watchlists of {Object.keys(CATEGORY_CONFIG).length} tracked categories.
+          Signals are detected from publicly available sources (SPLC, ADL, OpenSecrets, InfluenceWatch, FEC filings, news reports) and presented with confidence levels. No conclusions are drawn. Interpretation is left to the user.
         </p>
       </CardContent>
     </Card>

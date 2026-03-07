@@ -154,8 +154,8 @@ export function SocialMonitorCard({ companyId, companyName, executiveNames, dbCo
                           {c.severity}
                         </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground"><strong>Says:</strong> {c.publicStatement}</p>
-                      <p className="text-xs text-muted-foreground"><strong>Does:</strong> {c.reality}</p>
+                       <p className="text-xs text-muted-foreground"><strong>Public statement:</strong> {c.publicStatement}</p>
+                       <p className="text-xs text-muted-foreground"><strong>Observed signal:</strong> {c.reality}</p>
                     </div>
                   ))}
                 </div>

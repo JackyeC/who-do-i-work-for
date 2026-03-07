@@ -164,7 +164,7 @@ export function AIHiringCard({ companyName, dbCompanyId }: AIHiringCardProps) {
           <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border mb-4">
             <CheckCircle2 className="w-4 h-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">
-              Public sources scanned{scanState.sourcesScanned ? ` (${scanState.sourcesScanned} pages)` : ''}. No hiring automation signals detected.
+              Public sources scanned{scanState.sourcesScanned ? ` (${scanState.sourcesScanned} pages)` : ''}. No public evidence detected in scanned sources.
             </span>
           </div>
         );
