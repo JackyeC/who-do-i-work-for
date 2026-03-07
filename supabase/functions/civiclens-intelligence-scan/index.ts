@@ -224,7 +224,7 @@ ${truncated}`;
       parsed = JSON.parse(jsonMatch[1].trim());
     } catch {
       console.error('Failed to parse AI output:', raw.slice(0, 500));
-      parsed = { benefits: [], ai_hiring: [], bias_audit_found: false };
+      parsed = { benefits: [], ai_hiring: [], pay_equity: [], bias_audit_found: false };
     }
 
     // ─── Phase 3: Store results ─────────────────────────────────────
