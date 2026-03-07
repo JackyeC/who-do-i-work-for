@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
-import { Share2, Download, Copy, Check, Eye } from "lucide-react";
+import { Share2, Download, Copy, Check, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
@@ -44,7 +44,6 @@ function ScorecardCanvas({ data }: { data: ScorecardData }) {
         overflow: "hidden",
       }}
     >
-      {/* Subtle grid pattern */}
       <div style={{
         position: "absolute", inset: 0, opacity: 0.03,
         backgroundImage: "radial-gradient(circle, #1e293b 1px, transparent 1px)",
@@ -58,11 +57,14 @@ function ScorecardCanvas({ data }: { data: ScorecardData }) {
             width: 28, height: 28, borderRadius: 6,
             background: "#1e3a5f", display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            <Eye style={{ width: 14, height: 14, color: "white" }} />
+            <ClipboardCheck style={{ width: 14, height: 14, color: "white" }} />
           </div>
-          <span style={{ fontSize: 13, fontWeight: 600, color: "#64748b", letterSpacing: 0.5 }}>
-            CIVICLENS TRANSPARENCY PROFILE
-          </span>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", letterSpacing: 0.5 }}>
+              OFFER CHECK
+            </span>
+            <span style={{ fontSize: 9, color: "#94a3b8" }}>by Jackye Clayton</span>
+          </div>
         </div>
         <h2 style={{ fontSize: 28, fontWeight: 700, margin: 0, lineHeight: 1.2 }}>
           {data.name}
@@ -79,9 +81,8 @@ function ScorecardCanvas({ data }: { data: ScorecardData }) {
         </div>
       </div>
 
-      {/* Score circle + signals */}
+      {/* Score + signals */}
       <div style={{ display: "flex", gap: 32, alignItems: "flex-start", position: "relative" }}>
-        {/* Civic Footprint Score */}
         <div style={{ textAlign: "center", flexShrink: 0 }}>
           <svg width={120} height={120} viewBox="0 0 120 120">
             <circle cx={60} cy={60} r={52} fill="none" stroke="#e2e8f0" strokeWidth={8} />
@@ -107,10 +108,9 @@ function ScorecardCanvas({ data }: { data: ScorecardData }) {
           </div>
         </div>
 
-        {/* Key Signals */}
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
-            KEY TRANSPARENCY SIGNALS
+            KEY SIGNALS DETECTED
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <SignalItem label="PAC Spending" value={data.totalPacSpending > 0 ? formatCurrency(data.totalPacSpending) : "None"} />
@@ -119,7 +119,6 @@ function ScorecardCanvas({ data }: { data: ScorecardData }) {
             <SignalItem label="Confidence" value={data.confidenceRating.charAt(0).toUpperCase() + data.confidenceRating.slice(1)} />
           </div>
 
-          {/* Party breakdown bar */}
           {data.partyBreakdown && data.partyBreakdown.length > 0 && (
             <div style={{ marginTop: 16 }}>
               <div style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
@@ -153,7 +152,7 @@ function ScorecardCanvas({ data }: { data: ScorecardData }) {
         display: "flex", justifyContent: "space-between", alignItems: "center",
       }}>
         <span style={{ fontSize: 10, color: "#94a3b8" }}>
-          Data from FEC.gov, OpenSecrets & public filings • civic-align.lovable.app
+          Offer Check by Jackye Clayton • offercheck.app
         </span>
         <span style={{ fontSize: 10, color: "#94a3b8" }}>
           Generated {new Date().toLocaleDateString()}
@@ -186,10 +185,10 @@ export function ShareableScorecard({ data }: { data: ScorecardData }) {
     const canvas = await generateImage();
     if (!canvas) return;
     const link = document.createElement("a");
-    link.download = `${data.name.toLowerCase().replace(/\s+/g, "-")}-civic-scorecard.png`;
+    link.download = `${data.name.toLowerCase().replace(/\s+/g, "-")}-offer-check.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
-    toast({ title: "Scorecard downloaded" });
+    toast({ title: "Offer Check downloaded" });
   };
 
   const handleCopy = async () => {
@@ -202,7 +201,7 @@ export function ShareableScorecard({ data }: { data: ScorecardData }) {
       await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      toast({ title: "Scorecard copied to clipboard" });
+      toast({ title: "Offer Check copied to clipboard" });
     } catch {
       toast({ title: "Copy failed", description: "Try downloading instead.", variant: "destructive" });
     }
@@ -214,18 +213,17 @@ export function ShareableScorecard({ data }: { data: ScorecardData }) {
     const blob = await new Promise<Blob>((resolve) =>
       canvas.toBlob((b) => resolve(b!), "image/png")
     );
-    const file = new File([blob], `${data.name}-scorecard.png`, { type: "image/png" });
+    const file = new File([blob], `${data.name}-offer-check.png`, { type: "image/png" });
 
     if (navigator.share && navigator.canShare?.({ files: [file] })) {
       await navigator.share({
-        title: `${data.name} — Civic Footprint Scorecard`,
-        text: `Check the civic transparency profile for ${data.name} on CivicLens.`,
+        title: `${data.name} — Offer Check by Jackye Clayton`,
+        text: `I ran the Offer Check on ${data.name}. Review the signals before you say yes.`,
         files: [file],
       });
     } else {
-      // Fallback: open Twitter intent
       const text = encodeURIComponent(
-        `Check the civic transparency profile for ${data.name} on CivicLens 🔍\n\nhttps://civic-align.lovable.app/company/${data.name.toLowerCase().replace(/\s+/g, "-")}`
+        `I ran the Offer Check on ${data.name}. Know before you go 🔍\n\nhttps://civic-align.lovable.app/company/${data.name.toLowerCase().replace(/\s+/g, "-")}`
       );
       window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
     }
@@ -236,12 +234,12 @@ export function ShareableScorecard({ data }: { data: ScorecardData }) {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1.5">
           <Share2 className="w-3.5 h-3.5" />
-          Share Scorecard
+          Share Offer Check
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[680px]">
         <DialogHeader>
-          <DialogTitle>Civic Footprint Scorecard</DialogTitle>
+          <DialogTitle>Offer Check — {data.name}</DialogTitle>
         </DialogHeader>
 
         <div ref={cardRef} className="overflow-auto">

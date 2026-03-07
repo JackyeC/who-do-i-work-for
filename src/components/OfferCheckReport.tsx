@@ -4,19 +4,28 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   Building2, Briefcase, Shield, Bot, BarChart3, ClipboardCheck,
-  ExternalLink, Clock, CheckCircle2, AlertTriangle, Lock, Search
+  ExternalLink, Clock, CheckCircle2, AlertTriangle, Lock, Search,
+  Heart, Users, Flag, MessageSquareWarning
 } from "lucide-react";
 import { type OfferCheckSection, type OfferCheckSignal } from "@/hooks/use-offer-check";
 
 const SECTION_ICONS: Record<string, typeof Building2> = {
+  overview: Building2,
   civic: Briefcase,
-  safety: Shield,
   "hiring-tech": Bot,
+  "worker-benefits": Heart,
+  "compensation": BarChart3,
+  "worker-sentiment": Users,
+  "affiliations": Flag,
+  "say-do": MessageSquareWarning,
+  safety: Shield,
   transparency: BarChart3,
   review: ClipboardCheck,
 };
 
 const CONFIDENCE_STYLES: Record<string, string> = {
+  "Direct Source": "text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30",
+  "Multi-Source": "text-primary border-primary/30",
   High: "text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30",
   Medium: "text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/30",
   Low: "text-muted-foreground border-border",
@@ -33,7 +42,7 @@ function SignalRow({ signal }: { signal: OfferCheckSignal }) {
     <div className="py-2.5 border-b border-border last:border-0">
       <div className="flex items-start justify-between gap-2 mb-1">
         <span className="text-sm text-foreground font-medium">{signal.description}</span>
-        <Badge variant="outline" className={cn("text-[10px] shrink-0", CONFIDENCE_STYLES[signal.confidence])}>
+        <Badge variant="outline" className={cn("text-[10px] shrink-0", CONFIDENCE_STYLES[signal.confidence] || CONFIDENCE_STYLES["Low"])}>
           {signal.confidence}
         </Badge>
       </div>
