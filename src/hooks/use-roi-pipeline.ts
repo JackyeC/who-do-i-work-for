@@ -65,8 +65,10 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
       .eq("company_id", companyId)
       .limit(1)
       .then(({ data: scanRuns }) => {
-        // Only auto-scan if no scan has ever been run
-        if (scanRuns && scanRuns.length > 0) return;
+        if (scanRuns && scanRuns.length > 0) {
+          setHasBeenScanned(true);
+          return;
+        }
         if (scanAttempted.current) return;
 
         scanAttempted.current = true;
