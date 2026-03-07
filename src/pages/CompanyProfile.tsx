@@ -609,6 +609,7 @@ export default function CompanyProfile() {
                   governmentContracts: company.governmentContracts,
                   partyBreakdown: company.partyBreakdown,
                 }} />
+                <EmbedBadge slug={company.id} companyName={company.name} />
               </div>
             </div>
           </div>
