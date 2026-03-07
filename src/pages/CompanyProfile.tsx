@@ -782,6 +782,14 @@ export default function CompanyProfile() {
               </div>
             )}
 
+            {/* Influence Chain Trace */}
+            <div className="mt-6">
+              <InfluenceChainCard
+                companyId={dbCompanyId || company.id}
+                companyName={company.name}
+              />
+            </div>
+
             {/* Social & Media Monitor */}
             <div className="mt-6">
               <SocialMonitorCard
