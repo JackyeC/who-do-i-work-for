@@ -223,7 +223,7 @@ export function WorkerBenefitsCard({ companyName, dbCompanyId }: WorkerBenefitsC
             )}
 
             <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-              Benefits are auto-detected from public sources and may not reflect the full scope of offerings. Information is provided for transparency purposes only.
+              Signals are detected from publicly available sources and presented with confidence levels. No conclusions are drawn. Interpretation is left to the user.
             </p>
           </div>
         )}
