@@ -311,6 +311,8 @@ ${truncated}`;
       results.transparencyWarning = true;
     }
 
+    console.log(`Intelligence scan complete: ${results.benefits} benefits, ${results.aiHiring} AI hiring, ${results.payEquity} pay equity, audit: ${results.auditStatus}`);
+
     return new Response(JSON.stringify({
       success: true,
       results,
