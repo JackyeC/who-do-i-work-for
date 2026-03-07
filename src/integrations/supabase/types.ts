@@ -692,6 +692,62 @@ export type Database = {
           },
         ]
       }
+      company_jobs: {
+        Row: {
+          company_id: string
+          created_at: string
+          department: string | null
+          description: string | null
+          employment_type: string | null
+          id: string
+          is_active: boolean
+          location: string | null
+          posted_at: string | null
+          salary_range: string | null
+          scraped_at: string
+          title: string
+          url: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          posted_at?: string | null
+          salary_range?: string | null
+          scraped_at?: string
+          title: string
+          url?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          posted_at?: string | null
+          salary_range?: string | null
+          scraped_at?: string
+          title?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_jobs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_party_breakdown: {
         Row: {
           amount: number
