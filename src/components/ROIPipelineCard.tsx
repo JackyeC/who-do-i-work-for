@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/data/sampleData";
 import { cn } from "@/lib/utils";
-import { ArrowRight, DollarSign, Users, Landmark, FileText } from "lucide-react";
+import { ArrowRight, DollarSign, Users, Landmark, FileText, Loader, Search } from "lucide-react";
 
 export interface LinkageNode {
   id: string;
