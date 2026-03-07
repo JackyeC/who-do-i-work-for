@@ -38,6 +38,7 @@ import { CompensationTransparencyCard } from "@/components/CompensationTranspare
 import { CompanyIntelligenceScanCard } from "@/components/CompanyIntelligenceScanCard";
 import { ScanDebugPanel } from "@/components/ScanDebugPanel";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
+import { TransparencyIndex } from "@/components/TransparencyIndex";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
