@@ -15,6 +15,7 @@ import WhoDoIWorkFor from "./pages/WhoDoIWorkFor";
 import AddCompany from "./pages/AddCompany";
 import Jobs from "./pages/Jobs";
 import NotFound from "./pages/NotFound";
+import RequestCorrection from "./pages/RequestCorrection";
 
 const queryClient = new QueryClient();
 
