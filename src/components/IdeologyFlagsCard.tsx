@@ -139,9 +139,8 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
           )}
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          Tracks corporate ties to Christian nationalism, white supremacy, anti-LGBTQ+ orgs, anti-labor groups,
-          voter suppression, climate denial, anti-reproductive rights, and privatization agendas.
-          Cross-referenced against SPLC, ADL, and curated watchlists.
+          Public signals of corporate affiliations with organizations tracked by SPLC, ADL, and curated watchlists.
+          Signals are presented with source links and confidence levels.
         </p>
       </CardHeader>
       <CardContent>
