@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/data/sampleData";
 import { cn } from "@/lib/utils";
-import { ArrowRight, DollarSign, Users, Landmark, FileText } from "lucide-react";
+import { ArrowRight, DollarSign, Users, Landmark, FileText, Loader, Search } from "lucide-react";
 
 export interface LinkageNode {
   id: string;
@@ -76,10 +76,12 @@ function FlowArrow() {
   );
 }
 
-export function ROIPipelineCard({ data }: { data: ROIPipelineData }) {
+export function ROIPipelineCard({ data, isSearching = false }: { data: ROIPipelineData; isSearching?: boolean }) {
   const roiRatio = data.totalSpending > 0
     ? (data.totalBenefits / data.totalSpending).toFixed(1)
     : "N/A";
+
+  const isEmpty = data.moneyIn.length === 0 && data.network.length === 0 && data.benefitsOut.length === 0;
 
   return (
     <Card>
@@ -94,6 +96,27 @@ export function ROIPipelineCard({ data }: { data: ROIPipelineData }) {
         </p>
       </CardHeader>
       <CardContent>
+        {isEmpty && (
+          <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg mb-6 border border-border">
+            {isSearching ? (
+              <>
+                <Loader className="w-5 h-5 text-primary animate-spin" />
+                <div>
+                  <div className="text-sm font-medium text-foreground">Searching Federal Records…</div>
+                  <div className="text-xs text-muted-foreground">Tracing entity linkages through PAC filings, lobbying disclosures, and contract awards.</div>
+                </div>
+              </>
+            ) : (
+              <>
+                <Search className="w-5 h-5 text-muted-foreground" />
+                <div>
+                  <div className="text-sm font-medium text-foreground">No influence pipeline data yet</div>
+                  <div className="text-xs text-muted-foreground">Run a Company Intelligence Scan to populate entity linkages and trace influence paths.</div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
         {/* Summary bar */}
         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg mb-6">
           <div className="text-center">

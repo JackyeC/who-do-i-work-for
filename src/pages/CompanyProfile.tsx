@@ -34,6 +34,7 @@ import { InfluenceChainCard } from "@/components/InfluenceChainCard";
 import { AIHiringCard } from "@/components/AIHiringCard";
 import { WorkerBenefitsCard } from "@/components/WorkerBenefitsCard";
 import { AIAccountabilityCard } from "@/components/AIAccountabilityCard";
+import { HiringTransparencyCard } from "@/components/HiringTransparencyCard";
 import { CompensationTransparencyCard } from "@/components/CompensationTransparencyCard";
 import { CompanyIntelligenceScanCard } from "@/components/CompanyIntelligenceScanCard";
 import { ScanDebugPanel } from "@/components/ScanDebugPanel";
@@ -204,13 +205,14 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
         </CardContent>
       </Card>
     ) : null,
-    "roi-pipeline": livePipeline ? <div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline} /></div> : null,
+    "roi-pipeline": <div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }} isSearching={!livePipeline && !!dbCompany.id} /></div>,
     "influence-chain": <div key="influence-chain" className="mb-6"><InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} /></div>,
     "social-monitor": <div key="social-monitor" className="mb-6"><SocialMonitorCard companyId={dbCompany.slug} companyName={dbCompany.name} executiveNames={dbExecutives?.map(e => e.name) || []} dbCompanyId={dbCompany.id} /></div>,
     "agency-contracts": <div key="agency-contracts" className="mb-6"><AgencyContractsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
     "ideology-flags": <div key="ideology-flags" className="mb-6"><IdeologyFlagsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
     "worker-sentiment": <div key="worker-sentiment" className="mb-6"><WorkerSentimentCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
     "ai-hiring": <div key="ai-hiring" className="mb-6"><AIHiringCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
+    "hiring-transparency": <div key="hiring-transparency" className="mb-6"><HiringTransparencyCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
     "worker-benefits": <div key="worker-benefits" className="mb-6"><WorkerBenefitsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
     "ai-accountability": <div key="ai-accountability" className="mb-6"><AIAccountabilityCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
     "compensation": <div key="compensation" className="mb-6"><CompensationTransparencyCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
@@ -886,16 +888,17 @@ export default function CompanyProfile() {
               </Card>
             )}
 
-            {/* ROI Pipeline — prefer live DB data */}
-            {(livePipeline || company.roiPipeline) && (
-              <div className="mt-6">
-                {pipelineLoading ? (
-                  <Card><CardContent className="p-6 text-center text-muted-foreground">Loading influence pipeline...</CardContent></Card>
-                ) : (
-                  <ROIPipelineCard data={livePipeline || company.roiPipeline!} />
-                )}
-              </div>
-            )}
+            {/* ROI Pipeline — always show with empty state */}
+            <div className="mt-6">
+              {pipelineLoading ? (
+                <Card><CardContent className="p-6 text-center text-muted-foreground">Loading influence pipeline...</CardContent></Card>
+              ) : (
+                <ROIPipelineCard
+                  data={livePipeline || company.roiPipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }}
+                  isSearching={pipelineLoading}
+                />
+              )}
+            </div>
 
             {/* Influence Chain Trace */}
             <div className="mt-6">
