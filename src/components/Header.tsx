@@ -29,10 +29,10 @@ export function Header() {
             <Search className="w-3.5 h-3.5" />
             Search
           </Link>
-          <Link to={user ? "/voter-lookup" : "/login"}>
+          <Link to={user ? "/who-do-i-work-for" : "/login"}>
             <Button size="sm" variant="default" className="gap-1.5">
-              <Vote className="w-3.5 h-3.5" />
-              Who Did I Vote For?
+              <Briefcase className="w-3.5 h-3.5" />
+              Who Do I Work For?
             </Button>
           </Link>
         </nav>
