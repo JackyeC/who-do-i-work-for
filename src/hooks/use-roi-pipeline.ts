@@ -7,6 +7,7 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
   const queryClient = useQueryClient();
   const [autoScanTriggered, setAutoScanTriggered] = useState(false);
   const [autoScanning, setAutoScanning] = useState(false);
+  const [hasBeenScanned, setHasBeenScanned] = useState(false);
   const scanAttempted = useRef(false);
 
   const query = useQuery({
