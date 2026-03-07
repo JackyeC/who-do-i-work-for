@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Search, Eye, BookOpen, Briefcase } from "lucide-react";
+import { Search, Eye, BookOpen, Briefcase, Plus } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
@@ -28,6 +28,10 @@ export function Header() {
           <Link to="/search" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
             <Search className="w-3.5 h-3.5" />
             Search
+          </Link>
+          <Link to="/add-company" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+            <Plus className="w-3.5 h-3.5" />
+            Add Company
           </Link>
           <Link to={user ? "/who-do-i-work-for" : "/login"}>
             <Button size="sm" variant="default" className="gap-1.5">
