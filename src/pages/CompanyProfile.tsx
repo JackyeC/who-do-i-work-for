@@ -48,7 +48,7 @@ import {
 } from "@/components/ui/table";
 
 /** Renders DB-only company modules in lens priority order */
-function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, dbExecutives, dbPublicStances, dbDarkMoney, dbRevolvingDoor, livePipeline, autoScanning, triggerScan }: {
+function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, dbExecutives, dbPublicStances, dbDarkMoney, dbRevolvingDoor, livePipeline, autoScanning, hasBeenScanned, triggerScan }: {
   activeLens: LensId;
   dbCompany: any;
   dbPartyBreakdown: any[] | null | undefined;
@@ -59,6 +59,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
   dbRevolvingDoor: any[] | null | undefined;
   livePipeline: any;
   autoScanning?: boolean;
+  hasBeenScanned?: boolean;
   triggerScan?: () => void;
 }) {
   const lens = getLens(activeLens);
@@ -207,7 +208,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
         </CardContent>
       </Card>
     ) : null,
-    "roi-pipeline": <div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }} isSearching={!livePipeline && !!dbCompany.id} onTriggerScan={triggerScan} autoScanning={autoScanning} /></div>,
+    "roi-pipeline": <div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }} isSearching={!livePipeline && !!dbCompany.id} onTriggerScan={triggerScan} autoScanning={autoScanning} hasBeenScanned={hasBeenScanned} /></div>,
     "influence-chain": <div key="influence-chain" className="mb-6"><InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} /></div>,
     "social-monitor": <div key="social-monitor" className="mb-6"><SocialMonitorCard companyId={dbCompany.slug} companyName={dbCompany.name} executiveNames={dbExecutives?.map(e => e.name) || []} dbCompanyId={dbCompany.id} /></div>,
     "agency-contracts": <div key="agency-contracts" className="mb-6"><AgencyContractsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div>,
@@ -383,7 +384,7 @@ export default function CompanyProfile() {
   };
   const pipelineCompanyId = company ? dbCompanyIdMap[company.id] : dbCompany?.id;
   const pipelineCompanyName = company?.name || dbCompany?.name;
-  const { data: livePipeline, isLoading: pipelineLoading, autoScanning, triggerScan } = useROIPipeline(pipelineCompanyId, pipelineCompanyName);
+  const { data: livePipeline, isLoading: pipelineLoading, autoScanning, hasBeenScanned, triggerScan } = useROIPipeline(pipelineCompanyId, pipelineCompanyName);
 
   // Loading state for DB-only companies
   if (!company && dbLoading) {
@@ -643,6 +644,7 @@ export default function CompanyProfile() {
               dbRevolvingDoor={dbRevolvingDoor}
               livePipeline={livePipeline}
               autoScanning={autoScanning}
+              hasBeenScanned={hasBeenScanned}
               triggerScan={triggerScan}
             />
           </motion.div>
@@ -936,6 +938,7 @@ export default function CompanyProfile() {
                   isSearching={pipelineLoading}
                   onTriggerScan={triggerScan}
                   autoScanning={autoScanning}
+                  hasBeenScanned={hasBeenScanned}
                 />
               )}
             </div>

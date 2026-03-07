@@ -7,6 +7,7 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
   const queryClient = useQueryClient();
   const [autoScanTriggered, setAutoScanTriggered] = useState(false);
   const [autoScanning, setAutoScanning] = useState(false);
+  const [hasBeenScanned, setHasBeenScanned] = useState(false);
   const scanAttempted = useRef(false);
 
   const query = useQuery({
@@ -64,8 +65,10 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
       .eq("company_id", companyId)
       .limit(1)
       .then(({ data: scanRuns }) => {
-        // Only auto-scan if no scan has ever been run
-        if (scanRuns && scanRuns.length > 0) return;
+        if (scanRuns && scanRuns.length > 0) {
+          setHasBeenScanned(true);
+          return;
+        }
         if (scanAttempted.current) return;
 
         scanAttempted.current = true;
@@ -81,7 +84,7 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
             console.error("[ROI Pipeline] Auto-scan failed:", error);
           }
           setAutoScanning(false);
-          // Invalidate all relevant queries
+          setHasBeenScanned(true);
           queryClient.invalidateQueries({ queryKey: ["roi-pipeline", companyId] });
           queryClient.invalidateQueries({ queryKey: ["influence-chain", companyId] });
           queryClient.invalidateQueries({ queryKey: ["latest-scan-run", companyId] });
@@ -102,6 +105,7 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
       console.error("[ROI Pipeline] Manual scan failed:", e);
     } finally {
       setAutoScanning(false);
+      setHasBeenScanned(true);
       queryClient.invalidateQueries({ queryKey: ["roi-pipeline", companyId] });
       queryClient.invalidateQueries({ queryKey: ["influence-chain", companyId] });
       queryClient.invalidateQueries({ queryKey: ["latest-scan-run", companyId] });
@@ -111,6 +115,7 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
   return {
     ...query,
     autoScanning,
+    hasBeenScanned,
     triggerScan,
   };
 }
