@@ -11,7 +11,7 @@ import SearchResults from "./pages/SearchResults";
 import Browse from "./pages/Browse";
 import Methodology from "./pages/Methodology";
 import Login from "./pages/Login";
-import VoterLookup from "./pages/VoterLookup";
+import WhoDoIWorkFor from "./pages/WhoDoIWorkFor";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,9 +30,9 @@ const App = () => (
             <Route path="/browse" element={<Browse />} />
             <Route path="/methodology" element={<Methodology />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/voter-lookup" element={
+            <Route path="/who-do-i-work-for" element={
               <ProtectedRoute>
-                <VoterLookup />
+                <WhoDoIWorkFor />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
