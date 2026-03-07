@@ -28,6 +28,7 @@ export const LENSES: LensDefinition[] = [
       "social-monitor",
       "worker-sentiment",
       "ai-hiring",
+      "hiring-transparency",
       "worker-benefits",
       "ai-accountability",
       "compensation",
@@ -41,6 +42,7 @@ export const LENSES: LensDefinition[] = [
     modulePriority: [
       "compensation",
       "ai-hiring",
+      "hiring-transparency",
       "ai-accountability",
       "worker-benefits",
       "worker-sentiment",
@@ -72,6 +74,7 @@ export const LENSES: LensDefinition[] = [
       "money-trail",
       "influence-network",
       "ai-hiring",
+      "hiring-transparency",
       "ai-accountability",
       "government-roi",
       "roi-pipeline",
