@@ -34,6 +34,7 @@ import { InfluenceChainCard } from "@/components/InfluenceChainCard";
 import { AIHiringCard } from "@/components/AIHiringCard";
 import { WorkerBenefitsCard } from "@/components/WorkerBenefitsCard";
 import { AIAccountabilityCard } from "@/components/AIAccountabilityCard";
+import { HiringTransparencyCard } from "@/components/HiringTransparencyCard";
 import { CompensationTransparencyCard } from "@/components/CompensationTransparencyCard";
 import { CompanyIntelligenceScanCard } from "@/components/CompanyIntelligenceScanCard";
 import { ScanDebugPanel } from "@/components/ScanDebugPanel";
