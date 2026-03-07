@@ -217,8 +217,8 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
             {result.topComplaints.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-                  <TrendingDown className="w-4 h-4" />
-                  Top Worker Complaints ({result.topComplaints.length})
+                   <TrendingDown className="w-4 h-4" />
+                   Recurring Concern Signals ({result.topComplaints.length})
                 </h4>
                 <div className="space-y-1.5">
                   {result.topComplaints.map((c, i) => (
