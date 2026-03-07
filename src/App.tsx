@@ -40,6 +40,7 @@ const App = () => (
             } />
             <Route path="/add-company" element={<AddCompany />} />
             <Route path="/jobs" element={<Jobs />} />
+            <Route path="/request-correction" element={<RequestCorrection />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
