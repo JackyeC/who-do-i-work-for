@@ -344,8 +344,8 @@ export function AIAccountabilityCard({ companyName, dbCompanyId }: AIAccountabil
             )}
 
             <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-              AI vendor detection is based on public source analysis. Bias audit compliance status reflects publicly available disclosures. 
-              This does not constitute legal advice. SafePath flags indicate potential risk areas for further investigation.
+              Signals are detected from publicly available sources and presented with confidence levels.
+              No conclusions are drawn. Interpretation is left to the user.
             </p>
           </div>
         )}
