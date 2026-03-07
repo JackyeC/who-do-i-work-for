@@ -462,6 +462,7 @@ export default function CompanyProfile() {
                       partyBreakdown: dbPartyBreakdown?.map(p => ({ party: p.party, amount: p.amount, color: p.color })),
                     }} />
                     <EmbedBadge slug={dbCompany.slug} companyName={dbCompany.name} />
+                    <WatchCompanyButton companyId={dbCompany.id} companyName={dbCompany.name} />
                     <Button
                       onClick={handleEnrich}
                       disabled={isEnriching}
