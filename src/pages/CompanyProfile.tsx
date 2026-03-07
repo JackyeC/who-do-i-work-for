@@ -961,6 +961,14 @@ export default function CompanyProfile() {
                 dbCompanyId={dbCompanyId}
               />
             </div>
+
+            {/* Compensation Transparency & Equity */}
+            <div className="mt-6">
+              <CompensationTransparencyCard
+                companyName={company.name}
+                dbCompanyId={dbCompanyId}
+              />
+            </div>
           </div>
 
           {/* Executive Donors */}
