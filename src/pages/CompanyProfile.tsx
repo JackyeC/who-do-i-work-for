@@ -31,6 +31,7 @@ import { InfluenceChainCard } from "@/components/InfluenceChainCard";
 import { AIHiringCard } from "@/components/AIHiringCard";
 import { WorkerBenefitsCard } from "@/components/WorkerBenefitsCard";
 import { AIAccountabilityCard } from "@/components/AIAccountabilityCard";
+import { CompensationTransparencyCard } from "@/components/CompensationTransparencyCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -604,6 +605,7 @@ export default function CompanyProfile() {
               <AIHiringCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} />
               <WorkerBenefitsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} />
               <AIAccountabilityCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} />
+              <CompensationTransparencyCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} />
             </div>
           </motion.div>
         </div>
@@ -955,6 +957,14 @@ export default function CompanyProfile() {
             {/* AI Hiring Accountability */}
             <div className="mt-6">
               <AIAccountabilityCard
+                companyName={company.name}
+                dbCompanyId={dbCompanyId}
+              />
+            </div>
+
+            {/* Compensation Transparency & Equity */}
+            <div className="mt-6">
+              <CompensationTransparencyCard
                 companyName={company.name}
                 dbCompanyId={dbCompanyId}
               />
