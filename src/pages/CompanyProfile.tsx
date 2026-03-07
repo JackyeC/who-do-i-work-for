@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, ReactNode } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -7,6 +7,8 @@ import {
   AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark, FileText,
   BarChart3, Loader2, Sparkles, Search
 } from "lucide-react";
+import { LensSelector } from "@/components/LensSelector";
+import { type LensId, getLens } from "@/lib/lensConfig";
 import { ShareableScorecard } from "@/components/ShareableScorecard";
 import { EmbedBadge } from "@/components/EmbedBadge";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
