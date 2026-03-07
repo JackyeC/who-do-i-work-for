@@ -886,6 +886,14 @@ export default function CompanyProfile() {
                 dbCompanyId={dbCompanyId}
               />
             </div>
+
+            {/* AI Hiring Accountability */}
+            <div className="mt-6">
+              <AIAccountabilityCard
+                companyName={company.name}
+                dbCompanyId={dbCompanyId}
+              />
+            </div>
           </div>
 
           {/* Executive Donors */}
