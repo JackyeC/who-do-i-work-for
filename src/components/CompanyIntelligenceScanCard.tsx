@@ -71,18 +71,19 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   });
 
   // If scan completed while polling, stop
-  if (isScanning && latestScan?.scan_status && !['queued', 'in_progress'].includes(latestScan.scan_status)) {
-    setIsScanning(false);
-    // Invalidate all module queries
-    queryClient.invalidateQueries({ queryKey: ["ai-hr-signals"] });
-    queryClient.invalidateQueries({ queryKey: ["worker-benefit-signals"] });
-    queryClient.invalidateQueries({ queryKey: ["pay-equity-signals"] });
-    queryClient.invalidateQueries({ queryKey: ["worker-sentiment"] });
-    queryClient.invalidateQueries({ queryKey: ["ideology-flags"] });
-    queryClient.invalidateQueries({ queryKey: ["social-media-scans"] });
-    queryClient.invalidateQueries({ queryKey: ["agency-contracts"] });
-    queryClient.invalidateQueries({ queryKey: ["ai-accountability"] });
-  }
+  useEffect(() => {
+    if (isScanning && latestScan?.scan_status && !['queued', 'in_progress'].includes(latestScan.scan_status)) {
+      setIsScanning(false);
+      queryClient.invalidateQueries({ queryKey: ["ai-hr-signals"] });
+      queryClient.invalidateQueries({ queryKey: ["worker-benefit-signals"] });
+      queryClient.invalidateQueries({ queryKey: ["pay-equity-signals"] });
+      queryClient.invalidateQueries({ queryKey: ["worker-sentiment"] });
+      queryClient.invalidateQueries({ queryKey: ["ideology-flags"] });
+      queryClient.invalidateQueries({ queryKey: ["social-media-scans"] });
+      queryClient.invalidateQueries({ queryKey: ["agency-contracts"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-accountability"] });
+    }
+  }, [isScanning, latestScan?.scan_status, queryClient]);
 
   const runScan = async () => {
     setIsScanning(true);
