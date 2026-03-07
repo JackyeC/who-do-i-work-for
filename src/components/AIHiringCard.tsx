@@ -164,7 +164,7 @@ export function AIHiringCard({ companyName, dbCompanyId }: AIHiringCardProps) {
           <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border mb-4">
             <CheckCircle2 className="w-4 h-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">
-              Public sources scanned{scanState.sourcesScanned ? ` (${scanState.sourcesScanned} pages)` : ''}. No hiring automation signals detected.
+              Public sources scanned{scanState.sourcesScanned ? ` (${scanState.sourcesScanned} pages)` : ''}. No public evidence detected in scanned sources.
             </span>
           </div>
         );
@@ -216,7 +216,7 @@ export function AIHiringCard({ companyName, dbCompanyId }: AIHiringCardProps) {
           <div className="text-center py-6">
             <BrainCircuit className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
             <p className="text-sm text-muted-foreground mb-1">Scan not run yet</p>
-            <p className="text-xs text-muted-foreground">Click "Run Scan" to search public sources for evidence of AI or automated systems in hiring and HR.</p>
+            <p className="text-xs text-muted-foreground">Click "Run Scan" to search public sources for hiring technology signals.</p>
           </div>
         ) : !hasSignals ? null : (
           <div className="space-y-4">
@@ -326,8 +326,8 @@ export function AIHiringCard({ companyName, dbCompanyId }: AIHiringCardProps) {
 
             {/* Disclaimer */}
             <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-              Signals are auto-detected from public sources and do not constitute proof of specific practices. 
-              Information is provided for transparency purposes only.
+              Signals are detected from publicly available sources and presented with confidence levels.
+              No conclusions are drawn. Interpretation is left to the user.
             </p>
           </div>
         )}

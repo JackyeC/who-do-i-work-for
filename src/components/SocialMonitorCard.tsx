@@ -123,7 +123,7 @@ export function SocialMonitorCard({ companyId, companyName, executiveNames, dbCo
         {!result ? (
           <div className="text-center py-8 text-muted-foreground">
             <Radio className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            <p className="text-sm">No scan results yet. Click "Run Scan" to search social media and news for {companyName}.</p>
+            <p className="text-sm">No public signals detected yet. Click "Run Scan" to search public sources for media and messaging signals for {companyName}.</p>
           </div>
         ) : (
           <>
@@ -142,8 +142,8 @@ export function SocialMonitorCard({ companyId, companyName, executiveNames, dbCo
             {result.contradictions.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold flex items-center gap-1.5 text-destructive">
-                  <MessageSquareWarning className="w-4 h-4" />
-                  Say-Do Contradictions ({result.contradictions.length})
+                   <MessageSquareWarning className="w-4 h-4" />
+                   Public Statement vs. Observed Signals ({result.contradictions.length})
                 </h4>
                 <div className="space-y-2">
                   {result.contradictions.map((c, i) => (
@@ -154,8 +154,8 @@ export function SocialMonitorCard({ companyId, companyName, executiveNames, dbCo
                           {c.severity}
                         </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground"><strong>Says:</strong> {c.publicStatement}</p>
-                      <p className="text-xs text-muted-foreground"><strong>Does:</strong> {c.reality}</p>
+                       <p className="text-xs text-muted-foreground"><strong>Public statement:</strong> {c.publicStatement}</p>
+                       <p className="text-xs text-muted-foreground"><strong>Observed signal:</strong> {c.reality}</p>
                     </div>
                   ))}
                 </div>

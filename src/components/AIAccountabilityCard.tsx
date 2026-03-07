@@ -166,8 +166,8 @@ export function AIAccountabilityCard({ companyName, dbCompanyId }: AIAccountabil
         ) : !hasSignals ? (
           <div className="text-center py-6">
             <Shield className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground mb-1">No AI hiring accountability data yet</p>
-            <p className="text-xs text-muted-foreground">Click "Deep Scan" to analyze this company's hiring technology stack, bias audit compliance, and algorithmic transparency.</p>
+            <p className="text-sm text-muted-foreground mb-1">No public evidence detected in scanned sources</p>
+            <p className="text-xs text-muted-foreground">Click "Deep Scan" to search public sources for AI hiring technology signals.</p>
           </div>
         ) : (
           <div className="space-y-5">
@@ -211,7 +211,7 @@ export function AIAccountabilityCard({ companyName, dbCompanyId }: AIAccountabil
                   SafePath Risk Alert
                 </h4>
                 <p className="text-xs text-muted-foreground mb-2">
-                  The following AI tools used by this company have been flagged for potential algorithmic bias risks:
+                  The following vendor references include signals associated with algorithmic risk categories:
                 </p>
                 <div className="space-y-1.5">
                   {safepathRisks.map((s: any, i: number) => {
@@ -344,8 +344,8 @@ export function AIAccountabilityCard({ companyName, dbCompanyId }: AIAccountabil
             )}
 
             <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-              AI vendor detection is based on public source analysis. Bias audit compliance status reflects publicly available disclosures. 
-              This does not constitute legal advice. SafePath flags indicate potential risk areas for further investigation.
+              Signals are detected from publicly available sources and presented with confidence levels.
+              No conclusions are drawn. Interpretation is left to the user.
             </p>
           </div>
         )}

@@ -143,7 +143,7 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
         {!result ? (
           <div className="text-center py-8 text-muted-foreground">
             <HardHat className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            <p className="text-sm">No worker sentiment data yet. Click "Run Scan" to analyze Glassdoor reviews, employee satisfaction data, and labor practices for {companyName}.</p>
+            <p className="text-sm">No public worker sentiment signals detected yet. Click "Run Scan" to search public sources for workplace sentiment signals for {companyName}.</p>
           </div>
         ) : (
           <>
@@ -194,8 +194,8 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
             {result.hypocrisyFlags.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold flex items-center gap-1.5 text-destructive">
-                  <AlertTriangle className="w-4 h-4" />
-                  Say-Do Gap Flags ({result.hypocrisyFlags.length})
+                   <AlertTriangle className="w-4 h-4" />
+                   Public Statement vs. Worker Signals ({result.hypocrisyFlags.length})
                 </h4>
                 <div className="space-y-2">
                   {result.hypocrisyFlags.map((f, i) => (
@@ -204,8 +204,8 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
                         <span className="text-sm font-medium">{f.topic}</span>
                         <Badge className={severityColors[f.severity] || severityColors.low} variant="outline">{f.severity}</Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground"><strong>Company says:</strong> {f.companyClaimsSummary}</p>
-                      <p className="text-xs text-muted-foreground"><strong>Workers report:</strong> {f.workerReality}</p>
+                       <p className="text-xs text-muted-foreground"><strong>Public statement:</strong> {f.companyClaimsSummary}</p>
+                       <p className="text-xs text-muted-foreground"><strong>Worker signal:</strong> {f.workerReality}</p>
                       {f.evidence && <p className="text-xs text-muted-foreground/60 italic">"{f.evidence}"</p>}
                     </div>
                   ))}
@@ -217,8 +217,8 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
             {result.topComplaints.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-                  <TrendingDown className="w-4 h-4" />
-                  Top Worker Complaints ({result.topComplaints.length})
+                   <TrendingDown className="w-4 h-4" />
+                   Recurring Concern Signals ({result.topComplaints.length})
                 </h4>
                 <div className="space-y-1.5">
                   {result.topComplaints.map((c, i) => (
@@ -241,8 +241,8 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
             {result.topPraises.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold flex items-center gap-1.5 text-green-600 dark:text-green-400">
-                  <TrendingUp className="w-4 h-4" />
-                  What Workers Like ({result.topPraises.length})
+                   <TrendingUp className="w-4 h-4" />
+                   Positive Sentiment Signals ({result.topPraises.length})
                 </h4>
                 <div className="space-y-1">
                   {result.topPraises.map((p, i) => (

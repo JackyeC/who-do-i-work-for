@@ -131,7 +131,7 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Eye className="w-5 h-5 text-primary" />
-          Ideological Alignment Tracker
+          Organizational Affiliation Signals
           {result && (
             <Badge className={cn("ml-auto text-xs", riskLevelStyle(result.riskLevel))}>
               Risk: {result.riskLevel}
@@ -139,9 +139,8 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
           )}
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          Tracks corporate ties to Christian nationalism, white supremacy, anti-LGBTQ+ orgs, anti-labor groups,
-          voter suppression, climate denial, anti-reproductive rights, and privatization agendas.
-          Cross-referenced against SPLC, ADL, and curated watchlists.
+          Public signals of corporate affiliations with organizations tracked by SPLC, ADL, and curated watchlists.
+          Signals are presented with source links and confidence levels.
         </p>
       </CardHeader>
       <CardContent>
@@ -178,7 +177,7 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
             {/* Category breakdown */}
             {totalFlags === 0 ? (
               <div className="text-center py-4 text-sm text-muted-foreground">
-                No ideological flags detected for this company.
+                No public affiliation signals detected in scanned sources.
               </div>
             ) : (
               <div className="space-y-4">
@@ -238,8 +237,7 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
         )}
 
         <p className="text-xs text-muted-foreground mt-4 border-t border-border pt-3">
-          Sources: SPLC Hate Map, ADL Extremism Database, OpenSecrets, InfluenceWatch, FEC filings, news reports.
-          AI-powered analysis cross-references curated watchlists of {Object.keys(CATEGORY_CONFIG).length} tracked categories.
+          Signals are detected from publicly available sources (SPLC, ADL, OpenSecrets, InfluenceWatch, FEC filings, news reports) and presented with confidence levels. No conclusions are drawn. Interpretation is left to the user.
         </p>
       </CardContent>
     </Card>

@@ -140,8 +140,8 @@ export function WorkerBenefitsCard({ companyName, dbCompanyId }: WorkerBenefitsC
         ) : !hasSignals ? (
           <div className="text-center py-6">
             <Heart className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground mb-1">No worker benefit signals detected yet</p>
-            <p className="text-xs text-muted-foreground">Click "Scan" to search public sources for employee benefits and workplace protections.</p>
+            <p className="text-sm text-muted-foreground mb-1">No public evidence detected in scanned sources</p>
+            <p className="text-xs text-muted-foreground">Click "Scan" to search public sources for worker benefit signals.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -223,7 +223,7 @@ export function WorkerBenefitsCard({ companyName, dbCompanyId }: WorkerBenefitsC
             )}
 
             <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-              Benefits are auto-detected from public sources and may not reflect the full scope of offerings. Information is provided for transparency purposes only.
+              Signals are detected from publicly available sources and presented with confidence levels. No conclusions are drawn. Interpretation is left to the user.
             </p>
           </div>
         )}
