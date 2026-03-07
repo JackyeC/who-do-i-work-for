@@ -177,7 +177,7 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
             {/* Category breakdown */}
             {totalFlags === 0 ? (
               <div className="text-center py-4 text-sm text-muted-foreground">
-                No ideological flags detected for this company.
+                No public affiliation signals detected in scanned sources.
               </div>
             ) : (
               <div className="space-y-4">
