@@ -397,6 +397,7 @@ export default function CompanyProfile() {
   // DB-only company profile (no sample data)
   if (!company && dbCompany) {
     const isDiscovering = isResearching;
+    const statusLabels: Record<string, { label: string; color: string }> = {
       discovered: { label: 'Discovered', color: 'bg-civic-yellow/10 text-civic-yellow border-civic-yellow/30' },
       identity_matched: { label: 'Identity Verified', color: 'bg-blue-500/10 text-blue-500 border-blue-500/30' },
       research_in_progress: { label: 'Research In Progress', color: 'bg-primary/10 text-primary border-primary/30' },
