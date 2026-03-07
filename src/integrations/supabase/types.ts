@@ -14,6 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_hr_signals: {
+        Row: {
+          company_id: string
+          confidence: string
+          created_at: string
+          date_detected: string
+          detection_method: string
+          evidence_text: string | null
+          id: string
+          last_verified: string | null
+          signal_category: string
+          signal_type: string
+          source_type: string | null
+          source_url: string | null
+          status: string
+          tool_name: string | null
+          vendor_name: string | null
+        }
+        Insert: {
+          company_id: string
+          confidence?: string
+          created_at?: string
+          date_detected?: string
+          detection_method?: string
+          evidence_text?: string | null
+          id?: string
+          last_verified?: string | null
+          signal_category: string
+          signal_type: string
+          source_type?: string | null
+          source_url?: string | null
+          status?: string
+          tool_name?: string | null
+          vendor_name?: string | null
+        }
+        Update: {
+          company_id?: string
+          confidence?: string
+          created_at?: string
+          date_detected?: string
+          detection_method?: string
+          evidence_text?: string | null
+          id?: string
+          last_verified?: string | null
+          signal_category?: string
+          signal_type?: string
+          source_type?: string | null
+          source_url?: string | null
+          status?: string
+          tool_name?: string | null
+          vendor_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_hr_signals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           careers_url: string | null
