@@ -42,6 +42,7 @@ export const LENSES: LensDefinition[] = [
     modulePriority: [
       "compensation",
       "ai-hiring",
+      "hiring-transparency",
       "ai-accountability",
       "worker-benefits",
       "worker-sentiment",
