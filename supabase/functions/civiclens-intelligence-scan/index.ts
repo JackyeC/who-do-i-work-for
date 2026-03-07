@@ -274,16 +274,42 @@ ${truncated}`;
       results.aiHiring = parsed.ai_hiring.length;
     }
 
+    // Pay Equity
+    if (parts.includes('pay_equity') && parsed.pay_equity?.length > 0) {
+      await supabase.from('pay_equity_signals').delete()
+        .eq('company_id', companyId).eq('status', 'auto_detected');
+
+      await supabase.from('pay_equity_signals').insert(
+        parsed.pay_equity.slice(0, 30).map((s: any) => ({
+          company_id: companyId,
+          signal_type: s.signal_type || 'unknown',
+          signal_category: s.signal_category || 'pay_reporting',
+          source_url: s.source_url || null,
+          source_type: s.source_type || null,
+          source_title: null,
+          evidence_text: s.evidence_text || null,
+          detection_method: s.detection_method || 'keyword_detection',
+          confidence: s.confidence || 'moderate_inference',
+          jurisdiction: s.jurisdiction || null,
+          date_detected: now,
+          status: 'auto_detected',
+        }))
+      );
+      results.payEquity = parsed.pay_equity.length;
+    }
+
     // Audit status
     results.auditStatus = parsed.bias_audit_found ? 'audit_found' : 'no_audit';
     results.auditDetails = parsed.bias_audit_details || null;
+    results.gapMetrics = parsed.gap_metrics || null;
+    results.payVendorsDetected = parsed.pay_vendors_detected || [];
+    results.hasPayAudit = parsed.has_pay_audit || false;
+    results.salaryRangesInPostings = parsed.salary_ranges_in_postings || false;
 
     // If AI tools found but no audit → flag transparency warning
     if (parsed.ai_hiring?.length > 0 && !parsed.bias_audit_found) {
       results.transparencyWarning = true;
     }
-
-    console.log(`Intelligence scan complete: ${results.benefits} benefits, ${results.aiHiring} AI signals, audit: ${results.auditStatus}`);
 
     return new Response(JSON.stringify({
       success: true,
