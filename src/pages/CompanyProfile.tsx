@@ -260,6 +260,10 @@ export default function CompanyProfile() {
   // For sample data companies, still use the DB UUID for features that need it
   const dbCompanyId = dbCompany?.id;
 
+  // Auto-poll child queries while research is in progress
+  const isResearching = dbCompany && ['discovered', 'identity_matched', 'research_in_progress'].includes((dbCompany as any)?.record_status || '');
+  const pollInterval = isResearching ? 10000 : false;
+
   const { data: dbCandidates } = useQuery({
     queryKey: ["company-candidates", dbCompanyId],
     queryFn: async () => {
@@ -267,6 +271,7 @@ export default function CompanyProfile() {
       return data || [];
     },
     enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
   });
 
   const { data: dbExecutives } = useQuery({
@@ -276,6 +281,7 @@ export default function CompanyProfile() {
       return data || [];
     },
     enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
   });
 
   const { data: dbPartyBreakdown } = useQuery({
@@ -285,6 +291,7 @@ export default function CompanyProfile() {
       return data || [];
     },
     enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
   });
 
   const { data: dbPublicStances } = useQuery({
@@ -294,6 +301,7 @@ export default function CompanyProfile() {
       return data || [];
     },
     enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
   });
 
   const { data: dbDarkMoney } = useQuery({
@@ -303,6 +311,7 @@ export default function CompanyProfile() {
       return data || [];
     },
     enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
   });
 
   const { data: dbRevolvingDoor } = useQuery({
@@ -312,6 +321,7 @@ export default function CompanyProfile() {
       return data || [];
     },
     enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
   });
 
   const hasDetailedData = (dbCandidates?.length || 0) > 0 || (dbExecutives?.length || 0) > 0;
