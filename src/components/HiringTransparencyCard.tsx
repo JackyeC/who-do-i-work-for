@@ -95,14 +95,17 @@ export function HiringTransparencyCard({ companyName, dbCompanyId }: HiringTrans
   const handleDeepDive = async () => {
     setScanning(true);
     try {
-      const { data, error } = await supabase.functions.invoke("ai-hr-scan", {
-        body: { companyId: dbCompanyId, companyName },
+      const { data, error } = await supabase.functions.invoke("civiclens-intelligence-scan", {
+        body: { companyId: dbCompanyId, companyName, scanParts: ['ai_hiring', 'audit_hunt'] },
       });
       if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || "Scan failed");
+      const aiCount = data.results?.aiHiring || 0;
+      const auditStatus = data.results?.auditStatus || 'unknown';
       toast({
         title: "Deep Dive complete",
-        description: data?.signalsFound > 0
-          ? `Found ${data.signalsFound} AI hiring signals`
+        description: aiCount > 0
+          ? `Found ${aiCount} AI hiring signals. Audit status: ${auditStatus === 'audit_found' ? 'Bias audit found ✅' : 'No audit found ⚠️'}`
           : "No AI hiring signals detected",
       });
       queryClient.invalidateQueries({ queryKey: ["ai-hr-signals", dbCompanyId] });
