@@ -8,6 +8,7 @@ import {
   BarChart3, Loader2, Sparkles, Search
 } from "lucide-react";
 import { LensSelector } from "@/components/LensSelector";
+import { PlatformPhilosophy } from "@/components/PlatformPhilosophy";
 import { type LensId, getLens } from "@/lib/lensConfig";
 import { ShareableScorecard } from "@/components/ShareableScorecard";
 import { EmbedBadge } from "@/components/EmbedBadge";
