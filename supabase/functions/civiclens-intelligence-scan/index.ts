@@ -150,7 +150,9 @@ Deno.serve(async (req) => {
     const truncated = allContent.slice(0, 30000);
 
     // ─── Phase 2: AI Analysis ───────────────────────────────────────
-    const aiPrompt = `Analyze the following content about "${companyName}" and extract TWO types of signals:
+    const PAY_EQUITY_VENDORS = 'PayAnalytics, Syndio, Beqom, Trusaic, Payscale, Mercer, Aon, Korn Ferry';
+
+    const aiPrompt = `Analyze the following content about "${companyName}" and extract signals:
 
 **Part A - Worker Benefits:** Detect evidence of employee benefits in these categories: ${Object.keys(BENEFIT_CATEGORIES).join(', ')}
 
@@ -159,10 +161,24 @@ Also detect: ${PSYCH_SAFETY_PATTERNS.join(', ')}
 
 **Part C - Bias Audit Hunt:** Look for: ${AUDIT_PATTERNS.join(', ')}
 
+**Part D - Pay Equity:** Detect evidence of:
+- Gender/racial pay gap disclosures (specific percentages)
+- Salary transparency (ranges in job postings, pay bands)
+- Pay equity audits, certifications (EDGE, Fair Pay Workplace)
+- Pay analytics vendors (${PAY_EQUITY_VENDORS})
+- CEO-to-worker pay ratios
+- Pay discrimination litigation or settlements
+- EEO-1 data or workforce demographic reports
+
 Return JSON:
 {
   "benefits": [{ "benefit_category": "string", "benefit_type": "string", "source_url": "string|null", "source_type": "string", "evidence_text": "string", "detection_method": "string", "confidence": "direct|strong_inference|moderate_inference|weak_inference" }],
   "ai_hiring": [{ "signal_category": "string (Recruiting & Screening|Interview & Assessment|Talent Management|Employee Monitoring|Compliance & Governance)", "signal_type": "string", "vendor_name": "string|null", "tool_name": "string|null", "source_url": "string|null", "source_type": "string", "evidence_text": "string", "detection_method": "string", "confidence": "direct|strong_inference|moderate_inference|weak_inference", "is_psych_safety_risk": false }],
+  "pay_equity": [{ "signal_type": "string", "signal_category": "pay_reporting|salary_transparency|workforce_disclosure|litigation|certification|compensation_policy|public_commitment|vendor_detection|gap_metrics", "source_url": "string|null", "source_type": "string", "evidence_text": "string", "detection_method": "string", "confidence": "direct|strong_inference|moderate_inference|weak_inference", "jurisdiction": "string|null" }],
+  "gap_metrics": { "gender_pay_gap_pct": null, "racial_pay_gap_pct": null, "ceo_worker_ratio": null, "disclosed_year": null },
+  "pay_vendors_detected": [],
+  "has_pay_audit": false,
+  "salary_ranges_in_postings": false,
   "bias_audit_found": false,
   "bias_audit_details": "string|null"
 }
