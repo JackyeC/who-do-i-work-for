@@ -505,6 +505,18 @@ export default function CompanyProfile() {
               </Card>
             )}
 
+            {/* ROI Pipeline */}
+            {livePipeline && (
+              <div className="mb-6">
+                <ROIPipelineCard data={livePipeline} />
+              </div>
+            )}
+
+            {/* Influence Chain Trace */}
+            <div className="mb-6">
+              <InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} />
+            </div>
+
             {/* Live Scan Cards */}
             <div className="space-y-6">
               <SocialMonitorCard
