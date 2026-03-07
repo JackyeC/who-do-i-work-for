@@ -1,25 +1,106 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CompanyCard } from "@/components/CompanyCard";
+import { CivicFootprintBadge } from "@/components/CivicFootprintBadge";
 import { Button } from "@/components/ui/button";
-import { companies, industries } from "@/data/sampleData";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { companies as sampleCompanies, industries as sampleIndustries, formatCurrency } from "@/data/sampleData";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { Building2, ArrowRight, Search, Loader2 } from "lucide-react";
 
 export default function Browse() {
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"name" | "score">("score");
+  const [searchQuery, setSearchQuery] = useState("");
 
+  // Fetch DB companies
+  const { data: dbCompanies, isLoading } = useQuery({
+    queryKey: ["browse-companies"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("companies")
+        .select("id, name, slug, industry, state, civic_footprint_score, total_pac_spending, lobbying_spend, revenue, employee_count, description")
+        .order("civic_footprint_score", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  // Merge: DB companies + sample companies (for the 3 with rich detail)
+  const allCompanies = useMemo(() => {
+    const dbList = (dbCompanies || []).map((c) => ({
+      id: c.slug,
+      dbId: c.id,
+      name: c.name,
+      slug: c.slug,
+      industry: c.industry,
+      state: c.state,
+      civicFootprintScore: c.civic_footprint_score,
+      totalPacSpending: c.total_pac_spending,
+      lobbyingSpend: c.lobbying_spend,
+      revenue: c.revenue,
+      employeeCount: c.employee_count,
+      description: c.description,
+      isDbOnly: true,
+    }));
+
+    // Add sample companies that aren't already in DB (by slug match)
+    const dbSlugs = new Set(dbList.map((c) => c.slug));
+    const sampleExtras = sampleCompanies
+      .filter((c) => !dbSlugs.has(c.id))
+      .map((c) => ({
+        id: c.id,
+        dbId: undefined,
+        name: c.name,
+        slug: c.id,
+        industry: c.industry,
+        state: c.state,
+        civicFootprintScore: c.civicFootprintScore,
+        totalPacSpending: c.totalPacSpending,
+        lobbyingSpend: c.lobbyingSpend,
+        revenue: c.revenue,
+        employeeCount: c.employeeCount,
+        description: c.description,
+        isDbOnly: false,
+      }));
+
+    return [...dbList, ...sampleExtras];
+  }, [dbCompanies]);
+
+  // All unique industries
+  const allIndustries = useMemo(() => {
+    const set = new Set(allCompanies.map((c) => c.industry));
+    return [...set].sort();
+  }, [allCompanies]);
+
+  // Filter and sort
   const filtered = useMemo(() => {
-    let list = selectedIndustry
-      ? companies.filter((c) => c.industry === selectedIndustry)
-      : companies;
+    let list = allCompanies;
+    if (selectedIndustry) {
+      list = list.filter((c) => c.industry === selectedIndustry);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(
+        (c) =>
+          c.name.toLowerCase().includes(q) ||
+          c.industry.toLowerCase().includes(q) ||
+          c.state.toLowerCase().includes(q) ||
+          (c.description || "").toLowerCase().includes(q)
+      );
+    }
     return [...list].sort((a, b) =>
       sortBy === "score"
         ? b.civicFootprintScore - a.civicFootprintScore
         : a.name.localeCompare(b.name)
     );
-  }, [selectedIndustry, sortBy]);
+  }, [allCompanies, selectedIndustry, sortBy, searchQuery]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -28,8 +109,19 @@ export default function Browse() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Company Directory</h1>
           <p className="text-muted-foreground">
-            Browse {companies.length} companies and their civic footprint profiles.
+            Browse {allCompanies.length} companies and their civic footprint profiles.
           </p>
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by name, industry, or state..."
+            className="pl-10"
+          />
         </div>
 
         {/* Filters */}
@@ -41,7 +133,7 @@ export default function Browse() {
           >
             All
           </Button>
-          {industries.map((ind) => (
+          {allIndustries.map((ind) => (
             <Button
               key={ind}
               variant={selectedIndustry === ind ? "default" : "outline"}
@@ -69,18 +161,60 @@ export default function Browse() {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filtered.map((company, i) => (
-            <motion.div
-              key={company.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: i * 0.03 }}
-            >
-              <CompanyCard company={company} />
-            </motion.div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filtered.map((company, i) => (
+              <motion.div
+                key={company.slug}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: Math.min(i * 0.02, 0.5) }}
+              >
+                <Link to={`/company/${company.slug}`}>
+                  <Card className="group hover:shadow-md transition-all duration-200 hover:border-primary/20 cursor-pointer">
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                            <Building2 className="w-5 h-5 text-muted-foreground" />
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                              {company.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {company.industry} · {company.state}
+                            </p>
+                          </div>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+                      </div>
+                      <div className="mt-4 flex items-center justify-between gap-2 flex-wrap">
+                        <CivicFootprintBadge score={company.civicFootprintScore} size="sm" />
+                        <span className="text-xs text-muted-foreground">
+                          {company.totalPacSpending > 0
+                            ? `PAC: ${formatCurrency(company.totalPacSpending)}`
+                            : "No PAC spending"}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        {!isLoading && filtered.length === 0 && (
+          <div className="text-center py-16 text-muted-foreground">
+            <Building2 className="w-10 h-10 mx-auto mb-3 opacity-40" />
+            <p>No companies match your search.</p>
+          </div>
+        )}
       </div>
       <Footer />
     </div>
