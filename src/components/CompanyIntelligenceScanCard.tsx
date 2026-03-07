@@ -88,13 +88,30 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   const runScan = async () => {
     setIsScanning(true);
     try {
-      const { data, error } = await supabase.functions.invoke("company-intelligence-scan", {
-        body: { companyId, companyName },
-      });
-      if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || "Scan failed");
+      // Run both the orchestrated scan AND the unified intelligence scan in parallel
+      const [orchestrated, unified] = await Promise.allSettled([
+        supabase.functions.invoke("company-intelligence-scan", {
+          body: { companyId, companyName },
+        }),
+        supabase.functions.invoke("civiclens-intelligence-scan", {
+          body: { companyId, companyName, scanParts: ['benefits', 'ai_hiring', 'audit_hunt'] },
+        }),
+      ]);
+
+      const orchResult = orchestrated.status === 'fulfilled' ? orchestrated.value : null;
+      const uniResult = unified.status === 'fulfilled' ? unified.value : null;
+
+      if (orchResult?.error && uniResult?.error) {
+        throw new Error(orchResult.error.message || "Scan failed");
+      }
+
+      const totalSignals = (orchResult?.data?.totalSignalsFound || 0) + 
+        (uniResult?.data?.results?.benefits || 0) + (uniResult?.data?.results?.aiHiring || 0);
       
-      toast({ title: "Intelligence scan complete", description: `Found ${data.totalSignalsFound} signals across ${data.modulesCompleted} modules.` });
+      toast({ 
+        title: "Intelligence scan complete", 
+        description: `Found ${totalSignals} signals across all modules.${uniResult?.data?.results?.transparencyWarning ? ' ⚠️ Transparency warning flagged.' : ''}` 
+      });
       queryClient.invalidateQueries({ queryKey: ["latest-scan-run", companyId] });
     } catch (e: any) {
       if (e.message?.includes('already in progress')) {
@@ -105,8 +122,8 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
     } finally {
       setIsScanning(false);
       queryClient.invalidateQueries({ queryKey: ["latest-scan-run", companyId] });
-      // Invalidate all module queries
       queryClient.invalidateQueries({ queryKey: ["ai-hr-signals"] });
+      queryClient.invalidateQueries({ queryKey: ["ai-hiring-signals"] });
       queryClient.invalidateQueries({ queryKey: ["worker-benefit-signals"] });
       queryClient.invalidateQueries({ queryKey: ["pay-equity-signals"] });
       queryClient.invalidateQueries({ queryKey: ["worker-sentiment"] });
@@ -114,6 +131,8 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       queryClient.invalidateQueries({ queryKey: ["social-media-scans"] });
       queryClient.invalidateQueries({ queryKey: ["agency-contracts"] });
       queryClient.invalidateQueries({ queryKey: ["ai-accountability"] });
+      queryClient.invalidateQueries({ queryKey: ["roi-pipeline"] });
+      queryClient.invalidateQueries({ queryKey: ["influence-chain"] });
     }
   };
 
