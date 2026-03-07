@@ -478,35 +478,58 @@ export default function CompanyProfile() {
             </div>
 
             {/* Discovery banner for new companies */}
-            {isDiscovering && (
-              <Card className="mb-8 border-dashed border-2 border-primary/30 bg-primary/5">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Sparkles className="w-5 h-5 text-primary animate-pulse" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-foreground mb-1">Building Transparency Profile</h3>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        We found this company and started building its transparency profile from public sources. 
-                        Some signals may appear as research completes.
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        {[
-                          'Political spending', 'Lobbying activity', 'Trade associations', 'Executive donations',
-                          'AI hiring tools', 'Worker sentiment', 'Benefits scan', 'Government contracts',
-                        ].map((scan) => (
-                          <div key={scan} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <Loader2 className="w-3 h-3 animate-spin text-primary" />
-                            {scan}
-                          </div>
-                        ))}
+            {isDiscovering && (() => {
+              const scanCompletion = (dbCompany as any).scan_completion as Record<string, boolean> | null;
+              const scanItems = [
+                { key: 'political_spending', label: 'Political spending' },
+                { key: 'lobbying', label: 'Lobbying activity' },
+                { key: 'trade_associations', label: 'Trade associations' },
+                { key: 'executives', label: 'Executive donations' },
+                { key: 'ai_hiring', label: 'AI hiring tools' },
+                { key: 'worker_sentiment', label: 'Worker sentiment' },
+                { key: 'benefits', label: 'Benefits scan' },
+                { key: 'government_contracts', label: 'Government contracts' },
+              ];
+              const completedCount = scanCompletion ? scanItems.filter(s => scanCompletion[s.key]).length : 0;
+
+              return (
+                <Card className="mb-8 border-dashed border-2 border-primary/30 bg-primary/5">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-foreground mb-1">Building Transparency Profile</h3>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Researching public sources… {completedCount}/{scanItems.length} scans complete.
+                        </p>
+                        <div className="w-full bg-muted rounded-full h-1.5 mb-4">
+                          <div
+                            className="bg-primary h-1.5 rounded-full transition-all duration-500"
+                            style={{ width: `${(completedCount / scanItems.length) * 100}%` }}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                          {scanItems.map((scan) => {
+                            const done = scanCompletion?.[scan.key];
+                            return (
+                              <div key={scan.key} className={cn("flex items-center gap-1.5 text-xs", done ? "text-foreground" : "text-muted-foreground")}>
+                                {done
+                                  ? <CheckCircle2 className="w-3 h-3 text-civic-green" />
+                                  : <Loader2 className="w-3 h-3 animate-spin text-primary" />
+                                }
+                                {scan.label}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                  </CardContent>
+                </Card>
+              );
+            })()}
 
             {/* Enrich prompt when no detailed data and not discovering */}
             {!hasDetailedData && !isEnriching && !isDiscovering && (
