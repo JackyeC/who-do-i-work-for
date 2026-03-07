@@ -259,6 +259,8 @@ export default function OfferCheck() {
               totalSections={sections.length}
               transparencyCount={transparencyCount}
               generatedAt={new Date().toISOString()}
+              sections={sections}
+              confidenceRating={company.confidence_rating}
             />
           </motion.div>
         )}

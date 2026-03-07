@@ -1,19 +1,32 @@
-import { Info } from "lucide-react";
+import { Info, ShieldCheck } from "lucide-react";
 
 export function PlatformPhilosophy() {
   return (
-    <div className="flex items-start gap-2.5 p-3 rounded-lg bg-muted/50 border border-border mb-4">
-      <Info className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
-      <div className="space-y-1">
+    <div className="flex items-start gap-2.5 p-4 rounded-lg bg-muted/50 border border-border mb-4">
+      <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+      <div className="space-y-2">
         <p className="text-xs text-muted-foreground leading-relaxed">
-          This platform reports signals detected in publicly available sources.
-          All signals include source references and confidence levels.
+          This platform reports signals detected from publicly available data sources. 
           No conclusions are drawn. Interpretation is left to the user.
         </p>
-        <p className="text-[10px] text-muted-foreground/70">
-          Confidence: <strong>High</strong> = direct disclosure or official filing · <strong>Medium</strong> = third-party report or vendor case study · <strong>Low</strong> = indirect signal from public sources
-        </p>
+        <div className="flex flex-wrap gap-3">
+          <ConfidencePill level="Direct Source" color="text-[hsl(var(--civic-green))]" description="Official filing or disclosure" />
+          <ConfidencePill level="Multi-Source Signal" color="text-primary" description="Corroborated across sources" />
+          <ConfidencePill level="Inferred Signal" color="text-[hsl(var(--civic-yellow))]" description="Indirect public evidence" />
+          <ConfidencePill level="No Public Evidence" color="text-muted-foreground" description="Not detected in scanned sources" />
+        </div>
       </div>
+    </div>
+  );
+}
+
+function ConfidencePill({ level, color, description }: { level: string; color: string; description: string }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className={`w-1.5 h-1.5 rounded-full ${color} bg-current`} />
+      <span className="text-[10px] text-muted-foreground">
+        <strong className={color}>{level}</strong> — {description}
+      </span>
     </div>
   );
 }

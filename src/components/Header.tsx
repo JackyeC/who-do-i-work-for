@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Search, Eye, BookOpen, Briefcase, Plus, HardHat, ClipboardCheck, Target } from "lucide-react";
+import { Search, ClipboardCheck, BookOpen, Briefcase, Plus, HardHat, Target } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 
@@ -11,11 +11,14 @@ export function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <Eye className="w-4 h-4 text-primary-foreground" />
+            <ClipboardCheck className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold text-foreground tracking-tight" style={{ fontFamily: "'Source Serif 4', serif" }}>
-            CivicLens
-          </span>
+          <div className="flex flex-col leading-none">
+            <span className="text-lg font-bold text-foreground tracking-tight" style={{ fontFamily: "'Source Serif 4', serif" }}>
+              Offer Check
+            </span>
+            <span className="text-[9px] text-muted-foreground tracking-wide">by Jackye Clayton</span>
+          </div>
         </Link>
         <nav className="flex items-center gap-4">
           <Link to="/browse" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
