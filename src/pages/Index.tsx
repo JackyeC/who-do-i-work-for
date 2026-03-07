@@ -10,16 +10,19 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [query, setQuery] = useState("");
+  const [companyCount, setCompanyCount] = useState(0);
+  const [featuredCompanies, setFeaturedCompanies] = useState<any[]>([]);
   const navigate = useNavigate();
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-    }
-  };
-
-  const featured = companies.slice(0, 4);
+  useEffect(() => {
+    const fetchData = async () => {
+      const { count } = await supabase.from("companies").select("*", { count: "exact", head: true });
+      setCompanyCount(count || 0);
+      const { data } = await supabase.from("companies").select("*").order("updated_at", { ascending: false }).limit(4);
+      setFeaturedCompanies(data || []);
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
