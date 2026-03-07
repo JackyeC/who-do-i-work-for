@@ -888,16 +888,17 @@ export default function CompanyProfile() {
               </Card>
             )}
 
-            {/* ROI Pipeline — prefer live DB data */}
-            {(livePipeline || company.roiPipeline) && (
-              <div className="mt-6">
-                {pipelineLoading ? (
-                  <Card><CardContent className="p-6 text-center text-muted-foreground">Loading influence pipeline...</CardContent></Card>
-                ) : (
-                  <ROIPipelineCard data={livePipeline || company.roiPipeline!} />
-                )}
-              </div>
-            )}
+            {/* ROI Pipeline — always show with empty state */}
+            <div className="mt-6">
+              {pipelineLoading ? (
+                <Card><CardContent className="p-6 text-center text-muted-foreground">Loading influence pipeline...</CardContent></Card>
+              ) : (
+                <ROIPipelineCard
+                  data={livePipeline || company.roiPipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }}
+                  isSearching={pipelineLoading}
+                />
+              )}
+            </div>
 
             {/* Influence Chain Trace */}
             <div className="mt-6">
