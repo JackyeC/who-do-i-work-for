@@ -76,10 +76,12 @@ function FlowArrow() {
   );
 }
 
-export function ROIPipelineCard({ data }: { data: ROIPipelineData }) {
+export function ROIPipelineCard({ data, isSearching = false }: { data: ROIPipelineData; isSearching?: boolean }) {
   const roiRatio = data.totalSpending > 0
     ? (data.totalBenefits / data.totalSpending).toFixed(1)
     : "N/A";
+
+  const isEmpty = data.moneyIn.length === 0 && data.network.length === 0 && data.benefitsOut.length === 0;
 
   return (
     <Card>
