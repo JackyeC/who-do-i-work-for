@@ -596,6 +596,17 @@ export default function CompanyProfile() {
                 <Badge variant="secondary">Revenue: {company.revenue}</Badge>
                 {company.employeeCount && <Badge variant="secondary">{company.employeeCount} employees</Badge>}
                 <CivicFootprintBadge score={company.civicFootprintScore} />
+                <ShareableScorecard data={{
+                  name: company.name,
+                  industry: company.industry,
+                  state: company.state,
+                  civicFootprintScore: company.civicFootprintScore,
+                  totalPacSpending: company.totalPacSpending,
+                  lobbyingSpend: company.lobbyingSpend,
+                  confidenceRating: company.confidenceRating,
+                  governmentContracts: company.governmentContracts,
+                  partyBreakdown: company.partyBreakdown,
+                }} />
               </div>
             </div>
           </div>
