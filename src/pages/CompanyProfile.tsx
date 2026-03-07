@@ -28,6 +28,7 @@ import { AgencyContractsCard } from "@/components/AgencyContractsCard";
 import { IdeologyFlagsCard } from "@/components/IdeologyFlagsCard";
 import { WorkerSentimentCard } from "@/components/WorkerSentimentCard";
 import { InfluenceChainCard } from "@/components/InfluenceChainCard";
+import { AIHiringCard } from "@/components/AIHiringCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
