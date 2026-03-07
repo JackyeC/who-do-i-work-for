@@ -84,7 +84,7 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
             console.error("[ROI Pipeline] Auto-scan failed:", error);
           }
           setAutoScanning(false);
-          // Invalidate all relevant queries
+          setHasBeenScanned(true);
           queryClient.invalidateQueries({ queryKey: ["roi-pipeline", companyId] });
           queryClient.invalidateQueries({ queryKey: ["influence-chain", companyId] });
           queryClient.invalidateQueries({ queryKey: ["latest-scan-run", companyId] });
