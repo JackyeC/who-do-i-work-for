@@ -83,6 +83,8 @@ Deno.serve(async (req) => {
       `"${companyName}" careers benefits 401k PTO remote work`,
       `"${companyName}" HireVue Eightfold Phenom Paradox SeekOut talent AI`,
       `"${companyName}" union collective bargaining worker protections`,
+      `"${companyName}" pay equity gender pay gap equal pay report compensation`,
+      `"${companyName}" salary transparency pay band PayAnalytics Syndio CEO pay ratio`,
     ];
 
     let allContent = '';
