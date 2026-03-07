@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const parts = scanParts || ['benefits', 'ai_hiring', 'audit_hunt'];
+    const parts = scanParts || ['benefits', 'ai_hiring', 'audit_hunt', 'pay_equity'];
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
     const lovableKey = Deno.env.get('LOVABLE_API_KEY');
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
