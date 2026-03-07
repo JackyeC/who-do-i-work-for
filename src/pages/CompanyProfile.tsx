@@ -192,15 +192,28 @@ export default function CompanyProfile() {
                     )}
                     <p className="text-muted-foreground mb-3">{dbCompany.description}</p>
                   </div>
-                  <Button
-                    onClick={handleEnrich}
-                    disabled={isEnriching}
-                    variant={hasDetailedData ? "outline" : "default"}
-                    className="shrink-0 gap-2"
-                  >
-                    {isEnriching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                    {isEnriching ? "Researching..." : hasDetailedData ? "Refresh Data" : "AI Research"}
-                  </Button>
+                  <div className="flex gap-2">
+                    <ShareableScorecard data={{
+                      name: dbCompany.name,
+                      industry: dbCompany.industry,
+                      state: dbCompany.state,
+                      civicFootprintScore: dbCompany.civic_footprint_score,
+                      totalPacSpending: dbCompany.total_pac_spending,
+                      lobbyingSpend: dbCompany.lobbying_spend ?? undefined,
+                      confidenceRating: dbCompany.confidence_rating,
+                      governmentContracts: dbCompany.government_contracts ?? undefined,
+                      partyBreakdown: dbPartyBreakdown?.map(p => ({ party: p.party, amount: p.amount, color: p.color })),
+                    }} />
+                    <Button
+                      onClick={handleEnrich}
+                      disabled={isEnriching}
+                      variant={hasDetailedData ? "outline" : "default"}
+                      className="shrink-0 gap-2"
+                    >
+                      {isEnriching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                      {isEnriching ? "Researching..." : hasDetailedData ? "Refresh Data" : "AI Research"}
+                    </Button>
+                  </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge variant="secondary">{dbCompany.industry}</Badge>
