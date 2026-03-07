@@ -36,6 +36,7 @@ const App = () => (
                 <WhoDoIWorkFor />
               </ProtectedRoute>
             } />
+            <Route path="/add-company" element={<AddCompany />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
