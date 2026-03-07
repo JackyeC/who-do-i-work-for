@@ -7,6 +7,7 @@ import {
   AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark, FileText,
   BarChart3, Loader2, Sparkles
 } from "lucide-react";
+import { ShareableScorecard } from "@/components/ShareableScorecard";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
