@@ -32,6 +32,7 @@ import { AIHiringCard } from "@/components/AIHiringCard";
 import { WorkerBenefitsCard } from "@/components/WorkerBenefitsCard";
 import { AIAccountabilityCard } from "@/components/AIAccountabilityCard";
 import { CompensationTransparencyCard } from "@/components/CompensationTransparencyCard";
+import { CompanyIntelligenceScanCard } from "@/components/CompanyIntelligenceScanCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -589,6 +590,11 @@ export default function CompanyProfile() {
             {/* Influence Chain Trace */}
             <div className="mb-6">
               <InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} />
+            </div>
+
+            {/* Company Intelligence Scan */}
+            <div className="mb-6">
+              <CompanyIntelligenceScanCard companyId={dbCompany.id} companyName={dbCompany.name} />
             </div>
 
             {/* Live Scan Cards */}
@@ -1149,6 +1155,13 @@ export default function CompanyProfile() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          )}
+
+          {/* Company Intelligence Scan (for sample companies with DB records) */}
+          {pipelineCompanyId && (
+            <div className="mb-6">
+              <CompanyIntelligenceScanCard companyId={pipelineCompanyId} companyName={company.name} />
             </div>
           )}
 
