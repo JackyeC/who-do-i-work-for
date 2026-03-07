@@ -37,20 +37,20 @@ Deno.serve(async (req) => {
     }
 
     // 1. Search for Glassdoor reviews and worker sentiment data
+    // Use simpler queries - site: operator may not work with Firecrawl
     const searchQueries = [
-      `site:glassdoor.com "${companyName}" reviews employee ratings`,
-      `site:glassdoor.com "${companyName}" salary compensation benefits`,
-      `site:indeed.com "${companyName}" employee reviews work-life balance`,
-      `site:indeed.com "${companyName}" company reviews pros cons`,
-      `site:linkedin.com "${companyName}" employee reviews culture`,
-      `${companyName} Glassdoor rating CEO approval 2024 2025`,
-      `${companyName} Indeed employee complaints workplace issues`,
-      `${companyName} worker conditions labor practices wages union`,
+      `${companyName} Glassdoor reviews employee ratings`,
+      `${companyName} Glassdoor salary compensation CEO approval`,
+      `${companyName} Indeed employee reviews work-life balance`,
+      `${companyName} Indeed company reviews pros cons`,
+      `${companyName} LinkedIn employee reviews culture workplace`,
+      `${companyName} employee complaints worker conditions labor practices`,
     ];
 
     const allResults: any[] = [];
     for (const query of searchQueries) {
       try {
+        console.log(`Searching: ${query}`);
         const searchResp = await fetch('https://api.firecrawl.dev/v1/search', {
           method: 'POST',
           headers: {
@@ -60,26 +60,28 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             query,
             limit: 5,
-            scrapeOptions: { formats: ['markdown'] },
           }),
         });
 
-        if (searchResp.ok) {
-          const searchData = await searchResp.json();
-          if (searchData.data) {
-            allResults.push(...searchData.data.map((r: any) => ({
-              title: r.title || '',
-              url: r.url || '',
-              description: r.description || '',
-              markdown: (r.markdown || '').slice(0, 2000),
-              query,
-            })));
-          }
+        const searchData = await searchResp.json();
+        console.log(`Search response for "${query.slice(0, 40)}...": status=${searchResp.status}, success=${searchData.success}, results=${searchData.data?.length || 0}`);
+
+        if (searchResp.ok && searchData.success && searchData.data) {
+          allResults.push(...searchData.data.map((r: any) => ({
+            title: r.title || '',
+            url: r.url || '',
+            description: r.description || '',
+            markdown: (r.markdown || '').slice(0, 2000),
+            query,
+          })));
+        } else if (!searchResp.ok) {
+          console.error(`Firecrawl error: ${searchResp.status}`, JSON.stringify(searchData).slice(0, 500));
         }
       } catch (e) {
         console.error(`Search failed for: ${query}`, e);
       }
     }
+    console.log(`Total results collected: ${allResults.length}`);
 
     // 2. Get company's public labor stances from DB for hypocrisy comparison
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
