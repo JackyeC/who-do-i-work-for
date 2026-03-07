@@ -206,7 +206,7 @@ export function CompensationTransparencyCard({ companyName, dbCompanyId }: Props
         )}
 
         <p className="text-[10px] text-muted-foreground mt-4 border-t border-border pt-3">
-          This module presents publicly available evidence about compensation transparency. It does not adjudicate employer pay practices or make legal conclusions.
+          Signals are detected from publicly available sources and presented with confidence levels. No conclusions are drawn. Interpretation is left to the user.
         </p>
       </CardContent>
     </Card>
