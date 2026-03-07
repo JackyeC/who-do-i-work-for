@@ -934,6 +934,8 @@ export default function CompanyProfile() {
                 <ROIPipelineCard
                   data={livePipeline || company.roiPipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }}
                   isSearching={pipelineLoading}
+                  onTriggerScan={triggerScan}
+                  autoScanning={autoScanning}
                 />
               )}
             </div>
