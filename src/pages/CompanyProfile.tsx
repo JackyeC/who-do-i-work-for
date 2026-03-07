@@ -383,7 +383,7 @@ export default function CompanyProfile() {
   };
   const pipelineCompanyId = company ? dbCompanyIdMap[company.id] : dbCompany?.id;
   const pipelineCompanyName = company?.name || dbCompany?.name;
-  const { data: livePipeline, isLoading: pipelineLoading, autoScanning, triggerScan } = useROIPipeline(pipelineCompanyId, pipelineCompanyName);
+  const { data: livePipeline, isLoading: pipelineLoading, autoScanning, hasBeenScanned, triggerScan } = useROIPipeline(pipelineCompanyId, pipelineCompanyName);
 
   // Loading state for DB-only companies
   if (!company && dbLoading) {
