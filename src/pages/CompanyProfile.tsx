@@ -28,6 +28,7 @@ import { AgencyContractsCard } from "@/components/AgencyContractsCard";
 import { IdeologyFlagsCard } from "@/components/IdeologyFlagsCard";
 import { WorkerSentimentCard } from "@/components/WorkerSentimentCard";
 import { InfluenceChainCard } from "@/components/InfluenceChainCard";
+import { AIHiringCard } from "@/components/AIHiringCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -544,6 +545,7 @@ export default function CompanyProfile() {
               <AgencyContractsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} />
               <IdeologyFlagsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} />
               <WorkerSentimentCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} />
+              <AIHiringCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} />
             </div>
           </motion.div>
         </div>
@@ -860,6 +862,14 @@ export default function CompanyProfile() {
             {/* Worker Sentiment Scanner */}
             <div className="mt-6">
               <WorkerSentimentCard
+                companyName={company.name}
+                dbCompanyId={dbCompanyId}
+              />
+            </div>
+
+            {/* AI Hiring Technology */}
+            <div className="mt-6">
+              <AIHiringCard
                 companyName={company.name}
                 dbCompanyId={dbCompanyId}
               />
