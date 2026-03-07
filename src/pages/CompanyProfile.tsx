@@ -592,6 +592,11 @@ export default function CompanyProfile() {
               <InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} />
             </div>
 
+            {/* Company Intelligence Scan */}
+            <div className="mb-6">
+              <CompanyIntelligenceScanCard companyId={dbCompany.id} companyName={dbCompany.name} />
+            </div>
+
             {/* Live Scan Cards */}
             <div className="space-y-6">
               <SocialMonitorCard
