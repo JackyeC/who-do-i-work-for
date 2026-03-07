@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
+import { SignalDensity } from "@/components/SignalMeta";
 
 interface WorkerSentimentCardProps {
   companyName: string;
