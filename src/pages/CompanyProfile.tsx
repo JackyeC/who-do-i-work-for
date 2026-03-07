@@ -606,6 +606,11 @@ export default function CompanyProfile() {
               <CompanyIntelligenceScanCard companyId={dbCompany.id} companyName={dbCompany.name} />
             </div>
 
+            {/* Debug Panel */}
+            <div className="mb-6">
+              <ScanDebugPanel companyId={dbCompany.id} />
+            </div>
+
             {/* Live Scan Cards */}
             <div className="space-y-6">
               <SocialMonitorCard
