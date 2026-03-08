@@ -273,11 +273,13 @@ export default function Jobs() {
                 {filtered?.map((job: any) => {
                   const company = job.companies;
                   const companyValueSignals = valuesSignals?.[company?.id] || [];
+                  const companySignals = signalFlags?.[company?.id] || [];
                   return (
                     <JobListRow
                       key={job.id}
                       job={job}
                       companyValueSignals={companyValueSignals}
+                      companySignalFlags={companySignals}
                       isSelected={selectedJob?.id === job.id}
                       onClick={() => setSelectedJob(job)}
                     />
