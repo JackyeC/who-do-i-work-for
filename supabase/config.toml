@@ -1,1 +1,4 @@
 project_id = "tdetybqdxadmowjivtjy"
+
+[functions.browse-ai-webhook]
+verify_jwt = false

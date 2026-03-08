@@ -204,6 +204,110 @@ export type Database = {
           },
         ]
       }
+      browse_ai_change_events: {
+        Row: {
+          change_summary: string | null
+          company_id: string
+          created_at: string
+          id: string
+          monitor_id: string
+          page_type: string
+          processing_status: string
+          raw_payload: Json | null
+          signal_modules_triggered: string[] | null
+        }
+        Insert: {
+          change_summary?: string | null
+          company_id: string
+          created_at?: string
+          id?: string
+          monitor_id: string
+          page_type: string
+          processing_status?: string
+          raw_payload?: Json | null
+          signal_modules_triggered?: string[] | null
+        }
+        Update: {
+          change_summary?: string | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          monitor_id?: string
+          page_type?: string
+          processing_status?: string
+          raw_payload?: Json | null
+          signal_modules_triggered?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "browse_ai_change_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "browse_ai_change_events_monitor_id_fkey"
+            columns: ["monitor_id"]
+            isOneToOne: false
+            referencedRelation: "browse_ai_monitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      browse_ai_monitors: {
+        Row: {
+          browse_ai_robot_id: string | null
+          browse_ai_task_id: string | null
+          company_id: string
+          created_at: string
+          error_message: string | null
+          id: string
+          last_change_detected_at: string | null
+          last_checked_at: string | null
+          page_type: string
+          page_url: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          browse_ai_robot_id?: string | null
+          browse_ai_task_id?: string | null
+          company_id: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          last_change_detected_at?: string | null
+          last_checked_at?: string | null
+          page_type: string
+          page_url: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          browse_ai_robot_id?: string | null
+          browse_ai_task_id?: string | null
+          company_id?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          last_change_detected_at?: string | null
+          last_checked_at?: string | null
+          page_type?: string
+          page_url?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "browse_ai_monitors_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           careers_url: string | null
