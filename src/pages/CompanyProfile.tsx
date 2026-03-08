@@ -578,47 +578,47 @@ export default function CompanyProfile() {
             <MonitoringStatusCard companyId={dbCompany.id} />
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+              <Card className="overflow-hidden">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
                     <Scale className="w-3.5 h-3.5" />
                     Civic Footprint
                   </div>
-                  <div className="text-2xl font-bold text-foreground">{dbCompany.civic_footprint_score}<span className="text-sm text-muted-foreground">/100</span></div>
+                  <div className="text-3xl font-bold text-foreground mb-1" style={{ fontFamily: "'Source Serif 4', serif" }}>{dbCompany.civic_footprint_score}<span className="text-sm text-muted-foreground font-normal">/100</span></div>
                   <CivicFootprintBadge score={dbCompany.civic_footprint_score} size="sm" />
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+              <Card className="overflow-hidden">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
                     <DollarSign className="w-3.5 h-3.5" />
                     PAC Spending
                   </div>
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
                     {dbCompany.total_pac_spending > 0 ? formatCurrency(dbCompany.total_pac_spending) : "None"}
                   </div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+              <Card className="overflow-hidden">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
                     <Megaphone className="w-3.5 h-3.5" />
                     Lobbying
                   </div>
-                  <div className="text-2xl font-bold text-foreground">
+                  <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
                     {dbCompany.lobbying_spend ? formatCurrency(dbCompany.lobbying_spend) : "None"}
                   </div>
                 </CardContent>
               </Card>
               {(dbCompany.government_contracts || dbCompany.subsidies_received) && (
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                <Card className="overflow-hidden">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
                       <Landmark className="w-3.5 h-3.5" />
                       Gov Contracts
                     </div>
-                    <div className="text-2xl font-bold text-foreground">
+                    <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
                       {dbCompany.government_contracts ? formatCurrency(dbCompany.government_contracts) : "—"}
                     </div>
                   </CardContent>
@@ -627,16 +627,16 @@ export default function CompanyProfile() {
             </div>
 
             {/* Offer Check CTA */}
-            <Card className="mb-6 border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <ClipboardCheck className="w-5 h-5 text-primary" />
+            <Card className="mb-8 border-primary/15 bg-gradient-to-r from-primary/[0.03] to-transparent">
+              <CardContent className="p-5 flex items-center gap-5">
+                <div className="w-12 h-12 rounded-2xl bg-primary/8 flex items-center justify-center shrink-0 border border-primary/10">
+                  <ClipboardCheck className="w-6 h-6 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-foreground text-sm">Run the Offer Check</h3>
-                  <p className="text-xs text-muted-foreground">Public signals to review before you say yes.</p>
+                  <h3 className="font-semibold text-foreground">Run the Offer Check</h3>
+                  <p className="text-caption text-muted-foreground">Public signals to review before you say yes.</p>
                 </div>
-                <Button size="sm" onClick={() => window.location.href = `/offer-check/${dbCompany.id}`}>
+                <Button onClick={() => window.location.href = `/offer-check/${dbCompany.id}`}>
                   Run Offer Check
                 </Button>
               </CardContent>
