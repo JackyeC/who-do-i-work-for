@@ -21,6 +21,8 @@ import OfferCheck from "./pages/OfferCheck";
 import MyOfferChecks from "./pages/MyOfferChecks";
 import CompareOfferChecks from "./pages/CompareOfferChecks";
 import JobDashboard from "./pages/JobDashboard";
+import OfferReview from "./pages/OfferReview";
+import MyOfferReviews from "./pages/MyOfferReviews";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +54,11 @@ const App = () => (
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/request-correction" element={<RequestCorrection />} />
             <Route path="/offer-check/:companyId" element={<OfferCheck />} />
+            <Route path="/offer-review/:companyId" element={
+              <ProtectedRoute>
+                <OfferReview />
+              </ProtectedRoute>
+            } />
             <Route path="/compare-offer-checks" element={<CompareOfferChecks />} />
             <Route path="/job-dashboard" element={
               <ProtectedRoute>
@@ -61,6 +68,11 @@ const App = () => (
             <Route path="/my-offer-checks" element={
               <ProtectedRoute>
                 <MyOfferChecks />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-offer-reviews" element={
+              <ProtectedRoute>
+                <MyOfferReviews />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />

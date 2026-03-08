@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowLeft, ClipboardCheck, Building2, Share2, Bookmark,
   BookmarkCheck, Loader2, Sparkles, Crown, Download, GitCompareArrows,
-  AlertTriangle, Clock, Eye
+  AlertTriangle, Clock, Eye, ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -301,9 +301,29 @@ export default function OfferCheck() {
           onUnlock={handleUnlock}
         />
 
+        {/* Private Offer Review CTA */}
+        {companyId && (
+          <Card className="mt-6 border-primary/20 hover:border-primary/40 transition-colors cursor-pointer" onClick={() => navigate(`/offer-review/${companyId}`)}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-4.5 h-4.5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">Review Your Offer Letter (Private)</p>
+                <p className="text-[10px] text-muted-foreground">Upload your offer letter for a private, structured review comparing against public signals.</p>
+              </div>
+              {!premium.isPremium && (
+                <Badge variant="outline" className="text-[9px] gap-1 shrink-0">
+                  <Crown className="w-2.5 h-2.5" /> Premium
+                </Badge>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Premium Features CTAs */}
         {user && (
-          <div className="mt-6 grid sm:grid-cols-2 gap-4">
+          <div className="mt-4 grid sm:grid-cols-2 gap-4">
             <Card className="border-primary/20 hover:border-primary/40 transition-colors cursor-pointer" onClick={() => navigate("/compare-offer-checks")}>
               <CardContent className="p-4 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
