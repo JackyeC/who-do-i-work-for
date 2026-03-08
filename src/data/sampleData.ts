@@ -547,7 +547,7 @@ export const companies: Company[] = [
     ],
     tradeAssociations: ["National Retail Federation", "U.S. Chamber of Commerce", "Business Roundtable"],
     flaggedOrgTies: [
-      { orgName: "Conduit for Action", relationship: "direct-funding", confidence: "direct", description: "Alice Walton has donated $3M to Conduit for Action, a conservative Arkansas PAC.", source: "OpenSecrets.org" },
+      { orgName: "Conduit for Action", relationship: "direct-funding", confidence: "direct", description: "Alice Walton has donated $3M to Conduit for Action, a conservative Arkansas PAC.", source: "FEC filings" },
     ],
     boardAffiliations: [],
     publicStances: [
