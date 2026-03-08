@@ -31,7 +31,7 @@ export function WarnTrackerCard({ companyName, dbCompanyId }: { companyName: str
         .select("*")
         .eq("company_id", dbCompanyId)
         .order("notice_date", { ascending: false });
-      return (data || []) as WarnNotice[];
+      return (data || []) as unknown as WarnNotice[];
     },
     enabled: !!dbCompanyId,
   });
