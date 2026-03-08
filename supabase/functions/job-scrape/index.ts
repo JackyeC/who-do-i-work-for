@@ -115,8 +115,41 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Step 2b: If direct scraping yielded nothing, use Firecrawl search as fallback
     if (!allMarkdown || allMarkdown.length < 100) {
-      console.log('No meaningful content scraped from any pages');
+      console.log('Direct scrape yielded no content, trying search fallback');
+      try {
+        const searchResp = await fetch('https://api.firecrawl.dev/v1/search', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${firecrawlKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `${companyName} careers jobs openings hiring 2026`,
+            limit: 5,
+            scrapeOptions: { formats: ['markdown'] },
+          }),
+        });
+
+        if (searchResp.ok) {
+          const searchData = await searchResp.json();
+          const results = searchData.data || [];
+          for (const result of results) {
+            const md = result.markdown || '';
+            if (md.length > 50) {
+              allMarkdown += `\n\n--- SEARCH RESULT: ${result.url} ---\n${md}`;
+            }
+          }
+          console.log(`Search fallback found ${results.length} results, ${allMarkdown.length} chars`);
+        }
+      } catch (e) {
+        console.warn('Search fallback failed:', e);
+      }
+    }
+
+    if (!allMarkdown || allMarkdown.length < 100) {
+      console.log('No meaningful content from any source');
       return new Response(JSON.stringify({
         success: true,
         message: 'No content found on career pages',
