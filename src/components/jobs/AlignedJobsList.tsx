@@ -257,16 +257,17 @@ export function AlignedJobsList() {
           status: "Submitted",
         });
 
-        // 4. Open the job URL
-        if (job.url) {
-          window.open(job.url, "_blank", "noopener,noreferrer");
+        // 4. Open the job URL or career site
+        const targetUrl = job.url || result.payload.careerSiteUrl;
+        if (targetUrl) {
+          window.open(targetUrl, "_blank", "noopener,noreferrer");
         }
 
         // 5. Show clipboard proxy banner
         setActivePayload(result.payload);
 
         // 6. Success toast
-        toast({ title: "Alignment statement copied! Paste it into the application to stand out." });
+        toast({ title: "Custom Value Proposition copied to clipboard. Redirecting to Career Site..." });
       }
     } catch (e: any) {
       console.error("Payload generation error:", e);
