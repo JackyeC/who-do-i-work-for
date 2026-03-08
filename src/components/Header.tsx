@@ -20,6 +20,7 @@ export function Header() {
 
   const authLinks = user
     ? [
+        { to: "/career-intelligence", label: "Career Intel", icon: FileText },
         { to: "/job-dashboard", label: "Job Match", icon: Target },
         { to: "/my-offer-checks", label: "My Offer Checks", icon: ClipboardCheck },
         { to: "/signal-alerts", label: "Alerts", icon: Bell },
