@@ -180,9 +180,10 @@ export function CareerMappingView() {
                     missingSkills={track.missing_skills || []}
                     completedSkills={track.completed_skills || []}
                     status={track.status}
-                    moveType={getMoveLabel(idx)}
-                    MoveIcon={getMoveIcon(idx)}
+                    moveType={getMoveLabel(track)}
+                    MoveIcon={getMoveIcon(track)}
                     gapAnalysis={track.gap_analysis}
+                  />
                   />
                 ))}
               </div>
