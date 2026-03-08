@@ -54,6 +54,11 @@ const App = () => (
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/request-correction" element={<RequestCorrection />} />
             <Route path="/offer-check/:companyId" element={<OfferCheck />} />
+            <Route path="/offer-review/:companyId" element={
+              <ProtectedRoute>
+                <OfferReview />
+              </ProtectedRoute>
+            } />
             <Route path="/compare-offer-checks" element={<CompareOfferChecks />} />
             <Route path="/job-dashboard" element={
               <ProtectedRoute>
