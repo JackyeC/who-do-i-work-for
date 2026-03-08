@@ -89,8 +89,8 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
               <CardContent>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart><Pie data={dbPartyBreakdown} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="amount" nameKey="party">
-                      {dbPartyBreakdown.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                    <PieChart><Pie data={dbPartyBreakdown} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="amount" nameKey="party" className="cursor-pointer" onClick={(_, index) => onPartyClick?.(dbPartyBreakdown[index]?.party)}>
+                      {dbPartyBreakdown.map((entry, i) => <Cell key={i} fill={entry.color} className="hover:opacity-80 transition-opacity" />)}
                     </Pie><Tooltip formatter={(val: number) => formatCurrency(val)} /></PieChart>
                   </ResponsiveContainer>
                 </div>
