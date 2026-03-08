@@ -114,8 +114,12 @@ Deno.serve(async (req) => {
     const payNames = (paySignals || []).map(s => s.signal_type).filter(Boolean);
     const biasAuditStatus = aiToolNames.some(s => s.toLowerCase().includes('bias audit')) ? 'Verified Bias Audit' : 'No verified audit';
 
-    // Generate matching statement via AI
-    const prompt = `You are a Career Strategist writing a "Personal Value Proposition" for a senior professional.
+    // Extract detected AI vendor name
+    const aiVendorSignal = (aiSignals || []).find(s => s.signal_type === 'ai_vendor_detected');
+    const detectedVendor = aiVendorSignal?.evidence_text?.replace('Known AI vendor: ', '') || 'Unknown';
+
+    // Generate structured payload via AI with tool calling
+    const prompt = `You are a Career Strategist generating an application payload for a senior professional.
 
 CANDIDATE PROFILE:
 - Name: ${profile.full_name || 'Not provided'}
@@ -127,7 +131,8 @@ COMPANY: ${company.name}
 - Industry: ${company.industry}
 - Civic Footprint Score: ${company.civic_footprint_score}/100
 
-DETECTED COMPANY SIGNALS:
+DETECTED SIGNALS:
+- AI/HR Vendor: ${detectedVendor}
 - AI/HR Tools: ${aiToolNames.join(', ') || 'None detected'}
 - Worker Benefits: ${benefitNames.join(', ') || 'None detected'}
 - Pay Equity Signals: ${payNames.join(', ') || 'None detected'}
@@ -135,22 +140,9 @@ DETECTED COMPANY SIGNALS:
 - Worker Sentiment: ${signalSummary.sentiment ? `${signalSummary.sentiment.rating}/5 (${signalSummary.sentiment.sentiment})` : 'No data'}
 - WARN Notices: ${signalSummary.warn_notices} on record
 
-ALIGNMENT:
-- Score: ${alignmentScore}%
-- Matched values: ${matchedSignals.join(', ') || 'None detected'}
-- Missing preferences: ${missingSignals.join(', ') || 'None'}
+ALIGNMENT: ${alignmentScore}% | Matched: ${matchedSignals.join(', ') || 'None'} | Missing: ${missingSignals.join(', ') || 'None'}
 
-Write a 150-250 word "Personal Value Proposition" with this structure:
-1. THE LEAD: Acknowledge a specific tool or practice the company uses (e.g., their AI stack, a specific benefit).
-2. THE WHY: Connect that practice to the candidate's values and experience.
-3. THE EVIDENCE: Mention one specific detected signal (benefit, audit, pay transparency) and how it aligns with the candidate's commitment.
-4. THE CTA: State concretely how the candidate will help optimize or strengthen this value stack.
-
-CONSTRAINTS:
-- Never use "synergy," "passionate," "leverage," or "dynamic."
-- Write in the tone of a peer-to-peer executive consultation.
-- Be specific about detected signals — do not generalize.
-- If few signals are detected, be honest about limited data and focus on what IS verified.`;
+Generate three fields plus a full value proposition statement.`;
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -161,24 +153,82 @@ CONSTRAINTS:
       body: JSON.stringify({
         model: 'google/gemini-3-flash-preview',
         messages: [
-          { role: 'system', content: 'You are a Career Strategist for high-impact professionals. You write Personal Value Propositions that link a candidate\'s profile to a company\'s verified ethical and technical signals. Write like a peer-to-peer executive consultant — no corporate jargon, no flattery.' },
+          { role: 'system', content: 'You are a Career Strategist for high-impact professionals. Generate structured application data. No corporate jargon, no flattery. Be specific about detected signals.' },
           { role: 'user', content: prompt },
         ],
+        tools: [{
+          type: 'function',
+          function: {
+            name: 'generate_payload',
+            description: 'Generate a structured application payload with targeted intro, HR tech alignment, values check, and full value proposition.',
+            parameters: {
+              type: 'object',
+              properties: {
+                targeted_intro: {
+                  type: 'string',
+                  description: 'A 2-sentence value proposition mentioning the company specific Bias Audit status or civic footprint score.',
+                },
+                hr_tech_alignment: {
+                  type: 'string',
+                  description: 'A statement addressing the AI vendor detected (e.g. "I am familiar with the Eightfold ecosystem and value its commitment to skills-based ranking"). Be specific to the vendor name.',
+                },
+                values_check: {
+                  type: 'string',
+                  description: 'A confirmation of their CROWN Act support, Pay Transparency stance, or worker protection values based on detected signals.',
+                },
+                matching_statement: {
+                  type: 'string',
+                  description: 'A 150-250 word Personal Value Proposition with structure: THE LEAD (acknowledge a specific company practice), THE WHY (connect to candidate values), THE EVIDENCE (mention a specific detected signal), THE CTA (how candidate will help).',
+                },
+              },
+              required: ['targeted_intro', 'hr_tech_alignment', 'values_check', 'matching_statement'],
+              additionalProperties: false,
+            },
+          },
+        }],
+        tool_choice: { type: 'function', function: { name: 'generate_payload' } },
       }),
     });
 
     let matchingStatement = '';
+    let targetedIntro = '';
+    let hrTechAlignment = '';
+    let valuesCheck = '';
 
     if (aiResponse.ok) {
       const aiData = await aiResponse.json();
-      matchingStatement = aiData.choices?.[0]?.message?.content || '';
+      const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+      if (toolCall?.function?.arguments) {
+        try {
+          const parsed = JSON.parse(toolCall.function.arguments);
+          targetedIntro = parsed.targeted_intro || '';
+          hrTechAlignment = parsed.hr_tech_alignment || '';
+          valuesCheck = parsed.values_check || '';
+          matchingStatement = parsed.matching_statement || '';
+        } catch (e) {
+          console.error('Failed to parse tool call:', e);
+          // Fallback to content
+          matchingStatement = aiData.choices?.[0]?.message?.content || '';
+        }
+      } else {
+        matchingStatement = aiData.choices?.[0]?.message?.content || '';
+      }
     } else if (aiResponse.status === 429) {
-      matchingStatement = `I'm drawn to ${company.name}'s commitment to transparency, reflected in their ${company.civic_footprint_score}/100 civic footprint score. ${matchedSignals.length > 0 ? `Their verified ${matchedSignals.slice(0, 2).join(' and ').toLowerCase()} align with my professional values.` : ''}`;
+      targetedIntro = `${company.name} maintains a ${company.civic_footprint_score}/100 civic footprint score. ${biasAuditStatus === 'Verified Bias Audit' ? 'Their verified bias audit demonstrates commitment to fair hiring.' : 'Their transparency practices are worth tracking.'}`;
+      hrTechAlignment = `I understand ${company.name} uses ${detectedVendor} in their hiring process and am prepared to engage with their technology stack.`;
+      valuesCheck = matchedSignals.length > 0 ? `I value ${company.name}'s commitment to ${matchedSignals.slice(0, 2).join(' and ').toLowerCase()}.` : `I prioritize employers committed to workforce transparency.`;
+      matchingStatement = `${targetedIntro} ${hrTechAlignment} ${valuesCheck}`;
     } else if (aiResponse.status === 402) {
-      matchingStatement = `${company.name}'s civic transparency practices align with my values as a professional who prioritizes ethical employers.`;
+      targetedIntro = `${company.name}'s civic transparency practices align with my professional values.`;
+      hrTechAlignment = `I'm familiar with ${detectedVendor} hiring technology.`;
+      valuesCheck = 'I prioritize employers committed to ethical hiring and workforce transparency.';
+      matchingStatement = `${targetedIntro} ${hrTechAlignment} ${valuesCheck}`;
     } else {
       console.error('AI gateway error:', aiResponse.status);
-      matchingStatement = `I value ${company.name}'s commitment to corporate transparency and accountability.`;
+      targetedIntro = `I value ${company.name}'s approach to corporate transparency.`;
+      hrTechAlignment = `I'm prepared to engage with ${detectedVendor}-based hiring processes.`;
+      valuesCheck = 'Ethical employment practices are central to my career decisions.';
+      matchingStatement = `${targetedIntro} ${hrTechAlignment} ${valuesCheck}`;
     }
 
     return new Response(JSON.stringify({
@@ -189,11 +239,17 @@ CONSTRAINTS:
         resumeLink: profile.resume_url || '',
         linkedinUrl: profile.linkedin_url || '',
         matchingStatement: matchingStatement.trim(),
+        targetedIntro: targetedIntro.trim(),
+        hrTechAlignment: hrTechAlignment.trim(),
+        valuesCheck: valuesCheck.trim(),
+        detectedVendor,
+        biasAuditStatus,
         alignmentScore,
         matchedSignals,
         missingSignals,
         companyName: company.name,
         civicScore: company.civic_footprint_score,
+        careerSiteUrl: company.careers_url || null,
       },
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
