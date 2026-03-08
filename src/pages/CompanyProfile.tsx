@@ -47,6 +47,9 @@ import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { ManualSignalEntry } from "@/components/ManualSignalEntry";
 import { CandidateDetailDrawer } from "@/components/CandidateDetailDrawer";
 import { ExecutiveDetailDrawer } from "@/components/ExecutiveDetailDrawer";
+import { LobbyingDetailDrawer } from "@/components/LobbyingDetailDrawer";
+import { PACDetailDrawer } from "@/components/PACDetailDrawer";
+import { ContractsDetailDrawer } from "@/components/ContractsDetailDrawer";
 import { WarnTrackerCard } from "@/components/WarnTrackerCard";
 import { MonitoringStatusCard } from "@/components/MonitoringStatusCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
@@ -286,6 +289,9 @@ export default function CompanyProfile() {
   const [selectedExecutive, setSelectedExecutive] = useState<any>(null);
   const [executiveDrawerOpen, setExecutiveDrawerOpen] = useState(false);
   const [partyFilteredCandidates, setPartyFilteredCandidates] = useState<any[] | null>(null);
+  const [lobbyingDrawerOpen, setLobbyingDrawerOpen] = useState(false);
+  const [pacDrawerOpen, setPacDrawerOpen] = useState(false);
+  const [contractsDrawerOpen, setContractsDrawerOpen] = useState(false);
 
   const handleCandidateClick = useCallback((candidate: any) => {
     setSelectedCandidate(candidate);
@@ -620,7 +626,7 @@ export default function CompanyProfile() {
             <div className="flex items-center gap-2 mb-4 px-1">
               <HelpCircle className="w-4 h-4 text-primary shrink-0" />
               <p className="text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">What do these numbers mean?</span> Each card below summarizes a type of political activity. Tap any card for a full explanation with sources.
+                <span className="font-medium text-foreground">What do these numbers mean?</span> Click any card below to see the full breakdown — where the money goes, who gets it, and how to verify it.
               </p>
             </div>
 
@@ -802,6 +808,35 @@ export default function CompanyProfile() {
                 setExecutiveDrawerOpen(false);
                 setTimeout(() => handleCandidateClick(c), 300);
               }}
+            />
+
+            {/* Lobbying Detail Drawer */}
+            <LobbyingDetailDrawer
+              open={lobbyingDrawerOpen}
+              onOpenChange={setLobbyingDrawerOpen}
+              companyId={dbCompany?.id}
+              companyName={dbCompany?.name || ""}
+              totalLobbyingSpend={dbCompany?.lobbying_spend}
+            />
+
+            {/* PAC Detail Drawer */}
+            <PACDetailDrawer
+              open={pacDrawerOpen}
+              onOpenChange={setPacDrawerOpen}
+              companyId={dbCompany?.id}
+              companyName={dbCompany?.name || ""}
+              totalPACSpending={dbCompany?.total_pac_spending || 0}
+              corporatePACExists={dbCompany?.corporate_pac_exists || false}
+            />
+
+            {/* Contracts Detail Drawer */}
+            <ContractsDetailDrawer
+              open={contractsDrawerOpen}
+              onOpenChange={setContractsDrawerOpen}
+              companyId={dbCompany?.id}
+              companyName={dbCompany?.name || ""}
+              totalContracts={dbCompany?.government_contracts}
+              totalSubsidies={dbCompany?.subsidies_received}
             />
           </motion.div>
         </div>
