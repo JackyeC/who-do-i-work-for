@@ -60,10 +60,21 @@ function derivePipelineState(
 
 /* ─── Sub-components ─── */
 
+function ConfidenceDot({ confidence }: { confidence?: number }) {
+  const level = confidence ?? 0;
+  const color = level >= 0.8 ? "bg-primary" : level >= 0.5 ? "bg-yellow-500" : "bg-destructive";
+  const label = level >= 0.8 ? "High" : level >= 0.5 ? "Medium" : "Low";
+  return (
+    <div className="flex items-center gap-1" title={`${label} confidence (${(level * 100).toFixed(0)}%)`}>
+      <div className={cn("w-1.5 h-1.5 rounded-full", color)} />
+    </div>
+  );
+}
+
 function PipelineColumn({ title, icon: Icon, items, color }: {
   title: string;
   icon: React.ElementType;
-  items: { label: string; amount?: number; type?: string; role?: string }[];
+  items: { label: string; amount?: number; type?: string; role?: string; confidence?: number }[];
   color: string;
 }) {
   if (items.length === 0) {
@@ -74,7 +85,7 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
           {title}
         </div>
         <div className="p-4 rounded-lg border border-dashed border-border text-center">
-          <p className="text-xs text-muted-foreground">No evidence yet</p>
+          <p className="text-xs text-muted-foreground">No verified data yet</p>
         </div>
       </div>
     );
@@ -87,10 +98,13 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
         {title}
         <Badge variant="secondary" className="text-xs ml-auto">{items.length}</Badge>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2 max-h-80 overflow-y-auto">
         {items.map((item, i) => (
           <div key={i} className="p-3 bg-muted/50 rounded-lg border border-border">
-            <div className="text-sm font-medium text-foreground truncate">{item.label}</div>
+            <div className="flex items-center gap-1.5">
+              {item.confidence !== undefined && <ConfidenceDot confidence={item.confidence} />}
+              <div className="text-sm font-medium text-foreground truncate">{item.label}</div>
+            </div>
             {item.amount !== undefined && item.amount > 0 && (
               <div className="text-lg font-bold text-foreground">{formatCurrency(item.amount)}</div>
             )}
@@ -98,7 +112,9 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
               <div className="text-xs text-muted-foreground">{item.role}</div>
             )}
             {item.type && (
-              <Badge variant="outline" className="text-xs mt-1">{item.type}</Badge>
+              <Badge variant="outline" className="text-xs mt-1">
+                {item.type.replace(/_/g, ' ')}
+              </Badge>
             )}
           </div>
         ))}
