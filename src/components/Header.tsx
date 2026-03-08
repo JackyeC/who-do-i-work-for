@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, BookOpen, Menu, X, Plus, LayoutDashboard, Shield, Briefcase, Map, ClipboardCheck } from "lucide-react";
+import { Search, BookOpen, Menu, X, Plus, LayoutDashboard, Shield, Briefcase, Map, ClipboardCheck, Users } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,9 +12,11 @@ export function Header() {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/check", label: "Check", icon: Shield },
+    { to: "/check?tab=company", label: "Who Do I Work For?", icon: Shield },
+    { to: "/check?tab=offer", label: "Is This Offer Right For Me?", icon: ClipboardCheck },
+    { to: "/career-map", label: "Where Could My Career Go?", icon: Map },
+    { to: "/check?tab=candidate", label: "What Am I Supporting?", icon: Users },
     { to: "/jobs", label: "Jobs", icon: Briefcase },
-    { to: "/career-map", label: "Career Map", icon: Map },
     { to: "/methodology", label: "Methodology", icon: BookOpen },
   ];
 
@@ -24,7 +26,13 @@ export function Header() {
       ]
     : [];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    const [basePath, queryString] = path.split('?');
+    if (queryString) {
+      return location.pathname === basePath && location.search.includes(queryString);
+    }
+    return location.pathname === basePath;
+  };
 
   return (
     <header className="border-b border-border/30 bg-card/90 backdrop-blur-xl sticky top-0 z-50" style={{ boxShadow: '0 1px 0 hsl(38 72% 50% / 0.06), 0 4px 20px -4px hsl(var(--foreground) / 0.04)' }}>

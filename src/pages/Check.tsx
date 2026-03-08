@@ -36,7 +36,7 @@ export default function Check() {
               <ClipboardCheck className="w-4 h-4" /> Offer Check
             </TabsTrigger>
             <TabsTrigger value="candidate" className="gap-1.5">
-              <Users className="w-4 h-4" /> Who Funds This Candidate
+              <Users className="w-4 h-4" /> What Am I Supporting?
             </TabsTrigger>
           </TabsList>
 
@@ -93,12 +93,12 @@ export default function Check() {
 
           <TabsContent value="candidate">
             <div className="bg-card rounded-2xl border border-border/40 p-8 shadow-luxury">
-              <h2 className="text-xl font-semibold text-foreground mb-2 font-display">Who Funds This Candidate?</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-2 font-display">What Am I Supporting?</h2>
               <p className="text-sm text-muted-foreground mb-6">
-                Reverse influence lookup — see a candidate's funding sources, company-linked donors, PAC donors, and industry clusters.
+                Explore financial and influence relationships between companies, executives, PACs, and political recipients using publicly available data.
               </p>
               <Button onClick={() => navigate("/voter-lookup")} className="gap-2">
-                Look Up a Candidate <ArrowRight className="w-4 h-4" />
+                Explore Relationships <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
           </TabsContent>
