@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { LensSelector } from "@/components/LensSelector";
 import { DataGlossary } from "@/components/DataGlossary";
+import { ExplainableMetric } from "@/components/ExplainableMetric";
 import { PlatformPhilosophy } from "@/components/PlatformPhilosophy";
 import { type LensId, getLens } from "@/lib/lensConfig";
 import { ShareableScorecard } from "@/components/ShareableScorecard";
