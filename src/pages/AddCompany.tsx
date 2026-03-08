@@ -55,7 +55,7 @@ export default function AddCompany() {
         if (data.alreadyExists) {
           toast({ title: "Company already exists", description: `${data.company.name} is already in the database.` });
         } else {
-          toast({ title: "Company added!", description: `${data.company.name} has been researched and added to CivicLens.` });
+          toast({ title: "Company added!", description: `${data.company.name} has been researched and added.` });
         }
       } else {
         throw new Error(data?.error || "Research failed");
