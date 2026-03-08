@@ -343,6 +343,39 @@ Deno.serve(async (req) => {
       warnings.push('ROI calculation failed');
     }
 
+    // ─── Phase 4: Set up Browse AI page monitors ───
+    console.log(`[intelligence-scan] ═══ Phase 4: Browse AI Monitoring Setup ═══`);
+
+    try {
+      // Get company details for monitoring
+      const { data: companyData } = await supabase
+        .from('companies')
+        .select('careers_url')
+        .eq('id', companyId)
+        .single();
+
+      const monitorResp = await fetch(`${supabaseUrl}/functions/v1/browse-ai-setup-monitors`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          companyId,
+          companyName,
+          careersUrl: companyData?.careers_url || null,
+        }),
+      });
+
+      if (monitorResp.ok) {
+        const monitorResult = await monitorResp.json();
+        console.log(`[intelligence-scan] Browse AI: ${monitorResult.monitorsCreated} monitors created`);
+      } else {
+        console.warn(`[intelligence-scan] Browse AI setup failed: HTTP ${monitorResp.status}`);
+        warnings.push('Browse AI monitoring setup failed (non-critical)');
+      }
+    } catch (monitorErr) {
+      console.warn('[intelligence-scan] Browse AI setup error (non-critical):', monitorErr);
+      warnings.push('Browse AI monitoring setup error (non-critical)');
+    }
+
     // Finalize overall status
     const overallStatus = failed === ALL_MODULES.length
       ? 'failed'
