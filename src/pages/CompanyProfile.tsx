@@ -1,4 +1,4 @@
-import { useState, useMemo, ReactNode } from "react";
+import { useState, useMemo, ReactNode, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -42,6 +42,8 @@ import { MonitoredPagesPanel } from "@/components/MonitoredPagesPanel";
 import { SignalTimeline } from "@/components/SignalTimeline";
 import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { ManualSignalEntry } from "@/components/ManualSignalEntry";
+import { CandidateDetailDrawer } from "@/components/CandidateDetailDrawer";
+import { ExecutiveDetailDrawer } from "@/components/ExecutiveDetailDrawer";
 import { WarnTrackerCard } from "@/components/WarnTrackerCard";
 import { MonitoringStatusCard } from "@/components/MonitoringStatusCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
@@ -54,7 +56,7 @@ import {
 } from "@/components/ui/table";
 
 /** Renders DB-only company modules in lens priority order */
-function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, dbExecutives, dbPublicStances, dbDarkMoney, dbRevolvingDoor, livePipeline, autoScanning, hasBeenScanned, triggerScan }: {
+function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, dbExecutives, dbPublicStances, dbDarkMoney, dbRevolvingDoor, livePipeline, autoScanning, hasBeenScanned, triggerScan, onCandidateClick, onExecutiveClick, onPartyClick }: {
   activeLens: LensId;
   dbCompany: any;
   dbPartyBreakdown: any[] | null | undefined;
@@ -67,6 +69,9 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
   autoScanning?: boolean;
   hasBeenScanned?: boolean;
   triggerScan?: () => void;
+  onCandidateClick?: (candidate: any) => void;
+  onExecutiveClick?: (executive: any) => void;
+  onPartyClick?: (party: string) => void;
 }) {
   const lens = getLens(activeLens);
 
@@ -84,17 +89,17 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
               <CardContent>
                 <div className="h-56">
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart><Pie data={dbPartyBreakdown} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="amount" nameKey="party">
-                      {dbPartyBreakdown.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                    <PieChart><Pie data={dbPartyBreakdown} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="amount" nameKey="party" className="cursor-pointer" onClick={(_, index) => onPartyClick?.(dbPartyBreakdown[index]?.party)}>
+                      {dbPartyBreakdown.map((entry, i) => <Cell key={i} fill={entry.color} className="hover:opacity-80 transition-opacity" />)}
                     </Pie><Tooltip formatter={(val: number) => formatCurrency(val)} /></PieChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="flex justify-center gap-4 mt-2">
                   {dbPartyBreakdown.map((p) => (
-                    <div key={p.party} className="flex items-center gap-1.5 text-xs">
+                    <button key={p.party} onClick={() => onPartyClick?.(p.party)} className="flex items-center gap-1.5 text-xs hover:underline cursor-pointer">
                       <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
                       <span className="text-muted-foreground">{p.party}: {formatCurrency(p.amount)}</span>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </CardContent>
@@ -106,13 +111,13 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
               <CardContent>
                 <div className="space-y-3">
                   {dbExecutives.map((exec) => (
-                    <div key={exec.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                    <button key={exec.id} onClick={() => onExecutiveClick?.(exec)} className="w-full flex items-center justify-between p-2 rounded-lg bg-muted/50 hover:bg-primary/5 hover:border-primary/20 border border-transparent transition-colors cursor-pointer text-left">
                       <div>
                         <div className="font-medium text-sm text-foreground">{exec.name}</div>
                         <div className="text-xs text-muted-foreground">{exec.title}</div>
                       </div>
                       <Badge variant="secondary">{formatCurrency(exec.total_donations)}</Badge>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </CardContent>
@@ -127,10 +132,10 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
                 <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Party</TableHead><TableHead>State</TableHead><TableHead>Amount</TableHead><TableHead>Type</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {dbCandidates.map((c) => (
-                    <TableRow key={c.id}>
+                    <TableRow key={c.id} className="cursor-pointer hover:bg-primary/5 transition-colors" onClick={() => onCandidateClick?.(c)}>
                       <TableCell className="font-medium">{c.name}{c.flagged && <Badge variant="destructive" className="ml-2 text-xs">Flagged</Badge>}</TableCell>
                       <TableCell><Badge variant="outline" className={cn("text-xs", c.party === "Republican" && "border-destructive/50 text-destructive", c.party === "Democrat" && "border-primary/50 text-primary")}>{c.party}</Badge></TableCell>
-                      <TableCell className="text-muted-foreground">{c.state}</TableCell>
+                      <TableCell className="text-muted-foreground">{c.state}{c.district ? `, D-${c.district}` : ""}</TableCell>
                       <TableCell>{formatCurrency(c.amount)}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{c.donation_type}</TableCell>
                     </TableRow>
@@ -242,6 +247,21 @@ export default function CompanyProfile() {
   const queryClient = useQueryClient();
   const [isEnriching, setIsEnriching] = useState(false);
   const [activeLens, setActiveLens] = useState<LensId>("influence");
+  const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
+  const [candidateDrawerOpen, setCandidateDrawerOpen] = useState(false);
+  const [selectedExecutive, setSelectedExecutive] = useState<any>(null);
+  const [executiveDrawerOpen, setExecutiveDrawerOpen] = useState(false);
+  const [partyFilteredCandidates, setPartyFilteredCandidates] = useState<any[] | null>(null);
+
+  const handleCandidateClick = useCallback((candidate: any) => {
+    setSelectedCandidate(candidate);
+    setCandidateDrawerOpen(true);
+  }, []);
+
+  const handleExecutiveClick = useCallback((executive: any) => {
+    setSelectedExecutive(executive);
+    setExecutiveDrawerOpen(true);
+  }, []);
 
   // Always try to load from DB by slug to get real UUID for chain tracing etc.
   const { data: dbCompany, isLoading: dbLoading } = useQuery({
@@ -664,6 +684,60 @@ export default function CompanyProfile() {
               autoScanning={autoScanning}
               hasBeenScanned={hasBeenScanned}
               triggerScan={triggerScan}
+              onCandidateClick={handleCandidateClick}
+              onExecutiveClick={handleExecutiveClick}
+              onPartyClick={(party) => {
+                // Scroll to candidates table filtered by party
+                const filtered = dbCandidates?.filter(c => c.party === party);
+                if (filtered && filtered.length > 0) {
+                  setPartyFilteredCandidates(filtered);
+                }
+              }}
+            />
+
+            {/* Party-filtered candidates modal */}
+            {partyFilteredCandidates && partyFilteredCandidates.length > 0 && (
+              <Card className="mb-6 border-primary/20">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-foreground text-sm">
+                      {partyFilteredCandidates[0]?.party} Recipients ({partyFilteredCandidates.length})
+                    </h3>
+                    <Button variant="ghost" size="sm" onClick={() => setPartyFilteredCandidates(null)}>Clear filter</Button>
+                  </div>
+                  <div className="space-y-2">
+                    {partyFilteredCandidates.map((c: any) => (
+                      <button key={c.id} onClick={() => handleCandidateClick(c)} className="w-full flex items-center justify-between p-2 rounded-lg bg-muted/50 hover:bg-primary/5 border border-transparent hover:border-primary/20 transition-colors text-left">
+                        <div>
+                          <span className="font-medium text-sm text-foreground">{c.name}</span>
+                          <span className="text-xs text-muted-foreground ml-2">{c.state}{c.district ? `, D-${c.district}` : ""}</span>
+                        </div>
+                        <span className="text-sm font-medium text-foreground">{formatCurrency(c.amount)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Candidate Detail Drawer */}
+            <CandidateDetailDrawer
+              open={candidateDrawerOpen}
+              onOpenChange={setCandidateDrawerOpen}
+              candidate={selectedCandidate}
+              companyName={dbCompany?.name || ""}
+            />
+
+            {/* Executive Detail Drawer */}
+            <ExecutiveDetailDrawer
+              open={executiveDrawerOpen}
+              onOpenChange={setExecutiveDrawerOpen}
+              executive={selectedExecutive}
+              companyName={dbCompany?.name || ""}
+              onCandidateClick={(c) => {
+                setExecutiveDrawerOpen(false);
+                setTimeout(() => handleCandidateClick(c), 300);
+              }}
             />
           </motion.div>
         </div>
