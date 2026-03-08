@@ -684,6 +684,60 @@ export default function CompanyProfile() {
               autoScanning={autoScanning}
               hasBeenScanned={hasBeenScanned}
               triggerScan={triggerScan}
+              onCandidateClick={handleCandidateClick}
+              onExecutiveClick={handleExecutiveClick}
+              onPartyClick={(party) => {
+                // Scroll to candidates table filtered by party
+                const filtered = dbCandidates?.filter(c => c.party === party);
+                if (filtered && filtered.length > 0) {
+                  setPartyFilteredCandidates(filtered);
+                }
+              }}
+            />
+
+            {/* Party-filtered candidates modal */}
+            {partyFilteredCandidates && partyFilteredCandidates.length > 0 && (
+              <Card className="mb-6 border-primary/20">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-foreground text-sm">
+                      {partyFilteredCandidates[0]?.party} Recipients ({partyFilteredCandidates.length})
+                    </h3>
+                    <Button variant="ghost" size="sm" onClick={() => setPartyFilteredCandidates(null)}>Clear filter</Button>
+                  </div>
+                  <div className="space-y-2">
+                    {partyFilteredCandidates.map((c: any) => (
+                      <button key={c.id} onClick={() => handleCandidateClick(c)} className="w-full flex items-center justify-between p-2 rounded-lg bg-muted/50 hover:bg-primary/5 border border-transparent hover:border-primary/20 transition-colors text-left">
+                        <div>
+                          <span className="font-medium text-sm text-foreground">{c.name}</span>
+                          <span className="text-xs text-muted-foreground ml-2">{c.state}{c.district ? `, D-${c.district}` : ""}</span>
+                        </div>
+                        <span className="text-sm font-medium text-foreground">{formatCurrency(c.amount)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Candidate Detail Drawer */}
+            <CandidateDetailDrawer
+              open={candidateDrawerOpen}
+              onOpenChange={setCandidateDrawerOpen}
+              candidate={selectedCandidate}
+              companyName={dbCompany?.name || ""}
+            />
+
+            {/* Executive Detail Drawer */}
+            <ExecutiveDetailDrawer
+              open={executiveDrawerOpen}
+              onOpenChange={setExecutiveDrawerOpen}
+              executive={selectedExecutive}
+              companyName={dbCompany?.name || ""}
+              onCandidateClick={(c) => {
+                setExecutiveDrawerOpen(false);
+                setTimeout(() => handleCandidateClick(c), 300);
+              }}
             />
           </motion.div>
         </div>
