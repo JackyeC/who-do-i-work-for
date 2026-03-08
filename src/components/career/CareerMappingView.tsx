@@ -76,35 +76,23 @@ export function CareerMappingView() {
     },
   });
 
-  // Add a new target role
+  // Add a new target role with AI-powered gap analysis
   const addTarget = useMutation({
     mutationFn: async (targetRole: string) => {
       if (!user || !targetRole.trim()) return;
-      const userSkills = profile?.skills || [];
-      // Simple gap analysis based on profile
-      const { error } = await supabase
-        .from("employee_growth_tracker")
-        .insert({
-          user_id: user.id,
-          target_role: targetRole.trim(),
-          completed_skills: userSkills,
-          missing_skills: [],
-          skills_match_pct: userSkills.length > 0 ? Math.min(Math.round((userSkills.length / Math.max(userSkills.length + 2, 5)) * 100), 95) : 10,
-          values_alignment_score: 0,
-          gap_analysis: {
-            current_skills: userSkills,
-            suggested_next: ["Complete a relevant certification", "Find a mentor in the target role", "Take on a stretch project"],
-          },
-          status: "exploring",
-        } as any);
+      const { data, error } = await supabase.functions.invoke("career-gap-analysis", {
+        body: { target_role: targetRole.trim() },
+      });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data;
     },
     onSuccess: () => {
-      toast.success("Target role added! We'll analyze your path.");
+      toast.success("AI gap analysis complete! Your path has been mapped.");
       setTargetInput("");
       queryClient.invalidateQueries({ queryKey: ["growth-tracks"] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e.message || "Failed to analyze target role"),
   });
 
   // Derive current role from profile
