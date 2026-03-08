@@ -43,6 +43,7 @@ import { SignalTimeline } from "@/components/SignalTimeline";
 import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { ManualSignalEntry } from "@/components/ManualSignalEntry";
 import { WarnTrackerCard } from "@/components/WarnTrackerCard";
+import { MonitoringStatusCard } from "@/components/MonitoringStatusCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { TransparencyIndex } from "@/components/TransparencyIndex";
 import { supabase } from "@/integrations/supabase/client";
@@ -552,6 +553,9 @@ export default function CompanyProfile() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Monitoring Status */}
+            <MonitoringStatusCard companyId={dbCompany.id} />
 
             {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

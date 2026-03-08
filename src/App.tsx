@@ -23,6 +23,7 @@ import CompareOfferChecks from "./pages/CompareOfferChecks";
 import JobDashboard from "./pages/JobDashboard";
 import OfferReview from "./pages/OfferReview";
 import MyOfferReviews from "./pages/MyOfferReviews";
+import SignalAlerts from "./pages/SignalAlerts";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,11 @@ const App = () => (
             <Route path="/my-offer-reviews" element={
               <ProtectedRoute>
                 <MyOfferReviews />
+              </ProtectedRoute>
+            } />
+            <Route path="/signal-alerts" element={
+              <ProtectedRoute>
+                <SignalAlerts />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
