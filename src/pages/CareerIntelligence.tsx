@@ -79,7 +79,6 @@ export default function CareerIntelligence() {
             <TabsTrigger value="pathing" className="flex items-center gap-1.5 text-xs sm:text-sm">
               <Compass className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Next Move</span>
             </TabsTrigger>
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="upload" className="mt-6">
