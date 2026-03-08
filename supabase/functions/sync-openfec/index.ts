@@ -415,7 +415,7 @@ Deno.serve(async (req) => {
     // ─── Step 4: Aggregate & deduplicate candidates ───
     const candidateMap = new Map<string, typeof allCandidates[0]>();
     for (const c of allCandidates) {
-      const key = c.name.toUpperCase();
+      const key = normalizeName(c.name);
       const existing = candidateMap.get(key);
       if (existing) { existing.amount += c.amount; }
       else { candidateMap.set(key, { ...c }); }
