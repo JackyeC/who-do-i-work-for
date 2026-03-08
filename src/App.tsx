@@ -43,6 +43,10 @@ const App = () => (
                 <WhoDoIWorkFor />
               </ProtectedRoute>
             } />
+            <Route path="/voter-lookup" element={
+              <ProtectedRoute>
+                <VoterLookup />
+              </ProtectedRoute>
             <Route path="/add-company" element={<AddCompany />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/request-correction" element={<RequestCorrection />} />
