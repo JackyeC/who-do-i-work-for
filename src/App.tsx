@@ -12,6 +12,7 @@ import Browse from "./pages/Browse";
 import Methodology from "./pages/Methodology";
 import Login from "./pages/Login";
 import WhoDoIWorkFor from "./pages/WhoDoIWorkFor";
+import VoterLookup from "./pages/VoterLookup";
 import AddCompany from "./pages/AddCompany";
 import Jobs from "./pages/Jobs";
 import NotFound from "./pages/NotFound";
