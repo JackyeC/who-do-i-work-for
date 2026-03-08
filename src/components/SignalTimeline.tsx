@@ -111,6 +111,7 @@ export function SignalTimeline({ companyId }: SignalTimelineProps) {
           )}
         </CardTitle>
       </CardHeader>
+      <CardContent>
         {(hasActiveMonitoring || hasMonitoringScans) && (
           <p className="text-xs text-muted-foreground mb-3 italic">
             Timeline includes updates detected through monitored public pages.
