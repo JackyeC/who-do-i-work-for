@@ -296,9 +296,10 @@ Deno.serve(async (req) => {
 
         for (const r of receipts) {
           if (r.contribution_receipt_amount <= 0) continue;
-          const key = r.contributor_name?.toUpperCase() || 'UNKNOWN';
+          const key = normalizeName(r.contributor_name);
+          const displayName = r.contributor_name?.replace(/\b(MR|MRS|MS|DR|JR|SR)\b\.?\s*/gi, '').replace(/\s{2,}/g, ' ').trim() || 'Unknown';
           const existing = executiveMap.get(key) || {
-            name: r.contributor_name,
+            name: displayName,
             total: 0,
             occupation: r.contributor_occupation || 'Unknown',
             recipients: [],
