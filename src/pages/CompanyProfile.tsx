@@ -289,6 +289,9 @@ export default function CompanyProfile() {
   const [selectedExecutive, setSelectedExecutive] = useState<any>(null);
   const [executiveDrawerOpen, setExecutiveDrawerOpen] = useState(false);
   const [partyFilteredCandidates, setPartyFilteredCandidates] = useState<any[] | null>(null);
+  const [lobbyingDrawerOpen, setLobbyingDrawerOpen] = useState(false);
+  const [pacDrawerOpen, setPacDrawerOpen] = useState(false);
+  const [contractsDrawerOpen, setContractsDrawerOpen] = useState(false);
 
   const handleCandidateClick = useCallback((candidate: any) => {
     setSelectedCandidate(candidate);
