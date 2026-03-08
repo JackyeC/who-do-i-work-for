@@ -26,6 +26,7 @@ export const LENSES: LensDefinition[] = [
       "agency-contracts",
       "ideology-flags",
       "social-monitor",
+      "warn-tracker",
       "worker-sentiment",
       "ai-hiring",
       "hiring-transparency",
@@ -40,6 +41,7 @@ export const LENSES: LensDefinition[] = [
     shortLabel: "Safety",
     description: "Workplace equity, hiring technology, benefits, and accountability signals.",
     modulePriority: [
+      "warn-tracker",
       "compensation",
       "ai-hiring",
       "hiring-transparency",
@@ -68,6 +70,7 @@ export const LENSES: LensDefinition[] = [
       "intelligence-scores",
       "compensation",
       "worker-benefits",
+      "warn-tracker",
       "ideology-flags",
       "social-monitor",
       "worker-sentiment",
