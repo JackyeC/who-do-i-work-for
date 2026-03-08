@@ -12,6 +12,8 @@ const PIPELINE_MODULES = [
   { key: 'lobbying_disclosure', label: 'Lobbying Disclosure (Senate LDA)', fn: 'sync-lobbying', phase: 'pipeline' },
   { key: 'sec_edgar', label: 'SEC EDGAR (Filings & Compensation)', fn: 'sync-sec-edgar', phase: 'pipeline' },
   { key: 'congress_cross_ref', label: 'Congress Cross-Reference', fn: 'sync-congress-votes', phase: 'pipeline' },
+  { key: 'opencorporates', label: 'Corporate Structure (OpenCorporates)', fn: 'sync-opencorporates', phase: 'pipeline' },
+  { key: 'workplace_enforcement', label: 'Workplace Enforcement (DOL)', fn: 'sync-workplace-enforcement', phase: 'pipeline' },
 ];
 
 // Phase 2: Web-crawled research modules (AI-analyzed - moderate confidence)
