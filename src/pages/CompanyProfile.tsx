@@ -581,50 +581,58 @@ export default function CompanyProfile() {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-              <Card className="overflow-hidden">
-                <CardContent className="p-5">
-                  <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
-                    <Scale className="w-3.5 h-3.5" />
-                    Civic Footprint
-                  </div>
-                  <div className="text-3xl font-bold text-foreground mb-1" style={{ fontFamily: "'Source Serif 4', serif" }}>{dbCompany.civic_footprint_score}<span className="text-sm text-muted-foreground font-normal">/100</span></div>
-                  <CivicFootprintBadge score={dbCompany.civic_footprint_score} size="sm" />
-                </CardContent>
-              </Card>
-              <Card className="overflow-hidden">
-                <CardContent className="p-5">
-                  <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
-                    <DollarSign className="w-3.5 h-3.5" />
-                    PAC Spending
-                  </div>
-                  <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
-                    {dbCompany.total_pac_spending > 0 ? formatCurrency(dbCompany.total_pac_spending) : "None"}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="overflow-hidden">
-                <CardContent className="p-5">
-                  <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
-                    <Megaphone className="w-3.5 h-3.5" />
-                    Lobbying
-                  </div>
-                  <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
-                    {dbCompany.lobbying_spend ? formatCurrency(dbCompany.lobbying_spend) : "None"}
-                  </div>
-                </CardContent>
-              </Card>
-              {(dbCompany.government_contracts || dbCompany.subsidies_received) && (
+              <ExplainableMetric metricKey="civic-footprint">
                 <Card className="overflow-hidden">
                   <CardContent className="p-5">
                     <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
-                      <Landmark className="w-3.5 h-3.5" />
-                      Gov Contracts
+                      <Scale className="w-3.5 h-3.5" />
+                      Civic Footprint
+                    </div>
+                    <div className="text-3xl font-bold text-foreground mb-1" style={{ fontFamily: "'Source Serif 4', serif" }}>{dbCompany.civic_footprint_score}<span className="text-sm text-muted-foreground font-normal">/100</span></div>
+                    <CivicFootprintBadge score={dbCompany.civic_footprint_score} size="sm" />
+                  </CardContent>
+                </Card>
+              </ExplainableMetric>
+              <ExplainableMetric metricKey="pac-spending">
+                <Card className="overflow-hidden">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
+                      <DollarSign className="w-3.5 h-3.5" />
+                      PAC Spending
                     </div>
                     <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
-                      {dbCompany.government_contracts ? formatCurrency(dbCompany.government_contracts) : "—"}
+                      {dbCompany.total_pac_spending > 0 ? formatCurrency(dbCompany.total_pac_spending) : "None"}
                     </div>
                   </CardContent>
                 </Card>
+              </ExplainableMetric>
+              <ExplainableMetric metricKey="lobbying">
+                <Card className="overflow-hidden">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
+                      <Megaphone className="w-3.5 h-3.5" />
+                      Lobbying
+                    </div>
+                    <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                      {dbCompany.lobbying_spend ? formatCurrency(dbCompany.lobbying_spend) : "None"}
+                    </div>
+                  </CardContent>
+                </Card>
+              </ExplainableMetric>
+              {(dbCompany.government_contracts || dbCompany.subsidies_received) && (
+                <ExplainableMetric metricKey="gov-contracts">
+                  <Card className="overflow-hidden">
+                    <CardContent className="p-5">
+                      <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
+                        <Landmark className="w-3.5 h-3.5" />
+                        Gov Contracts
+                      </div>
+                      <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                        {dbCompany.government_contracts ? formatCurrency(dbCompany.government_contracts) : "—"}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </ExplainableMetric>
               )}
             </div>
 
