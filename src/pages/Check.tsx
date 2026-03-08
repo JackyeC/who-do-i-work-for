@@ -36,7 +36,7 @@ export default function Check() {
               <ClipboardCheck className="w-4 h-4" /> Offer Check
             </TabsTrigger>
             <TabsTrigger value="candidate" className="gap-1.5">
-              <Users className="w-4 h-4" /> Who Funds This Candidate
+              <Users className="w-4 h-4" /> What Am I Supporting?
             </TabsTrigger>
           </TabsList>
 
