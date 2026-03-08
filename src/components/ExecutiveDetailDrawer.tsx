@@ -108,7 +108,7 @@ export function ExecutiveDetailDrawer({ open, onOpenChange, executive, companyNa
             </div>
           ) : (
             <p className="text-sm text-muted-foreground py-4 text-center">
-              No itemized recipient data available. Check OpenSecrets for full records.
+              No itemized recipient data available. Check FEC individual contribution records for full details.
             </p>
           )}
         </div>
