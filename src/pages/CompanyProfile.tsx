@@ -43,6 +43,7 @@ import { SignalTimeline } from "@/components/SignalTimeline";
 import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { ManualSignalEntry } from "@/components/ManualSignalEntry";
 import { WarnTrackerCard } from "@/components/WarnTrackerCard";
+import { MonitoringStatusCard } from "@/components/MonitoringStatusCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { TransparencyIndex } from "@/components/TransparencyIndex";
 import { supabase } from "@/integrations/supabase/client";

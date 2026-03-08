@@ -76,6 +76,11 @@ const App = () => (
                 <MyOfferReviews />
               </ProtectedRoute>
             } />
+            <Route path="/signal-alerts" element={
+              <ProtectedRoute>
+                <SignalAlerts />
+              </ProtectedRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
