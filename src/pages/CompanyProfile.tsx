@@ -38,6 +38,7 @@ import { HiringTransparencyCard } from "@/components/HiringTransparencyCard";
 import { CompensationTransparencyCard } from "@/components/CompensationTransparencyCard";
 import { CompanyIntelligenceScanCard } from "@/components/CompanyIntelligenceScanCard";
 import { ScanDebugPanel } from "@/components/ScanDebugPanel";
+import { MonitoredPagesPanel } from "@/components/MonitoredPagesPanel";
 import { SignalTimeline } from "@/components/SignalTimeline";
 import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { ManualSignalEntry } from "@/components/ManualSignalEntry";
@@ -633,8 +634,9 @@ export default function CompanyProfile() {
               <TransparencyIndex categories={transparencyCategories} />
             </div>
 
-            {/* Manual Signal Entry + Signal Timeline */}
+            {/* Monitored Pages + Signal Timeline + Manual Entry */}
             <div className="mb-6 space-y-4">
+              <MonitoredPagesPanel companyId={dbCompany.id} />
               <ManualSignalEntry companyId={dbCompany.id} companyName={dbCompany.name} />
               <SignalTimeline companyId={dbCompany.id} />
             </div>

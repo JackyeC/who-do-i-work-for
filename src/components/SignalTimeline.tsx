@@ -52,6 +52,23 @@ export function SignalTimeline({ companyId }: SignalTimelineProps) {
     enabled: !!companyId,
   });
 
+  // Check if any Browse AI monitoring is active
+  const { data: monitors } = useQuery({
+    queryKey: ["timeline-monitors", companyId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("browse_ai_monitors" as any)
+        .select("status")
+        .eq("company_id", companyId)
+        .eq("status", "active");
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
+  const hasActiveMonitoring = (monitors || []).length > 0;
+  const hasMonitoringScans = (scans || []).some((s: any) => s.signal_category === 'monitoring');
+
   // Group changes by month
   const grouped = (changes || []).reduce<Record<string, typeof changes>>((acc, change) => {
     const date = new Date(change.scan_timestamp);
@@ -95,6 +112,11 @@ export function SignalTimeline({ companyId }: SignalTimelineProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {(hasActiveMonitoring || hasMonitoringScans) && (
+          <p className="text-xs text-muted-foreground mb-3 italic">
+            Timeline includes updates detected through monitored public pages.
+          </p>
+        )}
         <div className="relative">
           {/* Timeline line */}
           <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
