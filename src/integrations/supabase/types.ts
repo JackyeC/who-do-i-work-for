@@ -1351,6 +1351,62 @@ export type Database = {
           },
         ]
       }
+      company_warn_notices: {
+        Row: {
+          company_id: string
+          confidence: string
+          created_at: string
+          effective_date: string | null
+          employees_affected: number
+          id: string
+          layoff_type: string
+          location_city: string | null
+          location_state: string | null
+          notice_date: string
+          reason: string | null
+          source_state: string | null
+          source_url: string | null
+        }
+        Insert: {
+          company_id: string
+          confidence?: string
+          created_at?: string
+          effective_date?: string | null
+          employees_affected?: number
+          id?: string
+          layoff_type?: string
+          location_city?: string | null
+          location_state?: string | null
+          notice_date: string
+          reason?: string | null
+          source_state?: string | null
+          source_url?: string | null
+        }
+        Update: {
+          company_id?: string
+          confidence?: string
+          created_at?: string
+          effective_date?: string | null
+          employees_affected?: number
+          id?: string
+          layoff_type?: string
+          location_city?: string | null
+          location_state?: string | null
+          notice_date?: string
+          reason?: string | null
+          source_state?: string | null
+          source_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_warn_notices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_worker_sentiment: {
         Row: {
           ai_summary: string | null
