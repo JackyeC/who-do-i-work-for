@@ -136,6 +136,33 @@ export function useOfferCheck(companyId?: string) {
     enabled: !!companyId,
   });
 
+  const { data: corporateStructure } = useQuery({
+    queryKey: ["oc-corporate-structure", companyId],
+    queryFn: async () => {
+      const { data } = await supabase.from("company_corporate_structure" as any).select("*").eq("company_id", companyId!);
+      return (data || []) as any[];
+    },
+    enabled: !!companyId,
+  });
+
+  const { data: workplaceEnforcement } = useQuery({
+    queryKey: ["oc-workplace-enforcement", companyId],
+    queryFn: async () => {
+      const { data } = await supabase.from("workplace_enforcement_signals" as any).select("*").eq("company_id", companyId!).order("enforcement_date", { ascending: false });
+      return (data || []) as any[];
+    },
+    enabled: !!companyId,
+  });
+
+  const { data: agencyContracts } = useQuery({
+    queryKey: ["oc-agency-contracts", companyId],
+    queryFn: async () => {
+      const { data } = await supabase.from("company_agency_contracts").select("*").eq("company_id", companyId!);
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
   // Build sections matching the requested structure
 
   const sections: OfferCheckSection[] = [];
