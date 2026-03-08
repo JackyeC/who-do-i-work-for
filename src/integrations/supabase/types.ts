@@ -768,6 +768,7 @@ export type Database = {
           company_id: string
           id: string
           name: string
+          photo_url: string | null
           title: string
           total_donations: number
         }
@@ -775,6 +776,7 @@ export type Database = {
           company_id: string
           id?: string
           name: string
+          photo_url?: string | null
           title: string
           total_donations?: number
         }
@@ -782,6 +784,7 @@ export type Database = {
           company_id?: string
           id?: string
           name?: string
+          photo_url?: string | null
           title?: string
           total_donations?: number
         }
