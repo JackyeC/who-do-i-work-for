@@ -74,7 +74,7 @@ export default function Browse() {
         <div className="mb-10">
           <h1 className="text-headline text-foreground mb-2">Company Directory</h1>
           <p className="text-body text-muted-foreground">
-            Browse {allCompanies.length.toLocaleString()} companies and their civic footprint profiles.
+            Browse {allCompanies.length.toLocaleString()} companies and their transparency profiles.
           </p>
         </div>
 
