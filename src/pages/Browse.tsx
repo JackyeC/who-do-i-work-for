@@ -12,7 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { companies as sampleCompanies, industries as sampleIndustries, formatCurrency } from "@/data/sampleData";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, ArrowRight, Search, Loader2 } from "lucide-react";
+import { Building2, ArrowRight, Search } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
+import { LoadingState } from "@/components/LoadingState";
 
 export default function Browse() {
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
