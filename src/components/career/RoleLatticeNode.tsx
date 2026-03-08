@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { LucideIcon, CheckCircle2, Circle, AlertCircle } from "lucide-react";
+import { LucideIcon, CheckCircle2, Circle, AlertCircle, Clock } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
