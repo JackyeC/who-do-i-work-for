@@ -172,9 +172,9 @@ export function CandidateDetailDrawer({ open, onOpenChange, candidate, companyNa
               </a>
             </Button>
             <Button variant="outline" size="sm" className="justify-start gap-2" asChild>
-              <a href={openSecretsUrl} target="_blank" rel="noopener noreferrer">
+              <a href={fecCandidateUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-3.5 h-3.5" />
-                OpenSecrets – Full Funding Profile
+                FEC – Candidate Filings
               </a>
             </Button>
           </div>
