@@ -24,6 +24,7 @@ import JobDashboard from "./pages/JobDashboard";
 import OfferReview from "./pages/OfferReview";
 import MyOfferReviews from "./pages/MyOfferReviews";
 import SignalAlerts from "./pages/SignalAlerts";
+import CareerIntelligence from "./pages/CareerIntelligence";
 
 const queryClient = new QueryClient();
 
