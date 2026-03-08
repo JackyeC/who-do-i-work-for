@@ -2718,9 +2718,11 @@ export type Database = {
           company_name: string
           created_at: string
           date_detected: string
+          dismissed_at: string | null
           id: string
           is_read: boolean
           signal_category: string
+          snoozed_until: string | null
           user_id: string
         }
         Insert: {
@@ -2730,9 +2732,11 @@ export type Database = {
           company_name: string
           created_at?: string
           date_detected?: string
+          dismissed_at?: string | null
           id?: string
           is_read?: boolean
           signal_category: string
+          snoozed_until?: string | null
           user_id: string
         }
         Update: {
@@ -2742,9 +2746,11 @@ export type Database = {
           company_name?: string
           created_at?: string
           date_detected?: string
+          dismissed_at?: string | null
           id?: string
           is_read?: boolean
           signal_category?: string
+          snoozed_until?: string | null
           user_id?: string
         }
         Relationships: [
