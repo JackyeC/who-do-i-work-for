@@ -2380,6 +2380,47 @@ export type Database = {
           },
         ]
       }
+      signal_change_events: {
+        Row: {
+          change_description: string | null
+          change_type: string
+          company_id: string
+          confidence_level: string
+          created_at: string
+          id: string
+          signal_category: string
+          source_url: string | null
+        }
+        Insert: {
+          change_description?: string | null
+          change_type?: string
+          company_id: string
+          confidence_level?: string
+          created_at?: string
+          id?: string
+          signal_category: string
+          source_url?: string | null
+        }
+        Update: {
+          change_description?: string | null
+          change_type?: string
+          company_id?: string
+          confidence_level?: string
+          created_at?: string
+          id?: string
+          signal_category?: string
+          source_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signal_change_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       signal_change_log: {
         Row: {
           change_type: string
@@ -2531,18 +2572,21 @@ export type Database = {
         Row: {
           company_id: string
           id: string
+          notification_preferences: Json | null
           user_id: string
           watch_timestamp: string
         }
         Insert: {
           company_id: string
           id?: string
+          notification_preferences?: Json | null
           user_id: string
           watch_timestamp?: string
         }
         Update: {
           company_id?: string
           id?: string
+          notification_preferences?: Json | null
           user_id?: string
           watch_timestamp?: string
         }
