@@ -12,7 +12,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { LoadingState } from "@/components/LoadingState";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Search, MapPin, Briefcase, Building2, ExternalLink, ArrowRight, Filter } from "lucide-react";
+import { Search, MapPin, Briefcase, Building2, ExternalLink, ArrowRight, Filter, FileCheck } from "lucide-react";
 
 export default function Jobs() {
   const [search, setSearch] = useState("");
