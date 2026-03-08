@@ -76,35 +76,23 @@ export function CareerMappingView() {
     },
   });
 
-  // Add a new target role
+  // Add a new target role with AI-powered gap analysis
   const addTarget = useMutation({
     mutationFn: async (targetRole: string) => {
       if (!user || !targetRole.trim()) return;
-      const userSkills = profile?.skills || [];
-      // Simple gap analysis based on profile
-      const { error } = await supabase
-        .from("employee_growth_tracker")
-        .insert({
-          user_id: user.id,
-          target_role: targetRole.trim(),
-          completed_skills: userSkills,
-          missing_skills: [],
-          skills_match_pct: userSkills.length > 0 ? Math.min(Math.round((userSkills.length / Math.max(userSkills.length + 2, 5)) * 100), 95) : 10,
-          values_alignment_score: 0,
-          gap_analysis: {
-            current_skills: userSkills,
-            suggested_next: ["Complete a relevant certification", "Find a mentor in the target role", "Take on a stretch project"],
-          },
-          status: "exploring",
-        } as any);
+      const { data, error } = await supabase.functions.invoke("career-gap-analysis", {
+        body: { target_role: targetRole.trim() },
+      });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data;
     },
     onSuccess: () => {
-      toast.success("Target role added! We'll analyze your path.");
+      toast.success("AI gap analysis complete! Your path has been mapped.");
       setTargetInput("");
       queryClient.invalidateQueries({ queryKey: ["growth-tracks"] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e.message || "Failed to analyze target role"),
   });
 
   // Derive current role from profile
@@ -114,13 +102,19 @@ export function CareerMappingView() {
   // Build lattice nodes from tracks
   const latticeNodes = (tracks || []).filter(t => (t as any).status !== "achieved").slice(0, 3);
 
-  const getMoveIcon = (idx: number) => {
-    const icons = [ArrowUp, ArrowUpRight, ArrowRightLeft];
-    return icons[idx % icons.length];
+  const getMoveIcon = (track: any) => {
+    const moveType = track.gap_analysis?.move_type;
+    if (moveType === "upward") return ArrowUp;
+    if (moveType === "diagonal") return ArrowUpRight;
+    if (moveType === "lateral") return ArrowRightLeft;
+    return ArrowUpRight;
   };
-  const getMoveLabel = (idx: number) => {
-    const labels = ["Upward", "Diagonal", "Lateral"];
-    return labels[idx % labels.length];
+  const getMoveLabel = (track: any) => {
+    const moveType = track.gap_analysis?.move_type;
+    if (moveType === "upward") return "Upward";
+    if (moveType === "diagonal") return "Diagonal";
+    if (moveType === "lateral") return "Lateral";
+    return "Exploring";
   };
 
   if (tracksLoading) {
@@ -186,8 +180,8 @@ export function CareerMappingView() {
                     missingSkills={track.missing_skills || []}
                     completedSkills={track.completed_skills || []}
                     status={track.status}
-                    moveType={getMoveLabel(idx)}
-                    MoveIcon={getMoveIcon(idx)}
+                    moveType={getMoveLabel(track)}
+                    MoveIcon={getMoveIcon(track)}
                     gapAnalysis={track.gap_analysis}
                   />
                 ))}
