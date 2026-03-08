@@ -38,7 +38,7 @@ export function ExecutiveDetailDrawer({ open, onOpenChange, executive, companyNa
 
   if (!executive) return null;
 
-  const openSecretsUrl = `https://www.opensecrets.org/search?q=${encodeURIComponent(executive.name)}&type=donors`;
+  const fecDonorUrl = `https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=${encodeURIComponent(executive.name)}&contributor_employer=${encodeURIComponent(companyName)}`;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
