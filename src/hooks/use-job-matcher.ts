@@ -13,6 +13,8 @@ export interface MatchedJob {
   url: string | null;
   salary_range: string | null;
   scraped_at: string;
+  work_mode: string | null;
+  source_platform: string | null;
   company_id: string;
   company_name: string;
   company_slug: string;
