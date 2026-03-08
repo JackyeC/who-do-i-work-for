@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, ClipboardCheck, BookOpen, Briefcase, Plus, HardHat, Target, Bell, Menu, X } from "lucide-react";
+import { Search, ClipboardCheck, BookOpen, Briefcase, Plus, HardHat, Target, Bell, Menu, X, FileText } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -20,6 +20,7 @@ export function Header() {
 
   const authLinks = user
     ? [
+        { to: "/career-intelligence", label: "Career Intel", icon: FileText },
         { to: "/job-dashboard", label: "Job Match", icon: Target },
         { to: "/my-offer-checks", label: "My Offer Checks", icon: ClipboardCheck },
         { to: "/signal-alerts", label: "Alerts", icon: Bell },
