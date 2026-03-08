@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,11 +10,34 @@ import { ResumeTailor } from "@/components/career/ResumeTailor";
 import { DataWipeButton } from "@/components/career/DataWipeButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { FileText, User, Bell, Upload, Wand2 } from "lucide-react";
 
 export default function CareerIntelligence() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("upload");
+
+  // Auto-create a career profile for every authenticated user
+  useEffect(() => {
+    if (!user) return;
+    const ensureProfile = async () => {
+      const { data } = await supabase
+        .from("user_career_profile")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
+      if (!data) {
+        await supabase.from("user_career_profile").insert({
+          user_id: user.id,
+          auto_generated: true,
+          skills: [],
+          industries: [],
+          job_titles: [],
+        });
+      }
+    };
+    ensureProfile();
+  }, [user]);
 
   if (!user) return <Navigate to="/login" replace />;
 
