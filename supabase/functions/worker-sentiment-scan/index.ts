@@ -254,6 +254,8 @@ Only include items you find evidence for. Return valid JSON only.`;
 
     return new Response(JSON.stringify({
       success: true,
+      signalsFound: 1, // One consolidated sentiment record
+      sourcesScanned: allResults.length,
       data: {
         overallRating: aiAnalysis.overallRating,
         ceoApproval: aiAnalysis.ceoApproval,
