@@ -6,42 +6,60 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { User, Save, Loader2 } from "lucide-react";
+import { User, Save, Loader2, Plus, X } from "lucide-react";
 
 export function UserProfileForm() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [skillInput, setSkillInput] = useState("");
   const [form, setForm] = useState({
+    full_name: "",
     bio: "",
     resume_url: "",
     linkedin_url: "",
     target_job_titles: "",
     min_salary: "",
+    skills: [] as string[],
   });
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("bio, resume_url, linkedin_url, target_job_titles, min_salary")
+      .select("full_name, bio, resume_url, linkedin_url, target_job_titles, min_salary, skills")
       .eq("id", user.id)
       .single()
       .then(({ data }) => {
         if (data) {
           setForm({
+            full_name: (data as any).full_name || "",
             bio: data.bio || "",
             resume_url: data.resume_url || "",
             linkedin_url: data.linkedin_url || "",
             target_job_titles: (data.target_job_titles || []).join(", "),
             min_salary: data.min_salary?.toString() || "",
+            skills: (data as any).skills || [],
           });
         }
         setLoading(false);
       });
   }, [user]);
+
+  const addSkill = () => {
+    const skill = skillInput.trim();
+    if (skill && !form.skills.includes(skill)) {
+      setForm((f) => ({ ...f, skills: [...f.skills, skill] }));
+      setSkillInput("");
+    }
+  };
+
+  const removeSkill = (skill: string) => {
+    setForm((f) => ({ ...f, skills: f.skills.filter((s) => s !== skill) }));
+  };
 
   const handleSave = async () => {
     if (!user) return;
@@ -54,12 +72,14 @@ export function UserProfileForm() {
     const { error } = await supabase
       .from("profiles")
       .update({
+        full_name: form.full_name || null,
         bio: form.bio || null,
         resume_url: form.resume_url || null,
         linkedin_url: form.linkedin_url || null,
         target_job_titles: titles,
         min_salary: form.min_salary ? parseInt(form.min_salary) : null,
-      })
+        skills: form.skills,
+      } as any)
       .eq("id", user.id);
 
     setSaving(false);
@@ -80,10 +100,20 @@ export function UserProfileForm() {
           Professional Profile
         </CardTitle>
         <CardDescription>
-          Your info is stored locally for auto-fill when applying to jobs. It's never shared without your consent.
+          Your info powers auto-fill when applying to jobs. It's stored securely and never shared without your consent.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
+        <div className="space-y-2">
+          <Label htmlFor="full_name">Full Name</Label>
+          <Input
+            id="full_name"
+            placeholder="Jane Doe"
+            value={form.full_name}
+            onChange={(e) => setForm((f) => ({ ...f, full_name: e.target.value }))}
+          />
+        </div>
+
         <div className="space-y-2">
           <Label htmlFor="bio">Short Bio</Label>
           <Textarea
@@ -140,6 +170,33 @@ export function UserProfileForm() {
               onChange={(e) => setForm((f) => ({ ...f, min_salary: e.target.value }))}
             />
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Skills</Label>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Add a skill..."
+              value={skillInput}
+              onChange={(e) => setSkillInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
+            />
+            <Button type="button" size="icon" variant="outline" onClick={addSkill}>
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+          {form.skills.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {form.skills.map((skill) => (
+                <Badge key={skill} variant="secondary" className="gap-1 pr-1">
+                  {skill}
+                  <button onClick={() => removeSkill(skill)} className="ml-1 hover:text-destructive">
+                    <X className="w-3 h-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
 
         <Button onClick={handleSave} disabled={saving} className="gap-1.5">
