@@ -111,13 +111,13 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
               <CardContent>
                 <div className="space-y-3">
                   {dbExecutives.map((exec) => (
-                    <div key={exec.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                    <button key={exec.id} onClick={() => onExecutiveClick?.(exec)} className="w-full flex items-center justify-between p-2 rounded-lg bg-muted/50 hover:bg-primary/5 hover:border-primary/20 border border-transparent transition-colors cursor-pointer text-left">
                       <div>
                         <div className="font-medium text-sm text-foreground">{exec.name}</div>
                         <div className="text-xs text-muted-foreground">{exec.title}</div>
                       </div>
                       <Badge variant="secondary">{formatCurrency(exec.total_donations)}</Badge>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </CardContent>
