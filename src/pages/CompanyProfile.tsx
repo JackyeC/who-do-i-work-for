@@ -809,6 +809,35 @@ export default function CompanyProfile() {
                 setTimeout(() => handleCandidateClick(c), 300);
               }}
             />
+
+            {/* Lobbying Detail Drawer */}
+            <LobbyingDetailDrawer
+              open={lobbyingDrawerOpen}
+              onOpenChange={setLobbyingDrawerOpen}
+              companyId={dbCompany?.id}
+              companyName={dbCompany?.name || ""}
+              totalLobbyingSpend={dbCompany?.lobbying_spend}
+            />
+
+            {/* PAC Detail Drawer */}
+            <PACDetailDrawer
+              open={pacDrawerOpen}
+              onOpenChange={setPacDrawerOpen}
+              companyId={dbCompany?.id}
+              companyName={dbCompany?.name || ""}
+              totalPACSpending={dbCompany?.total_pac_spending || 0}
+              corporatePACExists={dbCompany?.corporate_pac_exists || false}
+            />
+
+            {/* Contracts Detail Drawer */}
+            <ContractsDetailDrawer
+              open={contractsDrawerOpen}
+              onOpenChange={setContractsDrawerOpen}
+              companyId={dbCompany?.id}
+              companyName={dbCompany?.name || ""}
+              totalContracts={dbCompany?.government_contracts}
+              totalSubsidies={dbCompany?.subsidies_received}
+            />
           </motion.div>
         </div>
         <Footer />
