@@ -48,11 +48,11 @@ export default function CareerIntelligence() {
       <main className="container mx-auto px-4 py-6 sm:py-8 flex-1">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2" style={{ fontFamily: "'Source Serif 4', serif" }}>
-            Career Intelligence
+            Map My Career
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
-            Upload career documents for AI-powered signal analysis. Get risk detection on offers, 
-            tailor your resume to job descriptions, and receive dream job alerts.
+            Upload career documents for AI-powered signal analysis. Get career trajectory suggestions,
+            skill gap identification, and dream job alerts based on your skills and values.
           </p>
           <p className="text-xs text-muted-foreground mt-2 max-w-xl mx-auto italic">
             This tool detects signals in uploaded documents and public sources. It does not provide legal, financial, or employment advice.

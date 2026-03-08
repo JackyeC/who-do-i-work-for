@@ -141,14 +141,14 @@ export default function Methodology() {
             <section>
               <h2 className="text-title text-foreground mb-5">Corrections &amp; Disputes</h2>
               <p className="text-body text-muted-foreground mb-5 leading-relaxed">
-                We take accuracy seriously. If you believe information on Offer Check is incorrect, incomplete, 
+                We take accuracy seriously. If you believe information on this platform is incorrect, incomplete, 
                 or misleading, we want to hear from you.
               </p>
               <Card>
                 <CardContent className="p-6">
                   <p className="text-body text-foreground font-medium mb-3">To request a correction:</p>
                   <ul className="text-body text-muted-foreground space-y-2 list-disc list-inside leading-relaxed">
-                    <li>Email <a href="mailto:corrections@civiclens.org" className="text-primary hover:underline">corrections@civiclens.org</a> with the company name and specific claim.</li>
+                    <li>Email <a href="mailto:corrections@whodoimworkfor.com" className="text-primary hover:underline">corrections@whodoimworkfor.com</a> with the company name and specific claim.</li>
                     <li>Include source material or documentation supporting your correction.</li>
                     <li>We review all submissions and update profiles within 7 business days.</li>
                     <li>Corrections are noted in the profile's revision history.</li>
@@ -160,7 +160,7 @@ export default function Methodology() {
             {/* Disclaimer */}
             <section className="border-t border-border/60 pt-10">
               <p className="text-caption text-muted-foreground leading-relaxed">
-                Offer Check helps people make informed work and spending decisions using publicly available data 
+                Who Do I Work For? helps people make informed career decisions using publicly available data 
                 about political and civic influence. We do not make endorsements, moral judgments, or recommendations.
                 All data is sourced from public records and clearly attributed. Individual executive donations 
                 reflect personal giving and do not necessarily represent corporate policy.

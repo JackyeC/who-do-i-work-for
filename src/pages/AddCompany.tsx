@@ -73,7 +73,7 @@ export default function AddCompany() {
       <main className="max-w-2xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Add a Company</h1>
-          <p className="text-muted-foreground">Search our database or add a new company. We'll use AI to research its political spending, lobbying, and civic footprint.</p>
+          <p className="text-muted-foreground">Search our database or add a new company. We'll research its political spending, lobbying, and transparency signals.</p>
         </div>
 
         <Card className="border-border">
