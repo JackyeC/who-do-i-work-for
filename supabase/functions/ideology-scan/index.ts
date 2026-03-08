@@ -206,6 +206,8 @@ Only include flags with actual evidence. Be specific about the nature of each co
 
     return new Response(JSON.stringify({
       success: true,
+      signalsFound: flags.length,
+      sourcesScanned: allResults.length,
       data: {
         flags: analysis.flags || [],
         summary: analysis.summary || '',
