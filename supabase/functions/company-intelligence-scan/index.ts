@@ -10,6 +10,8 @@ const PIPELINE_MODULES = [
   { key: 'fec_campaign_finance', label: 'FEC Campaign Finance', fn: 'sync-openfec', phase: 'pipeline' },
   { key: 'federal_contracts', label: 'Federal Contracts (USASpending)', fn: 'sync-federal-contracts', phase: 'pipeline' },
   { key: 'lobbying_disclosure', label: 'Lobbying Disclosure (Senate LDA)', fn: 'sync-lobbying', phase: 'pipeline' },
+  { key: 'sec_edgar', label: 'SEC EDGAR (Filings & Compensation)', fn: 'sync-sec-edgar', phase: 'pipeline' },
+  { key: 'congress_cross_ref', label: 'Congress Cross-Reference', fn: 'sync-congress-votes', phase: 'pipeline' },
 ];
 
 // Phase 2: Web-crawled research modules (AI-analyzed - moderate confidence)
