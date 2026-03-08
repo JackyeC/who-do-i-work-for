@@ -70,6 +70,11 @@ const App = () => (
                 <MyOfferChecks />
               </ProtectedRoute>
             } />
+            <Route path="/my-offer-reviews" element={
+              <ProtectedRoute>
+                <MyOfferReviews />
+              </ProtectedRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

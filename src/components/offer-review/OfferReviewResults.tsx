@@ -153,7 +153,7 @@ export function OfferReviewResults({ review, onDelete, onRerun, deleting }: Offe
       )}
 
       {/* Extracted Terms by Category */}
-      {Object.entries(termsByCategory).map(([cat, catTerms]) => (
+      {Object.entries(termsByCategory).map(([cat, catTerms]: [string, any[]]) => (
         <Card key={cat}>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
