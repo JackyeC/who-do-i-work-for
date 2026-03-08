@@ -7,6 +7,52 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const FEC_BASE = 'https://api.open.fec.gov/v1';
 
+// Valid FEC committee_type codes
+const VALID_COMMITTEE_TYPES = new Set([
+  'C', 'D', 'E', 'H', 'I', 'N', 'O', 'P', 'Q', 'S', 'U', 'V', 'W', 'X', 'Y', 'Z'
+]);
+
+// Human-readable label → FEC code mapping
+const COMMITTEE_TYPE_MAP: Record<string, string> = {
+  'PAC': 'Q',
+  'SUPER PAC': 'O',
+  'INDEPENDENT_EXPENDITURE': 'O',
+  'SEPARATE_SEGREGATED': 'Q',
+  'NONCONNECTED': 'N',
+  'PARTY': 'X',
+  'PRESIDENTIAL': 'P',
+  'HOUSE': 'H',
+  'SENATE': 'S',
+};
+
+function normalizeCommitteeTypes(input: string | string[] | undefined | null): string[] {
+  if (!input) return [];
+  
+  const raw = Array.isArray(input) ? input : String(input).split(',');
+  const normalized: string[] = [];
+  
+  for (const val of raw) {
+    const trimmed = val.trim().toUpperCase();
+    if (!trimmed) continue;
+    
+    // Direct code match
+    if (VALID_COMMITTEE_TYPES.has(trimmed)) {
+      normalized.push(trimmed);
+      continue;
+    }
+    
+    // Label mapping
+    if (COMMITTEE_TYPE_MAP[trimmed]) {
+      normalized.push(COMMITTEE_TYPE_MAP[trimmed]);
+      continue;
+    }
+    
+    console.warn(`[sync-openfec] Dropping invalid committee_type value: "${trimmed}"`);
+  }
+  
+  return [...new Set(normalized)]; // dedupe
+}
+
 interface FECCommittee {
   committee_id: string;
   name: string;
@@ -47,18 +93,36 @@ interface FECReceipt {
   recipient_committee_type: string;
 }
 
-async function fecFetch(endpoint: string, params: Record<string, string>, apiKey: string): Promise<any> {
+async function fecFetch(endpoint: string, params: Record<string, string | string[]>, apiKey: string): Promise<any> {
   const url = new URL(`${FEC_BASE}${endpoint}`);
   url.searchParams.set('api_key', apiKey);
   url.searchParams.set('per_page', '100');
+  
   for (const [k, v] of Object.entries(params)) {
-    url.searchParams.set(k, v);
+    if (v === undefined || v === null || v === '') continue;
+    // FEC API accepts repeated params for multi-value fields
+    if (Array.isArray(v)) {
+      for (const val of v) {
+        url.searchParams.append(k, val);
+      }
+    } else {
+      url.searchParams.set(k, v);
+    }
   }
+
+  console.log(`[sync-openfec] FEC request: ${endpoint} params=${JSON.stringify(params)}`);
 
   const resp = await fetch(url.toString());
   if (!resp.ok) {
     const errText = await resp.text();
-    throw new Error(`FEC API ${resp.status}: ${errText.substring(0, 200)}`);
+    const errMsg = `FEC API ${resp.status}: ${errText.substring(0, 300)}`;
+    console.error(`[sync-openfec] ${errMsg}`);
+    
+    // Preserve upstream status for caller
+    const error = new Error(errMsg) as any;
+    error.upstreamStatus = resp.status;
+    error.upstreamBody = errText.substring(0, 500);
+    throw error;
   }
   return resp.json();
 }
@@ -93,22 +157,31 @@ Deno.serve(async (req) => {
     const electionCycle = cycle || '2024';
     const searchName = pacName || companyName;
 
-    console.log(`OpenFEC ingestion for "${searchName}" (cycle ${electionCycle})...`);
+    console.log(`[sync-openfec] OpenFEC ingestion for "${searchName}" (cycle ${electionCycle})...`);
 
     // ─── Step 1: Find PAC committees matching this company ───
-    const committeeData = await fecFetch('/committees/', {
+    // Normalize committee types - FEC API requires individual valid codes
+    const committeeTypes = normalizeCommitteeTypes('Q,N,O,U,V,W');
+    console.log(`[sync-openfec] Normalized committee_type: ${JSON.stringify(committeeTypes)}`);
+
+    const committeeParams: Record<string, string | string[]> = {
       q: searchName,
-      committee_type: 'Q,N,O,U,V,W', // PACs, Super PACs, etc.
       cycle: electionCycle,
       sort: '-receipts',
-    }, apiKey);
+    };
+    
+    // Only add committee_type if we have valid codes
+    if (committeeTypes.length > 0) {
+      committeeParams.committee_type = committeeTypes;
+    }
+
+    const committeeData = await fecFetch('/committees/', committeeParams, apiKey);
 
     const committees: FECCommittee[] = committeeData.results || [];
-    console.log(`Found ${committees.length} committees matching "${searchName}"`);
+    console.log(`[sync-openfec] Found ${committees.length} committees matching "${searchName}"`);
 
     if (committees.length === 0) {
-      // Also try searching for individual contributions by employer
-      console.log('No PAC found. Searching individual contributions by employer name...');
+      console.log('[sync-openfec] No PAC found. Searching individual contributions by employer name...');
     }
 
     const stats = {
@@ -127,11 +200,10 @@ Deno.serve(async (req) => {
     }> = [];
     const linkages: any[] = [];
 
-    for (const committee of committees.slice(0, 3)) { // Top 3 PACs
-      console.log(`Fetching disbursements for ${committee.name} (${committee.committee_id})...`);
+    for (const committee of committees.slice(0, 3)) {
+      console.log(`[sync-openfec] Fetching disbursements for ${committee.name} (${committee.committee_id})...`);
 
       try {
-        // Get disbursements to candidates
         const disbData = await fecFetch(`/schedules/schedule_b/`, {
           committee_id: committee.committee_id,
           two_year_transaction_period: electionCycle,
@@ -157,7 +229,6 @@ Deno.serve(async (req) => {
               district: d.candidate_office === 'H' ? d.recipient_state : undefined,
             });
 
-            // Create entity linkage: PAC → Candidate
             linkages.push({
               company_id: companyId,
               source_entity_name: committee.name,
@@ -187,16 +258,20 @@ Deno.serve(async (req) => {
           }
         }
 
-        // Rate limit pause
         await new Promise(r => setTimeout(r, 500));
-      } catch (e) {
-        console.error(`  Error fetching disbursements for ${committee.committee_id}:`, e);
+      } catch (e: any) {
+        // If upstream returned 422, surface it clearly
+        if (e.upstreamStatus === 422) {
+          console.error(`[sync-openfec] FEC validation error for ${committee.committee_id}: ${e.upstreamBody}`);
+        } else {
+          console.error(`[sync-openfec] Error fetching disbursements for ${committee.committee_id}:`, e);
+        }
       }
     }
 
     // ─── Step 3: Individual contributions by employer ───
     try {
-      console.log(`Fetching individual contributions where employer = "${companyName}"...`);
+      console.log(`[sync-openfec] Fetching individual contributions where employer = "${companyName}"...`);
       const receiptData = await fecFetch('/schedules/schedule_a/', {
         contributor_employer: companyName,
         two_year_transaction_period: electionCycle,
@@ -205,9 +280,8 @@ Deno.serve(async (req) => {
       }, apiKey);
 
       const receipts: FECReceipt[] = receiptData.results || [];
-      console.log(`Found ${receipts.length} individual contributions from ${companyName} employees`);
+      console.log(`[sync-openfec] Found ${receipts.length} individual contributions from ${companyName} employees`);
 
-      // Aggregate by contributor
       const executiveMap = new Map<string, { name: string; total: number; occupation: string; recipients: any[] }>();
 
       for (const r of receipts) {
@@ -231,14 +305,12 @@ Deno.serve(async (req) => {
         stats.totalIndividualGiving += r.contribution_receipt_amount;
       }
 
-      // Top executives by giving
       const topExecs = [...executiveMap.values()]
         .sort((a, b) => b.total - a.total)
         .slice(0, 20);
 
       stats.executiveDonors = topExecs.length;
 
-      // Upsert executives
       if (topExecs.length > 0) {
         const execRows = topExecs.map(e => ({
           company_id: companyId,
@@ -247,13 +319,16 @@ Deno.serve(async (req) => {
           total_donations: Math.round(e.total),
         }));
 
-        // Clear old OpenFEC-sourced executives
         await supabase.from('company_executives').delete().eq('company_id', companyId);
         const { error: execErr } = await supabase.from('company_executives').insert(execRows);
-        if (execErr) console.error('Executive insert error:', execErr);
+        if (execErr) console.error('[sync-openfec] Executive insert error:', execErr);
       }
-    } catch (e) {
-      console.error('Error fetching individual contributions:', e);
+    } catch (e: any) {
+      if (e.upstreamStatus === 422) {
+        console.error(`[sync-openfec] FEC validation error on individual contributions: ${e.upstreamBody}`);
+      } else {
+        console.error('[sync-openfec] Error fetching individual contributions:', e);
+      }
     }
 
     // ─── Step 4: Aggregate & deduplicate candidates ───
@@ -271,7 +346,6 @@ Deno.serve(async (req) => {
     const deduped = [...candidateMap.values()].sort((a, b) => b.amount - a.amount);
     stats.candidatesFunded = deduped.length;
 
-    // Upsert candidates
     if (deduped.length > 0) {
       const candidateRows = deduped.map(c => ({
         company_id: companyId,
@@ -286,7 +360,7 @@ Deno.serve(async (req) => {
 
       await supabase.from('company_candidates').delete().eq('company_id', companyId);
       const { error: candErr } = await supabase.from('company_candidates').insert(candidateRows);
-      if (candErr) console.error('Candidate insert error:', candErr);
+      if (candErr) console.error('[sync-openfec] Candidate insert error:', candErr);
     }
 
     // ─── Step 5: Party breakdown aggregation ───
@@ -313,12 +387,11 @@ Deno.serve(async (req) => {
 
       await supabase.from('company_party_breakdown').delete().eq('company_id', companyId);
       const { error: partyErr } = await supabase.from('company_party_breakdown').insert(partyRows);
-      if (partyErr) console.error('Party breakdown insert error:', partyErr);
+      if (partyErr) console.error('[sync-openfec] Party breakdown insert error:', partyErr);
     }
 
     // ─── Step 6: Insert entity linkages ───
     if (linkages.length > 0) {
-      // Clear old OpenFEC linkages
       await supabase
         .from('entity_linkages')
         .delete()
@@ -329,12 +402,12 @@ Deno.serve(async (req) => {
       for (let i = 0; i < linkages.length; i += 50) {
         const batch = linkages.slice(i, i + 50);
         const { error: linkErr } = await supabase.from('entity_linkages').insert(batch);
-        if (linkErr) console.error(`Linkage insert error (batch ${i}):`, linkErr);
+        if (linkErr) console.error(`[sync-openfec] Linkage insert error (batch ${i}):`, linkErr);
         else stats.linkagesCreated += batch.length;
       }
     }
 
-    // ─── Step 7: Update company record with totals & timestamp ───
+    // ─── Step 7: Update company record ───
     const updateFields: Record<string, any> = {
       last_reviewed: new Date().toISOString().split('T')[0],
     };
@@ -345,7 +418,7 @@ Deno.serve(async (req) => {
 
     await supabase.from('companies').update(updateFields).eq('id', companyId);
 
-    console.log(`✅ OpenFEC sync complete for ${companyName}: ${stats.candidatesFunded} candidates, ${stats.executiveDonors} exec donors, $${stats.totalPacSpending.toLocaleString()} PAC spending`);
+    console.log(`[sync-openfec] ✅ Complete for ${companyName}: ${stats.candidatesFunded} candidates, ${stats.executiveDonors} exec donors, $${stats.totalPacSpending.toLocaleString()} PAC spending`);
 
     return new Response(
       JSON.stringify({
@@ -356,14 +429,23 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
-    console.error('sync-openfec error:', error);
+  } catch (error: any) {
+    console.error('[sync-openfec] error:', error);
+    
+    // Preserve upstream error details
+    const isUpstreamValidation = error.upstreamStatus === 422;
+    const statusCode = isUpstreamValidation ? 422 : 500;
+    const errorType = isUpstreamValidation ? 'failed_validation' : 'server_error';
+    
     return new Response(
       JSON.stringify({
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error.message || 'Unknown error',
+        errorType,
+        upstreamStatus: error.upstreamStatus || null,
+        upstreamBody: error.upstreamBody || null,
       }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: statusCode, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
