@@ -44,10 +44,25 @@ export default function Jobs() {
     return jobs.filter((job: any) => {
       const company = job.companies;
       if (!company) return false;
+      
+      // Filter to US jobs only
+      const loc = (job.location || "").toLowerCase();
+      const isUS = !loc || 
+        loc.includes('united states') || loc.includes(', us') ||
+        loc.includes('remote') ||
+        /,\s*[a-z]{2}\s*$/i.test(job.location || '') || // "City, ST" format
+        /\b(alabama|alaska|arizona|arkansas|california|colorado|connecticut|delaware|florida|georgia|hawaii|idaho|illinois|indiana|iowa|kansas|kentucky|louisiana|maine|maryland|massachusetts|michigan|minnesota|mississippi|missouri|montana|nebraska|nevada|new hampshire|new jersey|new mexico|new york|north carolina|north dakota|ohio|oklahoma|oregon|pennsylvania|rhode island|south carolina|south dakota|tennessee|texas|utah|vermont|virginia|washington|west virginia|wisconsin|wyoming)\b/i.test(loc);
+      
+      // Exclude obviously non-US locations
+      const isNonUS = /\b(india|germany|china|japan|south korea|mexico|brazil|canada|uk|france|spain|italy|australia|singapore|ireland|netherlands|israel|sweden|switzerland)\b/i.test(loc) ||
+        /,\s*(in|de|cn|jp|kr|mx|br|ca|gb|fr|es|it|au|sg|ie|nl|il|se|ch)\s*$/i.test(loc);
+      
+      if (isNonUS) return false;
+      
       const matchesSearch = !search ||
         job.title.toLowerCase().includes(search.toLowerCase()) ||
         company.name.toLowerCase().includes(search.toLowerCase()) ||
-        (job.location || "").toLowerCase().includes(search.toLowerCase());
+        loc.includes(search.toLowerCase());
       const matchesScore = company.civic_footprint_score >= parseInt(minScore);
       const matchesIndustry = industryFilter === "all" || company.industry === industryFilter;
       return matchesSearch && matchesScore && matchesIndustry;
