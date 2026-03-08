@@ -12,13 +12,35 @@ import { EmptyState } from "@/components/EmptyState";
 import { LoadingState } from "@/components/LoadingState";
 import { ValuesPreferenceSidebar, VALUE_CATEGORIES } from "@/components/ValuesPreferenceSidebar";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { Search, MapPin, Briefcase, Building2, ExternalLink, Filter, FileCheck, SlidersHorizontal, X } from "lucide-react";
+import { toast } from "sonner";
+import {
+  Search, MapPin, Briefcase, Building2, ExternalLink, Filter,
+  FileCheck, SlidersHorizontal, X, Monitor, Home, Wifi,
+} from "lucide-react";
+
+const WORK_MODE_ICONS: Record<string, any> = {
+  remote: Wifi,
+  hybrid: Monitor,
+  'on-site': Home,
+};
+
+const SOURCE_LABELS: Record<string, string> = {
+  greenhouse: 'Greenhouse',
+  lever: 'Lever',
+  ashby: 'Ashby',
+  smartrecruiters: 'SmartRecruiters',
+  workable: 'Workable',
+  custom: 'Careers Page',
+};
 
 export default function Jobs() {
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
   const [minScore, setMinScore] = useState("70");
   const [industryFilter, setIndustryFilter] = useState("all");
+  const [workModeFilter, setWorkModeFilter] = useState("all");
   const [valuesFilters, setValuesFilters] = useState<string[]>([]);
   const [showValues, setShowValues] = useState(false);
 
@@ -36,7 +58,6 @@ export default function Jobs() {
     },
   });
 
-  // Fetch values signals for companies when filters are active
   const { data: valuesSignals } = useQuery({
     queryKey: ["company-values-signals", valuesFilters],
     queryFn: async () => {
@@ -46,7 +67,6 @@ export default function Jobs() {
         .select("company_id, value_category, signal_summary, confidence")
         .in("value_category", valuesFilters);
       if (error) throw error;
-      // Group by company_id
       const map: Record<string, any[]> = {};
       (data || []).forEach((s: any) => {
         if (!map[s.company_id]) map[s.company_id] = [];
@@ -68,20 +88,20 @@ export default function Jobs() {
     return jobs.filter((job: any) => {
       const company = job.companies;
       if (!company) return false;
-      
+
       const loc = (job.location || "").toLowerCase();
       const isNonUS = /\b(india|germany|china|japan|south korea|mexico|brazil|canada|uk|france|spain|italy|australia|singapore|ireland|netherlands|israel|sweden|switzerland)\b/i.test(loc) ||
         /,\s*(in|de|cn|jp|kr|mx|br|ca|gb|fr|es|it|au|sg|ie|nl|il|se|ch)\s*$/i.test(loc);
       if (isNonUS) return false;
-      
+
       const matchesSearch = !search ||
         job.title.toLowerCase().includes(search.toLowerCase()) ||
         company.name.toLowerCase().includes(search.toLowerCase()) ||
         loc.includes(search.toLowerCase());
       const matchesScore = company.civic_footprint_score >= parseInt(minScore);
       const matchesIndustry = industryFilter === "all" || company.industry === industryFilter;
-      
-      // Values filter: company must have at least one signal in each active category
+      const matchesWorkMode = workModeFilter === "all" || job.work_mode === workModeFilter;
+
       let matchesValues = true;
       if (valuesFilters.length > 0 && valuesSignals) {
         const companySignals = valuesSignals[company.id] || [];
@@ -89,14 +109,38 @@ export default function Jobs() {
         matchesValues = valuesFilters.every((f) => companyCategories.has(f));
       }
 
-      return matchesSearch && matchesScore && matchesIndustry && matchesValues;
+      return matchesSearch && matchesScore && matchesIndustry && matchesValues && matchesWorkMode;
     });
-  }, [jobs, search, minScore, industryFilter, valuesFilters, valuesSignals]);
+  }, [jobs, search, minScore, industryFilter, workModeFilter, valuesFilters, valuesSignals]);
 
   const companiesWithJobs = useMemo(() => {
     if (!filtered) return 0;
     return new Set(filtered.map((j: any) => j.company_id)).size;
   }, [filtered]);
+
+  const handleClickToApply = async (job: any) => {
+    if (!user) {
+      // Still open the link, but don't track
+      if (job.url) window.open(job.url, "_blank", "noopener,noreferrer");
+      return;
+    }
+    // Track click-through application
+    try {
+      await supabase.from("applications_tracker").insert({
+        user_id: user.id,
+        company_id: job.company_id,
+        job_id: job.id,
+        job_title: job.title,
+        company_name: job.companies?.name || "Unknown",
+        application_link: job.url,
+        status: "Draft",
+      });
+      toast.success("Application tracked!");
+    } catch (e) {
+      console.error("Failed to track application:", e);
+    }
+    if (job.url) window.open(job.url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -118,7 +162,7 @@ export default function Jobs() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Search jobs, companies, or locations..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Select value={minScore} onValueChange={setMinScore}>
               <SelectTrigger className="w-full sm:w-[160px]">
                 <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
@@ -141,6 +185,18 @@ export default function Jobs() {
                 {industries.map((ind) => (
                   <SelectItem key={ind} value={ind}>{ind}</SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+            <Select value={workModeFilter} onValueChange={setWorkModeFilter}>
+              <SelectTrigger className="w-full sm:w-[150px]">
+                <Monitor className="w-4 h-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Work mode" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Modes</SelectItem>
+                <SelectItem value="remote">Remote</SelectItem>
+                <SelectItem value="hybrid">Hybrid</SelectItem>
+                <SelectItem value="on-site">On-site</SelectItem>
               </SelectContent>
             </Select>
             <Button
@@ -211,6 +267,8 @@ export default function Jobs() {
               {filtered?.map((job: any) => {
                 const company = job.companies;
                 const companyValueSignals = valuesSignals?.[company?.id] || [];
+                const WorkModeIcon = job.work_mode ? WORK_MODE_ICONS[job.work_mode] : null;
+
                 return (
                   <Card key={job.id} className="border-border hover:border-primary/20 transition-colors">
                     <CardContent className="p-3 sm:p-4">
@@ -233,6 +291,12 @@ export default function Jobs() {
                                 {job.location}
                               </span>
                             )}
+                            {job.work_mode && WorkModeIcon && (
+                              <span className="flex items-center gap-1 capitalize">
+                                <WorkModeIcon className="w-3.5 h-3.5" />
+                                {job.work_mode}
+                              </span>
+                            )}
                           </div>
                           {job.description && (
                             <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{job.description}</p>
@@ -240,6 +304,11 @@ export default function Jobs() {
                           <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                             {job.salary_range && (
                               <span className="text-xs font-medium text-civic-green">{job.salary_range}</span>
+                            )}
+                            {job.source_platform && job.source_platform !== 'custom' && (
+                              <Badge variant="outline" className="text-[10px] bg-muted/50">
+                                via {SOURCE_LABELS[job.source_platform] || job.source_platform}
+                              </Badge>
                             )}
                             {companyValueSignals.length > 0 && companyValueSignals.map((vs: any, idx: number) => {
                               const cat = VALUE_CATEGORIES.find((c) => c.key === vs.value_category);
@@ -261,9 +330,14 @@ export default function Jobs() {
                             <FileCheck className="w-3 h-3" /> Offer Check
                           </Link>
                           {job.url && (
-                            <a href={job.url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-xs gap-1 h-7"
+                              onClick={() => handleClickToApply(job)}
+                            >
                               Apply <ExternalLink className="w-3 h-3" />
-                            </a>
+                            </Button>
                           )}
                         </div>
                       </div>
