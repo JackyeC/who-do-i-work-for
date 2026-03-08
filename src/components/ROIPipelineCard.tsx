@@ -26,9 +26,9 @@ export interface LinkageEdge {
 }
 
 export interface ROIPipelineData {
-  moneyIn: { label: string; amount: number; type: string }[];
+  moneyIn: { label: string; amount: number; type: string; matched_entity_name?: string; matched_entity_type?: string }[];
   network: { label: string; role: string; type: string }[];
-  benefitsOut: { label: string; amount: number; type: string }[];
+  benefitsOut: { label: string; amount: number; type: string; matched_entity_name?: string; matched_entity_type?: string }[];
   linkages: { source: string; target: string; description: string; confidence: number }[];
   totalSpending: number;
   totalBenefits: number;
