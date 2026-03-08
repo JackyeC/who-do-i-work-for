@@ -195,32 +195,36 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
         <p className="text-sm text-muted-foreground mb-4">Dark money channels, revolving door, and indirect influence.</p>
         <div className="grid lg:grid-cols-2 gap-6">
           {dbDarkMoney && dbDarkMoney.length > 0 && (
-            <Card>
-              <CardHeader><CardTitle className="text-lg flex items-center gap-2"><EyeOff className="w-4 h-4" /> Dark Money</CardTitle></CardHeader>
-              <CardContent className="space-y-3">
-                {dbDarkMoney.map((d) => (
-                  <div key={d.id} className="p-3 rounded-lg bg-muted/50 border border-border">
-                    <div className="flex items-center justify-between mb-1"><span className="font-medium text-sm text-foreground">{d.name}</span><Badge variant="outline" className="text-xs">{d.org_type}</Badge></div>
-                    {d.description && <p className="text-xs text-muted-foreground">{d.description}</p>}
-                    {d.estimated_amount && <p className="text-xs text-muted-foreground mt-1">Est. {formatCurrency(d.estimated_amount)}</p>}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            <ExplainableMetric metricKey="dark-money">
+              <Card>
+                <CardHeader><CardTitle className="text-lg flex items-center gap-2"><EyeOff className="w-4 h-4" /> Dark Money</CardTitle></CardHeader>
+                <CardContent className="space-y-3">
+                  {dbDarkMoney.map((d) => (
+                    <div key={d.id} className="p-3 rounded-lg bg-muted/50 border border-border">
+                      <div className="flex items-center justify-between mb-1"><span className="font-medium text-sm text-foreground">{d.name}</span><Badge variant="outline" className="text-xs">{d.org_type}</Badge></div>
+                      {d.description && <p className="text-xs text-muted-foreground">{d.description}</p>}
+                      {d.estimated_amount && <p className="text-xs text-muted-foreground mt-1">Est. {formatCurrency(d.estimated_amount)}</p>}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </ExplainableMetric>
           )}
           {dbRevolvingDoor && dbRevolvingDoor.length > 0 && (
-            <Card>
-              <CardHeader><CardTitle className="text-lg flex items-center gap-2"><RotateCcw className="w-4 h-4" /> Revolving Door</CardTitle></CardHeader>
-              <CardContent className="space-y-3">
-                {dbRevolvingDoor.map((r) => (
-                  <div key={r.id} className="p-3 rounded-lg bg-muted/50 border border-border">
-                    <div className="font-medium text-sm text-foreground">{r.person}</div>
-                    <div className="text-xs text-muted-foreground mt-1"><span className="text-foreground/70">{r.prior_role}</span> → <span className="text-foreground/70">{r.new_role}</span></div>
-                    {r.relevance && <p className="text-xs text-muted-foreground mt-1">{r.relevance}</p>}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            <ExplainableMetric metricKey="revolving-door">
+              <Card>
+                <CardHeader><CardTitle className="text-lg flex items-center gap-2"><RotateCcw className="w-4 h-4" /> Revolving Door</CardTitle></CardHeader>
+                <CardContent className="space-y-3">
+                  {dbRevolvingDoor.map((r) => (
+                    <div key={r.id} className="p-3 rounded-lg bg-muted/50 border border-border">
+                      <div className="font-medium text-sm text-foreground">{r.person}</div>
+                      <div className="text-xs text-muted-foreground mt-1"><span className="text-foreground/70">{r.prior_role}</span> → <span className="text-foreground/70">{r.new_role}</span></div>
+                      {r.relevance && <p className="text-xs text-muted-foreground mt-1">{r.relevance}</p>}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </ExplainableMetric>
           )}
         </div>
       </div>
