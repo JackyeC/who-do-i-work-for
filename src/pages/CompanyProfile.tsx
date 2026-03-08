@@ -631,8 +631,9 @@ export default function CompanyProfile() {
               <TransparencyIndex categories={transparencyCategories} />
             </div>
 
-            {/* Signal Timeline */}
-            <div className="mb-6">
+            {/* Manual Signal Entry + Signal Timeline */}
+            <div className="mb-6 space-y-4">
+              <ManualSignalEntry companyId={dbCompany.id} companyName={dbCompany.name} />
               <SignalTimeline companyId={dbCompany.id} />
             </div>
 
