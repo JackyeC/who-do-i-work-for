@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
         console.warn(`[intelligence-scan] Auto-expiring stale scan ${existingScan.id} (age: ${Math.round(scanAge / 1000)}s)`);
         await supabase
           .from('scan_runs')
-          .update({ scan_status: 'failed', error_log: 'Auto-expired: scan exceeded 10-minute timeout' })
+          .update({ scan_status: 'failed', error_log: { reason: 'Auto-expired: scan exceeded 10-minute timeout', expired_at: new Date().toISOString() } })
           .eq('id', existingScan.id);
       } else {
         return new Response(JSON.stringify({
