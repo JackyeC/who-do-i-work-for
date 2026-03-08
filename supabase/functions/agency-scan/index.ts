@@ -219,8 +219,11 @@ Only include items with evidence. Return valid JSON only.`;
       last_scan_status: 'completed',
     }, { onConflict: 'company_id,scan_type' }).select();
 
+    const totalSignals = (analysis.agencyContracts || []).length + (analysis.internationalInfluence || []).length + (analysis.supplyChainFlags || []).length;
     return new Response(JSON.stringify({
       success: true,
+      signalsFound: totalSignals,
+      sourcesScanned: allResults.length,
       data: {
         agencyContracts: analysis.agencyContracts || [],
         internationalInfluence: analysis.internationalInfluence || [],

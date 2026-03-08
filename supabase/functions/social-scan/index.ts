@@ -187,8 +187,11 @@ Only include items you find evidence for. Return valid JSON only.`;
       console.error('Failed to store scan:', insertError);
     }
 
+    const contradictionCount = (aiAnalysis.contradictions || []).length + (aiAnalysis.stanceShifts || []).length;
     return new Response(JSON.stringify({
       success: true,
+      signalsFound: contradictionCount || (aiAnalysis.summary ? 1 : 0),
+      sourcesScanned: allResults.length,
       data: {
         summary: aiAnalysis.summary,
         sentiment: aiAnalysis.sentiment,
