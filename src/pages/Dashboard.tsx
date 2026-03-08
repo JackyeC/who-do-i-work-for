@@ -76,7 +76,7 @@ export default function Dashboard() {
             </div>
           </TabsContent>
           <TabsContent value="alerts">
-            <UserAlerts />
+            <UserAlertsList />
           </TabsContent>
           <TabsContent value="auto-apply">
             <div className="space-y-6">
