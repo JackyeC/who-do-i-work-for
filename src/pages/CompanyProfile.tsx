@@ -214,9 +214,21 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
         <CardHeader><CardTitle className="text-lg flex items-center gap-2"><Landmark className="w-5 h-5" /> Government ROI</CardTitle></CardHeader>
         <CardContent>
           <div className="grid sm:grid-cols-3 gap-4">
-            {dbCompany.government_contracts && <div className="text-center p-3 bg-muted/50 rounded-lg"><div className="text-xl font-bold text-foreground">{formatCurrency(dbCompany.government_contracts)}</div><div className="text-xs text-muted-foreground">Government Contracts</div></div>}
-            {dbCompany.subsidies_received && <div className="text-center p-3 bg-muted/50 rounded-lg"><div className="text-xl font-bold text-foreground">{formatCurrency(dbCompany.subsidies_received)}</div><div className="text-xs text-muted-foreground">Subsidies & Tax Breaks</div></div>}
-            {dbCompany.effective_tax_rate && <div className="text-center p-3 bg-muted/50 rounded-lg"><div className="text-xl font-bold text-foreground">{dbCompany.effective_tax_rate}</div><div className="text-xs text-muted-foreground">Effective Tax Rate</div></div>}
+            {dbCompany.government_contracts && (
+              <ExplainableMetric metricKey="gov-contracts">
+                <div className="text-center p-3 bg-muted/50 rounded-lg"><div className="text-xl font-bold text-foreground">{formatCurrency(dbCompany.government_contracts)}</div><div className="text-xs text-muted-foreground">Government Contracts</div></div>
+              </ExplainableMetric>
+            )}
+            {dbCompany.subsidies_received && (
+              <ExplainableMetric metricKey="subsidies">
+                <div className="text-center p-3 bg-muted/50 rounded-lg"><div className="text-xl font-bold text-foreground">{formatCurrency(dbCompany.subsidies_received)}</div><div className="text-xs text-muted-foreground">Subsidies & Tax Breaks</div></div>
+              </ExplainableMetric>
+            )}
+            {dbCompany.effective_tax_rate && (
+              <ExplainableMetric metricKey="effective-tax-rate">
+                <div className="text-center p-3 bg-muted/50 rounded-lg"><div className="text-xl font-bold text-foreground">{dbCompany.effective_tax_rate}</div><div className="text-xs text-muted-foreground">Effective Tax Rate</div></div>
+              </ExplainableMetric>
+            )}
           </div>
         </CardContent>
       </Card>
