@@ -227,10 +227,10 @@ export function ROIPipelineCard({
               <Radar className="w-7 h-7 text-muted-foreground" />
             </div>
             <h3 className="text-sm font-semibold text-foreground mb-1">
-              No influence scan has been run yet
+              No verified pipeline data yet
             </h3>
             <p className="text-xs text-muted-foreground max-w-sm mb-5">
-              Run a Company Intelligence Scan to trace entity linkages through PAC filings, lobbying disclosures, and contract awards.
+              No verified pipeline data has been generated for this company yet. Run a scan to check political spending, influence connections, and government benefits.
             </p>
             {onTriggerScan && (
               <Button onClick={onTriggerScan} className="gap-2">
