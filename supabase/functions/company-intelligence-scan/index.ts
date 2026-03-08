@@ -376,6 +376,25 @@ Deno.serve(async (req) => {
       warnings.push('Browse AI monitoring setup error (non-critical)');
     }
 
+    // ─── Emit signal change events for watchers ───
+    if (totalSignals > 0) {
+      const signalCategories = Object.entries(moduleStatuses)
+        .filter(([_, v]: [string, any]) => v.status === 'completed_with_signals' && v.signalsFound > 0)
+        .map(([key, v]: [string, any]) => ({
+          company_id: companyId,
+          signal_category: v.label || key,
+          change_type: 'new_signal',
+          change_description: `${v.signalsFound} signal(s) detected in ${v.label || key}.`,
+          confidence_level: v.phase === 'pipeline' ? 'direct_source' : 'moderate_inference',
+        }));
+
+      if (signalCategories.length > 0) {
+        const { error: sceErr } = await supabase.from('signal_change_events').insert(signalCategories);
+        if (sceErr) console.error('[intelligence-scan] Failed to emit signal change events:', sceErr);
+        else console.log(`[intelligence-scan] Emitted ${signalCategories.length} signal change events`);
+      }
+    }
+
     // Finalize overall status
     const overallStatus = failed === ALL_MODULES.length
       ? 'failed'
