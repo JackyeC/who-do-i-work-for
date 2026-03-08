@@ -132,10 +132,10 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
                 <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Party</TableHead><TableHead>State</TableHead><TableHead>Amount</TableHead><TableHead>Type</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {dbCandidates.map((c) => (
-                    <TableRow key={c.id}>
+                    <TableRow key={c.id} className="cursor-pointer hover:bg-primary/5 transition-colors" onClick={() => onCandidateClick?.(c)}>
                       <TableCell className="font-medium">{c.name}{c.flagged && <Badge variant="destructive" className="ml-2 text-xs">Flagged</Badge>}</TableCell>
                       <TableCell><Badge variant="outline" className={cn("text-xs", c.party === "Republican" && "border-destructive/50 text-destructive", c.party === "Democrat" && "border-primary/50 text-primary")}>{c.party}</Badge></TableCell>
-                      <TableCell className="text-muted-foreground">{c.state}</TableCell>
+                      <TableCell className="text-muted-foreground">{c.state}{c.district ? `, D-${c.district}` : ""}</TableCell>
                       <TableCell>{formatCurrency(c.amount)}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{c.donation_type}</TableCell>
                     </TableRow>
