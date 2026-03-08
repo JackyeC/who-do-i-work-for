@@ -117,9 +117,15 @@ function JobCard({ job, onApply, applying, generating }: {
 function ClipboardBanner({ payload, onDismiss }: {
   payload: {
     matchingStatement: string;
+    targetedIntro?: string;
+    hrTechAlignment?: string;
+    valuesCheck?: string;
+    detectedVendor?: string;
+    biasAuditStatus?: string;
     alignmentScore: number;
     companyName: string;
     matchedSignals: string[];
+    careerSiteUrl?: string;
   };
   onDismiss: () => void;
 }) {
@@ -139,23 +145,53 @@ function ClipboardBanner({ payload, onDismiss }: {
             <div className="flex items-center gap-2 mb-2">
               <Wand2 className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold text-foreground">
-                We've opened the tab. Your alignment statement is ready.
+                Custom Value Proposition copied to clipboard. Redirecting to Career Site...
               </span>
               <Badge variant="secondary" className="text-xs">{payload.alignmentScore}% aligned</Badge>
             </div>
+
+            {/* Structured fields */}
+            {payload.targetedIntro && (
+              <div className="mb-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Targeted Intro</span>
+                <p className="text-sm text-foreground/90 mt-0.5">{payload.targetedIntro}</p>
+              </div>
+            )}
+            {payload.hrTechAlignment && (
+              <div className="mb-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">HR Tech Alignment</span>
+                <p className="text-sm text-foreground/90 mt-0.5">{payload.hrTechAlignment}</p>
+              </div>
+            )}
+            {payload.valuesCheck && (
+              <div className="mb-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Values Check</span>
+                <p className="text-sm text-foreground/90 mt-0.5">{payload.valuesCheck}</p>
+              </div>
+            )}
+
             <p className="text-sm text-muted-foreground mb-2">
               Paste this into the "Cover Letter" or "Why us?" field on {payload.companyName}'s application:
             </p>
             <div className="bg-background border border-border rounded-md p-3 text-sm text-foreground/90 leading-relaxed max-h-48 overflow-y-auto">
               {payload.matchingStatement}
             </div>
-            {payload.matchedSignals.length > 0 && (
-              <div className="flex gap-1 mt-2 flex-wrap">
-                {payload.matchedSignals.map(s => (
-                  <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
-                ))}
-              </div>
-            )}
+
+            <div className="flex gap-1 mt-2 flex-wrap">
+              {payload.detectedVendor && payload.detectedVendor !== 'Unknown' && (
+                <Badge variant="outline" className="text-xs bg-accent/10 border-accent/30">
+                  AI Vendor: {payload.detectedVendor}
+                </Badge>
+              )}
+              {payload.biasAuditStatus && (
+                <Badge variant="outline" className="text-xs">
+                  {payload.biasAuditStatus}
+                </Badge>
+              )}
+              {payload.matchedSignals.map(s => (
+                <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
+              ))}
+            </div>
           </div>
           <div className="flex flex-col gap-2 shrink-0">
             <Button size="sm" onClick={handleCopy} className="gap-1.5">
