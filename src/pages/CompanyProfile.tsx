@@ -7,6 +7,7 @@ import {
   AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark, FileText,
   BarChart3, Loader2, Sparkles, Search, ClipboardCheck, CheckCircle2, HelpCircle
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { LensSelector } from "@/components/LensSelector";
 import { ValuesCheckSection, type ValuesCheckSignal } from "@/components/values-check/ValuesCheckSection";
 import { DataGlossary } from "@/components/DataGlossary";
