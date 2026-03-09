@@ -9,6 +9,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
+import { ExplainableMetric } from "@/components/ExplainableMetric";
 
 interface IdeologyFlag {
   orgName: string;
@@ -138,10 +139,12 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
             </Badge>
           )}
         </CardTitle>
-        <p className="text-xs text-muted-foreground">
-          Public signals of corporate affiliations with organizations tracked by SPLC, ADL, and curated watchlists.
-          Signals are presented with source links and confidence levels.
-        </p>
+        <ExplainableMetric metricKey="flagged-organization">
+          <p className="text-xs text-muted-foreground">
+            Public signals of corporate affiliations with organizations tracked by SPLC, ADL, and curated watchlists.
+            Signals are presented with source links and confidence levels. <span className="underline decoration-dotted">What is a "flagged organization"?</span>
+          </p>
+        </ExplainableMetric>
       </CardHeader>
       <CardContent>
         {/* Live updates indicator */}

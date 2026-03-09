@@ -58,6 +58,7 @@ import { PromotionEquityCard } from "@/components/PromotionEquityCard";
 import { RelatedReportsCard } from "@/components/RelatedReportsCard";
 import { MonitoringStatusCard } from "@/components/MonitoringStatusCard";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
+import { WhatYoureSupportingCard } from "@/components/WhatYoureSupportingCard";
 import { TransparencyIndex } from "@/components/TransparencyIndex";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -832,6 +833,24 @@ export default function CompanyProfile() {
             <div className="mb-6">
               <ScanDebugPanel companyId={dbCompany.id} />
             </div>
+
+            {/* What You're Supporting summary */}
+            {dbCompany && (
+              <div className="mb-6">
+                <WhatYoureSupportingCard
+                  companyName={dbCompany.name}
+                  totalPacSpending={dbCompany.total_pac_spending || 0}
+                  lobbyingSpend={dbCompany.lobbying_spend || 0}
+                  topCandidates={(dbCandidates || [])
+                    .sort((a: any, b: any) => (b.amount || 0) - (a.amount || 0))
+                    .slice(0, 5)
+                    .map((c: any) => ({ name: c.name, party: c.party, amount: c.amount }))}
+                  topIssuesLobbied={[]}
+                  darkMoneyConnections={(dbDarkMoney || []).length}
+                  flaggedOrgCount={0}
+                />
+              </div>
+            )}
 
             {/* Lens-ordered modules */}
             <div id="lens-modules">

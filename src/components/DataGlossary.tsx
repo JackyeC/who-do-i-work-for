@@ -35,6 +35,8 @@ const GLOSSARY: GlossaryEntry[] = [
   { term: "CHI Score", definition: "Corporate Hypocrisy Index — measures the gap between a company's public statements and its actual political spending. Higher = more contradictions found.", category: "metric" },
   { term: "Political Risk Score", definition: "A composite score factoring in dark money connections, revolving door hires, and spending on controversial organizations.", category: "metric" },
   { term: "Transparency Grade", definition: "How openly a company discloses its political activity. Grades from A (fully transparent) to F (minimal disclosure).", category: "metric" },
+  { term: "CPA-Zicklin Score", definition: "A percentage score from the Center for Political Accountability measuring how transparent a company is about political spending — PAC donations, lobbying, trade association dues, and board oversight. S&P 500 average is ~55%. Scores above 80% = transparency leader; below 30% = opaque.", category: "metric" },
+  { term: "Effective Tax Rate", definition: "The actual percentage of income a company pays in taxes after all deductions, credits, and loopholes. The U.S. corporate statutory rate is 21%, but many large companies pay significantly less through legal tax strategies.", category: "metric" },
 
   // Concepts
   { term: "PAC", definition: "Political Action Committee — a legal entity that pools campaign contributions from members and donates to candidates or parties. A 'Corporate PAC' is funded by a company's employees and shareholders.", category: "concept" },
@@ -43,6 +45,7 @@ const GLOSSARY: GlossaryEntry[] = [
   { term: "Revolving Door", definition: "When people move between government roles and private-sector jobs at the same companies they used to regulate. Suggests potential conflicts of interest.", category: "concept" },
   { term: "Entity Resolution", definition: "The process of figuring out that 'Cinemark Holdings Inc', 'Cinemark USA Inc', and 'CINEMARK HOLDINGS INC PAC' all refer to the same parent company. We match across name variants, subsidiaries, and PACs.", category: "concept" },
   { term: "Influence Chain", definition: "A traced path showing how money flows from a company → to a politician → who sits on a committee → that oversees contracts the company benefits from.", category: "concept" },
+  { term: "Flagged Organization", definition: "An organization designated by civil rights monitors (SPLC, ADL) or curated watchlists for promoting extremist, discriminatory, or controversial ideologies. A 'flag' means a financial or organizational link was detected — not that the company endorses the group's views.", category: "concept" },
   { term: "WARN Notice", definition: "Worker Adjustment and Retraining Notification — a federal law requiring employers to give 60 days' notice before mass layoffs. We track these filings.", category: "concept" },
   { term: "Money In / Benefits Out", definition: "The two sides of the Influence Pipeline. 'Money In' = what a company spends on politics (PAC donations, lobbying, executive giving). 'Benefits Out' = what it receives (contracts, grants, tax breaks, favorable regulation).", category: "concept" },
 ];
