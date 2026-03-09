@@ -1,0 +1,1 @@
+UPDATE scan_runs SET scan_status = 'failed', error_log = '{"reason": "Auto-expired: stale scan cleanup", "expired_at": "2026-03-09T23:20:00Z"}'::jsonb WHERE scan_status IN ('queued', 'in_progress')
