@@ -31,20 +31,27 @@ Deno.serve(async (req) => {
 
     const { limit = 50 } = await req.json().catch(() => ({}));
 
-    // 1. Get user preferences (signal filters)
+    // 1. Get user values profile for alignment scoring
+    const { data: valuesProfile } = await supabase
+      .from('user_alignment_values')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    // 2. Get user preferences (signal filters)
     const { data: preferences } = await supabase
       .from('job_match_preferences')
       .select('*')
       .eq('user_id', user.id);
 
-    // 2. Get career profile for matching
+    // 3. Get career profile for matching
     const { data: careerProfile } = await supabase
       .from('user_career_profile')
       .select('*')
       .eq('user_id', user.id)
       .single();
 
-    // 3. Get user profile for salary filter
+    // 4. Get user profile for salary filter
     const { data: profile } = await supabase
       .from('profiles')
       .select('min_salary, target_job_titles, skills')
