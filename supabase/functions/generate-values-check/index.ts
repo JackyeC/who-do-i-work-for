@@ -114,12 +114,22 @@ serve(async (req) => {
     // 2. Executive activity
     if (executives && executives.length > 0) {
       for (const e of executives) {
+        const recipients = execRecipientsMap.get(e.id) || [];
+        const topRecipients = recipients.slice(0, 10);
+        
+        // Build description with recipient info
+        let desc = `${e.name} (${e.title}) made ${e.total_donations ? "$" + Number(e.total_donations).toLocaleString() : "reported"} in personal political donations.`;
+        if (topRecipients.length > 0) {
+          const recipNames = topRecipients.slice(0, 3).map(r => `${r.name} (${r.party})`).join(", ");
+          desc += ` Top recipients: ${recipNames}${topRecipients.length > 3 ? ` and ${topRecipients.length - 3} more` : ""}.`;
+        }
+
         signals.push({
           company_id: companyId,
           issue_area: "general",
           signal_category: "executive_activity",
           signal_title: `Executive donations: ${e.name}`,
-          signal_description: `${e.name} (${e.title}) made ${e.total_donations ? "$" + Number(e.total_donations).toLocaleString() : "reported"} in personal political donations.`,
+          signal_description: desc,
           source_name: "FEC",
           source_type: "executive_donation",
           related_person_name: e.name,
@@ -128,6 +138,7 @@ serve(async (req) => {
           confidence_score: 0.8,
           confidence_label: "high",
           verification_status: "verified",
+          evidence_json: topRecipients.length > 0 ? { recipients: topRecipients } : null,
         });
       }
     }

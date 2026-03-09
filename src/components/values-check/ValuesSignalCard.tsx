@@ -22,6 +22,17 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
   const verif = getVerificationBadge(signal.verification_status);
   const issueInfo = ISSUE_AREAS.find((ia) => ia.key === signal.issue_area);
 
+  // Parse recipients from evidence_json
+  const recipients: { name: string; party: string; amount: number }[] = (() => {
+    try {
+      const ej = signal.evidence_json;
+      if (ej && typeof ej === "object" && "recipients" in ej && Array.isArray((ej as any).recipients)) {
+        return (ej as any).recipients;
+      }
+    } catch {}
+    return [];
+  })();
+
   return (
     <div className="rounded-xl border border-border/40 bg-card overflow-hidden hover:border-primary/15 transition-colors group">
       <button
