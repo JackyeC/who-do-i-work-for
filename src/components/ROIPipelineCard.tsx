@@ -205,6 +205,7 @@ interface ROIPipelineCardProps {
   onTriggerScan?: () => void;
   autoScanning?: boolean;
   hasBeenScanned?: boolean;
+  enrichmentData?: any;
 }
 
 export function ROIPipelineCard({
@@ -213,6 +214,7 @@ export function ROIPipelineCard({
   onTriggerScan,
   autoScanning = false,
   hasBeenScanned = false,
+  enrichmentData,
 }: ROIPipelineCardProps) {
   const scanning = isSearching || autoScanning;
   const state = derivePipelineState(data, scanning, hasBeenScanned);
