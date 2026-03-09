@@ -77,9 +77,11 @@ function ConfidenceDot({ confidence }: { confidence?: number }) {
 function PipelineColumn({ title, icon: Icon, items, color }: {
   title: string;
   icon: React.ElementType;
-  items: { label: string; amount?: number; type?: string; role?: string; confidence?: number; matched_entity_name?: string; matched_entity_type?: string }[];
+  items: { label: string; amount?: number; type?: string; role?: string; confidence?: number; matched_entity_name?: string; matched_entity_type?: string; source_url?: string; evidence_type?: string }[];
   color: string;
 }) {
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
+
   if (items.length === 0) {
     return (
       <div className="flex-1 min-w-0">
@@ -105,6 +107,17 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
     affiliate: "Matched through affiliate",
   };
 
+  const EVIDENCE_LABELS: Record<string, string> = {
+    fec_filing: "FEC Filing",
+    lobbying_disclosure: "Senate Lobbying Disclosure",
+    usaspending_contract: "USASpending Contract Record",
+    sec_filing: "SEC EDGAR Filing",
+    opencorporates: "OpenCorporates Registry",
+    dol_enforcement: "DOL Enforcement Record",
+    opensecrets: "OpenSecrets Profile",
+    ai_analysis: "AI-Synthesized Analysis",
+  };
+
   return (
     <div className="flex-1 min-w-0">
       <div className={cn("flex items-center gap-2 mb-3 text-sm font-semibold", color)}>
@@ -113,31 +126,63 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
         <Badge variant="secondary" className="text-xs ml-auto">{items.length}</Badge>
       </div>
       <div className="space-y-2 max-h-80 overflow-y-auto">
-        {items.map((item, i) => (
-          <div key={i} className="p-3 bg-muted/50 rounded-lg border border-border">
-            <div className="flex items-center gap-1.5">
-              {item.confidence !== undefined && <ConfidenceDot confidence={item.confidence} />}
-              <div className="text-sm font-medium text-foreground truncate">{item.label}</div>
-            </div>
-            {item.amount !== undefined && item.amount > 0 && (
-              <div className="text-lg font-bold text-foreground">{formatCurrency(item.amount)}</div>
-            )}
-            {item.role && (
-              <div className="text-xs text-muted-foreground">{item.role}</div>
-            )}
-            {item.type && (
-              <Badge variant="outline" className="text-xs mt-1">
-                {item.type.replace(/_/g, ' ')}
-              </Badge>
-            )}
-            {item.matched_entity_type && item.matched_entity_type !== "direct_company" && (
-              <div className="mt-1.5 flex items-center gap-1 text-[10px] text-primary">
-                <Building2 className="w-3 h-3" />
-                {MATCH_LABELS[item.matched_entity_type] || `Via ${item.matched_entity_name || "related entity"}`}
-              </div>
-            )}
-          </div>
-        ))}
+        {items.map((item, i) => {
+          const isExpanded = expandedIdx === i;
+          const confidenceLevel = item.confidence ?? 0;
+          const confidenceLabel = confidenceLevel >= 0.8 ? "Verified" : confidenceLevel >= 0.5 ? "Inferred" : "Low confidence";
+
+          return (
+            <Collapsible key={i} open={isExpanded} onOpenChange={() => setExpandedIdx(isExpanded ? null : i)}>
+              <CollapsibleTrigger asChild>
+                <button className="w-full text-left p-3 bg-muted/50 rounded-lg border border-border hover:bg-muted/80 transition-colors">
+                  <div className="flex items-center gap-1.5">
+                    {item.confidence !== undefined && <ConfidenceDot confidence={item.confidence} />}
+                    <div className="text-sm font-medium text-foreground truncate flex-1">{item.label}</div>
+                    {isExpanded ? <ChevronDown className="w-3 h-3 text-muted-foreground shrink-0" /> : <ChevronRight className="w-3 h-3 text-muted-foreground shrink-0" />}
+                  </div>
+                  {item.amount !== undefined && item.amount > 0 && (
+                    <div className="text-lg font-bold text-foreground">{formatCurrency(item.amount)}</div>
+                  )}
+                  {item.role && <div className="text-xs text-muted-foreground">{item.role}</div>}
+                  {item.type && (
+                    <Badge variant="outline" className="text-xs mt-1">{item.type.replace(/_/g, ' ')}</Badge>
+                  )}
+                  {item.matched_entity_type && item.matched_entity_type !== "direct_company" && (
+                    <div className="mt-1.5 flex items-center gap-1 text-[10px] text-primary">
+                      <Building2 className="w-3 h-3" />
+                      {MATCH_LABELS[item.matched_entity_type] || `Via ${item.matched_entity_name || "related entity"}`}
+                    </div>
+                  )}
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="mx-1 mb-1 p-2.5 rounded-b-lg border border-t-0 border-border bg-card space-y-2">
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                    <span className="text-[11px] text-muted-foreground">
+                      Confidence: <span className={cn("font-semibold", confidenceLevel >= 0.8 ? "text-primary" : confidenceLevel >= 0.5 ? "text-accent-foreground" : "text-destructive")}>{confidenceLabel} ({(confidenceLevel * 100).toFixed(0)}%)</span>
+                    </span>
+                  </div>
+                  {item.evidence_type && (
+                    <div className="flex items-center gap-2">
+                      <Info className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-[11px] text-muted-foreground">Source: <span className="font-medium text-foreground">{EVIDENCE_LABELS[item.evidence_type] || item.evidence_type.replace(/_/g, ' ')}</span></span>
+                    </div>
+                  )}
+                  {item.source_url && (
+                    <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[11px] text-primary hover:underline">
+                      <ExternalLink className="w-3 h-3 shrink-0" />
+                      View original public record
+                    </a>
+                  )}
+                  {!item.source_url && !item.evidence_type && (
+                    <p className="text-[11px] text-muted-foreground italic">No direct source link available for this connection.</p>
+                  )}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          );
+        })}
       </div>
     </div>
   );
