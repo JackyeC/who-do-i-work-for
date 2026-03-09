@@ -72,15 +72,13 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
   const [elapsed, setElapsed] = useState(0);
   const [liveResult, setLiveResult] = useState<SentimentResult | null>(null);
 
-  // Timer for elapsed display
-  useState(() => {
+  useEffect(() => {
+    if (!scanStartTime) return;
     const interval = setInterval(() => {
-      if (scanStartTime) {
-        setElapsed(Math.floor((Date.now() - scanStartTime) / 1000));
-      }
+      setElapsed(Math.floor((Date.now() - scanStartTime) / 1000));
     }, 1000);
     return () => clearInterval(interval);
-  });
+  }, [scanStartTime]);
 
   const { data: cachedScan, refetch } = useQuery({
     queryKey: ["worker-sentiment", dbCompanyId],
