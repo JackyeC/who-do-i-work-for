@@ -47,7 +47,7 @@ export default function CareerIntelligence() {
       <Header />
       <main className="container mx-auto px-4 py-6 sm:py-8 flex-1">
         <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2" style={{ fontFamily: "'Source Serif 4', serif" }}>
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2 font-display">
             Map My Career
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">

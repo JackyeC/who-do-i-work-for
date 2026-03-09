@@ -741,7 +741,7 @@ export default function CompanyProfile() {
                       <Scale className="w-3.5 h-3.5" />
                       Civic Footprint
                     </div>
-                    <div className="text-3xl font-bold text-foreground mb-1" style={{ fontFamily: "'Source Serif 4', serif" }}>{dbCompany.civic_footprint_score}<span className="text-sm text-muted-foreground font-normal">/100</span></div>
+                    <div className="text-3xl font-bold text-foreground mb-1 font-display-number">{dbCompany.civic_footprint_score}<span className="text-sm text-muted-foreground font-normal">/100</span></div>
                     <CivicFootprintBadge score={dbCompany.civic_footprint_score} size="sm" />
                     <p className="text-[11px] text-muted-foreground mt-2 leading-snug">How much political activity we detected. Higher = more active, not worse.</p>
                   </CardContent>
@@ -754,7 +754,7 @@ export default function CompanyProfile() {
                       <DollarSign className="w-3.5 h-3.5" />
                       PAC Spending
                     </div>
-                    <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                    <div className="text-3xl font-bold text-foreground font-display-number">
                       {dbCompany.total_pac_spending > 0 ? formatCurrency(dbCompany.total_pac_spending) : "None"}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-2 leading-snug">Money donated by the company's PAC directly to political candidates this cycle.</p>
@@ -768,7 +768,7 @@ export default function CompanyProfile() {
                       <Megaphone className="w-3.5 h-3.5" />
                       Lobbying
                     </div>
-                    <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                    <div className="text-3xl font-bold text-foreground font-display-number">
                       {dbCompany.lobbying_spend ? formatCurrency(dbCompany.lobbying_spend) : "None"}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-2 leading-snug">Annual spending on lobbyists who advocate for the company in Congress.</p>
@@ -783,7 +783,7 @@ export default function CompanyProfile() {
                         <Landmark className="w-3.5 h-3.5" />
                         Gov Contracts
                       </div>
-                      <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                      <div className="text-3xl font-bold text-foreground font-display-number">
                         {dbCompany.government_contracts ? formatCurrency(dbCompany.government_contracts) : "—"}
                       </div>
                       <p className="text-[11px] text-muted-foreground mt-2 leading-snug">Federal contracts awarded to this company — taxpayer money received.</p>

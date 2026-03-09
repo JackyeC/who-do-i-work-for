@@ -24,7 +24,7 @@ export default function JobDashboard() {
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+          <h1 className="text-3xl font-bold text-foreground font-display">
             Values-Based Job Matching
           </h1>
           <p className="text-muted-foreground mt-1">

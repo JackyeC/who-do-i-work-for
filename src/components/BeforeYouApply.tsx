@@ -60,7 +60,7 @@ function SignalRow({
         {subtext && <p className="text-xs text-muted-foreground mt-0.5">{subtext}</p>}
       </div>
       <div className="text-right shrink-0">
-        <span className="text-sm font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+        <span className="text-sm font-bold text-foreground font-data">
           {value}
         </span>
       </div>
