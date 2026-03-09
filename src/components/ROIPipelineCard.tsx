@@ -245,6 +245,101 @@ function SummaryBar({ data, state }: { data: ROIPipelineData; state: PipelineSta
   );
 }
 
+const EVIDENCE_SOURCE_LABELS: Record<string, string> = {
+  fec_filing: "FEC Filing",
+  lobbying_disclosure: "Senate Lobbying Disclosure",
+  usaspending_contract: "USASpending Contract Record",
+  sec_filing: "SEC EDGAR Filing",
+  opencorporates: "OpenCorporates Registry",
+  dol_enforcement: "DOL Enforcement Record",
+  opensecrets: "OpenSecrets Profile",
+  ai_analysis: "AI-Synthesized Analysis",
+  congress_vote: "Congressional Vote Record",
+};
+
+function LinkageChain({ linkages }: { linkages: ROIPipelineData["linkages"] }) {
+  const [expandedLink, setExpandedLink] = useState<number | null>(null);
+
+  return (
+    <div className="relative space-y-0">
+      {linkages.map((link, i) => {
+        const isHigh = link.confidence >= 0.8;
+        const isMed = link.confidence >= 0.5;
+        const confidenceColor = isHigh ? "text-primary" : isMed ? "text-accent-foreground" : "text-destructive";
+        const confidenceBg = isHigh ? "bg-primary/10 border-primary/30" : isMed ? "bg-accent/20 border-accent/30" : "bg-destructive/10 border-destructive/30";
+        const confidenceLabel = isHigh ? "Verified" : isMed ? "Inferred" : "Unverified";
+        const dotColor = isHigh ? "bg-primary" : isMed ? "bg-accent-foreground" : "bg-destructive";
+        const lineColor = isHigh ? "bg-primary/30" : isMed ? "bg-accent/30" : "bg-destructive/30";
+        const isLast = i === linkages.length - 1;
+        const isExpanded = expandedLink === i;
+
+        return (
+          <div key={i} className="flex gap-3">
+            <div className="flex flex-col items-center shrink-0 w-5">
+              <div className={cn("w-3 h-3 rounded-full mt-3.5 shrink-0 ring-2 ring-background", dotColor)} />
+              {!isLast && <div className={cn("w-0.5 flex-1 min-h-[16px]", lineColor)} />}
+            </div>
+            <div className="flex-1 mb-2">
+              <Collapsible open={isExpanded} onOpenChange={() => setExpandedLink(isExpanded ? null : i)}>
+                <CollapsibleTrigger asChild>
+                  <button className={cn("w-full text-left p-3 rounded-lg border transition-colors hover:brightness-95", confidenceBg)}>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-sm font-semibold text-foreground">{link.source}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-sm font-semibold text-foreground">{link.target}</span>
+                      <div className="ml-auto shrink-0">
+                        {isExpanded ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{link.description}</p>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <div className={cn("w-1.5 h-1.5 rounded-full", dotColor)} />
+                      <span className={cn("text-[10px] font-medium uppercase tracking-wider", confidenceColor)}>
+                        {confidenceLabel} · {(link.confidence * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="p-3 border border-t-0 border-border rounded-b-lg bg-card space-y-2">
+                    <div className="flex items-center gap-2">
+                      <ShieldAlert className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-[11px] text-muted-foreground">
+                        Confidence: <span className={cn("font-semibold", confidenceColor)}>{confidenceLabel} ({(link.confidence * 100).toFixed(0)}%)</span>
+                      </span>
+                    </div>
+                    {link.evidence_type && (
+                      <div className="flex items-center gap-2">
+                        <Info className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                        <span className="text-[11px] text-muted-foreground">Evidence: <span className="font-medium text-foreground">{EVIDENCE_SOURCE_LABELS[link.evidence_type] || link.evidence_type.replace(/_/g, ' ')}</span></span>
+                      </div>
+                    )}
+                    {link.source_name && (
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                        <span className="text-[11px] text-muted-foreground">Data source: <span className="font-medium text-foreground">{link.source_name}</span></span>
+                      </div>
+                    )}
+                    {link.source_url && (
+                      <a href={link.source_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[11px] text-primary hover:underline">
+                        <ExternalLink className="w-3 h-3 shrink-0" />
+                        View original public record
+                      </a>
+                    )}
+                    {!link.source_url && !link.evidence_type && !link.source_name && (
+                      <p className="text-[11px] text-muted-foreground italic">Source details will be available after primary-source verification completes.</p>
+                    )}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ─── Main component ─── */
 
 interface ROIPipelineCardProps {
