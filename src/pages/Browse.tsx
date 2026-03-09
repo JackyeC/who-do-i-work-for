@@ -115,6 +115,8 @@ export default function Browse() {
           </div>
         </div>
 
+        <InfluenceLeaderboard />
+
         {isLoading ? (
           <LoadingState message="Loading companies..." />
         ) : (
