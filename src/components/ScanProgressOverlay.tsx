@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Radar, CheckCircle2, XCircle, Loader2, Clock, CircleSlash, Shield } from "lucide-react";
+import { Radar, CheckCircle2, XCircle, Loader2, Clock, CircleSlash, Shield, RefreshCw } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
