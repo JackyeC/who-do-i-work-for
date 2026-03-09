@@ -187,7 +187,7 @@ export function RecruitingInsightsDashboard() {
                       <p className="text-xs text-muted-foreground">{new Date(l.notice_date).toLocaleDateString()}</p>
                     </div>
                     <Badge variant="outline" className="text-xs">
-                      {l.number_affected?.toLocaleString() || "N/A"} affected
+                      {l.employees_affected?.toLocaleString() || "N/A"} affected
                     </Badge>
                   </div>
                 ))}
