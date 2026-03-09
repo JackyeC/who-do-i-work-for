@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,9 @@ import { cn } from "@/lib/utils";
 import {
   ArrowRight, DollarSign, Users, Landmark, FileText,
   Loader2, Search, Radar, ShieldCheck, ShieldX, CheckCircle2, Building2,
+  ChevronDown, ChevronRight, ExternalLink, ShieldAlert, Info,
 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 export interface LinkageNode {
   id: string;
@@ -26,10 +29,10 @@ export interface LinkageEdge {
 }
 
 export interface ROIPipelineData {
-  moneyIn: { label: string; amount: number; type: string; matched_entity_name?: string; matched_entity_type?: string }[];
-  network: { label: string; role: string; type: string }[];
-  benefitsOut: { label: string; amount: number; type: string; matched_entity_name?: string; matched_entity_type?: string }[];
-  linkages: { source: string; target: string; description: string; confidence: number }[];
+  moneyIn: { label: string; amount: number; type: string; matched_entity_name?: string; matched_entity_type?: string; source_url?: string; evidence_type?: string }[];
+  network: { label: string; role: string; type: string; source_url?: string; evidence_type?: string }[];
+  benefitsOut: { label: string; amount: number; type: string; matched_entity_name?: string; matched_entity_type?: string; source_url?: string; evidence_type?: string }[];
+  linkages: { source: string; target: string; description: string; confidence: number; source_url?: string; evidence_type?: string; source_name?: string }[];
   totalSpending: number;
   totalBenefits: number;
 }
@@ -62,7 +65,7 @@ function derivePipelineState(
 
 function ConfidenceDot({ confidence }: { confidence?: number }) {
   const level = confidence ?? 0;
-  const color = level >= 0.8 ? "bg-primary" : level >= 0.5 ? "bg-yellow-500" : "bg-destructive";
+  const color = level >= 0.8 ? "bg-primary" : level >= 0.5 ? "bg-accent-foreground" : "bg-destructive";
   const label = level >= 0.8 ? "High" : level >= 0.5 ? "Medium" : "Low";
   return (
     <div className="flex items-center gap-1" title={`${label} confidence (${(level * 100).toFixed(0)}%)`}>
@@ -74,9 +77,11 @@ function ConfidenceDot({ confidence }: { confidence?: number }) {
 function PipelineColumn({ title, icon: Icon, items, color }: {
   title: string;
   icon: React.ElementType;
-  items: { label: string; amount?: number; type?: string; role?: string; confidence?: number; matched_entity_name?: string; matched_entity_type?: string }[];
+  items: { label: string; amount?: number; type?: string; role?: string; confidence?: number; matched_entity_name?: string; matched_entity_type?: string; source_url?: string; evidence_type?: string }[];
   color: string;
 }) {
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
+
   if (items.length === 0) {
     return (
       <div className="flex-1 min-w-0">
@@ -102,6 +107,17 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
     affiliate: "Matched through affiliate",
   };
 
+  const EVIDENCE_LABELS: Record<string, string> = {
+    fec_filing: "FEC Filing",
+    lobbying_disclosure: "Senate Lobbying Disclosure",
+    usaspending_contract: "USASpending Contract Record",
+    sec_filing: "SEC EDGAR Filing",
+    opencorporates: "OpenCorporates Registry",
+    dol_enforcement: "DOL Enforcement Record",
+    opensecrets: "OpenSecrets Profile",
+    ai_analysis: "AI-Synthesized Analysis",
+  };
+
   return (
     <div className="flex-1 min-w-0">
       <div className={cn("flex items-center gap-2 mb-3 text-sm font-semibold", color)}>
@@ -110,31 +126,63 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
         <Badge variant="secondary" className="text-xs ml-auto">{items.length}</Badge>
       </div>
       <div className="space-y-2 max-h-80 overflow-y-auto">
-        {items.map((item, i) => (
-          <div key={i} className="p-3 bg-muted/50 rounded-lg border border-border">
-            <div className="flex items-center gap-1.5">
-              {item.confidence !== undefined && <ConfidenceDot confidence={item.confidence} />}
-              <div className="text-sm font-medium text-foreground truncate">{item.label}</div>
-            </div>
-            {item.amount !== undefined && item.amount > 0 && (
-              <div className="text-lg font-bold text-foreground">{formatCurrency(item.amount)}</div>
-            )}
-            {item.role && (
-              <div className="text-xs text-muted-foreground">{item.role}</div>
-            )}
-            {item.type && (
-              <Badge variant="outline" className="text-xs mt-1">
-                {item.type.replace(/_/g, ' ')}
-              </Badge>
-            )}
-            {item.matched_entity_type && item.matched_entity_type !== "direct_company" && (
-              <div className="mt-1.5 flex items-center gap-1 text-[10px] text-primary">
-                <Building2 className="w-3 h-3" />
-                {MATCH_LABELS[item.matched_entity_type] || `Via ${item.matched_entity_name || "related entity"}`}
-              </div>
-            )}
-          </div>
-        ))}
+        {items.map((item, i) => {
+          const isExpanded = expandedIdx === i;
+          const confidenceLevel = item.confidence ?? 0;
+          const confidenceLabel = confidenceLevel >= 0.8 ? "Verified" : confidenceLevel >= 0.5 ? "Inferred" : "Low confidence";
+
+          return (
+            <Collapsible key={i} open={isExpanded} onOpenChange={() => setExpandedIdx(isExpanded ? null : i)}>
+              <CollapsibleTrigger asChild>
+                <button className="w-full text-left p-3 bg-muted/50 rounded-lg border border-border hover:bg-muted/80 transition-colors">
+                  <div className="flex items-center gap-1.5">
+                    {item.confidence !== undefined && <ConfidenceDot confidence={item.confidence} />}
+                    <div className="text-sm font-medium text-foreground truncate flex-1">{item.label}</div>
+                    {isExpanded ? <ChevronDown className="w-3 h-3 text-muted-foreground shrink-0" /> : <ChevronRight className="w-3 h-3 text-muted-foreground shrink-0" />}
+                  </div>
+                  {item.amount !== undefined && item.amount > 0 && (
+                    <div className="text-lg font-bold text-foreground">{formatCurrency(item.amount)}</div>
+                  )}
+                  {item.role && <div className="text-xs text-muted-foreground">{item.role}</div>}
+                  {item.type && (
+                    <Badge variant="outline" className="text-xs mt-1">{item.type.replace(/_/g, ' ')}</Badge>
+                  )}
+                  {item.matched_entity_type && item.matched_entity_type !== "direct_company" && (
+                    <div className="mt-1.5 flex items-center gap-1 text-[10px] text-primary">
+                      <Building2 className="w-3 h-3" />
+                      {MATCH_LABELS[item.matched_entity_type] || `Via ${item.matched_entity_name || "related entity"}`}
+                    </div>
+                  )}
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="mx-1 mb-1 p-2.5 rounded-b-lg border border-t-0 border-border bg-card space-y-2">
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                    <span className="text-[11px] text-muted-foreground">
+                      Confidence: <span className={cn("font-semibold", confidenceLevel >= 0.8 ? "text-primary" : confidenceLevel >= 0.5 ? "text-accent-foreground" : "text-destructive")}>{confidenceLabel} ({(confidenceLevel * 100).toFixed(0)}%)</span>
+                    </span>
+                  </div>
+                  {item.evidence_type && (
+                    <div className="flex items-center gap-2">
+                      <Info className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-[11px] text-muted-foreground">Source: <span className="font-medium text-foreground">{EVIDENCE_LABELS[item.evidence_type] || item.evidence_type.replace(/_/g, ' ')}</span></span>
+                    </div>
+                  )}
+                  {item.source_url && (
+                    <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[11px] text-primary hover:underline">
+                      <ExternalLink className="w-3 h-3 shrink-0" />
+                      View original public record
+                    </a>
+                  )}
+                  {!item.source_url && !item.evidence_type && (
+                    <p className="text-[11px] text-muted-foreground italic">No direct source link available for this connection.</p>
+                  )}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          );
+        })}
       </div>
     </div>
   );
@@ -193,6 +241,101 @@ function SummaryBar({ data, state }: { data: ROIPipelineData; state: PipelineSta
           {showValues && data.totalBenefits > 0 ? formatCurrency(data.totalBenefits) : "—"}
         </div>
       </div>
+    </div>
+  );
+}
+
+const EVIDENCE_SOURCE_LABELS: Record<string, string> = {
+  fec_filing: "FEC Filing",
+  lobbying_disclosure: "Senate Lobbying Disclosure",
+  usaspending_contract: "USASpending Contract Record",
+  sec_filing: "SEC EDGAR Filing",
+  opencorporates: "OpenCorporates Registry",
+  dol_enforcement: "DOL Enforcement Record",
+  opensecrets: "OpenSecrets Profile",
+  ai_analysis: "AI-Synthesized Analysis",
+  congress_vote: "Congressional Vote Record",
+};
+
+function LinkageChain({ linkages }: { linkages: ROIPipelineData["linkages"] }) {
+  const [expandedLink, setExpandedLink] = useState<number | null>(null);
+
+  return (
+    <div className="relative space-y-0">
+      {linkages.map((link, i) => {
+        const isHigh = link.confidence >= 0.8;
+        const isMed = link.confidence >= 0.5;
+        const confidenceColor = isHigh ? "text-primary" : isMed ? "text-accent-foreground" : "text-destructive";
+        const confidenceBg = isHigh ? "bg-primary/10 border-primary/30" : isMed ? "bg-accent/20 border-accent/30" : "bg-destructive/10 border-destructive/30";
+        const confidenceLabel = isHigh ? "Verified" : isMed ? "Inferred" : "Unverified";
+        const dotColor = isHigh ? "bg-primary" : isMed ? "bg-accent-foreground" : "bg-destructive";
+        const lineColor = isHigh ? "bg-primary/30" : isMed ? "bg-accent/30" : "bg-destructive/30";
+        const isLast = i === linkages.length - 1;
+        const isExpanded = expandedLink === i;
+
+        return (
+          <div key={i} className="flex gap-3">
+            <div className="flex flex-col items-center shrink-0 w-5">
+              <div className={cn("w-3 h-3 rounded-full mt-3.5 shrink-0 ring-2 ring-background", dotColor)} />
+              {!isLast && <div className={cn("w-0.5 flex-1 min-h-[16px]", lineColor)} />}
+            </div>
+            <div className="flex-1 mb-2">
+              <Collapsible open={isExpanded} onOpenChange={() => setExpandedLink(isExpanded ? null : i)}>
+                <CollapsibleTrigger asChild>
+                  <button className={cn("w-full text-left p-3 rounded-lg border transition-colors hover:brightness-95", confidenceBg)}>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className="text-sm font-semibold text-foreground">{link.source}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-sm font-semibold text-foreground">{link.target}</span>
+                      <div className="ml-auto shrink-0">
+                        {isExpanded ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{link.description}</p>
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <div className={cn("w-1.5 h-1.5 rounded-full", dotColor)} />
+                      <span className={cn("text-[10px] font-medium uppercase tracking-wider", confidenceColor)}>
+                        {confidenceLabel} · {(link.confidence * 100).toFixed(0)}%
+                      </span>
+                    </div>
+                  </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="p-3 border border-t-0 border-border rounded-b-lg bg-card space-y-2">
+                    <div className="flex items-center gap-2">
+                      <ShieldAlert className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-[11px] text-muted-foreground">
+                        Confidence: <span className={cn("font-semibold", confidenceColor)}>{confidenceLabel} ({(link.confidence * 100).toFixed(0)}%)</span>
+                      </span>
+                    </div>
+                    {link.evidence_type && (
+                      <div className="flex items-center gap-2">
+                        <Info className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                        <span className="text-[11px] text-muted-foreground">Evidence: <span className="font-medium text-foreground">{EVIDENCE_SOURCE_LABELS[link.evidence_type] || link.evidence_type.replace(/_/g, ' ')}</span></span>
+                      </div>
+                    )}
+                    {link.source_name && (
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                        <span className="text-[11px] text-muted-foreground">Data source: <span className="font-medium text-foreground">{link.source_name}</span></span>
+                      </div>
+                    )}
+                    {link.source_url && (
+                      <a href={link.source_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[11px] text-primary hover:underline">
+                        <ExternalLink className="w-3 h-3 shrink-0" />
+                        View original public record
+                      </a>
+                    )}
+                    {!link.source_url && !link.evidence_type && !link.source_name && (
+                      <p className="text-[11px] text-muted-foreground italic">Source details will be available after primary-source verification completes.</p>
+                    )}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -303,7 +446,7 @@ export function ROIPipelineCard({
             <div className="flex flex-col md:flex-row gap-4">
               <PipelineColumn title="Money In" icon={DollarSign} items={data.moneyIn} color="text-destructive" />
               <FlowArrow />
-              <PipelineColumn title="Influence Network" icon={Users} items={data.network.map(n => ({ label: n.label, role: n.role, type: n.type }))} color="text-accent-foreground" />
+              <PipelineColumn title="Influence Network" icon={Users} items={data.network.map(n => ({ label: n.label, role: n.role, type: n.type, source_url: n.source_url, evidence_type: n.evidence_type }))} color="text-accent-foreground" />
               <FlowArrow />
               <PipelineColumn title="Benefits Out" icon={Landmark} items={data.benefitsOut} color="text-primary" />
             </div>
@@ -346,7 +489,7 @@ export function ROIPipelineCard({
             <div className="flex flex-col md:flex-row gap-4">
               <PipelineColumn title="Money In" icon={DollarSign} items={data.moneyIn} color="text-destructive" />
               <FlowArrow />
-              <PipelineColumn title="Influence Network" icon={Users} items={data.network.map(n => ({ label: n.label, role: n.role, type: n.type }))} color="text-accent-foreground" />
+              <PipelineColumn title="Influence Network" icon={Users} items={data.network.map(n => ({ label: n.label, role: n.role, type: n.type, source_url: n.source_url, evidence_type: n.evidence_type }))} color="text-accent-foreground" />
               <FlowArrow />
               <PipelineColumn title="Benefits Out" icon={Landmark} items={data.benefitsOut} color="text-primary" />
             </div>
@@ -361,44 +504,7 @@ export function ROIPipelineCard({
               Connection Chain
               <Badge variant="secondary" className="text-xs ml-auto">{data.linkages.length} links</Badge>
             </div>
-            <div className="relative space-y-0">
-              {data.linkages.map((link, i) => {
-                const isHigh = link.confidence >= 0.8;
-                const isMed = link.confidence >= 0.5;
-                const confidenceColor = isHigh ? "text-primary" : isMed ? "text-yellow-500" : "text-destructive";
-                const confidenceBg = isHigh ? "bg-primary/10 border-primary/30" : isMed ? "bg-yellow-500/10 border-yellow-500/30" : "bg-destructive/10 border-destructive/30";
-                const confidenceLabel = isHigh ? "Verified" : isMed ? "Inferred" : "Unverified";
-                const dotColor = isHigh ? "bg-primary" : isMed ? "bg-yellow-500" : "bg-destructive";
-                const lineColor = isHigh ? "bg-primary/30" : isMed ? "bg-yellow-500/30" : "bg-destructive/30";
-                const isLast = i === data.linkages.length - 1;
-
-                return (
-                  <div key={i} className="flex gap-3">
-                    {/* Vertical timeline spine */}
-                    <div className="flex flex-col items-center shrink-0 w-5">
-                      <div className={cn("w-3 h-3 rounded-full mt-3.5 shrink-0 ring-2 ring-background", dotColor)} />
-                      {!isLast && <div className={cn("w-0.5 flex-1 min-h-[16px]", lineColor)} />}
-                    </div>
-
-                    {/* Card */}
-                    <div className={cn("flex-1 mb-2 p-3 rounded-lg border", confidenceBg)}>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-sm font-semibold text-foreground">{link.source}</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                        <span className="text-sm font-semibold text-foreground">{link.target}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{link.description}</p>
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <div className={cn("w-1.5 h-1.5 rounded-full", dotColor)} />
-                        <span className={cn("text-[10px] font-medium uppercase tracking-wider", confidenceColor)}>
-                          {confidenceLabel} · {(link.confidence * 100).toFixed(0)}%
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <LinkageChain linkages={data.linkages} />
           </div>
         )}
 
