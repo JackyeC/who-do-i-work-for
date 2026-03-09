@@ -109,6 +109,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ─── LIVE INFLUENCE PREVIEW ─── */}
+      <LiveInfluencePreview />
+
       {/* ─── FOUR CORE QUESTIONS ─── */}
       <section className="section-padding border-t border-border/30">
         <div className="container mx-auto px-4">
