@@ -506,6 +506,16 @@ export default function CompanyProfile() {
   const pipelineCompanyName = company?.name || dbCompany?.name;
   const { data: livePipeline, isLoading: pipelineLoading, autoScanning, hasBeenScanned, triggerScan } = useROIPipeline(pipelineCompanyId, pipelineCompanyName);
 
+  // Dynamic SEO metadata — must be called unconditionally (before any early returns)
+  const seoTarget = dbCompany || (company ? { name: company.name, industry: company.industry || '', state: company.state || '', description: '', slug: company.id } : null);
+  useCompanySEO({
+    name: seoTarget?.name || '',
+    industry: seoTarget?.industry || '',
+    state: seoTarget?.state || '',
+    description: (seoTarget as any)?.description || '',
+    slug: id || seoTarget?.slug || '',
+  });
+
   // Loading state for DB-only companies
   if (!company && dbLoading) {
     return (
