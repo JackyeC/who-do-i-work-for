@@ -2,11 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   Building2, Search, Network, CheckCircle2, AlertTriangle, 
-  Info, ChevronDown, ChevronUp 
+  Info, ChevronDown, ChevronUp, Clock, XCircle 
 } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
 
 interface EntityRelationship {
   name: string;
@@ -30,6 +31,7 @@ interface ModuleStatus {
   phase: string;
   signalsFound?: number;
   sourcesScanned?: number;
+  completedAt?: string;
 }
 
 interface ScanCoveragePanelProps {
@@ -72,6 +74,7 @@ function getCategoryStatus(modules: string[], moduleStatuses: Record<string, Mod
   let sourcesChecked = 0;
   let hasCompleted = false;
   let hasFailed = false;
+  let latestTimestamp: string | null = null;
 
   for (const modKey of modules) {
     const mod = moduleStatuses[modKey];
@@ -84,9 +87,12 @@ function getCategoryStatus(modules: string[], moduleStatuses: Record<string, Mod
     if (mod.status === "failed" || mod.status === "no_sources_found") {
       hasFailed = true;
     }
+    if (mod.completedAt && (!latestTimestamp || mod.completedAt > latestTimestamp)) {
+      latestTimestamp = mod.completedAt;
+    }
   }
 
-  return { signalsFound, sourcesChecked, hasCompleted, hasFailed };
+  return { signalsFound, sourcesChecked, hasCompleted, hasFailed, latestTimestamp };
 }
 
 export function ScanCoveragePanel({
@@ -161,7 +167,7 @@ export function ScanCoveragePanel({
                       <div key={i} className="flex items-center gap-2 p-2 rounded-md bg-muted/50 border border-border">
                         <div className={cn(
                           "w-2 h-2 rounded-full",
-                          rel.confidence >= 0.8 ? "bg-primary" : rel.confidence >= 0.5 ? "bg-yellow-500" : "bg-muted-foreground"
+                          rel.confidence >= 0.8 ? "bg-primary" : rel.confidence >= 0.5 ? "bg-accent-foreground" : "bg-muted-foreground"
                         )} />
                         <span className="text-xs text-foreground truncate">{rel.name}</span>
                         <Badge variant="outline" className="text-[10px] ml-auto shrink-0">
@@ -186,30 +192,41 @@ export function ScanCoveragePanel({
               </div>
               <div className="space-y-1.5">
                 {CATEGORY_CHECKS.map(cat => {
-                  const { signalsFound, sourcesChecked, hasCompleted, hasFailed } = getCategoryStatus(cat.modules, moduleStatuses);
+                  const { signalsFound, sourcesChecked, hasCompleted, hasFailed, latestTimestamp } = getCategoryStatus(cat.modules, moduleStatuses);
                   return (
-                     <div key={cat.key} className="flex items-center justify-between p-2 rounded-md bg-muted/30 border border-border/50">
-                       <span className="text-xs text-foreground">{cat.label}</span>
-                       <div className="flex items-center gap-2">
+                     <div key={cat.key} className="flex items-center justify-between p-2.5 rounded-md bg-muted/30 border border-border/50">
+                       <div className="flex items-center gap-2 min-w-0">
+                         {hasCompleted && signalsFound > 0 ? (
+                           <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                         ) : hasCompleted && signalsFound === 0 ? (
+                           <CheckCircle2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                         ) : hasFailed ? (
+                           <XCircle className="w-3.5 h-3.5 text-destructive shrink-0" />
+                         ) : (
+                           <Clock className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
+                         )}
+                         <span className="text-xs text-foreground truncate">{cat.label}</span>
+                       </div>
+                       <div className="flex items-center gap-2 shrink-0">
                          {hasCompleted && signalsFound > 0 && (
-                           <span className="text-xs text-primary font-medium">
-                             {signalsFound} match{signalsFound !== 1 ? "es" : ""} found
-                           </span>
+                           <Badge variant="default" className="text-[10px] px-1.5 py-0">
+                             {signalsFound} match{signalsFound !== 1 ? "es" : ""}
+                           </Badge>
                          )}
                          {hasCompleted && signalsFound === 0 && (
-                           <span className="text-xs text-muted-foreground">No records found yet</span>
+                           <span className="text-[11px] text-muted-foreground">No records</span>
                          )}
                          {hasFailed && !hasCompleted && (
-                           <span className="text-xs text-destructive">Check failed</span>
+                           <span className="text-[11px] text-destructive">Failed</span>
                          )}
                          {!hasCompleted && !hasFailed && (
-                           <span className="text-xs text-muted-foreground/60">Not checked</span>
+                           <span className="text-[11px] text-muted-foreground/50">Not checked</span>
                          )}
-                         {hasCompleted ? (
-                           <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
-                         ) : hasFailed ? (
-                           <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
-                         ) : null}
+                         {latestTimestamp && (
+                           <span className="text-[10px] text-muted-foreground/70 ml-1 hidden sm:inline">
+                             {formatDistanceToNow(new Date(latestTimestamp), { addSuffix: true })}
+                           </span>
+                         )}
                        </div>
                      </div>
                   );
