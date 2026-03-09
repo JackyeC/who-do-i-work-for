@@ -7,6 +7,7 @@ import {
   AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark, FileText,
   BarChart3, Loader2, Sparkles, Search, ClipboardCheck, CheckCircle2, HelpCircle
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { LensSelector } from "@/components/LensSelector";
 import { ValuesCheckSection, type ValuesCheckSignal } from "@/components/values-check/ValuesCheckSection";
 import { DataGlossary } from "@/components/DataGlossary";
@@ -1660,6 +1661,32 @@ export default function CompanyProfile() {
               </a>
             </p>
           </div>
+
+          {/* Curiosity Loop */}
+          <Card className="border-civic-gold-muted/30">
+            <CardContent className="p-8 text-center">
+              <h3 className="text-xl font-bold text-foreground mb-2 font-display">Curious about your own workplace?</h3>
+              <p className="text-sm text-muted-foreground mb-6">Search your employer.</p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const input = (e.target as HTMLFormElement).elements.namedItem("curiosity-search") as HTMLInputElement;
+                  if (input.value.trim()) window.location.href = `/search?q=${encodeURIComponent(input.value.trim())}`;
+                }}
+                className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+              >
+                <Input
+                  name="curiosity-search"
+                  placeholder="Enter a company name…"
+                  className="h-12 rounded-xl flex-1"
+                />
+                <Button type="submit" className="h-12 px-6 rounded-xl font-semibold gap-2">
+                  <Search className="w-4 h-4" />
+                  Search
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
 
