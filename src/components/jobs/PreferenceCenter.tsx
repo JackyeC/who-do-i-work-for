@@ -45,7 +45,7 @@ export function PreferenceCenter() {
             Signal Requirements
           </CardTitle>
           <CardDescription>
-            Toggle the CivicLens signals you <strong>require</strong> in an employer. Only jobs at companies with these verified signals will appear in your Aligned Jobs feed.
+            Toggle the signals you <strong>require</strong> in an employer. Only jobs at companies with these verified signals will appear in your Aligned Jobs feed.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
