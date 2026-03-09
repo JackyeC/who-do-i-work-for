@@ -414,7 +414,7 @@ export default function CompanyProfile() {
     queryKey: ["values-check-signals", dbCompanyId],
     queryFn: async () => {
       const { data } = await supabase.from("values_check_signals" as any).select("*").eq("company_id", dbCompanyId!).order("confidence_score", { ascending: false });
-      return (data || []) as ValuesCheckSignal[];
+      return (data || []) as unknown as ValuesCheckSignal[];
     },
     enabled: !!dbCompanyId,
     refetchInterval: pollInterval,
