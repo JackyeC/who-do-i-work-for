@@ -2,11 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   Building2, Search, Network, CheckCircle2, AlertTriangle, 
-  Info, ChevronDown, ChevronUp 
+  Info, ChevronDown, ChevronUp, Clock, XCircle 
 } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
 
 interface EntityRelationship {
   name: string;
