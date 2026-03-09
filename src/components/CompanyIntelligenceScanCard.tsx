@@ -104,6 +104,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
 
   const runScan = async () => {
     setIsScanning(true);
+    setShowOverlay(true);
     try {
       const [orchestrated, unified] = await Promise.allSettled([
         supabase.functions.invoke("company-intelligence-scan", {
