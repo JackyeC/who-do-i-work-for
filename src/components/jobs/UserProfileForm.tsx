@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { User, Save, Loader2, Plus, X } from "lucide-react";
+import { User, Save, Loader2, Plus, X, Upload, FileText } from "lucide-react";
 
 export function UserProfileForm() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [skillInput, setSkillInput] = useState("");
   const [form, setForm] = useState({
     full_name: "",
@@ -61,6 +62,63 @@ export function UserProfileForm() {
     setForm((f) => ({ ...f, skills: f.skills.filter((s) => s !== skill) }));
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (file.size > 20 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Maximum file size is 20MB", variant: "destructive" });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const filePath = `${user.id}/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from("career_docs").upload(filePath, file);
+      if (uploadError) throw uploadError;
+
+      const { data: doc, error: docError } = await supabase
+        .from("user_documents")
+        .insert({
+          user_id: user.id,
+          document_type: "resume",
+          file_path: filePath,
+          original_filename: file.name,
+        })
+        .select()
+        .single();
+
+      if (docError) throw docError;
+
+      const { data: parseData, error: parseError } = await supabase.functions.invoke("parse-career-document", {
+        body: { documentId: doc.id },
+      });
+
+      if (parseError) throw parseError;
+
+      const { data: profile } = await supabase
+        .from("user_career_profile")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (profile) {
+        setForm((f) => ({
+          ...f,
+          skills: profile.skills || f.skills,
+          target_job_titles: (profile.job_titles || []).join(", ") || f.target_job_titles,
+        }));
+      }
+
+      toast({ title: "Resume parsed successfully", description: "Profile fields have been auto-filled" });
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
@@ -104,6 +162,42 @@ export function UserProfileForm() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
+        <div className="space-y-2">
+          <Label>Upload Resume (Auto-Fill)</Label>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="gap-2"
+              disabled={uploading}
+              onClick={() => document.getElementById("resume-upload")?.click()}
+            >
+              {uploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Parsing...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  Upload Resume
+                </>
+              )}
+            </Button>
+            <input
+              id="resume-upload"
+              type="file"
+              accept=".pdf,.doc,.docx,.txt"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <p className="text-xs text-muted-foreground">PDF, DOC, DOCX • Max 20MB</p>
+          </div>
+          <p className="text-xs text-muted-foreground flex items-center gap-1">
+            <FileText className="w-3 h-3" />
+            AI will extract your skills, experience, and job titles automatically
+          </p>
+        </div>
         <div className="space-y-2">
           <Label htmlFor="full_name">Full Name</Label>
           <Input
