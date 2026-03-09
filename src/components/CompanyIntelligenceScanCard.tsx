@@ -331,6 +331,16 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
           </div>
         )}
       </CardContent>
+
+      <ScanProgressOverlay
+        isOpen={showOverlay}
+        companyName={companyName}
+        moduleStatuses={moduleStatuses}
+        scanStatus={latestScan?.scan_status || null}
+        totalSignals={latestScan?.total_signals_found || 0}
+        totalSources={latestScan?.total_sources_scanned || 0}
+        onClose={() => setShowOverlay(false)}
+      />
     </Card>
   );
 }
