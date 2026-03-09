@@ -258,6 +258,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ─── RECENT SIGNALS FEED ─── */}
+      <RecentSignalsFeed />
+
       {/* ─── INFLUENCE PIPELINE VISUAL ─── */}
       <InfluencePipelineVisual />
 
