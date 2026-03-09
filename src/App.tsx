@@ -25,6 +25,7 @@ import JobDashboard from "./pages/JobDashboard";
 import OfferReview from "./pages/OfferReview";
 import MyOfferReviews from "./pages/MyOfferReviews";
 import SignalAlerts from "./pages/SignalAlerts";
+import OfferReviewDirect from "./pages/OfferReviewDirect";
 import CareerIntelligence from "./pages/CareerIntelligence";
 import Check from "./pages/Check";
 import CareerMap from "./pages/CareerMap";
