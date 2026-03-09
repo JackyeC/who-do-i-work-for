@@ -374,7 +374,7 @@ Deno.serve(async (req) => {
             // Try FEC committee lookup for ALL unknowns to get accurate party
             const unknownCommittees = [...allCommitteeNames].filter(n => inferPartyFromName(n) === 'I');
             console.log(`[sync-openfec] Looking up party for ${unknownCommittees.length} committees via FEC...`);
-            for (const committeeName of unknownCommittees.slice(0, 25)) {
+            for (const committeeName of unknownCommittees.slice(0, 15)) {
               try {
                 const searchData = await fecFetch('/committees/', { q: committeeName, per_page: '3' }, apiKey);
                 // Find best match by comparing names
