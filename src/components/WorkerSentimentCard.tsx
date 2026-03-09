@@ -123,6 +123,7 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
       toast({ title: "Scan failed", description: e.message || "Could not complete worker sentiment scan.", variant: "destructive" });
     } finally {
       setIsScanning(false);
+      setScanStartTime(null);
     }
   };
 
