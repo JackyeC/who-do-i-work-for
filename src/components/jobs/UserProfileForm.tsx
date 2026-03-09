@@ -15,6 +15,7 @@ export function UserProfileForm() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [skillInput, setSkillInput] = useState("");
   const [form, setForm] = useState({
     full_name: "",
