@@ -117,7 +117,8 @@ Deno.serve(async (req) => {
       console.warn('[intelligence-scan] Entity resolution error (non-critical):', resolveErr);
     }
 
-    // Check for existing in-progress scan (auto-expire stale scans older than 10 minutes)
+    // Check for existing in-progress scan (auto-expire stale scans older than 5 minutes)
+    const forceRescan = body?.forceRescan === true;
     const { data: existingScan } = await supabase
       .from('scan_runs')
       .select('id, scan_status, created_at')
@@ -127,14 +128,15 @@ Deno.serve(async (req) => {
 
     if (existingScan) {
       const scanAge = Date.now() - new Date(existingScan.created_at).getTime();
-      const TEN_MINUTES = 10 * 60 * 1000;
+      const FIVE_MINUTES = 5 * 60 * 1000;
 
-      if (scanAge > TEN_MINUTES) {
+      if (forceRescan || scanAge > FIVE_MINUTES) {
         // Auto-expire stale scan
-        console.warn(`[intelligence-scan] Auto-expiring stale scan ${existingScan.id} (age: ${Math.round(scanAge / 1000)}s)`);
+        const reason = forceRescan ? 'Force re-scan requested by user' : `Auto-expired: scan exceeded 5-minute timeout`;
+        console.warn(`[intelligence-scan] Expiring scan ${existingScan.id}: ${reason} (age: ${Math.round(scanAge / 1000)}s)`);
         await supabase
           .from('scan_runs')
-          .update({ scan_status: 'failed', error_log: { reason: 'Auto-expired: scan exceeded 10-minute timeout', expired_at: new Date().toISOString() } })
+          .update({ scan_status: 'failed', error_log: { reason, expired_at: new Date().toISOString() } })
           .eq('id', existingScan.id);
       } else {
         return new Response(JSON.stringify({

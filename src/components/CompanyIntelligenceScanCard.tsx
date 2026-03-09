@@ -103,13 +103,13 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
     }
   }, [isScanning, latestScan?.scan_status, queryClient]);
 
-  const runScan = async () => {
+  const runScan = async (forceRescan = false) => {
     setIsScanning(true);
     setShowOverlay(true);
     try {
       const [orchestrated, unified] = await Promise.allSettled([
         supabase.functions.invoke("company-intelligence-scan", {
-          body: { companyId, companyName },
+          body: { companyId, companyName, forceRescan },
         }),
         supabase.functions.invoke("civiclens-intelligence-scan", {
           body: { companyId, companyName, scanParts: ['benefits', 'ai_hiring', 'audit_hunt'] },
@@ -181,7 +181,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
           </CardTitle>
           <div className="flex items-center gap-2">
             {overallStatusBadge()}
-            <Button onClick={runScan} disabled={isScanning} size="sm" className="gap-2">
+            <Button onClick={() => runScan()} disabled={isScanning} size="sm" className="gap-2">
               {isScanning ? (
                 <><Loader2 className="w-4 h-4 animate-spin" />Scanning...</>
               ) : latestScan ? (
@@ -341,6 +341,10 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
         totalSignals={latestScan?.total_signals_found || 0}
         totalSources={latestScan?.total_sources_scanned || 0}
         onClose={() => setShowOverlay(false)}
+        onForceRescan={() => {
+          setShowOverlay(false);
+          runScan(true);
+        }}
       />
     </Card>
   );
