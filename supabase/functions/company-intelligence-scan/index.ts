@@ -526,6 +526,28 @@ Deno.serve(async (req) => {
       warnings.push('ROI calculation failed');
     }
 
+    // ─── Phase 3.5: Map Issue Signals ───
+    console.log(`[intelligence-scan] ═══ Phase 3.5: Mapping Issue Signals ═══`);
+
+    try {
+      const issueResp = await fetch(`${supabaseUrl}/functions/v1/map-issue-signals`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ companyId }),
+      });
+
+      if (issueResp.ok) {
+        const issueResult = await issueResp.json();
+        console.log(`[intelligence-scan] Issue signals mapped: ${issueResult.signalsFound} signals across ${Object.keys(issueResult.categoryCounts || {}).length} categories`);
+      } else {
+        console.warn(`[intelligence-scan] Issue signal mapping failed: HTTP ${issueResp.status}`);
+        warnings.push('Issue signal mapping failed (non-critical)');
+      }
+    } catch (issueErr) {
+      console.warn('[intelligence-scan] Issue signal mapping error (non-critical):', issueErr);
+      warnings.push('Issue signal mapping error (non-critical)');
+    }
+
     // ─── Phase 4: Set up Browse AI page monitors ───
     console.log(`[intelligence-scan] ═══ Phase 4: Browse AI Monitoring Setup ═══`);
 

@@ -3,8 +3,8 @@ import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, Crosshair, Heart, Hammer, Leaf, Scale, Rainbow, Vote,
-  Globe, BookOpen, Stethoscope, ShoppingCart, ArrowRight, Building2,
-  Sparkles, TrendingUp, AlertTriangle, ExternalLink,
+  Globe, BookOpen, Stethoscope, ShoppingCart, ArrowRight,
+  Sparkles, TrendingUp, AlertTriangle, ExternalLink, Shield,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -32,39 +32,45 @@ const ISSUE_AREAS = [
 
 type IssueKey = typeof ISSUE_AREAS[number]["key"];
 
+const CONFIDENCE_STYLES: Record<string, { text: string; className: string }> = {
+  high: { text: "High Confidence", className: "border-green-500/30 text-green-700 dark:text-green-400" },
+  medium: { text: "Medium Confidence", className: "border-yellow-500/30 text-yellow-700 dark:text-yellow-400" },
+  low: { text: "Low Confidence", className: "border-orange-500/30 text-orange-700 dark:text-orange-400" },
+};
+
 export default function ValuesSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedIssue = searchParams.get("issue") as IssueKey | null;
   const [textFilter, setTextFilter] = useState("");
 
+  // Fetch signals for selected issue from issue_signals table
   const { data: issueResults, isLoading } = useQuery({
-    queryKey: ["values-search", selectedIssue],
+    queryKey: ["issue-signals", selectedIssue],
     enabled: !!selectedIssue,
     queryFn: async () => {
       if (!selectedIssue) return [];
-
       const { data, error } = await supabase
-        .from("values_check_signals" as any)
-        .select("company_id, signal_title, signal_category, signal_description, amount, confidence_label, source_name, year")
-        .eq("issue_area", selectedIssue)
-        .order("confidence_score", { ascending: false })
+        .from("issue_signals" as any)
+        .select("id, entity_id, issue_category, signal_type, source_dataset, description, source_url, confidence_score, amount, created_at")
+        .eq("issue_category", selectedIssue)
+        .order("confidence_score", { ascending: true }) // high first alphabetically
         .limit(500);
-
-      if (error) { console.error("Values search error:", error); return []; }
+      if (error) { console.error("Issue signals query error:", error); return []; }
       return data || [];
     },
   });
 
-  // Group signals by company, then fetch company details
+  // Get unique company IDs from signals
   const companyIds = useMemo(() => {
     if (!issueResults) return [];
     const ids = new Set<string>();
-    for (const r of issueResults as any[]) ids.add(r.company_id);
+    for (const r of issueResults as any[]) ids.add(r.entity_id);
     return Array.from(ids);
   }, [issueResults]);
 
+  // Fetch company details
   const { data: companies } = useQuery({
-    queryKey: ["values-search-companies", companyIds],
+    queryKey: ["issue-search-companies", companyIds],
     enabled: companyIds.length > 0,
     queryFn: async () => {
       const { data } = await supabase
@@ -84,7 +90,7 @@ export default function ValuesSearch() {
       map.set(company.id, { company, signals: [] });
     }
     for (const signal of issueResults as any[]) {
-      const entry = map.get(signal.company_id);
+      const entry = map.get(signal.entity_id);
       if (entry) entry.signals.push(signal);
     }
 
@@ -105,16 +111,16 @@ export default function ValuesSearch() {
 
   const issueInfo = ISSUE_AREAS.find(i => i.key === selectedIssue);
 
-  // Count signals per issue for the overview
+  // Count signals per issue for overview cards
   const { data: issueCounts } = useQuery({
-    queryKey: ["values-issue-counts"],
+    queryKey: ["issue-signal-counts"],
     queryFn: async () => {
       const counts: Record<string, number> = {};
       for (const issue of ISSUE_AREAS) {
         const { count } = await supabase
-          .from("values_check_signals" as any)
+          .from("issue_signals" as any)
           .select("id", { count: "exact", head: true })
-          .eq("issue_area", issue.key);
+          .eq("issue_category", issue.key);
         counts[issue.key] = count || 0;
       }
       return counts;
@@ -191,7 +197,7 @@ export default function ValuesSearch() {
             <>
               {/* Selected issue results */}
               <div className="flex items-center gap-3 mb-6">
-                <Button variant="ghost" size="sm" onClick={() => setSearchParams({})}>
+                <Button variant="ghost" size="sm" onClick={() => { setSearchParams({}); setTextFilter(""); }}>
                   ← All Issues
                 </Button>
                 <Separator orientation="vertical" className="h-5" />
@@ -283,25 +289,40 @@ export default function ValuesSearch() {
                               </div>
 
                               <div className="space-y-2">
-                                {signals.slice(0, 3).map((signal: any, i: number) => (
-                                  <div key={i} className="flex items-start gap-2 text-sm">
-                                    <TrendingUp className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
-                                    <div className="flex-1 min-w-0">
-                                      <span className="text-foreground font-medium">{signal.signal_title}</span>
-                                      {signal.amount && (
-                                        <span className="text-primary font-semibold ml-1.5">
-                                          {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(signal.amount)}
-                                        </span>
-                                      )}
-                                      <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="text-xs text-muted-foreground">{signal.source_name}</span>
-                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                          {signal.confidence_label}
-                                        </Badge>
+                                {signals.slice(0, 3).map((signal: any, i: number) => {
+                                  const conf = CONFIDENCE_STYLES[signal.confidence_score] || CONFIDENCE_STYLES.low;
+                                  return (
+                                    <div key={signal.id || i} className="flex items-start gap-2 text-sm">
+                                      <TrendingUp className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                                      <div className="flex-1 min-w-0">
+                                        <span className="text-foreground font-medium">{signal.description}</span>
+                                        {signal.amount && (
+                                          <span className="text-primary font-semibold ml-1.5">
+                                            {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(signal.amount)}
+                                          </span>
+                                        )}
+                                        <div className="flex items-center gap-2 mt-0.5">
+                                          <span className="text-xs text-muted-foreground capitalize">
+                                            {signal.source_dataset?.replace(/_/g, " ")}
+                                          </span>
+                                          <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${conf.className}`}>
+                                            {conf.text}
+                                          </Badge>
+                                          {signal.source_url && (
+                                            <a
+                                              href={signal.source_url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="inline-flex items-center gap-0.5 text-[10px] text-primary hover:underline"
+                                            >
+                                              <Shield className="w-2.5 h-2.5" /> Source
+                                            </a>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                ))}
+                                  );
+                                })}
                                 {signals.length > 3 && (
                                   <Link
                                     to={`/company/${company.slug}`}
