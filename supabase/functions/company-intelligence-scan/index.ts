@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
 
     if (existingScan) {
       const scanAge = Date.now() - new Date(existingScan.created_at).getTime();
-      const FIVE_MINUTES = 5 * 60 * 1000;
+      const THREE_MINUTES = 3 * 60 * 1000;
 
       if (forceRescan || scanAge > FIVE_MINUTES) {
         // Auto-expire stale scan
