@@ -404,15 +404,29 @@ export function ROIPipelineCard({
 
         {/* Footer — only for states with data */}
         {(state === "results" || state === "partial" || state === "no_evidence") && (
-          <div className="flex items-center justify-between mt-4 border-t border-border pt-3">
-            <p className="text-xs text-muted-foreground">
-              Confidence: ≥80% = direct filings · 50-79% = inferred · &lt;50% = unverified
-            </p>
-            {onTriggerScan && state !== "no_evidence" && (
-              <Button variant="ghost" size="sm" onClick={onTriggerScan} className="gap-1.5 text-xs h-7">
-                <Search className="w-3 h-3" />
-                Re-scan
-              </Button>
+          <div className="mt-4 border-t border-border pt-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                Confidence: ≥80% = direct filings · 50-79% = inferred · &lt;50% = unverified
+              </p>
+              {onTriggerScan && state !== "no_evidence" && (
+                <Button variant="ghost" size="sm" onClick={onTriggerScan} className="gap-1.5 text-xs h-7">
+                  <Search className="w-3 h-3" />
+                  Re-scan
+                </Button>
+              )}
+            </div>
+            {enrichmentData && (
+              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <Building2 className="w-3 h-3 shrink-0" />
+                <span>
+                  {enrichmentData.verification_status === 'cross_checked_primary_source'
+                    ? 'Verified against primary records'
+                    : enrichmentData.verification_status === 'partially_verified'
+                      ? 'Partial evidence found — some data cross-checked'
+                      : 'Third-party summary available — primary verification pending'}
+                </span>
+              </div>
             )}
           </div>
         )}
