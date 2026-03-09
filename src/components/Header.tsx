@@ -87,7 +87,7 @@ export function Header() {
             <Link to="/search">
               <Button size="sm" variant="outline" className="gap-1.5 rounded-xl">
                 <Search className="w-3.5 h-3.5" />
-                Search
+                Search Everything
               </Button>
             </Link>
             <Link to="/add-company">
