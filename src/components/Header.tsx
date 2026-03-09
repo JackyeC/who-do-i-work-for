@@ -350,7 +350,7 @@ export function Header() {
 
         {/* ── Mobile toggle ── */}
         <button
-          className="xl:hidden p-2.5 -mr-2 text-muted-foreground hover:text-foreground rounded-lg active:bg-accent transition-colors"
+          className="lg:hidden p-2.5 -mr-2 text-muted-foreground hover:text-foreground rounded-lg active:bg-accent transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
