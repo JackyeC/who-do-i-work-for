@@ -1793,48 +1793,140 @@ export type Database = {
           },
         ]
       }
+      company_values_evidence: {
+        Row: {
+          amount: number | null
+          confidence_level: string
+          created_at: string
+          entity_id: string
+          event_date: string | null
+          evidence_excerpt: string | null
+          evidence_summary: string | null
+          id: string
+          related_legislation: string | null
+          related_org: string | null
+          related_politician: string | null
+          signal_type: string
+          source_name: string | null
+          source_title: string | null
+          source_type: string | null
+          source_url: string | null
+          updated_at: string
+          values_lens: string
+          verification_status: string
+        }
+        Insert: {
+          amount?: number | null
+          confidence_level?: string
+          created_at?: string
+          entity_id: string
+          event_date?: string | null
+          evidence_excerpt?: string | null
+          evidence_summary?: string | null
+          id?: string
+          related_legislation?: string | null
+          related_org?: string | null
+          related_politician?: string | null
+          signal_type: string
+          source_name?: string | null
+          source_title?: string | null
+          source_type?: string | null
+          source_url?: string | null
+          updated_at?: string
+          values_lens: string
+          verification_status?: string
+        }
+        Update: {
+          amount?: number | null
+          confidence_level?: string
+          created_at?: string
+          entity_id?: string
+          event_date?: string | null
+          evidence_excerpt?: string | null
+          evidence_summary?: string | null
+          id?: string
+          related_legislation?: string | null
+          related_org?: string | null
+          related_politician?: string | null
+          signal_type?: string
+          source_name?: string | null
+          source_title?: string | null
+          source_type?: string | null
+          source_url?: string | null
+          updated_at?: string
+          values_lens?: string
+          verification_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_values_evidence_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_values_signals: {
         Row: {
           company_id: string
           confidence: string
+          confidence_level: string | null
           created_at: string
           detected_by: string
+          evidence_count: number | null
           evidence_text: string | null
           evidence_url: string | null
           id: string
           scan_date: string
           severity: string
+          signal_direction: string | null
+          signal_label: string | null
           signal_summary: string | null
           signal_type: string
           value_category: string
+          values_lens: string | null
+          verification_status: string | null
         }
         Insert: {
           company_id: string
           confidence?: string
+          confidence_level?: string | null
           created_at?: string
           detected_by?: string
+          evidence_count?: number | null
           evidence_text?: string | null
           evidence_url?: string | null
           id?: string
           scan_date?: string
           severity?: string
+          signal_direction?: string | null
+          signal_label?: string | null
           signal_summary?: string | null
           signal_type: string
           value_category: string
+          values_lens?: string | null
+          verification_status?: string | null
         }
         Update: {
           company_id?: string
           confidence?: string
+          confidence_level?: string | null
           created_at?: string
           detected_by?: string
+          evidence_count?: number | null
           evidence_text?: string | null
           evidence_url?: string | null
           id?: string
           scan_date?: string
           severity?: string
+          signal_direction?: string | null
+          signal_label?: string | null
           signal_summary?: string | null
           signal_type?: string
           value_category?: string
+          values_lens?: string | null
+          verification_status?: string | null
         }
         Relationships: [
           {
