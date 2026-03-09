@@ -783,7 +783,7 @@ export default function CompanyProfile() {
                         <Landmark className="w-3.5 h-3.5" />
                         Gov Contracts
                       </div>
-                      <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                      <div className="text-3xl font-bold text-foreground font-display-number">
                         {dbCompany.government_contracts ? formatCurrency(dbCompany.government_contracts) : "—"}
                       </div>
                       <p className="text-[11px] text-muted-foreground mt-2 leading-snug">Federal contracts awarded to this company — taxpayer money received.</p>
