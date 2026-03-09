@@ -59,6 +59,7 @@ serve(async (req) => {
       { data: stateContribs },
       { data: stateLobby },
       { data: enrichment },
+      { data: execRecipients },
     ] = await Promise.all([
       db.from("company_candidates").select("*").eq("company_id", companyId),
       db.from("company_executives").select("*").eq("company_id", companyId),
@@ -71,7 +72,18 @@ serve(async (req) => {
       db.from("company_state_contributions").select("*").eq("company_id", companyId),
       db.from("company_state_lobbying").select("*").eq("company_id", companyId),
       db.from("organization_profile_enrichment").select("*").eq("company_id", companyId).maybeSingle(),
+      db.from("executive_recipients").select("*, company_executives!inner(company_id)").eq("company_executives.company_id", companyId).order("amount", { ascending: false }),
     ]);
+
+    // Build a map of executive_id → top recipients
+    const execRecipientsMap = new Map<string, { name: string; party: string; amount: number }[]>();
+    if (execRecipients) {
+      for (const r of execRecipients) {
+        const list = execRecipientsMap.get(r.executive_id) || [];
+        list.push({ name: r.name, party: r.party || "Unknown", amount: r.amount || 0 });
+        execRecipientsMap.set(r.executive_id, list);
+      }
+    }
 
     const signals: any[] = [];
 

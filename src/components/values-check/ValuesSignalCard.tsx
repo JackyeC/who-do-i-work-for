@@ -77,6 +77,40 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
             className="overflow-hidden"
           >
             <div className="px-4 pb-4 space-y-2.5 border-t border-border/30 pt-3">
+              {/* Donation recipients breakdown */}
+              {signal.signal_category === "executive_activity" && recipients.length > 0 && (
+                <div className="space-y-1.5">
+                  <p className="text-[11px] font-semibold text-foreground">Donated to:</p>
+                  <div className="space-y-1">
+                    {recipients.map((r, i) => (
+                      <div key={i} className="flex items-center justify-between text-[11px] py-1 px-2 rounded-lg bg-muted/40">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="font-medium text-foreground truncate">{r.name}</span>
+                          {r.party && (
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                "text-[9px] px-1 py-0 shrink-0",
+                                r.party === "R" || r.party === "Republican" ? "border-red-400/40 text-red-500" :
+                                r.party === "D" || r.party === "Democrat" ? "border-blue-400/40 text-blue-500" :
+                                "border-border text-muted-foreground"
+                              )}
+                            >
+                              {r.party === "R" ? "R" : r.party === "D" ? "D" : r.party}
+                            </Badge>
+                          )}
+                        </div>
+                        {r.amount > 0 && (
+                          <span className="text-[10px] font-bold text-primary shrink-0 ml-2">
+                            {formatAmount(r.amount)}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Source info */}
               <div className="grid grid-cols-2 gap-3 text-[11px]">
                 <div>
