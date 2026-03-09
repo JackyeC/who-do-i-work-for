@@ -11,9 +11,10 @@ import { TrackingDashboard } from "@/components/jobs/TrackingDashboard";
 import { AutoApplySettings } from "@/components/jobs/AutoApplySettings";
 import { ApplyQueueDashboard } from "@/components/jobs/ApplyQueueDashboard";
 import { UserAlertsList } from "@/components/UserAlerts";
+import { UserValuesProfile } from "@/components/UserValuesProfile";
 import {
   ClipboardCheck, Bookmark, Bell, Briefcase, LayoutDashboard,
-  Settings, User, Zap, Map
+  Settings, User, Zap, Map, Target
 } from "lucide-react";
 
 export default function Dashboard() {
