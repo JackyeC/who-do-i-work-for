@@ -31,6 +31,7 @@ import CareerMap from "./pages/CareerMap";
 import Dashboard from "./pages/Dashboard";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Examples from "./pages/Examples";
 import SearchYourEmployer from "./pages/SearchYourEmployer";
 
 const queryClient = new QueryClient();
