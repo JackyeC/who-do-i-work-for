@@ -274,6 +274,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
     "ai-accountability": <ExplainableMetric metricKey="ai-accountability"><div key="ai-accountability" className="mb-6"><AIAccountabilityCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
     "compensation": <ExplainableMetric metricKey="compensation-transparency"><div key="compensation" className="mb-6"><CompensationTransparencyCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
     "warn-tracker": <ExplainableMetric metricKey="warn-tracker"><div key="warn-tracker" className="mb-6"><WarnTrackerCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
+    "promotion-equity": <ExplainableMetric metricKey="worker-benefits"><div key="promotion-equity" className="mb-6"><PromotionEquityCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
   };
 
   return (
