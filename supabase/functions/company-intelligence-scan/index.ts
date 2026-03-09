@@ -33,7 +33,7 @@ const RESEARCH_MODULES = [
   { key: 'ai_accountability', label: 'AI Accountability', fn: 'ai-accountability-scan', phase: 'research' },
 ];
 
-const ALL_MODULES = [...PIPELINE_MODULES, ...RESEARCH_MODULES];
+const ALL_MODULES = [...ENRICHMENT_MODULES, ...PIPELINE_MODULES, ...RESEARCH_MODULES];
 
 function resolveModuleStatus(sourcesScanned: number, signalsFound: number): string {
   if (sourcesScanned > 0 && signalsFound > 0) return 'completed_with_signals';
