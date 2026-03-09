@@ -306,26 +306,31 @@ Deno.serve(async (req) => {
       }).eq('id', scanId);
     }
 
-    // ─── Phase 0.5: Third-party Enrichment (sequential — needed before pipeline) ───
-    console.log(`[intelligence-scan] ═══ Phase 0.5: Third-party Enrichment ═══`);
-    for (const mod of ENRICHMENT_MODULES) {
-      console.log(`[intelligence-scan] Running enrichment module: ${mod.key}`);
-      await runModule(mod, false);
-      await updateProgress();
-    }
-
-    // ─── Phase 1: Pipeline connectors — ALL IN PARALLEL ───
-    console.log(`[intelligence-scan] ═══ Phase 1: Structured Data Connectors (parallel) ═══`);
-    // Mark all as in_progress
-    for (const mod of PIPELINE_MODULES) {
+    // ─── Phase 1: Primary Pipeline + Enrichment (ALL IN PARALLEL) ───
+    // Primary sources (FEC, LDA, USASpending) run alongside OpenSecrets enrichment.
+    // OpenSecrets is discovery/validation only — NOT a prerequisite.
+    console.log(`[intelligence-scan] ═══ Phase 1: Primary Sources + Enrichment (parallel) ═══`);
+    
+    const phase1Modules = [...PRIMARY_PIPELINE_MODULES, ...ENRICHMENT_MODULES];
+    for (const mod of phase1Modules) {
       moduleStatuses[mod.key] = { status: 'in_progress', label: mod.label, phase: mod.phase, startedAt: new Date().toISOString() };
     }
     await updateProgress();
 
-    await Promise.all(PIPELINE_MODULES.map(mod => {
-      console.log(`[intelligence-scan] Running pipeline module: ${mod.key}`);
-      return runModule(mod, true);
+    await Promise.all(phase1Modules.map(mod => {
+      const isPipeline = mod.phase === 'pipeline';
+      console.log(`[intelligence-scan] Running ${mod.phase} module: ${mod.key}`);
+      return runModule(mod, isPipeline);
     }));
+    await updateProgress();
+
+    // ─── Phase 1b: Congress Cross-Reference (depends on FEC data) ───
+    // This must run AFTER sync-openfec so PAC recipients are in the DB.
+    // It then fetches their sponsored legislation from Congress.gov.
+    console.log(`[intelligence-scan] ═══ Phase 1b: Congress Cross-Reference (post-FEC) ═══`);
+    moduleStatuses[CONGRESS_MODULE.key] = { status: 'in_progress', label: CONGRESS_MODULE.label, phase: CONGRESS_MODULE.phase, startedAt: new Date().toISOString() };
+    await updateProgress();
+    await runModule(CONGRESS_MODULE, true);
     await updateProgress();
 
     // ─── Phase 2: Web research modules — ALL IN PARALLEL ───
