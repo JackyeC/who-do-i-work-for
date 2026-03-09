@@ -360,7 +360,7 @@ export function Header() {
 
       {/* ── Mobile nav ── */}
       {mobileOpen && (
-        <div className="xl:hidden border-t border-border/40 bg-card px-4 py-4 max-h-[80vh] overflow-y-auto animate-fade-in space-y-4">
+        <div className="lg:hidden border-t border-border/40 bg-card px-4 py-4 max-h-[80vh] overflow-y-auto animate-fade-in space-y-4">
           {/* Mobile search */}
           <form onSubmit={(e) => { handleSearch(e); setMobileOpen(false); }}>
             <div className="relative">
