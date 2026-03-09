@@ -80,6 +80,25 @@ function getCommitteeIssues(committeeName: string): string[] {
   return [];
 }
 
+/* ── Clean up ugly entity names so humans can read them ── */
+function cleanEntityName(name: string): string {
+  if (!name) return "Unknown";
+  // Remove SEC CIK identifiers like "SEC CIK 0001234567" or "(CIK: 0001234567)"
+  let cleaned = name.replace(/\b(SEC\s*)?CIK[\s:#]*\d+/gi, "").trim();
+  // Remove FEC IDs like "C00123456" or "(FEC ID: C00123456)"
+  cleaned = cleaned.replace(/\(?\s*FEC\s*(ID)?[\s:#]*C\d+\s*\)?/gi, "").trim();
+  // Remove standalone alphanumeric codes like "C00123456" at end
+  cleaned = cleaned.replace(/\s*C\d{8,}\s*/g, " ").trim();
+  // Remove EIN numbers
+  cleaned = cleaned.replace(/\b(EIN|TIN)[\s:#]*\d[\d-]+/gi, "").trim();
+  // Remove DUNS numbers
+  cleaned = cleaned.replace(/\bDUNS[\s:#]*\d+/gi, "").trim();
+  // Remove trailing dashes, commas, or parens left behind
+  cleaned = cleaned.replace(/[\s,\-()]+$/, "").replace(/^[\s,\-()]+/, "").trim();
+  // If we stripped everything, return original
+  return cleaned || name;
+}
+
 /* ── Plain-language entity type labels ── */
 const ENTITY_TYPE_LABELS: Record<string, string> = {
   company: "Company",
@@ -178,13 +197,15 @@ function EntityNode({
   const isPolitician = type === "politician" || type === "member";
   const partyName = party ? PARTY_FULL_NAMES[party] || party : null;
 
+  const displayName = cleanEntityName(name);
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <div className={cn("px-3 py-2 rounded-lg border text-sm font-medium max-w-[280px] cursor-default", style)}>
           <div className="flex items-center gap-1.5">
             {isPolitician && <User className="w-3.5 h-3.5 shrink-0" />}
-            <span className="truncate">{name}</span>
+            <span className="truncate">{displayName}</span>
             {showParty && <PartyBadge party={party} entityType={type} />}
             {location && <span className="text-[9px] text-muted-foreground shrink-0">{location}</span>}
           </div>
@@ -239,9 +260,9 @@ function ChainRow({ step, chain }: { step: ChainStep; chain: ChainStep[] }) {
     <div className="space-y-2">
       {/* Plain-language sentence */}
       <p className="text-xs text-muted-foreground">
-        <strong className="text-foreground">{step.source_name}</strong>
+        <strong className="text-foreground">{cleanEntityName(step.source_name)}</strong>
         {" "}{config.plainLabel.toLowerCase()}{" "}
-        <strong className="text-foreground">{step.target_name}</strong>
+        <strong className="text-foreground">{cleanEntityName(step.target_name)}</strong>
         {targetParty && ` (${PARTY_FULL_NAMES[targetParty] || targetParty}${targetLocation ? `, ${targetLocation}` : ""})`}
         {step.amount > 0 && <> — <strong className="text-foreground">{formatCurrency(step.amount)}</strong></>}
       </p>
@@ -330,22 +351,22 @@ function chainStory(chain: ChainStep[], companyName: string): string {
   if (chain.some(s => s.link_type === "donation_to_member")) {
     story = `${companyName} gave money`;
     if (totalAmount > 0) story += ` (${formatCurrency(totalAmount)})`;
-    story += ` to ${last.target_name}`;
+    story += ` to ${cleanEntityName(last.target_name)}`;
     if (partyName) story += `, a ${partyName}`;
 
     if (committees.length > 0) {
-      story += `, who sits on the ${committees[0]}`;
+      story += `, who sits on the ${cleanEntityName(committees[0])}`;
       if (uniqueIssues.length > 0) {
         story += `. That committee handles: ${uniqueIssues.slice(0, 3).join(", ")}`;
       }
     }
     story += ".";
   } else if (chain.some(s => s.link_type === "lobbying_on_bill")) {
-    story = `${companyName} paid lobbyists to influence legislation connected to ${last.target_name}.`;
+    story = `${companyName} paid lobbyists to influence legislation connected to ${cleanEntityName(last.target_name)}.`;
   } else if (chain.some(s => s.link_type === "revolving_door")) {
-    story = `${companyName} hired ${last.target_name}, who used to work in government. This is called a "revolving door" — people moving between government jobs and private companies.`;
+    story = `${companyName} hired ${cleanEntityName(last.target_name)}, who used to work in government. This is called a "revolving door" — people moving between government jobs and private companies.`;
   } else {
-    story = `${companyName} is connected to ${last.target_name} through ${chain.length} step${chain.length !== 1 ? "s" : ""}.`;
+    story = `${companyName} is connected to ${cleanEntityName(last.target_name)} through ${chain.length} step${chain.length !== 1 ? "s" : ""}.`;
   }
 
   return story;
@@ -483,7 +504,7 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
                       {chainIdx + 1}
                     </Badge>
                     <span className="text-sm font-medium text-foreground truncate">
-                      {firstStep.source_name}
+                      {cleanEntityName(firstStep.source_name)}
                     </span>
                     <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
                     <span className="text-[10px] text-muted-foreground shrink-0">
@@ -491,7 +512,7 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
                     </span>
                     <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
                     <span className="text-sm font-medium text-foreground truncate">
-                      {lastStep.target_name}
+                      {cleanEntityName(lastStep.target_name)}
                     </span>
                     <PartyBadge party={lastParty} entityType={lastStep.target_type} />
                   </div>
