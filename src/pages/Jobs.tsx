@@ -73,10 +73,12 @@ export default function Jobs() {
     queryKey: ["company-values-signals", valuesFilters],
     queryFn: async () => {
       if (valuesFilters.length === 0) return {};
+      // Query by both value_category and values_lens columns to cover all signal formats
+      const orFilter = valuesFilters.map(f => `value_category.eq.${f},values_lens.eq.${f}`).join(",");
       const { data, error } = await supabase
         .from("company_values_signals")
-        .select("company_id, value_category, signal_summary, confidence")
-        .in("value_category", valuesFilters);
+        .select("company_id, value_category, values_lens, signal_summary, confidence")
+        .or(orFilter);
       if (error) throw error;
       const map: Record<string, any[]> = {};
       (data || []).forEach((s: any) => {
