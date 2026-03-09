@@ -10,6 +10,7 @@ import {
 import { LensSelector } from "@/components/LensSelector";
 import { BeforeYouApply } from "@/components/BeforeYouApply";
 import { DataGlossary } from "@/components/DataGlossary";
+import { OpenSecretsEnrichmentCard } from "@/components/OpenSecretsEnrichmentCard";
 import { ExplainableMetric } from "@/components/ExplainableMetric";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { PlatformPhilosophy } from "@/components/PlatformPhilosophy";
@@ -63,7 +64,7 @@ import {
 } from "@/components/ui/table";
 
 /** Renders DB-only company modules in lens priority order */
-function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, dbExecutives, dbPublicStances, dbDarkMoney, dbRevolvingDoor, livePipeline, autoScanning, hasBeenScanned, triggerScan, onCandidateClick, onExecutiveClick, onPartyClick }: {
+function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, dbExecutives, dbPublicStances, dbDarkMoney, dbRevolvingDoor, livePipeline, autoScanning, hasBeenScanned, triggerScan, enrichmentData, onCandidateClick, onExecutiveClick, onPartyClick }: {
   activeLens: LensId;
   dbCompany: any;
   dbPartyBreakdown: any[] | null | undefined;
@@ -76,6 +77,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
   autoScanning?: boolean;
   hasBeenScanned?: boolean;
   triggerScan?: () => void;
+  enrichmentData?: any;
   onCandidateClick?: (candidate: any) => void;
   onExecutiveClick?: (executive: any) => void;
   onPartyClick?: (party: string) => void;
@@ -257,7 +259,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
         </CardContent>
       </Card>
     ) : null,
-    "roi-pipeline": <ExplainableMetric metricKey="roi-pipeline"><div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }} isSearching={!livePipeline && !!dbCompany.id} onTriggerScan={triggerScan} autoScanning={autoScanning} hasBeenScanned={hasBeenScanned} /></div></ExplainableMetric>,
+    "roi-pipeline": <ExplainableMetric metricKey="roi-pipeline"><div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }} isSearching={!livePipeline && !!dbCompany.id} onTriggerScan={triggerScan} autoScanning={autoScanning} hasBeenScanned={hasBeenScanned} enrichmentData={enrichmentData} />{enrichmentData && <div className="mt-4"><OpenSecretsEnrichmentCard data={enrichmentData} /></div>}</div></ExplainableMetric>,
     "influence-chain": <ExplainableMetric metricKey="influence-chain"><div key="influence-chain" className="mb-6"><InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} /></div></ExplainableMetric>,
     "social-monitor": <ExplainableMetric metricKey="social-monitor"><div key="social-monitor" className="mb-6"><SocialMonitorCard companyId={dbCompany.slug} companyName={dbCompany.name} executiveNames={dbExecutives?.map(e => e.name) || []} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
     "agency-contracts": <ExplainableMetric metricKey="agency-contracts"><div key="agency-contracts" className="mb-6"><AgencyContractsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
@@ -406,6 +408,17 @@ export default function CompanyProfile() {
   });
 
   const hasDetailedData = (dbCandidates?.length || 0) > 0 || (dbExecutives?.length || 0) > 0;
+
+  // Enrichment data (OpenSecrets third-party summaries)
+  const { data: enrichmentData } = useQuery({
+    queryKey: ["org-enrichment", dbCompanyId],
+    queryFn: async () => {
+      const { data } = await supabase.from("organization_profile_enrichment" as any).select("*").eq("company_id", dbCompanyId!).eq("source_name", "OpenSecrets").maybeSingle();
+      return data;
+    },
+    enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
+  });
 
   // Transparency Index: check signal presence across categories
   const { data: tiAiHr } = useQuery({ queryKey: ["ti-ai-hr", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("ai_hr_signals" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
@@ -786,6 +799,7 @@ export default function CompanyProfile() {
                 autoScanning={autoScanning}
                 hasBeenScanned={hasBeenScanned}
                 triggerScan={triggerScan}
+                enrichmentData={enrichmentData}
                 onCandidateClick={handleCandidateClick}
                 onExecutiveClick={handleExecutiveClick}
                 onPartyClick={(party) => {

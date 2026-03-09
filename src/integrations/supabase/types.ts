@@ -2510,6 +2510,95 @@ export type Database = {
           },
         ]
       }
+      organization_profile_enrichment: {
+        Row: {
+          company_id: string
+          confidence_score: number | null
+          contributions_total: number | null
+          created_at: string
+          cross_check_results: Json | null
+          fetched_at: string
+          id: string
+          industry_label: string | null
+          issue_tags: string[] | null
+          lobbying_total: number | null
+          opensecrets_org_identifier: string | null
+          opensecrets_org_name: string | null
+          outside_spending_total: number | null
+          pac_names_json: Json | null
+          party_split_json: Json | null
+          profile_url: string | null
+          sector_label: string | null
+          source_name: string
+          source_note: string | null
+          source_release_date: string | null
+          source_type: string
+          top_recipients_json: Json | null
+          updated_at: string
+          verification_status: string
+        }
+        Insert: {
+          company_id: string
+          confidence_score?: number | null
+          contributions_total?: number | null
+          created_at?: string
+          cross_check_results?: Json | null
+          fetched_at?: string
+          id?: string
+          industry_label?: string | null
+          issue_tags?: string[] | null
+          lobbying_total?: number | null
+          opensecrets_org_identifier?: string | null
+          opensecrets_org_name?: string | null
+          outside_spending_total?: number | null
+          pac_names_json?: Json | null
+          party_split_json?: Json | null
+          profile_url?: string | null
+          sector_label?: string | null
+          source_name?: string
+          source_note?: string | null
+          source_release_date?: string | null
+          source_type?: string
+          top_recipients_json?: Json | null
+          updated_at?: string
+          verification_status?: string
+        }
+        Update: {
+          company_id?: string
+          confidence_score?: number | null
+          contributions_total?: number | null
+          created_at?: string
+          cross_check_results?: Json | null
+          fetched_at?: string
+          id?: string
+          industry_label?: string | null
+          issue_tags?: string[] | null
+          lobbying_total?: number | null
+          opensecrets_org_identifier?: string | null
+          opensecrets_org_name?: string | null
+          outside_spending_total?: number | null
+          pac_names_json?: Json | null
+          party_split_json?: Json | null
+          profile_url?: string | null
+          sector_label?: string | null
+          source_name?: string
+          source_note?: string | null
+          source_release_date?: string | null
+          source_type?: string
+          top_recipients_json?: Json | null
+          updated_at?: string
+          verification_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_profile_enrichment_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pay_equity_signals: {
         Row: {
           company_id: string

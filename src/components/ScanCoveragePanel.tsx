@@ -55,11 +55,13 @@ const RELATIONSHIP_LABELS: Record<string, string> = {
 };
 
 const CATEGORY_CHECKS = [
-  { key: "political", label: "Political Spending", modules: ["fec_campaign_finance"] },
-  { key: "lobbying", label: "Lobbying Disclosure", modules: ["lobbying_disclosure"] },
-  { key: "contracts", label: "Government Benefits", modules: ["federal_contracts", "agency_contracts"] },
-  { key: "corporate_structure", label: "Corporate Structure", modules: ["opencorporates"] },
-  { key: "workplace", label: "Workplace Enforcement", modules: ["workplace_enforcement"] },
+  { key: "opensecrets", label: "OpenSecrets Org Profiles", modules: ["opensecrets"] },
+  { key: "political", label: "Political Spending (FEC)", modules: ["fec_campaign_finance"] },
+  { key: "lobbying", label: "Lobbying Disclosure (Senate LDA)", modules: ["lobbying_disclosure"] },
+  { key: "contracts", label: "Government Benefits (USASpending)", modules: ["federal_contracts", "agency_contracts"] },
+  { key: "corporate_structure", label: "Corporate Structure (OpenCorporates)", modules: ["opencorporates"] },
+  { key: "sec", label: "SEC / EDGAR", modules: ["sec_edgar"] },
+  { key: "workplace", label: "Workplace Enforcement (DOL)", modules: ["workplace_enforcement"] },
   { key: "worker", label: "Worker Intelligence", modules: ["ai_hr_scan", "worker_benefits", "pay_equity", "worker_sentiment"] },
   { key: "ideology", label: "Ideology & Social", modules: ["ideology", "social"] },
   { key: "ai", label: "AI Accountability", modules: ["ai_accountability"] },
@@ -186,27 +188,30 @@ export function ScanCoveragePanel({
                 {CATEGORY_CHECKS.map(cat => {
                   const { signalsFound, sourcesChecked, hasCompleted, hasFailed } = getCategoryStatus(cat.modules, moduleStatuses);
                   return (
-                    <div key={cat.key} className="flex items-center justify-between p-2 rounded-md bg-muted/30 border border-border/50">
-                      <span className="text-xs text-foreground">{cat.label}</span>
-                      <div className="flex items-center gap-2">
-                        {hasCompleted && signalsFound > 0 && (
-                          <span className="text-xs text-primary font-medium">
-                            {signalsFound} match{signalsFound !== 1 ? "es" : ""} found
-                          </span>
-                        )}
-                        {hasCompleted && signalsFound === 0 && (
-                          <span className="text-xs text-muted-foreground">No records found yet</span>
-                        )}
-                        {hasFailed && !hasCompleted && (
-                          <span className="text-xs text-destructive">Check failed</span>
-                        )}
-                        {hasCompleted ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
-                        ) : hasFailed ? (
-                          <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
-                        ) : null}
-                      </div>
-                    </div>
+                     <div key={cat.key} className="flex items-center justify-between p-2 rounded-md bg-muted/30 border border-border/50">
+                       <span className="text-xs text-foreground">{cat.label}</span>
+                       <div className="flex items-center gap-2">
+                         {hasCompleted && signalsFound > 0 && (
+                           <span className="text-xs text-primary font-medium">
+                             {signalsFound} match{signalsFound !== 1 ? "es" : ""} found
+                           </span>
+                         )}
+                         {hasCompleted && signalsFound === 0 && (
+                           <span className="text-xs text-muted-foreground">No records found yet</span>
+                         )}
+                         {hasFailed && !hasCompleted && (
+                           <span className="text-xs text-destructive">Check failed</span>
+                         )}
+                         {!hasCompleted && !hasFailed && (
+                           <span className="text-xs text-muted-foreground/60">Not checked</span>
+                         )}
+                         {hasCompleted ? (
+                           <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                         ) : hasFailed ? (
+                           <AlertTriangle className="w-3.5 h-3.5 text-destructive" />
+                         ) : null}
+                       </div>
+                     </div>
                   );
                 })}
               </div>
@@ -218,13 +223,13 @@ export function ScanCoveragePanel({
                 <Info className="w-3.5 h-3.5 text-muted-foreground mt-0.5 shrink-0" />
                 <p className="text-xs text-muted-foreground">
                   {!hasResults && (
-                    <>No verified influence pipeline evidence was found in the checked sources for this company or its currently known related entities. This does not confirm the absence of influence activity.</>
+                    <>No verified influence pipeline evidence was found in the checked sources for this company or its currently known related entities. We checked available public sources and OpenSecrets organization profiles — partial results will appear whenever evidence is found.</>
                   )}
                   {hasResults && isPartial && (
-                    <>This company has partial verified evidence. Some pipeline categories returned results, while others did not produce confirmed matches yet.</>
+                    <>This company has partial verified evidence. Some pipeline categories returned results, while others did not produce confirmed matches yet. Third-party summaries may be available for cross-reference.</>
                   )}
                   {hasResults && !isPartial && (
-                    <>Evidence was found across checked data sources. Results are linked to the primary company entity through verified corporate relationships.</>
+                    <>Evidence was found across checked data sources. Results are linked to the primary company entity through verified corporate relationships and cross-checked against primary records where possible.</>
                   )}
                 </p>
               </div>

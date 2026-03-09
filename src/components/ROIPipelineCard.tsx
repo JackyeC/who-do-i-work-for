@@ -205,6 +205,7 @@ interface ROIPipelineCardProps {
   onTriggerScan?: () => void;
   autoScanning?: boolean;
   hasBeenScanned?: boolean;
+  enrichmentData?: any;
 }
 
 export function ROIPipelineCard({
@@ -213,6 +214,7 @@ export function ROIPipelineCard({
   onTriggerScan,
   autoScanning = false,
   hasBeenScanned = false,
+  enrichmentData,
 }: ROIPipelineCardProps) {
   const scanning = isSearching || autoScanning;
   const state = derivePipelineState(data, scanning, hasBeenScanned);
@@ -254,7 +256,7 @@ export function ROIPipelineCard({
               No verified pipeline data yet
             </h3>
             <p className="text-xs text-muted-foreground max-w-sm mb-5">
-              No verified pipeline data has been generated for this company yet. Run a scan to check political spending, influence connections, and government benefits.
+              No verified pipeline data has been generated for this company yet. We checked available public sources and will show partial results whenever evidence is found.
             </p>
             {onTriggerScan && (
               <Button onClick={onTriggerScan} className="gap-2">
@@ -317,9 +319,17 @@ export function ROIPipelineCard({
             <h3 className="text-sm font-semibold text-foreground mb-1">
               No verified influence pipeline evidence found yet
             </h3>
-            <p className="text-xs text-muted-foreground max-w-sm mb-5">
+            <p className="text-xs text-muted-foreground max-w-sm mb-2">
               The intelligence scan completed but found no entity linkages connecting political spending to government benefits for this company. This may change as new data becomes available.
             </p>
+            {enrichmentData && (
+              <div className="p-3 rounded-lg bg-accent/10 border border-accent/20 mb-4 max-w-sm">
+                <p className="text-xs text-accent-foreground font-medium mb-1">Third-party summary data found</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Primary-source verification is still in progress or incomplete. OpenSecrets profile data is available for reference.
+                </p>
+              </div>
+            )}
             {onTriggerScan && (
               <Button variant="outline" size="sm" onClick={onTriggerScan} className="gap-1.5">
                 <Search className="w-3.5 h-3.5" />
@@ -394,15 +404,29 @@ export function ROIPipelineCard({
 
         {/* Footer — only for states with data */}
         {(state === "results" || state === "partial" || state === "no_evidence") && (
-          <div className="flex items-center justify-between mt-4 border-t border-border pt-3">
-            <p className="text-xs text-muted-foreground">
-              Confidence: ≥80% = direct filings · 50-79% = inferred · &lt;50% = unverified
-            </p>
-            {onTriggerScan && state !== "no_evidence" && (
-              <Button variant="ghost" size="sm" onClick={onTriggerScan} className="gap-1.5 text-xs h-7">
-                <Search className="w-3 h-3" />
-                Re-scan
-              </Button>
+          <div className="mt-4 border-t border-border pt-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                Confidence: ≥80% = direct filings · 50-79% = inferred · &lt;50% = unverified
+              </p>
+              {onTriggerScan && state !== "no_evidence" && (
+                <Button variant="ghost" size="sm" onClick={onTriggerScan} className="gap-1.5 text-xs h-7">
+                  <Search className="w-3 h-3" />
+                  Re-scan
+                </Button>
+              )}
+            </div>
+            {enrichmentData && (
+              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <Building2 className="w-3 h-3 shrink-0" />
+                <span>
+                  {enrichmentData.verification_status === 'cross_checked_primary_source'
+                    ? 'Verified against primary records'
+                    : enrichmentData.verification_status === 'partially_verified'
+                      ? 'Partial evidence found — some data cross-checked'
+                      : 'Third-party summary available — primary verification pending'}
+                </span>
+              </div>
             )}
           </div>
         )}
