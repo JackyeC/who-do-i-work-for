@@ -8,6 +8,7 @@ import {
   BarChart3, Loader2, Sparkles, Search, ClipboardCheck, CheckCircle2, HelpCircle
 } from "lucide-react";
 import { LensSelector } from "@/components/LensSelector";
+import { BeforeYouApply } from "@/components/BeforeYouApply";
 import { DataGlossary } from "@/components/DataGlossary";
 import { ExplainableMetric } from "@/components/ExplainableMetric";
 import { CompanyLogo } from "@/components/CompanyLogo";
