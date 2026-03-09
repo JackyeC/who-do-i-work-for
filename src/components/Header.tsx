@@ -60,6 +60,7 @@ const INTELLIGENCE_ITEMS = [
   { to: "/intelligence?type=weekly_brief", label: "Signals This Week", icon: Eye },
   { to: "/intelligence?type=legislative_watch", label: "Legislation Watch", icon: Landmark },
   { to: "/check?tab=candidate", label: "Corporate Influence Map", icon: Network },
+  { to: "/recruiting", label: "Recruiting Intelligence", icon: Target },
 ];
 
 /* ------------------------------------------------------------------ */
