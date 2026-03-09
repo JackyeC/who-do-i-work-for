@@ -82,7 +82,8 @@ Deno.serve(async (req) => {
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
-    const { companyId, companyName } = await req.json();
+    const body = await req.json();
+    const { companyId, companyName } = body;
     if (!companyId || !companyName) {
       return new Response(JSON.stringify({ success: false, error: 'companyId and companyName required' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
