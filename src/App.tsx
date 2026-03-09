@@ -40,6 +40,7 @@ import IntelligenceReport from "./pages/IntelligenceReport";
 import ReportsList from "./pages/ReportsList";
 import ReportEditor from "./pages/ReportEditor";
 import OfferClarity from "./pages/OfferClarity";
+import RecruitingIntelligence from "./pages/RecruitingIntelligence";
 
 const queryClient = new QueryClient();
 
@@ -129,6 +130,7 @@ const App = () => (
               <Route path="/intelligence/:slug" element={<IntelligenceReport />} />
               <Route path="/admin/reports" element={<ProtectedRoute><ReportsList /></ProtectedRoute>} />
               <Route path="/admin/reports/:id" element={<ProtectedRoute><ReportEditor /></ProtectedRoute>} />
+              <Route path="/recruiting" element={<RecruitingIntelligence />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

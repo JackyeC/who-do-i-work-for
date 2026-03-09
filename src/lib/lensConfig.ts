@@ -34,6 +34,7 @@ export const LENSES: LensDefinition[] = [
       "promotion-equity",
       "ai-accountability",
       "compensation",
+      "talent-signals",
     ],
   },
   {
@@ -42,6 +43,7 @@ export const LENSES: LensDefinition[] = [
     shortLabel: "Safety",
     description: "Workplace equity, hiring technology, benefits, and accountability signals.",
     modulePriority: [
+      "talent-signals",
       "warn-tracker",
       "promotion-equity",
       "compensation",
@@ -86,6 +88,7 @@ export const LENSES: LensDefinition[] = [
       "roi-pipeline",
       "influence-chain",
       "agency-contracts",
+      "talent-signals",
     ],
   },
 ];

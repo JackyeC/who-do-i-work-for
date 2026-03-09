@@ -5,7 +5,7 @@ import {
   ChevronDown, Building2, PlusCircle, TrendingUp, ScanSearch,
   Briefcase, FileCheck, Map, Heart, Leaf, Users, Scale,
   Stethoscope, ShieldAlert, GraduationCap, Globe2, ShoppingCart,
-  FileText, BarChart3, Eye, Landmark, Network, Home,
+  FileText, BarChart3, Eye, Landmark, Network, Home, Target,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,7 @@ const INTELLIGENCE_ITEMS = [
   { to: "/intelligence?type=weekly_brief", label: "Signals This Week", icon: Eye },
   { to: "/intelligence?type=legislative_watch", label: "Legislation Watch", icon: Landmark },
   { to: "/check?tab=candidate", label: "Corporate Influence Map", icon: Network },
+  { to: "/recruiting", label: "Recruiting Intelligence", icon: Target },
 ];
 
 /* ------------------------------------------------------------------ */
