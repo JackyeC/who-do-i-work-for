@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 import CompanyProfile from "./pages/CompanyProfile";
 import SearchResults from "./pages/SearchResults";
@@ -28,85 +29,91 @@ import CareerIntelligence from "./pages/CareerIntelligence";
 import Check from "./pages/Check";
 import CareerMap from "./pages/CareerMap";
 import Dashboard from "./pages/Dashboard";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/check" element={<Check />} />
-            <Route path="/company/:id" element={<CompanyProfile />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/browse" element={<Browse />} />
-            <Route path="/methodology" element={<Methodology />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/who-do-i-work-for" element={
-              <ProtectedRoute>
-                <WhoDoIWorkFor />
-              </ProtectedRoute>
-            } />
-            <Route path="/voter-lookup" element={
-              <ProtectedRoute>
-                <VoterLookup />
-              </ProtectedRoute>
-            } />
-            <Route path="/add-company" element={<AddCompany />} />
-            <Route path="/jobs" element={<Jobs />} />
-            <Route path="/request-correction" element={<RequestCorrection />} />
-            <Route path="/offer-check/:companyId" element={<OfferCheck />} />
-            <Route path="/offer-review/:companyId" element={
-              <ProtectedRoute>
-                <OfferReview />
-              </ProtectedRoute>
-            } />
-            <Route path="/compare-offer-checks" element={<CompareOfferChecks />} />
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/career-map" element={
-              <ProtectedRoute>
-                <CareerMap />
-              </ProtectedRoute>
-            } />
-            <Route path="/job-dashboard" element={
-              <ProtectedRoute>
-                <JobDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-offer-checks" element={
-              <ProtectedRoute>
-                <MyOfferChecks />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-offer-reviews" element={
-              <ProtectedRoute>
-                <MyOfferReviews />
-              </ProtectedRoute>
-            } />
-            <Route path="/signal-alerts" element={
-              <ProtectedRoute>
-                <SignalAlerts />
-              </ProtectedRoute>
-            } />
-            <Route path="/career-intelligence" element={
-              <ProtectedRoute>
-                <CareerIntelligence />
-              </ProtectedRoute>
-            } />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/check" element={<Check />} />
+              <Route path="/company/:id" element={<CompanyProfile />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/browse" element={<Browse />} />
+              <Route path="/methodology" element={<Methodology />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/who-do-i-work-for" element={
+                <ProtectedRoute>
+                  <WhoDoIWorkFor />
+                </ProtectedRoute>
+              } />
+              <Route path="/voter-lookup" element={
+                <ProtectedRoute>
+                  <VoterLookup />
+                </ProtectedRoute>
+              } />
+              <Route path="/add-company" element={<AddCompany />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/request-correction" element={<RequestCorrection />} />
+              <Route path="/offer-check/:companyId" element={<OfferCheck />} />
+              <Route path="/offer-review/:companyId" element={
+                <ProtectedRoute>
+                  <OfferReview />
+                </ProtectedRoute>
+              } />
+              <Route path="/compare-offer-checks" element={<CompareOfferChecks />} />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/career-map" element={
+                <ProtectedRoute>
+                  <CareerMap />
+                </ProtectedRoute>
+              } />
+              <Route path="/job-dashboard" element={
+                <ProtectedRoute>
+                  <JobDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/my-offer-checks" element={
+                <ProtectedRoute>
+                  <MyOfferChecks />
+                </ProtectedRoute>
+              } />
+              <Route path="/my-offer-reviews" element={
+                <ProtectedRoute>
+                  <MyOfferReviews />
+                </ProtectedRoute>
+              } />
+              <Route path="/signal-alerts" element={
+                <ProtectedRoute>
+                  <SignalAlerts />
+                </ProtectedRoute>
+              } />
+              <Route path="/career-intelligence" element={
+                <ProtectedRoute>
+                  <CareerIntelligence />
+                </ProtectedRoute>
+              } />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
