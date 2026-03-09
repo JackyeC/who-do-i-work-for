@@ -63,14 +63,14 @@ const Index = () => {
             </motion.p>
 
             <motion.h1 variants={fadeUp} custom={1} className="text-foreground mb-6 text-balance leading-[1.02] font-display" style={{ fontSize: 'clamp(2.5rem, 5.5vw, 4.5rem)', fontWeight: 800, letterSpacing: '-0.04em' }}>
-              Know who you're working for.<br />
+              Understand the company<br />
               <span className="text-civic-gold" style={{ textDecorationLine: 'underline', textDecorationColor: 'hsl(38 72% 50% / 0.25)', textUnderlineOffset: '8px', textDecorationThickness: '3px' }}>
-                Know where your career can go.
+                behind the job.
               </span>
             </motion.h1>
 
             <motion.p variants={fadeUp} custom={2} className="text-body-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              Search any company to uncover political spending, hiring signals, worker sentiment, and career intelligence — all from verified public records.
+              Career intelligence that helps you evaluate employers, offers, and influence before you decide where to work.
             </motion.p>
 
             <motion.form variants={fadeUp} custom={3} onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
