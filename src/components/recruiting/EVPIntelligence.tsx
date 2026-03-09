@@ -103,8 +103,9 @@ export function EVPIntelligence() {
       if (contractsRes.data && contractsRes.data.length > 0) {
         narrativeSuggestions.push(`"Join a team trusted by ${contractsRes.data.map((c) => c.agency_name).slice(0, 2).join(" and ")} to deliver critical public services."`);
       }
-      if (benefitsRes.data && benefitsRes.data.some((b) => b.sentiment === "positive")) {
-        narrativeSuggestions.push(`"We invest in our people — with programs recognized for ${benefitsRes.data.filter((b) => b.sentiment === "positive").slice(0, 2).map((b) => b.benefit_category).join(" and ")}."`);
+      if (signalScansRes.data && signalScansRes.data.length > 0) {
+        const topCategories = [...new Set((signalScansRes.data as any[]).map((s) => s.signal_category))].slice(0, 2);
+        narrativeSuggestions.push(`"We invest in our people — with demonstrated commitment to ${topCategories.join(" and ")}."`);
       }
       if (company.employee_count) {
         narrativeSuggestions.push(`"Be part of a ${company.employee_count}-strong team making an impact in ${company.industry}."`);
