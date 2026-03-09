@@ -762,6 +762,7 @@ export default function CompanyProfile() {
             </div>
 
             {/* Lens-ordered modules */}
+            <div id="lens-modules">
             <DbLensModules
               activeLens={activeLens}
               dbCompany={dbCompany}
