@@ -102,8 +102,8 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
                               variant="outline"
                               className={cn(
                                 "text-[9px] px-1 py-0 shrink-0",
-                                r.party === "R" || r.party === "Republican" ? "border-red-400/40 text-red-500" :
-                                r.party === "D" || r.party === "Democrat" ? "border-blue-400/40 text-blue-500" :
+                                r.party === "R" || r.party === "Republican" ? "border-destructive/40 text-destructive" :
+                                r.party === "D" || r.party === "Democrat" ? "border-primary/40 text-primary" :
                                 "border-border text-muted-foreground"
                               )}
                             >
