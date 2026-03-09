@@ -54,6 +54,21 @@ export function WarnTrackerCard({ companyName, dbCompanyId }: { companyName: str
     }
   };
 
+  const handleBulkImport = async () => {
+    setIsImporting(true);
+    try {
+      const { data } = await supabase.functions.invoke("bulk-import-warn", {
+        body: { company_id: dbCompanyId },
+      });
+      console.log("Bulk import result:", data);
+      setTimeout(() => refetch(), 2000);
+    } catch (e) {
+      console.error("Bulk import error:", e);
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   const formatDate = (d: string | null) => {
     if (!d) return "—";
     return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
