@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -68,7 +68,17 @@ function RatingBar({ label, value, max = 5 }: { label: string; value: number | n
 export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimentCardProps) {
   const { toast } = useToast();
   const [isScanning, setIsScanning] = useState(false);
+  const [scanStartTime, setScanStartTime] = useState<number | null>(null);
+  const [elapsed, setElapsed] = useState(0);
   const [liveResult, setLiveResult] = useState<SentimentResult | null>(null);
+
+  useEffect(() => {
+    if (!scanStartTime) return;
+    const interval = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - scanStartTime) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [scanStartTime]);
 
   const { data: cachedScan, refetch } = useQuery({
     queryKey: ["worker-sentiment", dbCompanyId],
@@ -93,6 +103,8 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
       return;
     }
     setIsScanning(true);
+    setScanStartTime(Date.now());
+    setElapsed(0);
     try {
       const { data, error } = await supabase.functions.invoke("worker-sentiment-scan", {
         body: { companyId: dbCompanyId, companyName },
@@ -109,6 +121,7 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
       toast({ title: "Scan failed", description: e.message || "Could not complete worker sentiment scan.", variant: "destructive" });
     } finally {
       setIsScanning(false);
+      setScanStartTime(null);
     }
   };
 
@@ -143,10 +156,25 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
-        {!result ? (
+        {isScanning && (
+          <div className="rounded-lg bg-primary/5 border border-primary/20 p-4 mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              <span className="text-sm font-medium text-foreground">Scanning public sources...</span>
+              <span className="text-xs text-muted-foreground ml-auto">{elapsed}s</span>
+            </div>
+            <Progress value={Math.min(elapsed * 2.5, 95)} className="h-1.5 mb-2" />
+            <p className="text-xs text-muted-foreground">
+              Searching Glassdoor, Indeed, TheLayoff.com, EEOC records, and news sources. This typically takes <strong>30–60 seconds</strong>.
+            </p>
+          </div>
+        )}
+
+        {!result && !isScanning ? (
           <div className="text-center py-8 text-muted-foreground">
             <HardHat className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            <p className="text-sm">No public worker sentiment signals detected yet. Click "Run Scan" to search public sources for workplace sentiment signals for {companyName}.</p>
+            <p className="text-sm mb-1">No public worker sentiment signals detected yet.</p>
+            <p className="text-xs text-muted-foreground/60">Click "Run Scan" to search public sources. Scans typically take 30–60 seconds.</p>
           </div>
         ) : (
           <>

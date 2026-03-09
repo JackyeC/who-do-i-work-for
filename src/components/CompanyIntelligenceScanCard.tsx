@@ -224,7 +224,9 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
         {isScanning && (
           <div className="mb-4">
             <Progress value={progress} className="h-2" />
-            <p className="text-xs text-muted-foreground mt-1">Processing modules...</p>
+            <p className="text-xs text-muted-foreground mt-1.5">
+              Scanning federal databases, web sources, and AI analysis modules. This typically takes <strong>2–4 minutes</strong> depending on data availability.
+            </p>
           </div>
         )}
 
@@ -322,7 +324,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
           <div className="text-center py-6">
             <Radar className="w-10 h-10 text-muted-foreground/50 mx-auto mb-3" />
             <p className="text-sm text-muted-foreground mb-1">No intelligence scan has been run yet.</p>
-            <p className="text-xs text-muted-foreground">Click "Run Intelligence Scan" to analyze this company across all research modules.</p>
+            <p className="text-xs text-muted-foreground">Click "Run Intelligence Scan" to analyze this company across all research modules. Scans typically take 2–4 minutes.</p>
           </div>
         )}
       </CardContent>
