@@ -899,8 +899,12 @@ export default function CompanyProfile() {
                   topCandidates={(dbCandidates || [])
                     .sort((a: any, b: any) => (b.amount || 0) - (a.amount || 0))
                     .slice(0, 5)
-                    .map((c: any) => ({ name: c.name, party: c.party, amount: c.amount }))}
-                  topIssuesLobbied={[]}
+                    .map((c: any) => ({ name: c.name, party: c.party, amount: c.amount, state: c.state }))}
+                  lobbyingDetails={dbLobbyingDetails || []}
+                  topIssuesLobbied={
+                    // Flatten state lobbying issues as fallback
+                    (dbStateLobbying || []).flatMap((s: any) => s.issues || []).filter((v: string, i: number, a: string[]) => a.indexOf(v) === i).slice(0, 8)
+                  }
                   darkMoneyConnections={(dbDarkMoney || []).length}
                   flaggedOrgCount={0}
                 />
