@@ -115,7 +115,7 @@ export default function Jobs() {
       let matchesValues = true;
       if (valuesFilters.length > 0 && valuesSignals) {
         const companySignals = valuesSignals[company.id] || [];
-        const companyCategories = new Set(companySignals.map((s: any) => s.value_category));
+        const companyCategories = new Set(companySignals.map((s: any) => s.value_category || s.values_lens));
         matchesValues = valuesFilters.every((f) => companyCategories.has(f));
       }
       return matchesSearch && matchesScore && matchesIndustry && matchesValues && matchesWorkMode;
