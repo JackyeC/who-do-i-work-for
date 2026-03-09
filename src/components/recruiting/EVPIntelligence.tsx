@@ -79,16 +79,14 @@ export function EVPIntelligence() {
         });
       }
 
-      // Benefits signals
-      if (benefitsRes.data) {
-        const positives = benefitsRes.data.filter((b) => b.sentiment === "positive");
-        if (positives.length > 0) {
-          signals.push({
-            category: "Workforce Programs",
-            detail: `${positives.length} positive benefit signals detected including ${positives.slice(0, 3).map((p) => p.benefit_category).join(", ")}`,
-            sentiment: "positive",
-          });
-        }
+      // Signal scan data
+      if (signalScansRes.data && signalScansRes.data.length > 0) {
+        const categories = [...new Set(signalScansRes.data.map((s: any) => s.signal_category))];
+        signals.push({
+          category: "Workforce Programs",
+          detail: `${signalScansRes.data.length} signals detected across ${categories.slice(0, 3).join(", ")}`,
+          sentiment: "positive",
+        });
       }
 
       // Governance signals
