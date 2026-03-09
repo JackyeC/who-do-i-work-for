@@ -157,7 +157,7 @@ export default function Jobs() {
         <main className="flex-1 min-w-0 px-4 sm:px-6 py-5">
           {/* Header area */}
           <div className="mb-5">
-            <h1 className="text-xl sm:text-2xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground font-display">
               Job Board
             </h1>
             <p className="text-muted-foreground text-sm mt-0.5">

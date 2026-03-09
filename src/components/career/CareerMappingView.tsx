@@ -128,7 +128,7 @@ export function CareerMappingView() {
       {/* Header summary */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="text-xl font-bold text-foreground flex items-center gap-2" style={{ fontFamily: "'Source Serif 4', serif" }}>
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2 font-display">
             <Compass className="w-5 h-5 text-[hsl(var(--civic-blue))]" />
             Next Move Navigator
           </h2>

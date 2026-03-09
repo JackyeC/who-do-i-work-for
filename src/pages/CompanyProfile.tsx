@@ -741,7 +741,7 @@ export default function CompanyProfile() {
                       <Scale className="w-3.5 h-3.5" />
                       Civic Footprint
                     </div>
-                    <div className="text-3xl font-bold text-foreground mb-1" style={{ fontFamily: "'Source Serif 4', serif" }}>{dbCompany.civic_footprint_score}<span className="text-sm text-muted-foreground font-normal">/100</span></div>
+                    <div className="text-3xl font-bold text-foreground mb-1 font-display-number">{dbCompany.civic_footprint_score}<span className="text-sm text-muted-foreground font-normal">/100</span></div>
                     <CivicFootprintBadge score={dbCompany.civic_footprint_score} size="sm" />
                     <p className="text-[11px] text-muted-foreground mt-2 leading-snug">How much political activity we detected. Higher = more active, not worse.</p>
                   </CardContent>

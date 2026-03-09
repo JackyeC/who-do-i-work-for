@@ -48,7 +48,7 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
           <div className="flex items-center gap-2 flex-wrap mb-1">
             <h4 className="text-sm font-semibold text-foreground">{signal.signal_title}</h4>
             {signal.amount && (
-              <span className="text-xs font-bold text-primary" style={{ fontFamily: "'Source Serif 4', serif" }}>
+              <span className="text-xs font-bold text-primary font-data">
                 {formatAmount(signal.amount)}
               </span>
             )}

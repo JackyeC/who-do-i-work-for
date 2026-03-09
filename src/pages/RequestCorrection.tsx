@@ -116,7 +116,7 @@ export default function RequestCorrection() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-12 max-w-2xl">
-        <h1 className="text-3xl font-bold text-foreground mb-2" style={{ fontFamily: "'Source Serif 4', serif" }}>
+        <h1 className="text-3xl font-bold text-foreground mb-2 font-display">
           Request a Correction
         </h1>
         <p className="text-muted-foreground mb-8">
