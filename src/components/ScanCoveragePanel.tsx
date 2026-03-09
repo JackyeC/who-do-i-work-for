@@ -31,6 +31,7 @@ interface ModuleStatus {
   phase: string;
   signalsFound?: number;
   sourcesScanned?: number;
+  completedAt?: string;
 }
 
 interface ScanCoveragePanelProps {
