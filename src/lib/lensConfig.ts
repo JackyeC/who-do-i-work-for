@@ -31,6 +31,7 @@ export const LENSES: LensDefinition[] = [
       "ai-hiring",
       "hiring-transparency",
       "worker-benefits",
+      "promotion-equity",
       "ai-accountability",
       "compensation",
     ],
@@ -42,6 +43,7 @@ export const LENSES: LensDefinition[] = [
     description: "Workplace equity, hiring technology, benefits, and accountability signals.",
     modulePriority: [
       "warn-tracker",
+      "promotion-equity",
       "compensation",
       "ai-hiring",
       "hiring-transparency",
@@ -70,6 +72,7 @@ export const LENSES: LensDefinition[] = [
       "intelligence-scores",
       "compensation",
       "worker-benefits",
+      "promotion-equity",
       "warn-tracker",
       "ideology-flags",
       "social-monitor",
