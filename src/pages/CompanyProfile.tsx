@@ -1671,7 +1671,7 @@ export default function CompanyProfile() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   const input = (e.target as HTMLFormElement).elements.namedItem("curiosity-search") as HTMLInputElement;
-                  if (input.value.trim()) navigate(`/search?q=${encodeURIComponent(input.value.trim())}`);
+                  if (input.value.trim()) window.location.href = `/search?q=${encodeURIComponent(input.value.trim())}`;
                 }}
                 className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
               >
