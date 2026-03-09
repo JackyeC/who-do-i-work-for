@@ -12,6 +12,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { PlatformPhilosophy } from "@/components/PlatformPhilosophy";
 import { InfluencePipelineVisual } from "@/components/InfluencePipelineVisual";
+import { LiveInfluencePreview } from "@/components/LiveInfluencePreview";
 import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
@@ -107,6 +108,9 @@ const Index = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* ─── LIVE INFLUENCE PREVIEW ─── */}
+      <LiveInfluencePreview />
 
       {/* ─── FOUR CORE QUESTIONS ─── */}
       <section className="section-padding border-t border-border/30">
@@ -255,6 +259,43 @@ const Index = () => {
 
       {/* ─── INFLUENCE PIPELINE VISUAL ─── */}
       <InfluencePipelineVisual />
+
+      {/* ─── SEARCH YOUR EMPLOYER CTA ─── */}
+      <section className="section-padding bg-gradient-to-b from-background to-civic-gold-light/30">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl mx-auto text-center"
+          >
+            <h2 className="text-headline text-foreground mb-4 font-display">
+              Search your employer.
+            </h2>
+            <p className="text-body-lg text-muted-foreground mb-8">
+              Curious what your company's political influence looks like? You might be surprised.
+            </p>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const input = (e.target as HTMLFormElement).elements.namedItem("employer") as HTMLInputElement;
+                if (input.value.trim()) navigate(`/search?q=${encodeURIComponent(input.value.trim())}`);
+              }}
+              className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
+            >
+              <Input
+                name="employer"
+                placeholder="Enter your employer's name..."
+                className="h-14 text-base rounded-xl flex-1"
+              />
+              <Button type="submit" size="lg" className="h-14 px-8 rounded-xl text-base font-semibold">
+                Search
+              </Button>
+            </form>
+          </motion.div>
+        </div>
+      </section>
 
       {/* ─── PHILOSOPHY ─── */}
       <section className="section-padding">
