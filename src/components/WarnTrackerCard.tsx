@@ -22,6 +22,7 @@ interface WarnNotice {
 
 export function WarnTrackerCard({ companyName, dbCompanyId }: { companyName: string; dbCompanyId: string }) {
   const [isScanning, setIsScanning] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   const { data: notices, isLoading, refetch } = useQuery({
     queryKey: ["warn-notices", dbCompanyId],
