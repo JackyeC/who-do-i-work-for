@@ -9,6 +9,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
+import { ExplainableMetric } from "@/components/ExplainableMetric";
 
 interface IdeologyFlag {
   orgName: string;
