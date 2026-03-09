@@ -11,6 +11,11 @@ const ISSUE_KEYWORDS: Record<string, string[]> = {
     'firearms', 'gun', 'second amendment', 'nra', 'weapons manufacturing',
     'firearm legislation', 'gun control', 'gun rights', 'ammunition',
     'national rifle association', 'gun violence', 'assault weapon',
+    'national shooting sports foundation', 'nssf', 'second amendment foundation',
+    'everytown', 'brady campaign', 'giffords', 'gun safety',
+    'concealed carry', 'open carry', 'firearms policy', 'weapons regulation',
+    'smith & wesson', 'sturm ruger', 'vista outdoor', 'olin corporation',
+    'american outdoor brands', 'firearm manufacturer', 'ammunition manufacturer',
   ],
   reproductive_rights: [
     'abortion', 'reproductive health', 'planned parenthood', 'family planning',
@@ -66,15 +71,62 @@ const ISSUE_KEYWORDS: Record<string, string[]> = {
   ],
 };
 
+// ─── Gun policy org-to-subtype classification ───
+const GUN_RIGHTS_ORGS = [
+  'national rifle association', 'nra', 'second amendment foundation',
+  'national shooting sports foundation', 'nssf', 'gun owners of america',
+  'firearms policy coalition', 'jews for the preservation of firearms',
+  'safari club international',
+];
+
+const GUN_CONTROL_ORGS = [
+  'everytown for gun safety', 'everytown', 'brady campaign', 'brady',
+  'giffords', 'moms demand action', 'march for our lives',
+  'coalition to stop gun violence', 'sandy hook promise',
+  'violence policy center',
+];
+
+const FIREARM_INDUSTRY_KEYWORDS = [
+  'smith & wesson', 'sturm ruger', 'ruger', 'vista outdoor',
+  'olin corporation', 'american outdoor brands', 'remington',
+  'sig sauer', 'colt', 'beretta', 'firearms manufacturer',
+  'ammunition manufacturer', 'weapons manufacturer', 'gunmaker',
+];
+
+function classifyGunPolicySubtype(text: string, signalType: string): string {
+  const lower = text.toLowerCase();
+
+  if (signalType === 'lobbying_issue' || lower.includes('lobbying') || lower.includes('lobbied'))
+    return 'lobbying_signal';
+
+  for (const org of GUN_RIGHTS_ORGS) {
+    if (lower.includes(org)) return 'gun_rights_signal';
+  }
+  for (const org of GUN_CONTROL_ORGS) {
+    if (lower.includes(org)) return 'gun_control_signal';
+  }
+  for (const kw of FIREARM_INDUSTRY_KEYWORDS) {
+    if (lower.includes(kw)) return 'firearm_industry_signal';
+  }
+
+  if (signalType === 'pac_donation' || lower.includes('donation') || lower.includes('pac'))
+    return 'legislator_support_signal';
+
+  return 'advocacy_signal';
+}
+
 interface IssueSignal {
   entity_id: string;
+  entity_name_snapshot: string | null;
   issue_category: string;
   signal_type: string;
+  signal_subtype: string | null;
   source_dataset: string;
   description: string;
   source_url: string | null;
   confidence_score: string;
   amount: number | null;
+  transaction_date: string | null;
 }
 
 function matchIssues(text: string): { category: string; matchedKeywords: string[] }[] {
@@ -119,9 +171,47 @@ Deno.serve(async (req) => {
 
     console.log(`[map-issue-signals] Starting issue mapping for company ${companyId}`);
 
+    // Fetch company name for snapshot
+    const { data: companyRow } = await supabase
+      .from('companies')
+      .select('name')
+      .eq('id', companyId)
+      .single();
+    const companyName = companyRow?.name || null;
+
     const signals: IssueSignal[] = [];
 
-    // ─── Source 1: Entity linkages (campaign finance, lobbying, contracts) ───
+    // Helper to build signal with gun subtype
+    function buildSignal(
+      category: string,
+      matchedKeywords: string[],
+      signalType: string,
+      sourceDataset: string,
+      description: string,
+      sourceUrl: string | null,
+      amount: number | null,
+      transactionDate: string | null,
+    ): IssueSignal {
+      const subtype = category === 'gun_policy'
+        ? classifyGunPolicySubtype(description + ' ' + matchedKeywords.join(' '), signalType)
+        : null;
+
+      return {
+        entity_id: companyId,
+        entity_name_snapshot: companyName,
+        issue_category: category,
+        signal_type: signalType,
+        signal_subtype: subtype,
+        source_dataset: sourceDataset,
+        description,
+        source_url: sourceUrl,
+        confidence_score: determineConfidence(matchedKeywords.length, sourceDataset),
+        amount,
+        transaction_date: transactionDate,
+      };
+    }
+
+    // ─── Source 1: Entity linkages ───
     const { data: linkages } = await supabase
       .from('entity_linkages')
       .select('source_entity_name, target_entity_name, link_type, description, amount, source_url, confidence_score')
@@ -136,16 +226,16 @@ Deno.serve(async (req) => {
         : 'entity_linkage';
 
       for (const match of matches) {
-        signals.push({
-          entity_id: companyId,
-          issue_category: match.category,
-          signal_type: 'keyword_match',
-          source_dataset: sourceDataset,
-          description: `${match.matchedKeywords.join(', ')} found in: ${link.description || link.target_entity_name || 'linkage record'}`,
-          source_url: link.source_url || null,
-          confidence_score: determineConfidence(match.matchedKeywords.length, sourceDataset),
-          amount: link.amount || null,
-        });
+        signals.push(buildSignal(
+          match.category,
+          match.matchedKeywords,
+          'keyword_match',
+          sourceDataset,
+          `${match.matchedKeywords.join(', ')} found in: ${link.description || link.target_entity_name || 'linkage record'}`,
+          link.source_url || null,
+          link.amount || null,
+          null,
+        ));
       }
     }
 
@@ -159,16 +249,16 @@ Deno.serve(async (req) => {
       const searchText = (lob.issues || []).join(' ');
       const matches = matchIssues(searchText);
       for (const match of matches) {
-        signals.push({
-          entity_id: companyId,
-          issue_category: match.category,
-          signal_type: 'lobbying_issue',
-          source_dataset: 'lobbying_disclosure',
-          description: `Lobbied on ${match.matchedKeywords.join(', ')} in ${lob.state} (${lob.year})`,
-          source_url: lob.source || null,
-          confidence_score: 'high',
-          amount: lob.lobbying_spend || null,
-        });
+        signals.push(buildSignal(
+          match.category,
+          match.matchedKeywords,
+          'lobbying_issue',
+          'lobbying_disclosure',
+          `Lobbied on ${match.matchedKeywords.join(', ')} in ${lob.state} (${lob.year})`,
+          lob.source || null,
+          lob.lobbying_spend || null,
+          null,
+        ));
       }
     }
 
@@ -182,20 +272,20 @@ Deno.serve(async (req) => {
       const searchText = [flag.org_name, flag.category, flag.description].filter(Boolean).join(' ');
       const matches = matchIssues(searchText);
       for (const match of matches) {
-        signals.push({
-          entity_id: companyId,
-          issue_category: match.category,
-          signal_type: 'ideology_flag',
-          source_dataset: 'ideology_scan',
-          description: `${flag.org_name}: ${flag.description || match.matchedKeywords.join(', ')}`,
-          source_url: flag.evidence_url || null,
-          confidence_score: flag.severity === 'high' ? 'high' : 'medium',
-          amount: flag.amount || null,
-        });
+        signals.push(buildSignal(
+          match.category,
+          match.matchedKeywords,
+          'ideology_flag',
+          'ideology_scan',
+          `${flag.org_name}: ${flag.description || match.matchedKeywords.join(', ')}`,
+          flag.evidence_url || null,
+          flag.amount || null,
+          null,
+        ));
       }
     }
 
-    // ─── Source 4: PAC candidates (donation recipients) ───
+    // ─── Source 4: PAC candidates ───
     const { data: candidates } = await supabase
       .from('company_candidates')
       .select('name, party, amount, flag_reason, donation_type')
@@ -205,20 +295,20 @@ Deno.serve(async (req) => {
       const searchText = [cand.flag_reason, cand.name, cand.donation_type].filter(Boolean).join(' ');
       const matches = matchIssues(searchText);
       for (const match of matches) {
-        signals.push({
-          entity_id: companyId,
-          issue_category: match.category,
-          signal_type: 'pac_donation',
-          source_dataset: 'campaign_finance',
-          description: `PAC donation to ${cand.name} (${cand.party}): ${match.matchedKeywords.join(', ')}`,
-          source_url: null,
-          confidence_score: determineConfidence(match.matchedKeywords.length, 'campaign_finance'),
-          amount: cand.amount || null,
-        });
+        signals.push(buildSignal(
+          match.category,
+          match.matchedKeywords,
+          'pac_donation',
+          'campaign_finance',
+          `PAC donation to ${cand.name} (${cand.party}): ${match.matchedKeywords.join(', ')}`,
+          null,
+          cand.amount || null,
+          null,
+        ));
       }
     }
 
-    // ─── Source 5: Government contracts (agency contracts) ───
+    // ─── Source 5: Government contracts ───
     const { data: contracts } = await supabase
       .from('company_agency_contracts')
       .select('agency_name, contract_description, contract_value, controversy_description, source')
@@ -228,20 +318,20 @@ Deno.serve(async (req) => {
       const searchText = [contract.agency_name, contract.contract_description, contract.controversy_description].filter(Boolean).join(' ');
       const matches = matchIssues(searchText);
       for (const match of matches) {
-        signals.push({
-          entity_id: companyId,
-          issue_category: match.category,
-          signal_type: 'government_contract',
-          source_dataset: 'government_contract',
-          description: `Contract with ${contract.agency_name}: ${match.matchedKeywords.join(', ')}`,
-          source_url: contract.source || null,
-          confidence_score: 'high',
-          amount: contract.contract_value || null,
-        });
+        signals.push(buildSignal(
+          match.category,
+          match.matchedKeywords,
+          'government_contract',
+          'government_contract',
+          `Contract with ${contract.agency_name}: ${match.matchedKeywords.join(', ')}`,
+          contract.source || null,
+          contract.contract_value || null,
+          null,
+        ));
       }
     }
 
-    // ─── Source 6: Public stances (hypocrisy index) ───
+    // ─── Source 6: Public stances ───
     const { data: stances } = await supabase
       .from('company_public_stances')
       .select('topic, public_position, spending_reality, gap')
@@ -251,35 +341,32 @@ Deno.serve(async (req) => {
       const searchText = [stance.topic, stance.public_position, stance.spending_reality].filter(Boolean).join(' ');
       const matches = matchIssues(searchText);
       for (const match of matches) {
-        signals.push({
-          entity_id: companyId,
-          issue_category: match.category,
-          signal_type: 'public_stance',
-          source_dataset: 'public_stance_analysis',
-          description: `Public stance on ${stance.topic}: "${stance.public_position}" vs spending: "${stance.spending_reality}"`,
-          source_url: null,
-          confidence_score: 'medium',
-          amount: null,
-        });
+        signals.push(buildSignal(
+          match.category,
+          match.matchedKeywords,
+          'public_stance',
+          'public_stance_analysis',
+          `Public stance on ${stance.topic}: "${stance.public_position}" vs spending: "${stance.spending_reality}"`,
+          null,
+          null,
+          null,
+        ));
       }
     }
 
     console.log(`[map-issue-signals] Found ${signals.length} issue signals for company ${companyId}`);
 
     if (signals.length > 0) {
-      // Clear old signals for this company before inserting new ones
       await supabase.from('issue_signals').delete().eq('entity_id', companyId);
 
-      // Deduplicate by category + description
       const seen = new Set<string>();
       const unique = signals.filter(s => {
-        const key = `${s.issue_category}:${s.description}`;
+        const key = `${s.issue_category}:${s.signal_subtype || ''}:${s.description}`;
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
       });
 
-      // Insert in batches
       const BATCH_SIZE = 100;
       let inserted = 0;
       for (let i = 0; i < unique.length; i += BATCH_SIZE) {
@@ -295,7 +382,6 @@ Deno.serve(async (req) => {
       console.log(`[map-issue-signals] Inserted ${inserted} unique issue signals`);
     }
 
-    // Summary by category
     const categoryCounts: Record<string, number> = {};
     for (const s of signals) {
       categoryCounts[s.issue_category] = (categoryCounts[s.issue_category] || 0) + 1;

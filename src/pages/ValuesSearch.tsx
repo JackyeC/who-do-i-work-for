@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, Crosshair, Heart, Hammer, Leaf, Scale, Rainbow, Vote,
   Globe, BookOpen, Stethoscope, ShoppingCart, ArrowRight,
-  Sparkles, TrendingUp, AlertTriangle, ExternalLink, Shield,
+  Sparkles, TrendingUp, AlertTriangle, ExternalLink, Shield, Info,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +33,15 @@ const ISSUE_AREAS = [
 
 type IssueKey = typeof ISSUE_AREAS[number]["key"];
 
+const GUN_POLICY_SUBTYPES: Record<string, { label: string; description: string }> = {
+  gun_rights_signal: { label: "Gun Rights", description: "Signals linked to pro-gun rights organizations" },
+  gun_control_signal: { label: "Gun Safety / Control", description: "Signals linked to gun safety advocacy organizations" },
+  firearm_industry_signal: { label: "Firearm Industry", description: "Signals from firearm or ammunition manufacturers" },
+  advocacy_signal: { label: "Advocacy", description: "General firearms policy advocacy connections" },
+  lobbying_signal: { label: "Lobbying", description: "Lobbying filings mentioning firearms policy" },
+  legislator_support_signal: { label: "Legislator Support", description: "Campaign donations from firearm-related PACs" },
+};
+
 const CONFIDENCE_STYLES: Record<string, { text: string; className: string }> = {
   high: { text: "High Confidence", className: "border-green-500/30 text-green-700 dark:text-green-400" },
   medium: { text: "Medium Confidence", className: "border-yellow-500/30 text-yellow-700 dark:text-yellow-400" },
@@ -52,7 +61,7 @@ export default function ValuesSearch() {
       if (!selectedIssue) return [];
       const { data, error } = await supabase
         .from("issue_signals" as any)
-        .select("id, entity_id, issue_category, signal_type, source_dataset, description, source_url, confidence_score, amount, created_at")
+        .select("id, entity_id, entity_name_snapshot, issue_category, signal_type, signal_subtype, source_dataset, description, source_url, confidence_score, amount, transaction_date, created_at")
         .eq("issue_category", selectedIssue)
         .order("confidence_score", { ascending: true }) // high first alphabetically
         .limit(500);
@@ -211,10 +220,21 @@ export default function ValuesSearch() {
               </div>
 
               {issueInfo && (
-                <p className="text-sm text-muted-foreground mb-6 max-w-2xl">
+                <p className="text-sm text-muted-foreground mb-4 max-w-2xl">
                   {issueInfo.description}. Companies listed below have public records — campaign donations,
                   lobbying filings, or advocacy signals — connected to this issue area.
                 </p>
+              )}
+
+              {/* Gun Policy transparency note */}
+              {selectedIssue === "gun_policy" && (
+                <div className="flex items-start gap-2.5 p-4 rounded-xl bg-muted/40 border border-border/40 mb-6 max-w-2xl">
+                  <Info className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    This page reports documented political spending, lobbying activity, and advocacy connections
+                    related to firearm policy. The platform does not evaluate or endorse these positions.
+                  </p>
+                </div>
               )}
 
               {/* Filter within results */}
@@ -302,7 +322,12 @@ export default function ValuesSearch() {
                                             {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(signal.amount)}
                                           </span>
                                         )}
-                                        <div className="flex items-center gap-2 mt-0.5">
+                                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                                          {signal.signal_subtype && GUN_POLICY_SUBTYPES[signal.signal_subtype] && (
+                                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-primary/30 text-primary">
+                                              {GUN_POLICY_SUBTYPES[signal.signal_subtype].label}
+                                            </Badge>
+                                          )}
                                           <span className="text-xs text-muted-foreground capitalize">
                                             {signal.source_dataset?.replace(/_/g, " ")}
                                           </span>
