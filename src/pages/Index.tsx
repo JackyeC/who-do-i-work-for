@@ -63,14 +63,14 @@ const Index = () => {
             </motion.p>
 
             <motion.h1 variants={fadeUp} custom={1} className="text-foreground mb-6 text-balance leading-[1.02] font-display" style={{ fontSize: 'clamp(2.5rem, 5.5vw, 4.5rem)', fontWeight: 800, letterSpacing: '-0.04em' }}>
-              Know who you're working for.<br />
+              Understand the company<br />
               <span className="text-civic-gold" style={{ textDecorationLine: 'underline', textDecorationColor: 'hsl(38 72% 50% / 0.25)', textUnderlineOffset: '8px', textDecorationThickness: '3px' }}>
-                Know where your career can go.
+                behind the job.
               </span>
             </motion.h1>
 
             <motion.p variants={fadeUp} custom={2} className="text-body-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-              Search any company to uncover political spending, hiring signals, worker sentiment, and career intelligence — all from verified public records.
+              Career intelligence that helps you evaluate employers, offers, and influence before you decide where to work.
             </motion.p>
 
             <motion.form variants={fadeUp} custom={3} onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
@@ -86,7 +86,7 @@ const Index = () => {
                 </div>
                 <Button type="submit" size="lg" className="h-14 px-10 rounded-xl text-base font-semibold shadow-elevated">
                   <Search className="w-4 h-4 mr-2" />
-                  Analyze
+                  Start Exploring
                 </Button>
               </div>
             </motion.form>
@@ -107,59 +107,74 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ─── THREE PILLARS ─── */}
+      {/* ─── FOUR CORE QUESTIONS ─── */}
       <section className="section-padding border-t border-border/30">
         <div className="container mx-auto px-4">
           <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} className="max-w-6xl mx-auto">
             <motion.div variants={fadeUp} custom={0} className="text-center mb-16">
               <div className="gold-line w-16 mx-auto mb-8" />
-              <h2 className="text-headline text-foreground mb-4 font-display">Three Questions. One Platform.</h2>
+              <h2 className="text-headline text-foreground mb-4 font-display">Four Questions. One Platform.</h2>
               <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">Every tool helps you answer a core career question.</p>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Pillar 1: Employer Transparency */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Question 1: Who Do I Work For? */}
               <motion.div variants={fadeUp} custom={1} className="bg-card rounded-3xl border border-border/40 p-8 shadow-luxury hover:shadow-elegant hover:border-civic-gold-muted/30 transition-all duration-300 group flex flex-col">
                 <div className="w-14 h-14 rounded-2xl bg-primary/[0.06] flex items-center justify-center mb-6 group-hover:bg-civic-gold/[0.08] transition-colors border border-primary/[0.06]">
                   <Building2 className="w-6 h-6 text-primary group-hover:text-civic-gold transition-colors" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2 font-display">Who Do I Work For?</h3>
-                <p className="text-sm text-muted-foreground mb-2 font-medium">Understand the companies behind the job.</p>
+                <p className="text-sm text-muted-foreground mb-2 font-medium">Investigate the company behind the job.</p>
                 <p className="text-caption text-muted-foreground leading-relaxed mb-6 flex-1">
-                  View company signals including hiring technology, worker benefits, political influence signals, worker sentiment, and organizational affiliations.
+                  Display signals such as hiring technology, worker benefits, worker sentiment, government contracts, political influence, and organizational affiliations.
                 </p>
-                <Button onClick={() => navigate("/check")} className="w-full gap-2 rounded-xl font-semibold">
+                <Button onClick={() => navigate("/check?tab=company")} className="w-full gap-2 rounded-xl font-semibold">
                   Check a Company <ArrowRight className="w-4 h-4" />
                 </Button>
               </motion.div>
 
-              {/* Pillar 2: Offer Intelligence */}
+              {/* Question 2: Is This Offer Right For Me? */}
               <motion.div variants={fadeUp} custom={2} className="bg-card rounded-3xl border border-border/40 p-8 shadow-luxury hover:shadow-elegant hover:border-civic-gold-muted/30 transition-all duration-300 group flex flex-col">
                 <div className="w-14 h-14 rounded-2xl bg-primary/[0.06] flex items-center justify-center mb-6 group-hover:bg-civic-gold/[0.08] transition-colors border border-primary/[0.06]">
                   <ClipboardCheck className="w-6 h-6 text-primary group-hover:text-civic-gold transition-colors" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2 font-display">Is This Offer Right For Me?</h3>
-                <p className="text-sm text-muted-foreground mb-2 font-medium">Detect signals in offers and job descriptions.</p>
+                <p className="text-sm text-muted-foreground mb-2 font-medium">Upload an offer letter or job description and detect signals in compensation, equity, and contract language.</p>
                 <p className="text-caption text-muted-foreground leading-relaxed mb-6 flex-1">
-                  Upload an offer letter or job description and detect key signals including salary structure, equity terms, contract language, and company intelligence context.
+                  Detect key signals including salary structure, equity terms, contract language, and company intelligence context.
                 </p>
                 <Button onClick={() => navigate("/check?tab=offer")} variant="outline" className="w-full gap-2 rounded-xl font-semibold">
-                  Check an Offer <ArrowRight className="w-4 h-4" />
+                  Analyze My Offer <ArrowRight className="w-4 h-4" />
                 </Button>
               </motion.div>
 
-              {/* Pillar 3: Career Mapping */}
+              {/* Question 3: Where Could My Career Go? */}
               <motion.div variants={fadeUp} custom={3} className="bg-card rounded-3xl border border-border/40 p-8 shadow-luxury hover:shadow-elegant hover:border-civic-gold-muted/30 transition-all duration-300 group flex flex-col">
                 <div className="w-14 h-14 rounded-2xl bg-primary/[0.06] flex items-center justify-center mb-6 group-hover:bg-civic-gold/[0.08] transition-colors border border-primary/[0.06]">
                   <Map className="w-6 h-6 text-primary group-hover:text-civic-gold transition-colors" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2 font-display">Map My Career</h3>
-                <p className="text-sm text-muted-foreground mb-2 font-medium">Discover paths aligned with your skills and values.</p>
+                <h3 className="text-xl font-bold text-foreground mb-2 font-display">Where Could My Career Go?</h3>
+                <p className="text-sm text-muted-foreground mb-2 font-medium">Upload your resume to generate a career profile and explore possible career paths.</p>
                 <p className="text-caption text-muted-foreground leading-relaxed mb-6 flex-1">
-                  Upload your resume and discover career paths, aligned companies, and dream job alerts based on your skills and values.
+                  Discover career paths, skill gaps, and aligned companies based on your skills and values.
                 </p>
                 <Button onClick={() => navigate("/career-map")} variant="outline" className="w-full gap-2 rounded-xl font-semibold">
-                  Map My Career <ArrowRight className="w-4 h-4" />
+                  Explore My Career Map <ArrowRight className="w-4 h-4" />
+                </Button>
+              </motion.div>
+
+              {/* Question 4: What Am I Supporting? */}
+              <motion.div variants={fadeUp} custom={4} className="bg-card rounded-3xl border border-border/40 p-8 shadow-luxury hover:shadow-elegant hover:border-civic-gold-muted/30 transition-all duration-300 group flex flex-col">
+                <div className="w-14 h-14 rounded-2xl bg-primary/[0.06] flex items-center justify-center mb-6 group-hover:bg-civic-gold/[0.08] transition-colors border border-primary/[0.06]">
+                  <Network className="w-6 h-6 text-primary group-hover:text-civic-gold transition-colors" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2 font-display">What Am I Supporting?</h3>
+                <p className="text-sm text-muted-foreground mb-2 font-medium">Explore financial and influence relationships between companies, executives, PACs, and political recipients.</p>
+                <p className="text-caption text-muted-foreground leading-relaxed mb-6 flex-1">
+                  Investigate connections using publicly available data including government contracts, lobbying activity, and contribution timelines.
+                </p>
+                <Button onClick={() => navigate("/check?tab=candidate")} variant="outline" className="w-full gap-2 rounded-xl font-semibold">
+                  Explore Influence <ArrowRight className="w-4 h-4" />
                 </Button>
               </motion.div>
             </div>
