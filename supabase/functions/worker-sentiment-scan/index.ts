@@ -38,12 +38,18 @@ Deno.serve(async (req) => {
 
     // 1. Search for Glassdoor reviews and worker sentiment data
     // Use simpler queries - site: operator may not work with Firecrawl
+    // Derive TheLayoff.com slug (lowercase, hyphenated)
+    const layoffSlug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
     const searchQueries = [
       `${companyName} Glassdoor reviews employee ratings`,
       `${companyName} Glassdoor salary compensation CEO approval`,
       `${companyName} Indeed employee reviews work-life balance`,
       `${companyName} LinkedIn employee reviews culture workplace`,
       `${companyName} employee complaints worker conditions labor practices`,
+      // TheLayoff.com - worker-sourced layoff rumors and sentiment
+      `site:thelayoff.com ${companyName} layoffs`,
+      `site:thelayoff.com "${companyName}" morale restructuring`,
       // Controversy & legal action queries
       `"${companyName}" EEOC complaint discrimination lawsuit settlement`,
       `"${companyName}" NLRB unfair labor practice union busting complaint`,
@@ -97,6 +103,48 @@ Deno.serve(async (req) => {
         console.error(`Search failed for: ${query}`, e);
       }
     }
+
+    // Direct scrape of TheLayoff.com company page for richer sentiment data
+    if (!creditExhausted) {
+      try {
+        const layoffPageUrl = `https://www.thelayoff.com/${layoffSlug}`;
+        console.log(`Scraping TheLayoff.com page: ${layoffPageUrl}`);
+        const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${firecrawlKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            url: layoffPageUrl,
+            formats: ['markdown'],
+            onlyMainContent: true,
+          }),
+        });
+
+        if (scrapeResp.status === 402) {
+          creditExhausted = true;
+        } else if (scrapeResp.ok) {
+          const scrapeData = await scrapeResp.json();
+          const markdown = scrapeData.data?.markdown || scrapeData.markdown || '';
+          if (markdown.length > 50) {
+            allResults.push({
+              title: `TheLayoff.com - ${companyName} Employee Discussion`,
+              url: layoffPageUrl,
+              description: 'Worker-sourced layoff rumors, morale reports, and insider sentiment from thelayoff.com',
+              markdown: markdown.slice(0, 4000),
+              query: 'thelayoff.com direct scrape',
+            });
+            console.log(`TheLayoff.com scrape successful: ${markdown.length} chars`);
+          } else {
+            console.log('TheLayoff.com page had minimal content');
+          }
+        }
+      } catch (e) {
+        console.error('TheLayoff.com scrape failed:', e);
+      }
+    }
+
     console.log(`Total results collected: ${allResults.length}`);
 
     if (creditExhausted) {
@@ -145,8 +193,8 @@ Deno.serve(async (req) => {
       .join('\n');
 
     // 3. AI Analysis
-    const contentForAI = allResults.slice(0, 12).map((r, i) =>
-      `[${i + 1}] "${r.title}" (${r.url})\n${r.description}\n${r.markdown?.slice(0, 600) || ''}`
+    const contentForAI = allResults.slice(0, 15).map((r, i) =>
+      `[${i + 1}] "${r.title}" (${r.url})\n${r.description}\n${r.markdown?.slice(0, 800) || ''}`
     ).join('\n\n---\n\n');
 
     const aiPrompt = `You are a corporate labor intelligence analyst for CivicLens. Analyze the following search results about "${companyName}" employee satisfaction and worker conditions.
@@ -157,7 +205,7 @@ ${contentForAI}
 ${laborStancesContext ? `\nCompany's Public Labor Stances:\n${laborStancesContext}` : ''}
 ${antiLaborFlags ? `\nAnti-Labor Ideology Flags:\n${antiLaborFlags}` : ''}
 
-Extract worker sentiment data and identify hypocrisy between what the company says about workers vs how workers actually feel. Return JSON:
+Extract worker sentiment data and identify hypocrisy between what the company says about workers vs how workers actually feel. Pay special attention to TheLayoff.com content which contains worker-sourced insider intelligence, layoff rumors, and morale reports. Return JSON:
 {
   "overallRating": number or null (1-5 scale, Glassdoor-style),
   "ceoApproval": number or null (0-100 percentage),
@@ -172,10 +220,13 @@ Extract worker sentiment data and identify hypocrisy between what the company sa
   "topPraises": [
     {"theme": "string", "frequency": "common|frequent|occasional", "example": "representative quote or summary"}
   ],
+  "layoffRumors": [
+    {"rumor": "description of layoff rumor or restructuring signal", "source": "thelayoff.com or other", "recency": "recent|months_ago|older", "credibility": "high|medium|low"}
+  ],
   "hypocrisyFlags": [
     {"topic": "string", "companyClaimsSummary": "what the company says about workers/labor", "workerReality": "what workers actually report", "severity": "high|medium|low", "evidence": "specific data point or quote"}
   ],
-  "summary": "2-3 paragraph analysis of worker sentiment, key themes, and any say-do gaps between company messaging and employee experience",
+  "summary": "2-3 paragraph analysis of worker sentiment, key themes, layoff signals, and any say-do gaps between company messaging and employee experience",
   "sentiment": "positive|negative|neutral|mixed"
 }
 
@@ -266,6 +317,7 @@ Only include items you find evidence for. Return valid JSON only.`;
         careerOpportunities: aiAnalysis.careerOpportunities,
         topComplaints: aiAnalysis.topComplaints || [],
         topPraises: aiAnalysis.topPraises || [],
+        layoffRumors: aiAnalysis.layoffRumors || [],
         hypocrisyFlags: aiAnalysis.hypocrisyFlags || [],
         summary: aiAnalysis.summary,
         sentiment: aiAnalysis.sentiment,
