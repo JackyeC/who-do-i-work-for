@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { IssueRelatedReports } from "@/components/IssueRelatedReports";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -338,6 +339,11 @@ export default function ValuesSearch() {
                       ))}
                     </AnimatePresence>
                   </div>
+
+                  {/* Related Intelligence Reports for this issue */}
+                  {issueInfo && (
+                    <IssueRelatedReports issueCategory={selectedIssue} issueLabel={issueInfo.label} />
+                  )}
                 </>
               )}
             </>

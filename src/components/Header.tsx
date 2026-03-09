@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, BookOpen, Menu, X, Plus, LayoutDashboard, Shield, Briefcase, Map, ClipboardCheck, Users } from "lucide-react";
+import { Search, BookOpen, Menu, X, Plus, LayoutDashboard, Shield, Briefcase, Map, ClipboardCheck, Users, FileText } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,7 @@ export function Header() {
     { to: "/check?tab=candidate", label: "What Am I Supporting?", icon: Users },
     { to: "/values-search", label: "Values Search", icon: Search },
     { to: "/jobs", label: "Jobs", icon: Briefcase },
+    { to: "/intelligence", label: "Intelligence", icon: FileText },
   ];
 
   const authLinks = user
