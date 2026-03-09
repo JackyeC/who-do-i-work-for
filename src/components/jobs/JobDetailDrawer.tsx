@@ -87,12 +87,12 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Company Signals</p>
               <div className="flex flex-wrap gap-1.5">
                 {companyValueSignals.map((vs: any, idx: number) => {
-                  const cat = VALUE_CATEGORIES.find((c) => c.key === vs.value_category);
+                  const cat = VALUES_LENSES.find((c) => c.key === vs.value_category || c.key === vs.values_lens);
                   if (!cat) return null;
                   const Icon = cat.icon;
                   return (
                     <Badge key={idx} variant="outline" className="text-xs gap-1" title={vs.signal_summary}>
-                      <Icon className={`w-3 h-3 ${cat.color}`} />
+                      <Icon className="w-3 h-3 text-primary" />
                       {cat.label}
                     </Badge>
                   );
