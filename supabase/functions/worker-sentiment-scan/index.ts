@@ -205,7 +205,7 @@ ${contentForAI}
 ${laborStancesContext ? `\nCompany's Public Labor Stances:\n${laborStancesContext}` : ''}
 ${antiLaborFlags ? `\nAnti-Labor Ideology Flags:\n${antiLaborFlags}` : ''}
 
-Extract worker sentiment data and identify hypocrisy between what the company says about workers vs how workers actually feel. Return JSON:
+Extract worker sentiment data and identify hypocrisy between what the company says about workers vs how workers actually feel. Pay special attention to TheLayoff.com content which contains worker-sourced insider intelligence, layoff rumors, and morale reports. Return JSON:
 {
   "overallRating": number or null (1-5 scale, Glassdoor-style),
   "ceoApproval": number or null (0-100 percentage),
@@ -220,10 +220,13 @@ Extract worker sentiment data and identify hypocrisy between what the company sa
   "topPraises": [
     {"theme": "string", "frequency": "common|frequent|occasional", "example": "representative quote or summary"}
   ],
+  "layoffRumors": [
+    {"rumor": "description of layoff rumor or restructuring signal", "source": "thelayoff.com or other", "recency": "recent|months_ago|older", "credibility": "high|medium|low"}
+  ],
   "hypocrisyFlags": [
     {"topic": "string", "companyClaimsSummary": "what the company says about workers/labor", "workerReality": "what workers actually report", "severity": "high|medium|low", "evidence": "specific data point or quote"}
   ],
-  "summary": "2-3 paragraph analysis of worker sentiment, key themes, and any say-do gaps between company messaging and employee experience",
+  "summary": "2-3 paragraph analysis of worker sentiment, key themes, layoff signals, and any say-do gaps between company messaging and employee experience",
   "sentiment": "positive|negative|neutral|mixed"
 }
 
