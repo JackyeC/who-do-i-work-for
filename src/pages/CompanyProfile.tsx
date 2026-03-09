@@ -258,7 +258,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
         </CardContent>
       </Card>
     ) : null,
-    "roi-pipeline": <ExplainableMetric metricKey="roi-pipeline"><div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }} isSearching={!livePipeline && !!dbCompany.id} onTriggerScan={triggerScan} autoScanning={autoScanning} hasBeenScanned={hasBeenScanned} /></div></ExplainableMetric>,
+    "roi-pipeline": <ExplainableMetric metricKey="roi-pipeline"><div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }} isSearching={!livePipeline && !!dbCompany.id} onTriggerScan={triggerScan} autoScanning={autoScanning} hasBeenScanned={hasBeenScanned} enrichmentData={enrichmentData} /></div></ExplainableMetric>,
     "influence-chain": <ExplainableMetric metricKey="influence-chain"><div key="influence-chain" className="mb-6"><InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} /></div></ExplainableMetric>,
     "social-monitor": <ExplainableMetric metricKey="social-monitor"><div key="social-monitor" className="mb-6"><SocialMonitorCard companyId={dbCompany.slug} companyName={dbCompany.name} executiveNames={dbExecutives?.map(e => e.name) || []} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
     "agency-contracts": <ExplainableMetric metricKey="agency-contracts"><div key="agency-contracts" className="mb-6"><AgencyContractsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
