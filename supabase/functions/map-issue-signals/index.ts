@@ -211,13 +211,15 @@ Deno.serve(async (req) => {
 
     console.log(`[map-issue-signals] Starting issue mapping for company ${companyId}`);
 
-    // Fetch company name for snapshot
+    // Fetch company name + description for snapshot
     const { data: companyRow } = await supabase
       .from('companies')
-      .select('name')
+      .select('name, description, industry')
       .eq('id', companyId)
       .single();
     const companyName = companyRow?.name || null;
+    const companyDescription = companyRow?.description || '';
+    const companyIndustry = companyRow?.industry || '';
 
     const signals: IssueSignal[] = [];
 
