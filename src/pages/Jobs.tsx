@@ -231,7 +231,7 @@ export default function Jobs() {
             <div className="flex flex-wrap items-center gap-1.5 mb-4">
               <span className="text-xs text-muted-foreground">Values:</span>
               {valuesFilters.map((f) => {
-                const cat = VALUE_CATEGORIES.find((c) => c.key === f);
+                const cat = VALUES_LENSES.find((c) => c.key === f);
                 return cat ? (
                   <Badge key={f} variant="secondary" className="text-xs flex items-center gap-1">
                     {cat.label}

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CivicScoreCard, CivicScoreBadge } from "@/components/CivicScoreCard";
 import { JobMatchBadge } from "./JobMatchBadge";
-import { VALUE_CATEGORIES } from "@/components/ValuesPreferenceSidebar";
+import { VALUES_LENSES } from "@/lib/valuesLenses";
 import {
   MapPin, Building2, ExternalLink, FileCheck, Wifi, Monitor, Home,
   Briefcase, DollarSign, Calendar, Clock,

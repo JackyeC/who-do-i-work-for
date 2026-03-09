@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { JobMatchBadge } from "./JobMatchBadge";
-import { VALUE_CATEGORIES } from "@/components/ValuesPreferenceSidebar";
+import { VALUES_LENSES } from "@/lib/valuesLenses";
 import {
   Building2, MapPin, Wifi, Monitor, Home, DollarSign,
   Bot, Heart, MessageSquare, Landmark,
