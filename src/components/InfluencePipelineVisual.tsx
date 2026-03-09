@@ -13,24 +13,39 @@ const fadeUp = {
 const pipelineSteps = [
   {
     icon: DollarSign,
-    label: "Money In",
-    color: "text-civic-gold",
-    bgColor: "bg-civic-gold/10 border-civic-gold/20",
-    items: ["PAC contributions", "Executive donations", "Lobbying expenditures", "Trade association dues"],
+    label: "Money Goes In",
+    color: "text-[hsl(var(--civic-gold))]",
+    bgColor: "bg-[hsl(var(--civic-gold))]/10 border-[hsl(var(--civic-gold))]/20",
+    items: [
+      "Company political fund donations",
+      "Executives writing personal checks to politicians",
+      "Paying lobbyists to talk to lawmakers",
+      "Dues to industry groups that lobby on their behalf",
+    ],
   },
   {
     icon: Network,
-    label: "Influence Network",
+    label: "Connections Are Made",
     color: "text-primary",
     bgColor: "bg-primary/10 border-primary/20",
-    items: ["Committee members", "Revolving door officials", "Advisory appointments", "Interlocking boards"],
+    items: [
+      "Politicians who sit on powerful committees",
+      "Former government officials now working at the company",
+      "Company people on government advisory panels",
+      "Shared board members with other powerful companies",
+    ],
   },
   {
     icon: Landmark,
-    label: "Benefits Out",
-    color: "text-emerald-600 dark:text-emerald-400",
-    bgColor: "bg-emerald-500/10 border-emerald-500/20",
-    items: ["Government contracts", "Subsidies & grants", "Favorable regulations", "Policy outcomes"],
+    label: "Benefits Come Back",
+    color: "text-[hsl(var(--civic-green))]",
+    bgColor: "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/20",
+    items: [
+      "Government contracts worth millions",
+      "Taxpayer-funded subsidies and grants",
+      "Rules written in the company's favor",
+      "Laws that help the company's bottom line",
+    ],
   },
 ];
 
@@ -47,15 +62,15 @@ export function InfluencePipelineVisual() {
           <motion.div variants={fadeUp} custom={0} className="text-center mb-14">
             <div className="gold-line w-16 mx-auto mb-8" />
             <h2 className="text-headline text-foreground mb-4 font-display">
-              Follow the Influence
+              Follow the Money
             </h2>
             <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
-              See how political spending flows from companies through influence networks to government outcomes.
+              Companies spend money to influence government. Here's how that works, step by step.
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-            {/* Connection arrows (desktop only) */}
+            {/* Connection arrows (desktop) */}
             <div className="hidden md:block absolute top-1/2 left-[33.33%] -translate-x-1/2 -translate-y-1/2 z-10">
               <div className="w-8 h-8 rounded-full bg-card border border-border/60 flex items-center justify-center shadow-elevated">
                 <ArrowRight className="w-4 h-4 text-muted-foreground" />
@@ -82,8 +97,8 @@ export function InfluencePipelineVisual() {
                 </div>
                 <ul className="space-y-2">
                   {step.items.map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <div className={`w-1.5 h-1.5 rounded-full ${step.color.replace("text-", "bg-")} opacity-60`} />
+                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <div className={`w-1.5 h-1.5 rounded-full ${step.color.replace("text-", "bg-")} opacity-60 mt-1.5 shrink-0`} />
                       {item}
                     </li>
                   ))}

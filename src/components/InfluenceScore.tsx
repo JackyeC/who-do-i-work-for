@@ -9,11 +9,11 @@ interface InfluenceScoreProps {
 }
 
 function getScoreColor(score: number) {
-  if (score >= 80) return { ring: "text-destructive", bg: "bg-destructive/10", label: "Very High Influence" };
-  if (score >= 60) return { ring: "text-[hsl(var(--civic-yellow))]", bg: "bg-[hsl(var(--civic-yellow))]/10", label: "High Influence" };
-  if (score >= 40) return { ring: "text-primary", bg: "bg-primary/10", label: "Moderate Influence" };
-  if (score >= 20) return { ring: "text-[hsl(var(--civic-blue))]", bg: "bg-[hsl(var(--civic-blue))]/10", label: "Low Influence" };
-  return { ring: "text-[hsl(var(--civic-green))]", bg: "bg-[hsl(var(--civic-green))]/10", label: "Minimal Influence" };
+  if (score >= 80) return { ring: "text-destructive", bg: "bg-destructive/10", label: "Very active in politics" };
+  if (score >= 60) return { ring: "text-[hsl(var(--civic-yellow))]", bg: "bg-[hsl(var(--civic-yellow))]/10", label: "Quite active in politics" };
+  if (score >= 40) return { ring: "text-primary", bg: "bg-primary/10", label: "Somewhat active" };
+  if (score >= 20) return { ring: "text-[hsl(var(--civic-blue))]", bg: "bg-[hsl(var(--civic-blue))]/10", label: "Not very active" };
+  return { ring: "text-[hsl(var(--civic-green))]", bg: "bg-[hsl(var(--civic-green))]/10", label: "Little to no political activity" };
 }
 
 export function calculateInfluenceScore(data: {
@@ -26,7 +26,6 @@ export function calculateInfluenceScore(data: {
 }): number {
   let score = 0;
 
-  // PAC spending (0-25 points)
   const pac = data.totalPacSpending || 0;
   if (pac > 5_000_000) score += 25;
   else if (pac > 1_000_000) score += 20;
@@ -34,7 +33,6 @@ export function calculateInfluenceScore(data: {
   else if (pac > 100_000) score += 10;
   else if (pac > 0) score += 5;
 
-  // Lobbying (0-25 points)
   const lobby = data.lobbyingSpend || 0;
   if (lobby > 10_000_000) score += 25;
   else if (lobby > 5_000_000) score += 20;
@@ -42,20 +40,17 @@ export function calculateInfluenceScore(data: {
   else if (lobby > 100_000) score += 10;
   else if (lobby > 0) score += 5;
 
-  // Government contracts (0-20 points)
   const contracts = data.governmentContracts || 0;
   if (contracts > 1_000_000_000) score += 20;
   else if (contracts > 100_000_000) score += 15;
   else if (contracts > 10_000_000) score += 10;
   else if (contracts > 0) score += 5;
 
-  // Revolving door (0-15 points)
   const rd = data.revolvingDoorCount || 0;
   if (rd >= 5) score += 15;
   else if (rd >= 3) score += 10;
   else if (rd >= 1) score += 5;
 
-  // Trade associations + executive donations (0-15 points)
   const ta = data.tradeAssociationCount || 0;
   const exec = data.executiveDonations || 0;
   if (ta >= 5 || exec > 500_000) score += 15;
@@ -66,7 +61,7 @@ export function calculateInfluenceScore(data: {
 }
 
 export function InfluenceScore({ score, size = "md", showLabel = true, animated = true }: InfluenceScoreProps) {
-  const { ring, bg, label } = getScoreColor(score);
+  const { ring, label } = getScoreColor(score);
   const circumference = 2 * Math.PI * 40;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
@@ -99,7 +94,7 @@ export function InfluenceScore({ score, size = "md", showLabel = true, animated 
       {showLabel && (
         <div className="text-center">
           <p className={cn("font-semibold text-foreground", s.label)}>{label}</p>
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">Influence Score</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">How much this company tries to influence government</p>
         </div>
       )}
     </div>
