@@ -9,10 +9,13 @@ import { MyDocuments } from "@/components/career/MyDocuments";
 import { ResumeTailor } from "@/components/career/ResumeTailor";
 import { DataWipeButton } from "@/components/career/DataWipeButton";
 import { CareerMappingView } from "@/components/career/CareerMappingView";
+import { MyValuesProfile } from "@/components/career/MyValuesProfile";
+import { HowDoIGetThere } from "@/components/career/HowDoIGetThere";
+import { OutreachIntelligence } from "@/components/career/OutreachIntelligence";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, User, Bell, Upload, Wand2, Compass } from "lucide-react";
+import { FileText, User, Bell, Upload, Wand2, Compass, Heart, Route, Users } from "lucide-react";
 
 export default function CareerMap() {
   const { user } = useAuth();
@@ -50,8 +53,7 @@ export default function CareerMap() {
             Map My Career
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
-            Upload career documents for AI-powered signal analysis. Get career trajectory suggestions,
-            skill gap identification, and dream job alerts based on your skills and values.
+            Upload career documents, define your values, map your next move, and discover who can help you get there.
           </p>
           <p className="text-xs text-muted-foreground mt-2 max-w-xl mx-auto italic">
             This tool detects signals in uploaded documents and public sources. It does not provide legal, financial, or employment advice.
@@ -59,15 +61,24 @@ export default function CareerMap() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-4xl mx-auto">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-9 h-auto">
             <TabsTrigger value="upload" className="flex items-center gap-1.5 text-xs sm:text-sm">
               <Upload className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Upload</span>
             </TabsTrigger>
             <TabsTrigger value="documents" className="flex items-center gap-1.5 text-xs sm:text-sm">
               <FileText className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Docs</span>
             </TabsTrigger>
+            <TabsTrigger value="values" className="flex items-center gap-1.5 text-xs sm:text-sm">
+              <Heart className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Values</span>
+            </TabsTrigger>
             <TabsTrigger value="pathing" className="flex items-center gap-1.5 text-xs sm:text-sm">
               <Compass className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Next Move</span>
+            </TabsTrigger>
+            <TabsTrigger value="how" className="flex items-center gap-1.5 text-xs sm:text-sm">
+              <Route className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Get There</span>
+            </TabsTrigger>
+            <TabsTrigger value="outreach" className="flex items-center gap-1.5 text-xs sm:text-sm">
+              <Users className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Outreach</span>
             </TabsTrigger>
             <TabsTrigger value="tailor" className="flex items-center gap-1.5 text-xs sm:text-sm">
               <Wand2 className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Tailor</span>
@@ -86,8 +97,17 @@ export default function CareerMap() {
           <TabsContent value="documents" className="mt-6">
             <MyDocuments />
           </TabsContent>
+          <TabsContent value="values" className="mt-6">
+            <MyValuesProfile />
+          </TabsContent>
           <TabsContent value="pathing" className="mt-6">
             <CareerMappingView />
+          </TabsContent>
+          <TabsContent value="how" className="mt-6">
+            <HowDoIGetThere />
+          </TabsContent>
+          <TabsContent value="outreach" className="mt-6">
+            <OutreachIntelligence />
           </TabsContent>
           <TabsContent value="tailor" className="mt-6">
             <ResumeTailor />

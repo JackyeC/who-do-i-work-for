@@ -12,9 +12,12 @@ import { AutoApplySettings } from "@/components/jobs/AutoApplySettings";
 import { ApplyQueueDashboard } from "@/components/jobs/ApplyQueueDashboard";
 import { UserAlertsList } from "@/components/UserAlerts";
 import { UserValuesProfile } from "@/components/UserValuesProfile";
+import { MyValuesProfile } from "@/components/career/MyValuesProfile";
+import { HowDoIGetThere } from "@/components/career/HowDoIGetThere";
+import { OutreachIntelligence } from "@/components/career/OutreachIntelligence";
 import {
-  ClipboardCheck, Bookmark, Bell, Briefcase, LayoutDashboard,
-  Settings, User, Zap, Map, Target
+  ClipboardCheck, Bell, Briefcase, LayoutDashboard,
+  Settings, User, Zap, Target, Heart, Route, Users
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -33,7 +36,7 @@ export default function Dashboard() {
             My Dashboard
           </h1>
           <p className="text-muted-foreground mt-1">
-            Your career intelligence hub — offers, jobs, applications, and alerts in one place.
+            Your career intelligence hub — values, jobs, paths, outreach, and alerts in one place.
           </p>
         </div>
 
@@ -42,8 +45,14 @@ export default function Dashboard() {
             <TabsTrigger value="matches" className="gap-1.5">
               <Briefcase className="w-4 h-4" /> Matched Jobs
             </TabsTrigger>
-            <TabsTrigger value="alignment" className="gap-1.5">
-              <Target className="w-4 h-4" /> My Alignment
+            <TabsTrigger value="values" className="gap-1.5">
+              <Heart className="w-4 h-4" /> My Values
+            </TabsTrigger>
+            <TabsTrigger value="how" className="gap-1.5">
+              <Route className="w-4 h-4" /> How Do I Get There?
+            </TabsTrigger>
+            <TabsTrigger value="outreach" className="gap-1.5">
+              <Users className="w-4 h-4" /> Outreach
             </TabsTrigger>
             <TabsTrigger value="tracker" className="gap-1.5">
               <LayoutDashboard className="w-4 h-4" /> Applications
@@ -68,8 +77,14 @@ export default function Dashboard() {
           <TabsContent value="matches">
             <AlignedJobsList />
           </TabsContent>
-          <TabsContent value="alignment">
-            <UserValuesProfile />
+          <TabsContent value="values">
+            <MyValuesProfile />
+          </TabsContent>
+          <TabsContent value="how">
+            <HowDoIGetThere />
+          </TabsContent>
+          <TabsContent value="outreach">
+            <OutreachIntelligence />
           </TabsContent>
           <TabsContent value="tracker">
             <TrackingDashboard />
