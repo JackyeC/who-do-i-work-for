@@ -339,6 +339,11 @@ export default function ValuesSearch() {
                       ))}
                     </AnimatePresence>
                   </div>
+
+                  {/* Related Intelligence Reports for this issue */}
+                  {issueInfo && (
+                    <IssueRelatedReports issueCategory={selectedIssue} issueLabel={issueInfo.label} />
+                  )}
                 </>
               )}
             </>
