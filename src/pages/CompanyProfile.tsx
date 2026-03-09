@@ -768,7 +768,7 @@ export default function CompanyProfile() {
                       <Megaphone className="w-3.5 h-3.5" />
                       Lobbying
                     </div>
-                    <div className="text-3xl font-bold text-foreground" style={{ fontFamily: "'Source Serif 4', serif" }}>
+                    <div className="text-3xl font-bold text-foreground font-display-number">
                       {dbCompany.lobbying_spend ? formatCurrency(dbCompany.lobbying_spend) : "None"}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-2 leading-snug">Annual spending on lobbyists who advocate for the company in Congress.</p>
