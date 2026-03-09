@@ -270,3 +270,17 @@ async function fetchFirecrawl(apiKey: string, body: Record<string, unknown>): Pr
   if (!res.ok) return null;
   return res.json();
 }
+
+// Helper: call Firecrawl scrape API
+async function fetchFirecrawlScrape(apiKey: string, url: string): Promise<any> {
+  const res = await fetch("https://api.firecrawl.dev/v1/scrape", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ url, formats: ["markdown"], waitFor: 3000 }),
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
