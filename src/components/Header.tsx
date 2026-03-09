@@ -332,7 +332,7 @@ export function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search companies, leaders, policies…"
-              className="h-9 w-[260px] pl-8 text-sm rounded-xl bg-muted/50 border-border/40 focus:w-[320px] transition-all duration-200"
+              className="h-9 w-[200px] xl:w-[260px] pl-8 text-sm rounded-xl bg-muted/50 border-border/40 focus:w-[280px] xl:focus:w-[320px] transition-all duration-200"
             />
           </form>
           {!user && (
