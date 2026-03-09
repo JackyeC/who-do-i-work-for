@@ -5,19 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Heart, Shield, Star, Dog, Landmark, Flag, Leaf, Users, Sparkles } from "lucide-react";
-
-export const VALUE_CATEGORIES = [
-  { key: "faith_friendly", label: "Faith / Christian Values", icon: Star, color: "text-amber-500" },
-  { key: "supports_israel", label: "Supports Israel", icon: Landmark, color: "text-blue-500" },
-  { key: "animal_welfare", label: "Animal / Pet Welfare", icon: Dog, color: "text-orange-500" },
-  { key: "anti_discrimination", label: "Anti-Discrimination / DEI", icon: Shield, color: "text-emerald-500" },
-  { key: "dei_rollback", label: "DEI Rollback Tracker", icon: Flag, color: "text-red-500" },
-  { key: "environmental", label: "Environmental Commitment", icon: Leaf, color: "text-green-500" },
-  { key: "veteran_support", label: "Veteran / Military Support", icon: Users, color: "text-indigo-500" },
-  { key: "lgbtq_inclusive", label: "LGBTQ+ Inclusive", icon: Heart, color: "text-pink-500" },
-] as const;
+import { Sparkles } from "lucide-react";
+import { VALUES_LENSES } from "@/lib/valuesLenses";
 
 interface Props {
   onFiltersChange: (filters: string[]) => void;
@@ -87,25 +76,25 @@ export function ValuesPreferenceSidebar({ onFiltersChange, activeFilters }: Prop
           Values Filter
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          Toggle to filter companies by detected value signals.
+          Toggle to filter jobs by company value signals.
         </p>
       </CardHeader>
       <CardContent className="space-y-2.5">
-        {VALUE_CATEGORIES.map((cat) => {
-          const Icon = cat.icon;
-          const isActive = activeFilters.includes(cat.key);
+        {VALUES_LENSES.map((lens) => {
+          const Icon = lens.icon;
+          const isActive = activeFilters.includes(lens.key);
           return (
             <div
-              key={cat.key}
+              key={lens.key}
               className={`flex items-center justify-between p-2 rounded-lg transition-colors ${isActive ? 'bg-primary/5 border border-primary/20' : 'hover:bg-muted/50'}`}
             >
               <div className="flex items-center gap-2 min-w-0">
-                <Icon className={`w-4 h-4 shrink-0 ${cat.color}`} />
-                <span className="text-xs text-foreground truncate">{cat.label}</span>
+                <Icon className="w-4 h-4 shrink-0 text-primary" />
+                <span className="text-xs text-foreground truncate">{lens.label}</span>
               </div>
               <Switch
                 checked={isActive}
-                onCheckedChange={(checked) => handleToggle(cat.key, checked)}
+                onCheckedChange={(checked) => handleToggle(lens.key, checked)}
                 className="shrink-0"
               />
             </div>
@@ -115,9 +104,9 @@ export function ValuesPreferenceSidebar({ onFiltersChange, activeFilters }: Prop
           <div className="pt-2 border-t border-border">
             <div className="flex flex-wrap gap-1">
               {activeFilters.map((f) => {
-                const cat = VALUE_CATEGORIES.find((c) => c.key === f);
-                return cat ? (
-                  <Badge key={f} variant="secondary" className="text-[10px]">{cat.label}</Badge>
+                const lens = VALUES_LENSES.find((l) => l.key === f);
+                return lens ? (
+                  <Badge key={f} variant="secondary" className="text-[10px]">{lens.label}</Badge>
                 ) : null;
               })}
             </div>

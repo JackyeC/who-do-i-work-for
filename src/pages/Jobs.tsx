@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingState } from "@/components/LoadingState";
-import { VALUE_CATEGORIES, ValuesPreferenceSidebar } from "@/components/ValuesPreferenceSidebar";
+import { ValuesPreferenceSidebar } from "@/components/ValuesPreferenceSidebar";
+import { VALUES_LENSES } from "@/lib/valuesLenses";
 import { JobSidebar } from "@/components/jobs/JobSidebar";
 import { JobListRow } from "@/components/jobs/JobListRow";
 import { JobDetailDrawer } from "@/components/jobs/JobDetailDrawer";
@@ -72,10 +73,12 @@ export default function Jobs() {
     queryKey: ["company-values-signals", valuesFilters],
     queryFn: async () => {
       if (valuesFilters.length === 0) return {};
+      // Query by both value_category and values_lens columns to cover all signal formats
+      const orFilter = valuesFilters.map(f => `value_category.eq.${f},values_lens.eq.${f}`).join(",");
       const { data, error } = await supabase
         .from("company_values_signals")
-        .select("company_id, value_category, signal_summary, confidence")
-        .in("value_category", valuesFilters);
+        .select("company_id, value_category, values_lens, signal_summary, confidence")
+        .or(orFilter);
       if (error) throw error;
       const map: Record<string, any[]> = {};
       (data || []).forEach((s: any) => {
@@ -112,7 +115,7 @@ export default function Jobs() {
       let matchesValues = true;
       if (valuesFilters.length > 0 && valuesSignals) {
         const companySignals = valuesSignals[company.id] || [];
-        const companyCategories = new Set(companySignals.map((s: any) => s.value_category));
+        const companyCategories = new Set(companySignals.map((s: any) => s.value_category || s.values_lens));
         matchesValues = valuesFilters.every((f) => companyCategories.has(f));
       }
       return matchesSearch && matchesScore && matchesIndustry && matchesValues && matchesWorkMode;
@@ -230,7 +233,7 @@ export default function Jobs() {
             <div className="flex flex-wrap items-center gap-1.5 mb-4">
               <span className="text-xs text-muted-foreground">Values:</span>
               {valuesFilters.map((f) => {
-                const cat = VALUE_CATEGORIES.find((c) => c.key === f);
+                const cat = VALUES_LENSES.find((c) => c.key === f);
                 return cat ? (
                   <Badge key={f} variant="secondary" className="text-xs flex items-center gap-1">
                     {cat.label}

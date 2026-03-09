@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { JobMatchBadge } from "./JobMatchBadge";
-import { VALUE_CATEGORIES } from "@/components/ValuesPreferenceSidebar";
+import { VALUES_LENSES } from "@/lib/valuesLenses";
 import {
   Building2, MapPin, Wifi, Monitor, Home, DollarSign,
   Bot, Heart, MessageSquare, Landmark,
@@ -105,12 +105,12 @@ export function JobListRow({ job, companyValueSignals = [], companySignalFlags =
             })}
             {/* Value category badges */}
             {companyValueSignals.slice(0, 3).map((vs: any, idx: number) => {
-              const cat = VALUE_CATEGORIES.find((c) => c.key === vs.value_category);
+              const cat = VALUES_LENSES.find((c) => c.key === vs.value_category || c.key === vs.values_lens);
               if (!cat) return null;
               const Icon = cat.icon;
               return (
                 <Badge key={idx} variant="outline" className="text-[10px] gap-0.5">
-                  <Icon className={`w-3 h-3 ${cat.color}`} />
+                  <Icon className="w-3 h-3 text-primary" />
                   {cat.label}
                 </Badge>
               );
