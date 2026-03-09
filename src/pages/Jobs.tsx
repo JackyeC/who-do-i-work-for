@@ -22,7 +22,7 @@ import {
 export default function Jobs() {
   const { user } = useAuth();
   const [search, setSearch] = useState("");
-  const [minScore, setMinScore] = useState("70");
+  const [minScore, setMinScore] = useState("0");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [workModeFilter, setWorkModeFilter] = useState("all");
   const [valuesFilters, setValuesFilters] = useState<string[]>([]);
