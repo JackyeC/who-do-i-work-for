@@ -31,6 +31,7 @@ export const LENSES: LensDefinition[] = [
       "ai-hiring",
       "hiring-transparency",
       "worker-benefits",
+      "promotion-equity",
       "ai-accountability",
       "compensation",
     ],
