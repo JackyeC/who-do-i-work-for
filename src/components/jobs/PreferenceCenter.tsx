@@ -45,7 +45,7 @@ export function PreferenceCenter() {
             Signal Requirements
           </CardTitle>
           <CardDescription>
-            Toggle the CivicLens signals you <strong>require</strong> in an employer. Only jobs at companies with these verified signals will appear in your Aligned Jobs feed.
+            Toggle the signals you <strong>require</strong> in an employer. Only jobs at companies with these verified signals will appear in your Aligned Jobs feed.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -75,7 +75,7 @@ export function PreferenceCenter() {
             <div>
               <p className="text-sm font-medium text-foreground">How matching works</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Each job is scored based on the company's CivicLens Civic Footprint Score plus detected signals from our worker-benefits, AI-accountability, and pay-equity scans. Required signals act as hard filters—jobs that don't meet all your requirements won't appear.
+                Each job is scored based on the company's Civic Footprint Score plus detected signals from our worker-benefits, AI-accountability, and pay-equity scans. Required signals act as hard filters—jobs that don't meet all your requirements won't appear.
               </p>
             </div>
           </div>

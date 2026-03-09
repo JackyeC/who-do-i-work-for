@@ -105,10 +105,10 @@ export default function VoterLookup() {
           {/* Hero */}
           <div className="text-center mb-10">
             <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3 tracking-tight">
-              Who the Hell Did I Vote For?
+              Who Represents Me in DC?
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              Enter your address to see your elected representatives — and exactly which corporations are funding them.
+              Enter your address to see your elected representatives — and which corporations are funding their campaigns.
             </p>
           </div>
 
@@ -177,13 +177,13 @@ export default function VoterLookup() {
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-muted-foreground font-medium">
                               <DollarSign className="w-4 h-4 inline mr-1" />
-                              Total corporate funding tracked
+                              Total corporate donations <em>to</em> this representative
                             </span>
                             <span className="font-bold text-foreground text-lg">{formatCurrency(rep.totalCorporateFunding)}</span>
                           </div>
 
                           <div className="space-y-2">
-                            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Corporate Funders in CivicLens</h4>
+                            <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Companies That Funded This Representative</h4>
                             {rep.corporateFunders.map((funder, j) => (
                               <Link
                                 key={j}
@@ -223,7 +223,7 @@ export default function VoterLookup() {
                         </>
                       ) : (
                         <div className="text-center py-4 text-sm text-muted-foreground bg-muted/50 rounded-lg">
-                          <p>No corporate funding tracked for this representative yet in CivicLens.</p>
+                          <p>No corporate donations tracked for this representative yet.</p>
                           <p className="text-xs mt-1">We're continuously adding more companies and data.</p>
                         </div>
                       )}

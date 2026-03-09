@@ -1657,7 +1657,7 @@ export default function CompanyProfile() {
                 Data sourced from FEC.gov, Senate LDA, USASpending.gov, OpenCorporates, DOL enforcement data, and public filings. 
                 Executive donations reflect personal giving and do not necessarily represent corporate policy.
                 Dark money estimates are based on available tax filings and may not represent total giving.
-                CivicLens provides publicly available data for informational purposes only and does not make endorsements or moral judgments.
+                This platform provides publicly available data for informational purposes only and does not make endorsements or moral judgments.
               </p>
             </CardContent>
           </Card>
