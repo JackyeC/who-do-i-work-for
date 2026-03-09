@@ -167,20 +167,29 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 6. Score jobs with career profile matching
+    // 7. Score jobs with NEW Career Alignment Score weighting
     const prefKeys = (preferences || []).filter((p: any) => p.is_required).map((p: any) => p.signal_key);
     const hasProfile = userSkills.length > 0 || userTitles.length > 0;
 
     const scoredJobs = jobs.map((job: any) => {
       const signals = companySignals[job.company_id] || {};
       const matchedSignals: string[] = [];
-      let score = 0;
       const company = job.companies;
 
-      // Base: civic footprint (0-30 pts)
-      score += Math.min(Math.round((company.civic_footprint_score || 0) * 0.3), 30);
+      // ────────────────────────────────────────────────────
+      // NEW: Career Alignment Score Calculation
+      // Skills 30%, Values 30%, Signals 25%, Job 15%
+      // ────────────────────────────────────────────────────
 
-      // Signal matches (up to 20 pts)
+      let skillsScore = 50; // default
+      let valuesScore = companyValuesAlignment[job.company_id] || 50;
+      let signalsScore = 0;
+      let jobScore = 50;
+
+      // ─── SIGNALS SCORE (25%) ───
+      // Base: civic footprint (0-30 pts) + signal detection (0-20 pts)
+      signalsScore += Math.min(Math.round((company.civic_footprint_score || 0) * 0.3), 30);
+
       let signalPts = 0;
       for (const key of Object.keys(signals)) {
         if (signals[key].detected) {
@@ -188,7 +197,8 @@ Deno.serve(async (req) => {
           matchedSignals.push(signals[key].label || key);
         }
       }
-      score += Math.min(signalPts, 20);
+      signalsScore += Math.min(signalPts, 20);
+      signalsScore = Math.min(signalsScore, 100);
 
       // ─── Career profile matching (up to 50 pts) ───
       if (hasProfile) {
