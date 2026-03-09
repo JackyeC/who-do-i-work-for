@@ -61,6 +61,7 @@ import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { WhatYoureSupportingCard } from "@/components/WhatYoureSupportingCard";
 import { TransparencyIndex } from "@/components/TransparencyIndex";
 import { TalentSignalsCard } from "@/components/recruiting/TalentSignalsCard";
+import { CandidateAttractionScore } from "@/components/recruiting/CandidateAttractionScore";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCompanySEO } from "@/hooks/use-company-seo";
@@ -292,7 +293,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
     "compensation": <ExplainableMetric metricKey="compensation-transparency"><div key="compensation" className="mb-6"><CompensationTransparencyCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
     "warn-tracker": <ExplainableMetric metricKey="warn-tracker"><div key="warn-tracker" className="mb-6"><WarnTrackerCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
     "promotion-equity": <ExplainableMetric metricKey="worker-benefits"><div key="promotion-equity" className="mb-6"><PromotionEquityCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
-    "talent-signals": <div key="talent-signals" className="mb-6"><TalentSignalsCard companyName={dbCompany.name} /></div>,
+    "talent-signals": <div key="talent-signals" className="mb-6"><TalentSignalsCard companyName={dbCompany.name} /><div className="mt-6"><CandidateAttractionScore companyId={dbCompany.id} companyName={dbCompany.name} /></div></div>,
   };
 
   return (
