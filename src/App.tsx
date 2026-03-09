@@ -35,6 +35,10 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Examples from "./pages/Examples";
 import SearchYourEmployer from "./pages/SearchYourEmployer";
 import ValuesSearch from "./pages/ValuesSearch";
+import IntelligenceReports from "./pages/IntelligenceReports";
+import IntelligenceReport from "./pages/IntelligenceReport";
+import ReportsList from "./pages/ReportsList";
+import ReportEditor from "./pages/ReportEditor";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +123,10 @@ const App = () => (
                   <CareerIntelligence />
                 </ProtectedRoute>
               } />
+              <Route path="/intelligence" element={<IntelligenceReports />} />
+              <Route path="/intelligence/:slug" element={<IntelligenceReport />} />
+              <Route path="/admin/reports" element={<ProtectedRoute><ReportsList /></ProtectedRoute>} />
+              <Route path="/admin/reports/:id" element={<ProtectedRoute><ReportEditor /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
