@@ -15,22 +15,22 @@ Deno.serve(async (req) => {
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
-    // Get all companies
+    const body = await req.json().catch(() => ({}));
+    const batchSize = body.batchSize || 10;
+    const offset = body.offset || 0;
+
+    // Get companies
     const { data: companies, error } = await supabase
       .from('companies')
-      .select('id, name');
+      .select('id, name')
+      .order('name')
+      .range(offset, offset + batchSize - 1);
 
     if (error || !companies) {
       return new Response(JSON.stringify({ success: false, error: 'Failed to fetch companies' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-
-    // Get companies that already have issue signals
-    const { data: existing } = await supabase
-      .from('issue_signals')
-      .select('entity_id');
-    const existingIds = new Set((existing || []).map((e: any) => e.entity_id));
 
     // Process all companies (even ones with existing signals to pick up new keywords)
     const results: any[] = [];
