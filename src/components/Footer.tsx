@@ -52,7 +52,8 @@ export function Footer() {
                 <Link to="/methodology" className="block text-sm text-primary-foreground/55 hover:text-primary-foreground/90 transition-colors">Methodology</Link>
                 <a href="#data-sources" className="block text-sm text-primary-foreground/55 hover:text-primary-foreground/90 transition-colors">Data Sources</a>
                 <Link to="/request-correction" className="block text-sm text-primary-foreground/55 hover:text-primary-foreground/90 transition-colors">Request a Correction</Link>
-                <a href="#privacy" className="block text-sm text-primary-foreground/55 hover:text-primary-foreground/90 transition-colors">Privacy</a>
+                <Link to="/privacy" className="block text-sm text-primary-foreground/55 hover:text-primary-foreground/90 transition-colors">Privacy Policy</Link>
+                <Link to="/terms" className="block text-sm text-primary-foreground/55 hover:text-primary-foreground/90 transition-colors">Terms of Service</Link>
               </div>
             </div>
           </div>

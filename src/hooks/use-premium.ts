@@ -1,6 +1,15 @@
 import { useAuth } from "@/contexts/AuthContext";
 
-export type PremiumTier = "free" | "premium";
+export type PremiumTier = "free" | "pro";
+
+export const STRIPE_TIERS = {
+  pro: {
+    price_id: "price_1T93XPGh4NKuXb2AjiV2bobX",
+    product_id: "prod_U7I705lqyNGEWI",
+    label: "Pro",
+    price: "$29/mo",
+  },
+} as const;
 
 export interface PremiumFeatures {
   tier: PremiumTier;
@@ -22,8 +31,8 @@ const FREE_FEATURES: PremiumFeatures = {
   advancedSectionDetail: false,
 };
 
-const PREMIUM_FEATURES: PremiumFeatures = {
-  tier: "premium",
+const PRO_FEATURES: PremiumFeatures = {
+  tier: "pro",
   maxSavedReports: Infinity,
   canCompare: true,
   canExport: true,
@@ -32,21 +41,16 @@ const PREMIUM_FEATURES: PremiumFeatures = {
   advancedSectionDetail: true,
 };
 
-/**
- * Hook to determine the user's premium tier and available features.
- * Currently always returns free tier. When billing is added,
- * this will check the user's subscription status.
- */
-export function usePremium(): PremiumFeatures & { isPremium: boolean; isLoggedIn: boolean } {
-  const { user } = useAuth();
+export function usePremium(): PremiumFeatures & { isPremium: boolean; isLoggedIn: boolean; subscriptionEnd: string | null } {
+  const { user, subscriptionStatus } = useAuth();
 
-  // TODO: Check subscription status from billing table when available
-  const isPremium = false;
-  const features = isPremium ? PREMIUM_FEATURES : FREE_FEATURES;
+  const isPremium = subscriptionStatus?.subscribed ?? false;
+  const features = isPremium ? PRO_FEATURES : FREE_FEATURES;
 
   return {
     ...features,
     isPremium,
     isLoggedIn: !!user,
+    subscriptionEnd: subscriptionStatus?.subscription_end ?? null,
   };
 }
