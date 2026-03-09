@@ -79,20 +79,23 @@ export default function Check() {
               <p className="text-sm text-muted-foreground mb-6">
                 Search a company to run an Offer Check report — analyze salary structure, equity terms, contract language, and company intelligence context.
               </p>
-              <form onSubmit={handleCompanySearch} className="flex gap-3">
+              <form onSubmit={handleOfferSearch} className="flex gap-3">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     value={companyQuery}
                     onChange={(e) => setCompanyQuery(e.target.value)}
-                    placeholder="Enter company name..."
+                    placeholder="Enter company name to check your offer..."
                     className="pl-10"
                   />
                 </div>
                 <Button type="submit" className="gap-2">
-                  Search <ArrowRight className="w-4 h-4" />
+                  Run Offer Check <ArrowRight className="w-4 h-4" />
                 </Button>
               </form>
+              <p className="text-xs text-muted-foreground mt-4">
+                You can also upload an offer letter for detailed analysis after selecting a company.
+              </p>
             </div>
           </TabsContent>
 
