@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { ScanCoveragePanel } from "@/components/ScanCoveragePanel";
+import { ScanProgressOverlay } from "@/components/ScanProgressOverlay";
 
 interface Props {
   companyId: string;
@@ -73,6 +74,7 @@ const statusBadgeClass = (status: string) => {
 
 export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   const [isScanning, setIsScanning] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -95,6 +97,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   useEffect(() => {
     if (isScanning && latestScan?.scan_status && !['queued', 'in_progress'].includes(latestScan.scan_status)) {
       setIsScanning(false);
+      // Keep overlay open so user can see "Scan Complete" and click "View Results"
       const keys = ["ai-hr-signals", "worker-benefit-signals", "pay-equity-signals", "worker-sentiment", "ideology-flags", "social-media-scans", "agency-contracts", "ai-accountability"];
       keys.forEach(k => queryClient.invalidateQueries({ queryKey: [k] }));
     }
@@ -102,6 +105,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
 
   const runScan = async () => {
     setIsScanning(true);
+    setShowOverlay(true);
     try {
       const [orchestrated, unified] = await Promise.allSettled([
         supabase.functions.invoke("company-intelligence-scan", {
@@ -328,6 +332,16 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
           </div>
         )}
       </CardContent>
+
+      <ScanProgressOverlay
+        isOpen={showOverlay}
+        companyName={companyName}
+        moduleStatuses={moduleStatuses}
+        scanStatus={latestScan?.scan_status || null}
+        totalSignals={latestScan?.total_signals_found || 0}
+        totalSources={latestScan?.total_sources_scanned || 0}
+        onClose={() => setShowOverlay(false)}
+      />
     </Card>
   );
 }
