@@ -8,7 +8,7 @@ import {
   BarChart3, Loader2, Sparkles, Search, ClipboardCheck, CheckCircle2, HelpCircle
 } from "lucide-react";
 import { LensSelector } from "@/components/LensSelector";
-import { BeforeYouApply } from "@/components/BeforeYouApply";
+import { ValuesCheckSection, type ValuesCheckSignal } from "@/components/values-check/ValuesCheckSection";
 import { DataGlossary } from "@/components/DataGlossary";
 import { OpenSecretsEnrichmentCard } from "@/components/OpenSecretsEnrichmentCard";
 import { ExplainableMetric } from "@/components/ExplainableMetric";
@@ -409,6 +409,33 @@ export default function CompanyProfile() {
 
   const hasDetailedData = (dbCandidates?.length || 0) > 0 || (dbExecutives?.length || 0) > 0;
 
+  // Values Check signals
+  const { data: valuesCheckSignals, refetch: refetchValuesCheck } = useQuery({
+    queryKey: ["values-check-signals", dbCompanyId],
+    queryFn: async () => {
+      const { data } = await supabase.from("values_check_signals" as any).select("*").eq("company_id", dbCompanyId!).order("confidence_score", { ascending: false });
+      return (data || []) as unknown as ValuesCheckSignal[];
+    },
+    enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
+  });
+
+  const [isGeneratingValues, setIsGeneratingValues] = useState(false);
+  const handleGenerateValuesCheck = async () => {
+    if (!dbCompanyId) return;
+    setIsGeneratingValues(true);
+    try {
+      const { error } = await supabase.functions.invoke("generate-values-check", { body: { companyId: dbCompanyId } });
+      if (error) throw error;
+      refetchValuesCheck();
+      toast({ title: "Values Check generated", description: "Values signals have been mapped from available evidence." });
+    } catch (e: any) {
+      toast({ title: "Generation failed", description: e.message, variant: "destructive" });
+    } finally {
+      setIsGeneratingValues(false);
+    }
+  };
+
   // Enrichment data (OpenSecrets third-party summaries)
   const { data: enrichmentData } = useQuery({
     queryKey: ["org-enrichment", dbCompanyId],
@@ -736,23 +763,14 @@ export default function CompanyProfile() {
               </CardContent>
             </Card>
 
-            {/* Before You Apply */}
+            {/* Values Check */}
             <div className="mb-8">
-              <BeforeYouApply
+              <ValuesCheckSection
                 companyName={dbCompany.name}
                 companyId={dbCompany.id}
-                signals={{
-                  pacSpending: dbCompany.total_pac_spending || 0,
-                  executiveDonations: dbExecutives?.reduce((sum: number, e: any) => sum + (e.total_donations || 0), 0) || 0,
-                  lobbyingSpend: dbCompany.lobbying_spend || 0,
-                  tradeAssociationCount: dbTradeAssociations?.length || 0,
-                  publicStanceCount: dbPublicStances?.length || 0,
-                  hasDetailedData: hasDetailedData,
-                }}
-                onReviewSignals={() => {
-                  const el = document.getElementById('lens-modules');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
+                signals={valuesCheckSignals || []}
+                onGenerateSignals={handleGenerateValuesCheck}
+                isGenerating={isGeneratingValues}
               />
             </div>
 
