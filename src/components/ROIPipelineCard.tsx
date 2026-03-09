@@ -489,7 +489,7 @@ export function ROIPipelineCard({
             <div className="flex flex-col md:flex-row gap-4">
               <PipelineColumn title="Money In" icon={DollarSign} items={data.moneyIn} color="text-destructive" />
               <FlowArrow />
-              <PipelineColumn title="Influence Network" icon={Users} items={data.network.map(n => ({ label: n.label, role: n.role, type: n.type }))} color="text-accent-foreground" />
+              <PipelineColumn title="Influence Network" icon={Users} items={data.network.map(n => ({ label: n.label, role: n.role, type: n.type, source_url: n.source_url, evidence_type: n.evidence_type }))} color="text-accent-foreground" />
               <FlowArrow />
               <PipelineColumn title="Benefits Out" icon={Landmark} items={data.benefitsOut} color="text-primary" />
             </div>
