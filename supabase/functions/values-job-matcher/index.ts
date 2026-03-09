@@ -268,6 +268,15 @@ Deno.serve(async (req) => {
 
       jobScore = Math.min(jobMatchPts, 100);
 
+      // ─── FINAL CAREER ALIGNMENT SCORE ───
+      // Skills 30%, Values 30%, Signals 25%, Job 15%
+      const alignmentScore = Math.round(
+        skillsScore * 0.30 +
+        valuesScore * 0.30 +
+        signalsScore * 0.25 +
+        jobScore * 0.15
+      );
+
       // Check required signal preferences
       let meetsRequirements = true;
       if (prefKeys.length > 0) {
@@ -294,7 +303,7 @@ Deno.serve(async (req) => {
         civic_footprint_score: company.civic_footprint_score,
         industry: company.industry,
         state: company.state,
-        alignment_score: Math.min(score, 100),
+        alignment_score: Math.min(alignmentScore, 100),
         matched_signals: [...new Set(matchedSignals)],
         meets_requirements: meetsRequirements,
       };
