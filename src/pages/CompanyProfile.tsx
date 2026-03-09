@@ -10,6 +10,7 @@ import {
 import { LensSelector } from "@/components/LensSelector";
 import { BeforeYouApply } from "@/components/BeforeYouApply";
 import { DataGlossary } from "@/components/DataGlossary";
+import { OpenSecretsEnrichmentCard } from "@/components/OpenSecretsEnrichmentCard";
 import { ExplainableMetric } from "@/components/ExplainableMetric";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { PlatformPhilosophy } from "@/components/PlatformPhilosophy";
