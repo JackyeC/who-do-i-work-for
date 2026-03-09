@@ -395,6 +395,16 @@ export default function CompanyProfile() {
     refetchInterval: pollInterval,
   });
 
+  const { data: dbTradeAssociations } = useQuery({
+    queryKey: ["company-trade-assoc", dbCompanyId],
+    queryFn: async () => {
+      const { data } = await supabase.from("company_trade_associations").select("id").eq("company_id", dbCompanyId!);
+      return data || [];
+    },
+    enabled: !!dbCompanyId,
+    refetchInterval: pollInterval,
+  });
+
   const hasDetailedData = (dbCandidates?.length || 0) > 0 || (dbExecutives?.length || 0) > 0;
 
   // Transparency Index: check signal presence across categories
