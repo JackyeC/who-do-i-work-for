@@ -33,6 +33,15 @@ const ISSUE_AREAS = [
 
 type IssueKey = typeof ISSUE_AREAS[number]["key"];
 
+const GUN_POLICY_SUBTYPES: Record<string, { label: string; description: string }> = {
+  gun_rights_signal: { label: "Gun Rights", description: "Signals linked to pro-gun rights organizations" },
+  gun_control_signal: { label: "Gun Safety / Control", description: "Signals linked to gun safety advocacy organizations" },
+  firearm_industry_signal: { label: "Firearm Industry", description: "Signals from firearm or ammunition manufacturers" },
+  advocacy_signal: { label: "Advocacy", description: "General firearms policy advocacy connections" },
+  lobbying_signal: { label: "Lobbying", description: "Lobbying filings mentioning firearms policy" },
+  legislator_support_signal: { label: "Legislator Support", description: "Campaign donations from firearm-related PACs" },
+};
+
 const CONFIDENCE_STYLES: Record<string, { text: string; className: string }> = {
   high: { text: "High Confidence", className: "border-green-500/30 text-green-700 dark:text-green-400" },
   medium: { text: "Medium Confidence", className: "border-yellow-500/30 text-yellow-700 dark:text-yellow-400" },
