@@ -181,7 +181,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
           </CardTitle>
           <div className="flex items-center gap-2">
             {overallStatusBadge()}
-            <Button onClick={runScan} disabled={isScanning} size="sm" className="gap-2">
+            <Button onClick={() => runScan()} disabled={isScanning} size="sm" className="gap-2">
               {isScanning ? (
                 <><Loader2 className="w-4 h-4 animate-spin" />Scanning...</>
               ) : latestScan ? (
