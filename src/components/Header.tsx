@@ -18,6 +18,7 @@ export function Header() {
     { to: "/check?tab=candidate", label: "What Am I Supporting?", icon: Users },
     { to: "/values-search", label: "Values Search", icon: Search },
     { to: "/jobs", label: "Jobs", icon: Briefcase },
+    { to: "/intelligence", label: "Intelligence", icon: FileText },
   ];
 
   const authLinks = user
