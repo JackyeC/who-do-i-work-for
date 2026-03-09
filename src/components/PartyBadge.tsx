@@ -85,22 +85,69 @@ interface PartyBadgeProps {
   className?: string;
 }
 
+const PARTY_EXPLANATIONS: Record<string, { title: string; description: string }> = {
+  D: {
+    title: "Democrat",
+    description: "This recipient is affiliated with the Democratic Party. Your company's PAC or executives donated money to this Democratic candidate or committee. Democrats generally support expanded healthcare, environmental regulation, labor protections, and social programs.",
+  },
+  R: {
+    title: "Republican",
+    description: "This recipient is affiliated with the Republican Party. Your company's PAC or executives donated money to this Republican candidate or committee. Republicans generally support lower taxes, deregulation, free-market policies, and limited government.",
+  },
+  I: {
+    title: "Independent",
+    description: "This recipient is not affiliated with either major party. Independent candidates run outside the two-party system.",
+  },
+  "D-aligned": {
+    title: "Democrat-Aligned",
+    description: "This PAC or committee primarily supports Democratic candidates or causes, based on its spending patterns.",
+  },
+  "R-aligned": {
+    title: "Republican-Aligned",
+    description: "This PAC or committee primarily supports Republican candidates or causes, based on its spending patterns.",
+  },
+  PAC: {
+    title: "Political Action Committee",
+    description: "A PAC pools contributions from members to donate to candidates or parties. This entity is a committee, not an individual candidate.",
+  },
+};
+
 export function PartyBadge({ party, entityType, isInferred, size = "xs", className }: PartyBadgeProps) {
+  const [open, setOpen] = useState(false);
   const affiliation = resolveAffiliation(party, entityType, isInferred);
   const config = getAffiliationConfig(affiliation);
+  const explanation = PARTY_EXPLANATIONS[affiliation];
 
-  return (
+  const badge = (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded-full border font-semibold shrink-0",
+        "inline-flex items-center justify-center rounded-full border font-semibold shrink-0 cursor-pointer transition-all",
+        "hover:ring-2 hover:ring-primary/20",
         size === "xs" ? "px-1.5 py-0 text-[9px] leading-4 min-w-[20px]" : "px-2 py-0.5 text-[10px] leading-4 min-w-[24px]",
         config.className,
         className
       )}
-      title={`${party || "Unknown"}${isInferred ? " (inferred)" : ""}`}
+      title={`${party || "Unknown"}${isInferred ? " (inferred)" : ""} — Click to learn more`}
     >
       {config.label}
     </span>
+  );
+
+  if (!explanation) return badge;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button onClick={() => setOpen(!open)} className="inline-flex">
+          {badge}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-72 p-3" sideOffset={6}>
+        <h4 className="text-sm font-semibold text-foreground mb-1.5">{explanation.title}</h4>
+        <p className="text-xs text-muted-foreground leading-relaxed">{explanation.description}</p>
+        <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-border">Source: FEC filings</p>
+      </PopoverContent>
+    </Popover>
   );
 }
 

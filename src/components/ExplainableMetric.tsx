@@ -221,6 +221,33 @@ const METRIC_EXPLANATIONS: Record<string, MetricExplanation> = {
     why: "Political spending is often routed through subsidiaries or parent companies. Understanding the corporate structure helps connect spending to the right brand and reveals potential jurisdictional advantages.",
     source: "OpenCorporates, SEC EDGAR, state registries",
   },
+  "cpa-zicklin": {
+    title: "CPA-Zicklin Score",
+    what: "A percentage score (0–100%) from the Center for Political Accountability and the Zicklin Center for Business Ethics. It measures how transparent a company is about its political spending — whether they disclose PAC donations, lobbying, trade association memberships, and have board-level oversight of political activity.",
+    why: "A high score means the company voluntarily goes beyond legal requirements to tell the public where its political money goes. A low score means they keep that information private. This doesn't tell you whether their spending is good or bad — just whether they're open about it.",
+    source: "CPA-Zicklin Index of Corporate Political Disclosure and Accountability",
+    sourceUrl: "https://www.politicalaccountability.net",
+    context: "The S&P 500 average is about 55%. Companies scoring 80%+ are considered leaders in political transparency. Companies scoring below 30% are considered opaque.",
+  },
+  "flagged-organization": {
+    title: "Flagged Organization",
+    what: "An organization that has been designated by civil rights monitors (like the Southern Poverty Law Center or Anti-Defamation League) or appears on curated watchlists for promoting extremist, discriminatory, or controversial ideologies. A 'flag' means we detected a financial or organizational link between this company and such an organization.",
+    why: "This doesn't mean the company endorses the organization's views. But it means money or leadership connections exist between them. As an employee or consumer, you may want to know if your company is financially connected to groups whose values conflict with your own.",
+    source: "SPLC, ADL, InfluenceWatch, IRS 990 filings",
+    context: "Relationship types include: direct funding, PAC contributions, executive donations, board memberships, trade association dues, and event sponsorships. Each is shown with a confidence level.",
+  },
+  "party-democrat": {
+    title: "Democrat (D)",
+    what: "This candidate or committee is affiliated with the Democratic Party. When you see a 'D' badge next to a candidate's name, it means your company's PAC or executives donated money to a Democratic candidate or committee.",
+    why: "Knowing the party affiliation of donation recipients helps you understand your employer's political alignment. If the company donates heavily to one party, it signals which policies and candidates the company is financially backing — policies that may affect issues you care about.",
+    source: "Federal Election Commission (FEC)",
+  },
+  "party-republican": {
+    title: "Republican (R)",
+    what: "This candidate or committee is affiliated with the Republican Party. When you see an 'R' badge next to a candidate's name, it means your company's PAC or executives donated money to a Republican candidate or committee.",
+    why: "Knowing the party affiliation of donation recipients helps you understand your employer's political alignment. If the company donates heavily to one party, it signals which policies and candidates the company is financially backing — policies that may affect issues you care about.",
+    source: "Federal Election Commission (FEC)",
+  },
   "state-lobbying": {
     title: "State-Level Lobbying",
     what: "Lobbying expenditures at the state level — separate from federal lobbying. Includes which states the company lobbies in, the issues targeted, and whether the company also holds state government contracts.",

@@ -83,10 +83,12 @@ export function BenchmarkCard({ data }: { data: Benchmark }) {
             </div>
           )}
           {data.cpaZicklinScore !== undefined && (
-            <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <div className="text-lg font-bold text-foreground">{data.cpaZicklinScore}%</div>
-              <div className="text-xs text-muted-foreground">CPA-Zicklin Score</div>
-            </div>
+            <ExplainableMetric metricKey="cpa-zicklin">
+              <div className="text-center p-3 bg-muted/50 rounded-lg">
+                <div className="text-lg font-bold text-foreground">{data.cpaZicklinScore}%</div>
+                <div className="text-xs text-muted-foreground">CPA-Zicklin Score</div>
+              </div>
+            </ExplainableMetric>
           )}
           {data.isIndustryLeader && (
             <div className="flex items-center gap-2 p-3 bg-civic-green/10 rounded-lg border border-civic-green/20">
