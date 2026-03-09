@@ -105,6 +105,8 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
       return;
     }
     setIsScanning(true);
+    setScanStartTime(Date.now());
+    setElapsed(0);
     try {
       const { data, error } = await supabase.functions.invoke("worker-sentiment-scan", {
         body: { companyId: dbCompanyId, companyName },
