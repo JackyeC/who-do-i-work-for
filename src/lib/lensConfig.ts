@@ -43,6 +43,7 @@ export const LENSES: LensDefinition[] = [
     shortLabel: "Safety",
     description: "Workplace equity, hiring technology, benefits, and accountability signals.",
     modulePriority: [
+      "talent-signals",
       "warn-tracker",
       "promotion-equity",
       "compensation",
