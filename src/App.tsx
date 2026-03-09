@@ -39,6 +39,7 @@ import IntelligenceReports from "./pages/IntelligenceReports";
 import IntelligenceReport from "./pages/IntelligenceReport";
 import ReportsList from "./pages/ReportsList";
 import ReportEditor from "./pages/ReportEditor";
+import OfferClarity from "./pages/OfferClarity";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,7 @@ const App = () => (
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/request-correction" element={<RequestCorrection />} />
               <Route path="/offer-check/:companyId" element={<OfferCheck />} />
+              <Route path="/offer-clarity" element={<OfferClarity />} />
               <Route path="/offer-review/:companyId" element={
                 <ProtectedRoute>
                   <OfferReview />
