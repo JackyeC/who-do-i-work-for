@@ -163,6 +163,42 @@ export function UserProfileForm() {
       </CardHeader>
       <CardContent className="space-y-5">
         <div className="space-y-2">
+          <Label>Upload Resume (Auto-Fill)</Label>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="gap-2"
+              disabled={uploading}
+              onClick={() => document.getElementById("resume-upload")?.click()}
+            >
+              {uploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Parsing...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4" />
+                  Upload Resume
+                </>
+              )}
+            </Button>
+            <input
+              id="resume-upload"
+              type="file"
+              accept=".pdf,.doc,.docx,.txt"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <p className="text-xs text-muted-foreground">PDF, DOC, DOCX • Max 20MB</p>
+          </div>
+          <p className="text-xs text-muted-foreground flex items-center gap-1">
+            <FileText className="w-3 h-3" />
+            AI will extract your skills, experience, and job titles automatically
+          </p>
+        </div>
+        <div className="space-y-2">
           <Label htmlFor="full_name">Full Name</Label>
           <Input
             id="full_name"
