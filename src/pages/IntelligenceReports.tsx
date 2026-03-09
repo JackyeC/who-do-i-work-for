@@ -73,14 +73,15 @@ export default function IntelligenceReports() {
           <div className="container mx-auto px-4 py-16 relative">
             <div className="max-w-3xl mx-auto text-center">
               <Badge variant="secondary" className="mb-4 gap-1.5">
-                <Sparkles className="w-3 h-3" /> Investigative Intelligence
+                <Sparkles className="w-3 h-3" /> {isSignalsView ? "Live Intelligence" : "Investigative Intelligence"}
               </Badge>
               <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground tracking-tight mb-4">
-                Intelligence Reports
+                {isSignalsView ? "Signals This Week" : "Intelligence Reports"}
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Structured investigative analysis linking corporate influence, policy campaigns,
-                and legislative action — backed by evidence from public records.
+                {isSignalsView
+                  ? "Live signals auto-detected from public filings, federal databases, and verified web sources."
+                  : "Structured investigative analysis linking corporate influence, policy campaigns, and legislative action — backed by evidence from public records."}
               </p>
             </div>
           </div>
