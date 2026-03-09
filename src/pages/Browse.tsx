@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Building2, ArrowRight, Search } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingState } from "@/components/LoadingState";
+import { InfluenceLeaderboard } from "@/components/InfluenceLeaderboard";
 
 const stagger = {
   container: { hidden: {}, show: { transition: { staggerChildren: 0.03 } } },
