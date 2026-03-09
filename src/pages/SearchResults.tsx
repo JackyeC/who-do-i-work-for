@@ -60,7 +60,7 @@ export default function SearchResults() {
               title: "Company discovered",
               description: `Building transparency profile for ${data.identity?.name || initialQuery}...`,
             });
-            navigate(`/company/${data.slug}`);
+            navigate(dest);
           }
         }
       } catch (e: any) {
