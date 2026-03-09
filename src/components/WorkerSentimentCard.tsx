@@ -122,6 +122,7 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
     careerOpportunities: cachedScan.career_opportunities,
     topComplaints: (cachedScan.top_complaints as any[]) || [],
     topPraises: (cachedScan.top_praises as any[]) || [],
+    layoffRumors: (cachedScan.raw_results as any)?.layoffRumors || [],
     hypocrisyFlags: (cachedScan.hypocrisy_flags as any[]) || [],
     summary: cachedScan.ai_summary || "",
     sentiment: cachedScan.sentiment || "unknown",
