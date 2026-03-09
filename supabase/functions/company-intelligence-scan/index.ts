@@ -5,6 +5,11 @@ const corsHeaders = {
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+// Phase 0.5: Third-party enrichment (discovery & cross-reference)
+const ENRICHMENT_MODULES = [
+  { key: 'opensecrets', label: 'OpenSecrets Organization Profiles', fn: 'sync-opensecrets', phase: 'enrichment' },
+];
+
 // Phase 1: Structured data connectors (federal APIs - high confidence)
 const PIPELINE_MODULES = [
   { key: 'fec_campaign_finance', label: 'FEC Campaign Finance', fn: 'sync-openfec', phase: 'pipeline' },
