@@ -230,7 +230,7 @@ export function Header() {
         </Link>
 
         {/* ── Desktop nav ── */}
-        <nav className="hidden xl:flex items-center gap-0.5 flex-1 justify-center">
+        <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
           {/* Home */}
           <Link
             to="/"
