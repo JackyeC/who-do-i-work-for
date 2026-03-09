@@ -18,6 +18,11 @@ export default function Check() {
     if (companyQuery.trim()) navigate(`/search?q=${encodeURIComponent(companyQuery.trim())}`);
   };
 
+  const handleOfferSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (companyQuery.trim()) navigate(`/search?q=${encodeURIComponent(companyQuery.trim())}&intent=offer`);
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
