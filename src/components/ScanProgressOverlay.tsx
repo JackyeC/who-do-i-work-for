@@ -57,6 +57,7 @@ export function ScanProgressOverlay({
   totalSignals,
   totalSources,
   onClose,
+  onForceRescan,
 }: ScanProgressOverlayProps) {
   const [elapsed, setElapsed] = useState(0);
 
