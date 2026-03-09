@@ -78,7 +78,7 @@ export default function SearchResults() {
     // Small delay to avoid firing on every keystroke
     const timer = setTimeout(autoDiscover, 500);
     return () => clearTimeout(timer);
-  }, [initialQuery, dbLoading, hasAnyResults, isDiscovering, navigate, toast]);
+  }, [initialQuery, dbLoading, hasAnyResults, isDiscovering, navigate, toast, intent]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
