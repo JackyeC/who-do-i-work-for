@@ -117,7 +117,7 @@ export function EVPIntelligence() {
       // EVP positioning
       const evpPositioning: string[] = [];
       if (company.government_contracts && company.government_contracts > 0) evpPositioning.push("Public sector impact & mission-driven work");
-      if (benefitsRes.data && benefitsRes.data.length > 5) evpPositioning.push("Strong employee benefits & workplace programs");
+      if (signalScansRes.data && signalScansRes.data.length > 5) evpPositioning.push("Strong employee benefits & workplace programs");
       if (jobsRes.data && jobsRes.data.some((j) => j.work_mode === "remote")) evpPositioning.push("Flexible & remote work culture");
       if (company.civic_footprint_score && company.civic_footprint_score >= 60) evpPositioning.push("Transparent corporate governance");
       evpPositioning.push(`${company.industry} industry leadership`);
