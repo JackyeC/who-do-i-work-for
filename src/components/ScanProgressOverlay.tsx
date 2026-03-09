@@ -212,12 +212,23 @@ export function ScanProgressOverlay({
                   </Button>
                 </div>
               ) : (
-                <div className="flex items-start gap-2">
-                  <Shield className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
-                    Scanning federal databases, corporate records, and web sources. 
-                    This typically takes <strong>2–4 minutes</strong>. You can close this and continue browsing — the scan runs in the background.
-                  </p>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2">
+                    <Shield className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                      Scanning federal databases, corporate records, and web sources. 
+                      This typically takes <strong>2–4 minutes</strong>. You can close this and continue browsing — the scan runs in the background.
+                    </p>
+                  </div>
+                  {elapsed > 180 && onForceRescan && (
+                    <div className="flex items-center justify-between bg-destructive/5 border border-destructive/20 rounded-lg px-3 py-2">
+                      <span className="text-xs text-muted-foreground">Scan seems stuck?</span>
+                      <Button onClick={onForceRescan} size="sm" variant="destructive" className="gap-1.5 text-xs h-7">
+                        <RefreshCw className="w-3 h-3" />
+                        Force Re-scan
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
