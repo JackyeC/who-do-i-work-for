@@ -42,6 +42,9 @@ export default function Dashboard() {
             <TabsTrigger value="matches" className="gap-1.5">
               <Briefcase className="w-4 h-4" /> Matched Jobs
             </TabsTrigger>
+            <TabsTrigger value="alignment" className="gap-1.5">
+              <Target className="w-4 h-4" /> My Alignment
+            </TabsTrigger>
             <TabsTrigger value="tracker" className="gap-1.5">
               <LayoutDashboard className="w-4 h-4" /> Applications
             </TabsTrigger>
