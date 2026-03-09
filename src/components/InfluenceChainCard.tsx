@@ -3,10 +3,10 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
 import { useInfluenceChain } from "@/hooks/use-roi-pipeline";
-import { PartyBadge, resolveAffiliation, getAffiliationConfig, computeRecipientMix } from "@/components/PartyBadge";
+import { PartyBadge, computeRecipientMix } from "@/components/PartyBadge";
 import {
   ArrowRight, GitBranch, Loader2, DollarSign, Users, Landmark,
-  FileCheck, RotateCcw, Globe, ChevronDown, ChevronRight, Info,
+  FileCheck, RotateCcw, Globe, ChevronDown, ChevronRight, HelpCircle,
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -28,25 +28,36 @@ interface ChainStep {
   description: string;
 }
 
-const LINK_TYPE_CONFIG: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  donation_to_member: { label: "Donation", color: "text-civic-red", icon: DollarSign },
-  member_on_committee: { label: "Committee Seat", color: "text-civic-blue", icon: Users },
-  committee_oversight_of_contract: { label: "Contract Oversight", color: "text-civic-green", icon: Landmark },
-  lobbying_on_bill: { label: "Lobbying", color: "text-civic-yellow", icon: FileCheck },
-  revolving_door: { label: "Revolving Door", color: "text-destructive", icon: RotateCcw },
-  foundation_grant_to_district: { label: "Foundation Grant", color: "text-civic-green", icon: DollarSign },
-  trade_association_lobbying: { label: "Trade Assoc.", color: "text-civic-yellow", icon: Users },
-  dark_money_channel: { label: "Dark Money", color: "text-destructive", icon: DollarSign },
-  advisory_committee_appointment: { label: "Advisory Appt.", color: "text-civic-blue", icon: Users },
-  interlocking_directorate: { label: "Board Interlock", color: "text-muted-foreground", icon: Users },
-  state_lobbying_contract: { label: "State Lobby", color: "text-civic-yellow", icon: Landmark },
-  international_influence: { label: "International", color: "text-civic-blue", icon: Globe },
+/* ── Plain-language labels for every link type ── */
+const LINK_TYPE_CONFIG: Record<string, { label: string; plainLabel: string; color: string; icon: React.ElementType }> = {
+  donation_to_member:            { label: "Donation",           plainLabel: "Gave money to",              color: "text-[hsl(var(--civic-red))]",    icon: DollarSign },
+  member_on_committee:           { label: "Committee Seat",     plainLabel: "Sits on a committee that oversees", color: "text-[hsl(var(--civic-blue))]",   icon: Users },
+  committee_oversight_of_contract: { label: "Contract Oversight", plainLabel: "That committee controls contracts for", color: "text-[hsl(var(--civic-green))]", icon: Landmark },
+  lobbying_on_bill:              { label: "Lobbying",            plainLabel: "Paid lobbyists to influence", color: "text-[hsl(var(--civic-yellow))]", icon: FileCheck },
+  revolving_door:                { label: "Revolving Door",     plainLabel: "Former government official now works here", color: "text-destructive", icon: RotateCcw },
+  foundation_grant_to_district:  { label: "Foundation Grant",   plainLabel: "Gave a charitable grant in the district of", color: "text-[hsl(var(--civic-green))]", icon: DollarSign },
+  trade_association_lobbying:    { label: "Trade Group",        plainLabel: "Belongs to a group that lobbies for",       color: "text-[hsl(var(--civic-yellow))]", icon: Users },
+  dark_money_channel:            { label: "Dark Money",         plainLabel: "Money sent through a group that doesn't disclose donors", color: "text-destructive", icon: DollarSign },
+  advisory_committee_appointment:{ label: "Advisory Role",      plainLabel: "Has a person on a government advisory panel", color: "text-[hsl(var(--civic-blue))]", icon: Users },
+  interlocking_directorate:      { label: "Shared Board Member",plainLabel: "Shares a board member with",  color: "text-muted-foreground", icon: Users },
+  state_lobbying_contract:       { label: "State Lobbying",     plainLabel: "Paid lobbyists in state government for",    color: "text-[hsl(var(--civic-yellow))]", icon: Landmark },
+  international_influence:       { label: "International",      plainLabel: "Has influence activities in other countries", color: "text-[hsl(var(--civic-blue))]", icon: Globe },
 };
 
-/**
- * Extract party from a chain step's description field.
- * Common patterns: "(R-TX)", "[D]", "Republican", "Democrat"
- */
+/* ── Plain-language entity type labels ── */
+const ENTITY_TYPE_LABELS: Record<string, string> = {
+  company: "Company",
+  pac: "Political fund (PAC)",
+  super_pac: "Outside spending group",
+  politician: "Politician",
+  member: "Member of Congress",
+  committee: "Congressional committee",
+  agency: "Government agency",
+  contract: "Government contract",
+  lobbyist: "Lobbyist",
+  trade_association: "Industry group",
+};
+
 function extractPartyFromDescription(description: string | null, name: string): string | null {
   if (!description) return null;
   const combined = `${name} ${description}`;
@@ -62,7 +73,6 @@ function extractPartyFromDescription(description: string | null, name: string): 
 
 function extractLocationFromDescription(description: string | null): string | null {
   if (!description) return null;
-  // Match state codes like "(R-TX)", "(D-CA-12)"
   const stateMatch = description.match(/[RDILG]-([A-Z]{2})(?:-(\d+))?/i);
   if (stateMatch) return stateMatch[2] ? `${stateMatch[1]}-${stateMatch[2]}` : stateMatch[1];
   return null;
@@ -71,22 +81,22 @@ function extractLocationFromDescription(description: string | null): string | nu
 function getEntityStyle(type: string) {
   switch (type) {
     case "company": return "bg-primary/10 border-primary/30 text-primary";
-    case "pac": case "super_pac": return "bg-civic-red/10 border-civic-red/30 text-civic-red";
-    case "politician": case "member": return "bg-civic-blue/10 border-civic-blue/30 text-civic-blue";
-    case "committee": return "bg-civic-yellow/10 border-civic-yellow/30 text-civic-yellow";
-    case "agency": case "contract": return "bg-civic-green/10 border-civic-green/30 text-civic-green";
+    case "pac": case "super_pac": return "bg-[hsl(var(--civic-red))]/10 border-[hsl(var(--civic-red))]/30 text-[hsl(var(--civic-red))]";
+    case "politician": case "member": return "bg-[hsl(var(--civic-blue))]/10 border-[hsl(var(--civic-blue))]/30 text-[hsl(var(--civic-blue))]";
+    case "committee": return "bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/30 text-[hsl(var(--civic-yellow))]";
+    case "agency": case "contract": return "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/30 text-[hsl(var(--civic-green))]";
     case "lobbyist": case "trade_association": return "bg-muted border-border text-muted-foreground";
     default: return "bg-muted border-border text-foreground";
   }
 }
 
 function ConfidenceDot({ confidence }: { confidence: number }) {
-  const label = confidence >= 0.8 ? "Verified" : confidence >= 0.5 ? "Inferred" : "Unverified";
+  const label = confidence >= 0.8 ? "Strong evidence" : confidence >= 0.5 ? "Some evidence" : "Weak evidence";
   return (
-    <div className="flex items-center gap-1" title={`${label} — ${(confidence * 100).toFixed(0)}% confidence`}>
+    <div className="flex items-center gap-1" title={label}>
       <div className={cn(
         "w-1.5 h-1.5 rounded-full",
-        confidence >= 0.8 ? "bg-civic-green" : confidence >= 0.5 ? "bg-civic-yellow" : "bg-civic-red"
+        confidence >= 0.8 ? "bg-[hsl(var(--civic-green))]" : confidence >= 0.5 ? "bg-[hsl(var(--civic-yellow))]" : "bg-[hsl(var(--civic-red))]"
       )} />
       <span className="text-[10px] text-muted-foreground">{label}</span>
     </div>
@@ -95,19 +105,27 @@ function ConfidenceDot({ confidence }: { confidence: number }) {
 
 function EntityNode({ name, type, party, location }: { name: string; type: string; party?: string | null; location?: string | null }) {
   const style = getEntityStyle(type);
+  const plainType = ENTITY_TYPE_LABELS[type] || type.replace(/_/g, " ");
   const showParty = type !== "company" && type !== "agency" && type !== "contract";
 
   return (
-    <div className={cn("px-3 py-2 rounded-lg border text-sm font-medium flex items-center gap-1.5 max-w-[260px]", style)}>
-      <span className="truncate">{name}</span>
-      {showParty && <PartyBadge party={party} entityType={type} />}
-      {location && <span className="text-[9px] text-muted-foreground shrink-0">{location}</span>}
-    </div>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className={cn("px-3 py-2 rounded-lg border text-sm font-medium flex items-center gap-1.5 max-w-[260px] cursor-default", style)}>
+          <span className="truncate">{name}</span>
+          {showParty && <PartyBadge party={party} entityType={type} />}
+          {location && <span className="text-[9px] text-muted-foreground shrink-0">{location}</span>}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="text-xs">
+        <p className="font-medium">{plainType}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
 function ChainRow({ step }: { step: ChainStep }) {
-  const config = LINK_TYPE_CONFIG[step.link_type] || { label: step.link_type, color: "text-muted-foreground", icon: ArrowRight };
+  const config = LINK_TYPE_CONFIG[step.link_type] || { label: step.link_type, plainLabel: "Connected to", color: "text-muted-foreground", icon: ArrowRight };
   const LinkIcon = config.icon;
   const targetParty = extractPartyFromDescription(step.description, step.target_name);
   const targetLocation = extractLocationFromDescription(step.description);
@@ -123,7 +141,7 @@ function ChainRow({ step }: { step: ChainStep }) {
               <LinkIcon className="w-3.5 h-3.5" />
               <ArrowRight className="w-3 h-3" />
             </div>
-            <span className={cn("text-[10px] font-medium", config.color)}>{config.label}</span>
+            <span className={cn("text-[10px] font-medium text-center max-w-[120px] leading-tight", config.color)}>{config.plainLabel}</span>
             {step.amount > 0 && (
               <span className="text-[10px] font-bold text-foreground">{formatCurrency(step.amount)}</span>
             )}
@@ -136,7 +154,6 @@ function ChainRow({ step }: { step: ChainStep }) {
         <p className="font-semibold">{step.source_name} → {step.target_name}</p>
         {step.amount > 0 && <p>Amount: {formatCurrency(step.amount)}</p>}
         {step.description && <p>{step.description}</p>}
-        <p>Confidence: {(step.confidence * 100).toFixed(0)}%</p>
       </TooltipContent>
     </Tooltip>
   );
@@ -160,7 +177,6 @@ function groupChains(steps: ChainStep[]): ChainStep[][] {
   return chains;
 }
 
-/** Gather all donation recipients from chain steps for the mix summary */
 function collectRecipients(steps: ChainStep[]) {
   return steps
     .filter((s) => s.link_type === "donation_to_member" || s.link_type === "dark_money_channel" || s.link_type === "foundation_grant_to_district")
@@ -181,7 +197,7 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
       <Card>
         <CardContent className="p-6 flex items-center justify-center gap-2 text-muted-foreground">
           <Loader2 className="w-4 h-4 animate-spin" />
-          Tracing influence chains...
+          Following the money trail...
         </CardContent>
       </Card>
     );
@@ -191,11 +207,8 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
 
   const chains = groupChains(chainData as ChainStep[]);
   const allSteps = chainData as ChainStep[];
-  const totalAmount = allSteps.reduce((sum, s) => sum + (s.amount || 0), 0);
-  const maxDepth = Math.max(...allSteps.map(s => s.step));
   const uniqueEntities = new Set([...allSteps.map(s => s.source_name), ...allSteps.map(s => s.target_name)]).size;
 
-  // Recipient mix
   const recipients = collectRecipients(allSteps);
   const recipientMix = computeRecipientMix(recipients);
 
@@ -213,38 +226,49 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <GitBranch className="w-5 h-5 text-primary" />
-          Influence Chain Trace
+          Where Does the Money Go?
         </CardTitle>
-        <p className="text-xs text-muted-foreground">
-          Following the money from {companyName}'s political spending through influence networks to government outcomes.
+        <p className="text-sm text-muted-foreground">
+          This shows how {companyName} spends money on politics — and what happens after.
+          Think of it like a trail: the company sends money somewhere, that money reaches a politician or group,
+          and that politician or group has power over government decisions.
         </p>
       </CardHeader>
       <CardContent>
-        {/* Summary stats */}
-        <div className="grid grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg mb-4">
-          <div className="text-center">
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Chains</div>
-            <div className="text-2xl font-bold text-foreground">{chains.length}</div>
+        {/* Plain-language "how to read this" box */}
+        <div className="p-4 rounded-xl bg-muted/40 border border-border/40 mb-5">
+          <div className="flex items-center gap-2 mb-2">
+            <HelpCircle className="w-4 h-4 text-primary shrink-0" />
+            <h3 className="text-sm font-semibold text-foreground">How to read this</h3>
           </div>
-          <div className="text-center">
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Entities</div>
-            <div className="text-2xl font-bold text-foreground">{uniqueEntities}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Max Depth</div>
-            <div className="text-2xl font-bold text-foreground">{maxDepth}</div>
+          <div className="space-y-2 text-xs text-muted-foreground leading-relaxed">
+            <p>Each row below is a <strong className="text-foreground">money trail</strong> we found in public records.</p>
+            <p>It shows: <strong className="text-foreground">who sent money</strong> → <strong className="text-foreground">where it went</strong> → <strong className="text-foreground">what that person or group controls</strong>.</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 border-t border-border/40">
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[hsl(var(--civic-green))]" /> Strong evidence — from official filings</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[hsl(var(--civic-yellow))]" /> Some evidence — connects the dots</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[hsl(var(--civic-red))]" /> Weak evidence — possible but not confirmed</span>
+            </div>
           </div>
         </div>
 
-        {/* Recipient Mix Summary */}
+        {/* Summary stats — plain language */}
+        <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg mb-4">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-foreground">{chains.length}</div>
+            <div className="text-xs text-muted-foreground">Money trail{chains.length !== 1 ? "s" : ""} found</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-foreground">{uniqueEntities}</div>
+            <div className="text-xs text-muted-foreground">People & groups involved</div>
+          </div>
+        </div>
+
+        {/* Recipient Mix Summary — plain language */}
         {recipientMix.length > 0 && (
           <div className="p-3 bg-card border border-border rounded-lg mb-5">
-            <div className="flex items-center gap-1.5 mb-2">
-              <Info className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs font-semibold text-foreground">Recipient Mix by Affiliation</span>
-            </div>
-            {/* Bar */}
-            <div className="flex h-3 rounded-full overflow-hidden mb-2">
+            <span className="text-xs font-semibold text-foreground">Who gets the money? (by political party)</span>
+            <div className="flex h-3 rounded-full overflow-hidden my-2">
               {recipientMix.map((mix, i) => (
                 <div
                   key={i}
@@ -255,7 +279,6 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
                     "bg-muted-foreground/30"
                   )}
                   style={{ width: `${mix.percentage}%` }}
-                  title={`${mix.label}: ${mix.percentage}%`}
                 />
               ))}
             </div>
@@ -268,17 +291,14 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
                     mix.label === "D" ? "bg-[hsl(218,55%,48%)]" :
                     "bg-muted-foreground/30"
                   )} />
-                  {mix.percentage}% {mix.label}
+                  {mix.percentage}% {mix.label === "R" ? "Republican" : mix.label === "D" ? "Democrat" : mix.label}
                 </span>
               ))}
             </div>
-            <p className="text-[9px] text-muted-foreground mt-1">
-              Based on {recipients.length} donation recipient{recipients.length !== 1 ? "s" : ""} in traced chains.
-            </p>
           </div>
         )}
 
-        {/* Chain paths */}
+        {/* Chain paths — plain language headers */}
         <div className="space-y-3">
           {chains.map((chain, chainIdx) => {
             const isExpanded = expandedChains.has(chainIdx);
@@ -302,7 +322,7 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
                     </span>
                     <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
                     <span className="text-[10px] text-muted-foreground shrink-0">
-                      {chain.length > 1 ? `${chain.length} steps` : "1 step"}
+                      {chain.length} {chain.length === 1 ? "step" : "steps"}
                     </span>
                     <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
                     <span className="text-sm font-medium text-foreground truncate">
@@ -312,7 +332,7 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
                   </div>
                   <div className="flex items-center gap-2 shrink-0 ml-2">
                     {chainTotal > 0 && (
-                      <span className="text-xs font-bold text-civic-green">{formatCurrency(chainTotal)}</span>
+                      <span className="text-xs font-bold text-[hsl(var(--civic-green))]">{formatCurrency(chainTotal)}</span>
                     )}
                     {isExpanded ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
                   </div>
@@ -330,9 +350,6 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
                         </div>
                         <div className="flex-1 min-w-0">
                           <ChainRow step={step} />
-                          {step.description && (
-                            <p className="text-[10px] text-muted-foreground mt-1 ml-1">{step.description}</p>
-                          )}
                         </div>
                       </div>
                     ))}
@@ -344,11 +361,8 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
         </div>
 
         <p className="text-[10px] text-muted-foreground mt-4 border-t border-border pt-3">
-          Chain analysis follows documented connections up to 4 hops deep. Confidence:
-          ≥80% = <span className="text-civic-green">Verified</span> (public filings),
-          50–79% = <span className="text-civic-yellow">Inferred</span>,
-          &lt;50% = <span className="text-civic-red">Unverified</span>.
-          Party badges reflect source data where available; dashed borders indicate inferred alignment.
+          All of this comes from public records — campaign finance filings, lobbying reports, and government contract databases.
+          We connect the dots so you can see how money moves from a company to the people who make government decisions.
         </p>
       </CardContent>
     </Card>
