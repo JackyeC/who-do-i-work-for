@@ -105,10 +105,10 @@ export default function VoterLookup() {
           {/* Hero */}
           <div className="text-center mb-10">
             <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3 tracking-tight">
-              Who the Hell Did I Vote For?
+              Who Represents Me in DC?
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              Enter your address to see your elected representatives — and exactly which corporations are funding them.
+              Enter your address to see your elected representatives — and which corporations are funding their campaigns.
             </p>
           </div>
 
