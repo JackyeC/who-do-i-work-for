@@ -61,7 +61,7 @@ export function RecruitingInsightsDashboard() {
         companiesWithWarn: warnRes.count || 0,
         companiesWithAIHiring: aiRes.count || 0,
         topIndustries,
-        recentLayoffs: (layoffsRes.data || []) as any,
+        recentLayoffs: enrichedLayoffs,
         competitorInsights: (topCompanies || []).map((c: any) => ({
           name: c.name,
           industry: c.industry,
