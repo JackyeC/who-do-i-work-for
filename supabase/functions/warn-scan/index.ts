@@ -126,14 +126,16 @@ ${combinedText}`,
     }
 
     const geminiData = await geminiRes.json();
-    const responseText = geminiData.choices?.[0]?.message?.content || "[]";
+    let responseText = geminiData.choices?.[0]?.message?.content || "[]";
+    // Strip markdown code fences if present
+    responseText = responseText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
 
     let notices: any[];
     try {
       notices = JSON.parse(responseText);
       if (!Array.isArray(notices)) notices = [];
     } catch {
-      console.error("[warn-scan] Parse failed:", responseText.slice(0, 200));
+      console.error("[warn-scan] Parse failed:", responseText.slice(0, 300));
       notices = [];
     }
 
