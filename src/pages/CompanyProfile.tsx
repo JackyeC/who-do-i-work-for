@@ -845,7 +845,7 @@ export default function CompanyProfile() {
                     .sort((a: any, b: any) => (b.amount || 0) - (a.amount || 0))
                     .slice(0, 5)
                     .map((c: any) => ({ name: c.name, party: c.party, amount: c.amount }))}
-                  topIssuesLobbied={livePipeline?.lobbyingIssues || []}
+                  topIssuesLobbied={[]}
                   darkMoneyConnections={(dbDarkMoney || []).length}
                   flaggedOrgCount={0}
                 />
