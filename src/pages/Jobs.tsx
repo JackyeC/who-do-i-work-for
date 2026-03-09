@@ -41,7 +41,7 @@ export default function Jobs() {
   const [valuesFilters, setValuesFilters] = useState<string[]>([]);
   const [showValues, setShowValues] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any>(null);
-  const [tab, setTab] = useState("browse");
+  const [tab, setTab] = useState(searchParams.get("tab") || "browse");
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
   const [generatedPayload, setGeneratedPayload] = useState<any>(null);
   const [copied, setCopied] = useState(false);
