@@ -1,4 +1,5 @@
 import { useState, useMemo, ReactNode, useCallback, useEffect, useRef } from "react";
+import { CompanyHistoryTimeline } from "@/components/CompanyHistoryTimeline";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
