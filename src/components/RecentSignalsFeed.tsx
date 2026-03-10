@@ -138,7 +138,7 @@ export function RecentSignalsFeed() {
                       </div>
                       <p className="text-xs text-muted-foreground truncate">
                         {signal.signal_type}
-                        {signal.signal_value && ` — ${signal.signal_value}`}
+                        {signal.signal_value && !signal.signal_value.startsWith('{') && !signal.signal_value.startsWith('[') && ` — ${signal.signal_value}`}
                       </p>
                       <p className="text-[10px] text-muted-foreground/60 mt-1">
                         {formatDistanceToNow(new Date(signal.scan_timestamp), {
