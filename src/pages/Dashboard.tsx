@@ -13,6 +13,7 @@ import { UserProfileForm } from "@/components/jobs/UserProfileForm";
 import { TrackingDashboard } from "@/components/jobs/TrackingDashboard";
 import { AutoApplySettings } from "@/components/jobs/AutoApplySettings";
 import { ApplyQueueDashboard } from "@/components/jobs/ApplyQueueDashboard";
+import { SlotManagementDashboard } from "@/components/slots/SlotManagementDashboard";
 import { UserAlertsList } from "@/components/UserAlerts";
 import { MyValuesProfile } from "@/components/career/MyValuesProfile";
 import { HowDoIGetThere } from "@/components/career/HowDoIGetThere";
