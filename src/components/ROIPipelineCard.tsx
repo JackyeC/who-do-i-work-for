@@ -160,7 +160,7 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
                   <div className="flex items-center gap-2">
                     <ShieldAlert className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                     <span className="text-[11px] text-muted-foreground">
-                      Confidence: <span className={cn("font-semibold", confidenceLevel >= 0.8 ? "text-primary" : confidenceLevel >= 0.5 ? "text-accent-foreground" : "text-destructive")}>{confidenceLabel} ({(confidenceLevel * 100).toFixed(0)}%)</span>
+                      Evidence strength: <span className={cn("font-semibold", confidenceLevel >= 0.8 ? "text-primary" : confidenceLevel >= 0.5 ? "text-accent-foreground" : "text-destructive")}>{confidenceLabel}</span>
                     </span>
                   </div>
                   {item.evidence_type && (
