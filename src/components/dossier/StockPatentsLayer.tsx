@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, Lightbulb, BarChart3, Loader2, ExternalLink, Calendar } from "lucide-react";
+import { TrendingUp, Lightbulb, BarChart3, Loader2, ExternalLink, Calendar, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,14 +15,16 @@ import {
 interface StockPatentsProps {
   companyId: string;
   companyName: string;
+  /** When false, show blurred teaser */
+  unlocked?: boolean;
 }
 
 const RANGE_OPTIONS = [
-  { value: "1y", label: "1 Year" },
-  { value: "2y", label: "2 Years" },
-  { value: "5y", label: "5 Years" },
-  { value: "10y", label: "10 Years" },
-  { value: "max", label: "Max" },
+  { value: "1y", label: "1Y" },
+  { value: "2y", label: "2Y" },
+  { value: "5y", label: "5Y" },
+  { value: "10y", label: "10Y" },
+  { value: "max", label: "All" },
 ];
 
 function formatDate(dateStr: string) {
@@ -34,14 +36,24 @@ function formatPrice(val: number) {
   return `$${val.toFixed(2)}`;
 }
 
-export function StockPatentsLayer({ companyId, companyName }: StockPatentsProps) {
-  const [range, setRange] = useState("5y");
+/** Blurred overlay for non-subscribers */
+function BlurOverlay({ label }: { label: string }) {
+  return (
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-xl bg-card/60 backdrop-blur-md">
+      <Lock className="w-5 h-5 text-muted-foreground mb-2" />
+      <p className="text-sm font-medium text-foreground">{label}</p>
+      <p className="text-micro text-muted-foreground mt-1">Track this company to unlock</p>
+    </div>
+  );
+}
+
+export function StockPatentsLayer({ companyId, companyName, unlocked = true }: StockPatentsProps) {
+  const [range, setRange] = useState("max");
 
   // Look up ticker from pipeline_entities
   const { data: tickerData } = useQuery({
     queryKey: ["stock-ticker", companyId, companyName],
     queryFn: async () => {
-      // Try to find a ticker via pipeline_entities matching company name
       const { data } = await supabase
         .from("pipeline_entities")
         .select("ticker, canonical_name")
@@ -53,25 +65,21 @@ export function StockPatentsLayer({ companyId, companyName }: StockPatentsProps)
     enabled: !!companyName,
   });
 
-  // Fetch stock chart from edge function
+  // Fetch lifetime monthly stock data from edge function
   const { data: stockData, isLoading: loadingStock, error: stockError } = useQuery({
     queryKey: ["stock-chart", tickerData, range],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("fetch-stock-chart", {
-        body: {
-          ticker: tickerData,
-          range,
-          interval: range === "1y" ? "1wk" : "1mo",
-        },
+        body: { ticker: tickerData, range, interval: "1mo" },
       });
       if (error) throw error;
       return data;
     },
     enabled: !!tickerData,
-    staleTime: 1000 * 60 * 30, // cache 30 min
+    staleTime: 1000 * 60 * 30,
   });
 
-  // Load inflection-point signals (WARN, leadership changes, etc.)
+  // Load inflection-point signals
   const { data: inflectionSignals } = useQuery({
     queryKey: ["stock-inflections", companyId],
     queryFn: async () => {
@@ -91,47 +99,21 @@ export function StockPatentsLayer({ companyId, companyName }: StockPatentsProps)
       ]);
 
       const markers: Array<{ date: string; label: string; type: string }> = [];
-
       (warnRes.data || []).forEach(w => {
-        markers.push({
-          date: w.notice_date.split("T")[0],
-          label: `WARN: ${w.employees_affected} employees (${w.layoff_type || "Layoff"})`,
-          type: "warn",
-        });
+        markers.push({ date: w.notice_date.split("T")[0], label: `WARN: ${w.employees_affected} employees (${w.layoff_type || "Layoff"})`, type: "warn" });
       });
-
       (signalRes.data || []).forEach(s => {
-        markers.push({
-          date: (s.scan_timestamp || "").split("T")[0],
-          label: s.signal_type,
-          type: s.signal_category,
-        });
+        markers.push({ date: (s.scan_timestamp || "").split("T")[0], label: s.signal_type, type: s.signal_category });
       });
-
       return markers;
     },
     enabled: !!companyId,
   });
 
-  // Load innovation signals
-  const { data: signalScans } = useQuery({
-    queryKey: ["patent-signals", companyId],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("company_signal_scans")
-        .select("*")
-        .eq("company_id", companyId)
-        .eq("signal_category", "innovation");
-      return data || [];
-    },
-    enabled: !!companyId,
-  });
-
-  // Match inflection points to chart data points
+  // Map inflection points to nearest chart data point
   const chartPoints = stockData?.chartData || [];
   const markerPoints = (inflectionSignals || [])
     .map(marker => {
-      // Find closest chart data point
       const closest = chartPoints.reduce((best: any, pt: any) => {
         if (!best) return pt;
         const diff = Math.abs(new Date(pt.date).getTime() - new Date(marker.date).getTime());
@@ -147,12 +129,12 @@ export function StockPatentsLayer({ companyId, companyName }: StockPatentsProps)
 
   return (
     <div className="space-y-6">
-      {/* Stock Chart */}
+      {/* ── Stock Chart ─────────────────────────────── */}
       {noTicker ? (
-        <div className="text-center py-8 rounded-lg bg-muted/20">
+        <div className="text-center py-8 rounded-xl bg-muted/20">
           <BarChart3 className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
           <p className="text-caption text-muted-foreground">
-            No stock ticker found for {companyName}. This company may be private or not yet mapped.
+            No stock ticker found for {companyName}. This company may be private.
           </p>
         </div>
       ) : loadingStock ? (
@@ -163,153 +145,130 @@ export function StockPatentsLayer({ companyId, companyName }: StockPatentsProps)
           </CardContent>
         </Card>
       ) : stockError ? (
-        <div className="text-center py-8 rounded-lg bg-destructive/5 border border-destructive/10">
+        <div className="text-center py-8 rounded-xl bg-destructive/5 border border-destructive/10">
           <BarChart3 className="w-8 h-8 text-destructive/40 mx-auto mb-3" />
-          <p className="text-caption text-muted-foreground">Unable to load stock data. Yahoo Finance may be temporarily unavailable.</p>
+          <p className="text-caption text-muted-foreground">Unable to load stock data.</p>
         </div>
       ) : chartPoints.length > 0 ? (
-        <Card className="border-border/30">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h4 className="font-semibold text-foreground text-body flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-primary" />
-                  {stockData.companyName || companyName}
-                  <Badge variant="secondary" className="text-micro font-mono">{stockData.ticker}</Badge>
-                </h4>
-                <p className="text-micro text-muted-foreground mt-0.5">
-                  {stockData.exchange} · {stockData.currency}
-                  {chartPoints.length > 0 && ` · Last: ${formatPrice(chartPoints[chartPoints.length - 1].close)}`}
-                </p>
-              </div>
-              <Select value={range} onValueChange={setRange}>
-                <SelectTrigger className="w-[120px] h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
+        <div className="relative">
+          {!unlocked && <BlurOverlay label="Stock Price History" />}
+          <Card className="border-border/30 overflow-hidden">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h4 className="font-semibold text-foreground text-body flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-[hsl(225,42%,15%)]" />
+                    {stockData.companyName || companyName}
+                    <Badge variant="secondary" className="text-micro font-mono">{stockData.ticker}</Badge>
+                  </h4>
+                  <p className="text-micro text-muted-foreground mt-0.5">
+                    {stockData.exchange} · {stockData.currency}
+                    {chartPoints.length > 0 && ` · Last: ${formatPrice(chartPoints[chartPoints.length - 1].close)}`}
+                  </p>
+                </div>
+                <div className="flex gap-1">
                   {RANGE_OPTIONS.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    <button
+                      key={opt.value}
+                      onClick={() => setRange(opt.value)}
+                      className={`px-2.5 py-1 text-micro rounded-md font-medium transition-colors ${
+                        range === opt.value
+                          ? "bg-[hsl(var(--civic-navy))] text-primary-foreground"
+                          : "text-muted-foreground hover:bg-muted"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
+                </div>
+              </div>
 
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartPoints}>
-                  <defs>
-                    <linearGradient id="stockGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 10 }}
-                    stroke="hsl(var(--muted-foreground))"
-                    tickFormatter={formatDate}
-                    interval="preserveStartEnd"
-                  />
-                  <YAxis
-                    tick={{ fontSize: 10 }}
-                    stroke="hsl(var(--muted-foreground))"
-                    tickFormatter={(v: number) => `$${v.toFixed(0)}`}
-                    domain={["auto", "auto"]}
-                  />
-                  <Tooltip
-                    formatter={(v: number) => [formatPrice(v), "Close"]}
-                    labelFormatter={(label: string) => new Date(label).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
-                    contentStyle={{
-                      fontSize: 12,
-                      borderRadius: 8,
-                      border: "1px solid hsl(var(--border))",
-                      background: "hsl(var(--card))",
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="close"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    fill="url(#stockGradient)"
-                    dot={false}
-                    activeDot={{ r: 4, fill: "hsl(var(--primary))" }}
-                  />
-                  {/* Inflection point markers */}
-                  {markerPoints.map((pt: any, idx: number) => (
-                    <ReferenceDot
-                      key={idx}
-                      x={pt.date}
-                      y={pt.close}
-                      r={6}
-                      fill={pt.markerType === "warn" ? "hsl(var(--destructive))" : "hsl(var(--primary))"}
-                      stroke="hsl(var(--background))"
-                      strokeWidth={2}
+              {/* Carbon & Indigo Area Chart */}
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartPoints}>
+                    <defs>
+                      <linearGradient id="carbonIndigoGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(225 42% 15%)" stopOpacity={0.35} />
+                        <stop offset="50%" stopColor="hsl(245 58% 67%)" stopOpacity={0.15} />
+                        <stop offset="100%" stopColor="hsl(245 58% 67%)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.25} />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                      stroke="hsl(var(--border))"
+                      tickFormatter={formatDate}
+                      interval="preserveStartEnd"
                     />
-                  ))}
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Inflection point legend */}
-            {markerPoints.length > 0 && (
-              <div className="mt-4 space-y-1.5">
-                <h5 className="text-micro font-semibold text-foreground flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5" /> Inflection Points
-                </h5>
-                {markerPoints.map((pt: any, idx: number) => (
-                  <div key={idx} className="flex items-center gap-2 text-micro text-muted-foreground">
-                    <div
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{
-                        backgroundColor: pt.markerType === "warn" ? "hsl(var(--destructive))" : "hsl(var(--primary))",
+                    <YAxis
+                      tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                      stroke="hsl(var(--border))"
+                      tickFormatter={(v: number) => `$${v.toFixed(0)}`}
+                      domain={["auto", "auto"]}
+                    />
+                    <Tooltip
+                      formatter={(v: number) => [formatPrice(v), "Close"]}
+                      labelFormatter={(label: string) =>
+                        new Date(label).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                      }
+                      contentStyle={{
+                        fontSize: 12,
+                        borderRadius: 8,
+                        border: "1px solid hsl(var(--border))",
+                        background: "hsl(var(--card))",
                       }}
                     />
-                    <span className="font-mono">{formatDate(pt.date)}</span>
-                    <span>—</span>
-                    <span>{pt.markerLabel}</span>
-                  </div>
-                ))}
+                    <Area
+                      type="monotone"
+                      dataKey="close"
+                      stroke="hsl(225 42% 15%)"
+                      strokeWidth={2}
+                      fill="url(#carbonIndigoGradient)"
+                      dot={false}
+                      activeDot={{ r: 4, fill: "hsl(245 58% 67%)", stroke: "hsl(225 42% 15%)", strokeWidth: 2 }}
+                    />
+                    {markerPoints.map((pt: any, idx: number) => (
+                      <ReferenceDot
+                        key={idx}
+                        x={pt.date}
+                        y={pt.close}
+                        r={6}
+                        fill={pt.markerType === "warn" ? "hsl(var(--destructive))" : "hsl(var(--civic-gold))"}
+                        stroke="hsl(var(--card))"
+                        strokeWidth={2}
+                      />
+                    ))}
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      ) : null}
 
-      {/* Innovation Signals */}
-      {signalScans && signalScans.length > 0 ? (
-        <Card className="border-border/30">
-          <CardContent className="p-5">
-            <h4 className="font-semibold text-foreground text-body flex items-center gap-2 mb-3">
-              <Lightbulb className="w-4 h-4 text-civic-gold" /> Innovation Signals
-            </h4>
-            <div className="space-y-2">
-              {signalScans.map((s, i) => (
-                <div key={i} className="p-3 rounded-lg bg-muted/30 border border-border/20">
-                  <span className="font-medium text-foreground text-caption">{s.signal_type}</span>
-                  {s.raw_excerpt && (
-                    <p className="text-micro text-muted-foreground mt-1 line-clamp-2">{s.raw_excerpt}</p>
-                  )}
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge variant="outline" className="text-micro">{s.confidence_level}</Badge>
-                    {s.source_url && (
-                      <a href={s.source_url} target="_blank" rel="noopener" className="text-micro text-primary hover:underline flex items-center gap-1">
-                        Source <ExternalLink className="w-3 h-3" />
-                      </a>
-                    )}
-                  </div>
+              {/* Inflection point legend */}
+              {markerPoints.length > 0 && (
+                <div className="mt-4 space-y-1.5">
+                  <h5 className="text-micro font-semibold text-foreground flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5" /> Inflection Points
+                  </h5>
+                  {markerPoints.map((pt: any, idx: number) => (
+                    <div key={idx} className="flex items-center gap-2 text-micro text-muted-foreground">
+                      <div
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{
+                          backgroundColor: pt.markerType === "warn" ? "hsl(var(--destructive))" : "hsl(var(--civic-gold))",
+                        }}
+                      />
+                      <span className="font-mono">{formatDate(pt.date)}</span>
+                      <span>—</span>
+                      <span>{pt.markerLabel}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="text-center py-6 rounded-lg bg-muted/20">
-          <Lightbulb className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
-          <p className="text-caption text-muted-foreground">No patent or innovation signals detected yet for {companyName}.</p>
+              )}
+            </CardContent>
+          </Card>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

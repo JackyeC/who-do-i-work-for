@@ -6,21 +6,19 @@ const corsHeaders = {
 };
 
 async function searchGooglePatents(companyName: string): Promise<{ totalResults: number; titles: string[]; links: string[] }> {
-  // Use Google Patents search via SerpAPI-style scrape of the public search page
-  const query = encodeURIComponent(`"${companyName}" assignee:"${companyName}"`);
-  const url = `https://patents.google.com/xhr/query?url=q%3D${query}&exp=&tags=`;
+  const query = encodeURIComponent(`"${companyName}"`);
 
   try {
     const response = await fetch(`https://patents.google.com/?q=${query}&oq=${query}`, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; CivicLens/1.0)',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html',
       },
     });
 
     const html = await response.text();
 
-    // Extract patent titles from search results HTML
+    // Extract patent titles from search results
     const titleRegex = /<span class="style-scope search-result-item" id="htmlContent">(.*?)<\/span>/g;
     const linkRegex = /data-result="(.*?)"/g;
     const countRegex = /About ([\d,]+) results/;
@@ -44,7 +42,6 @@ async function searchGooglePatents(companyName: string): Promise<{ totalResults:
     return { totalResults, titles: titles.slice(0, 10), links: links.slice(0, 10) };
   } catch (error) {
     console.error("Google Patents scrape error:", error);
-    // Fallback: try a simpler approach
     return { totalResults: 0, titles: [], links: [] };
   }
 }
@@ -52,18 +49,6 @@ async function searchGooglePatents(companyName: string): Promise<{ totalResults:
 async function categorizeWithLLM(companyName: string, patentTitles: string[]): Promise<Array<{ theme: string; count: number; examples: string[] }>> {
   const apiKey = Deno.env.get("LOVABLE_API_KEY");
   if (!apiKey || patentTitles.length === 0) return [];
-
-  const prompt = `You are an innovation analyst. Given the following patent titles from "${companyName}", categorize them into Innovation Clusters.
-
-Patent titles:
-${patentTitles.map((t, i) => `${i + 1}. ${t}`).join('\n')}
-
-Return a JSON array of clusters. Each cluster should have:
-- "theme": A concise innovation category name (e.g., "Artificial Intelligence", "Biotech", "Supply Chain", "Data Analytics", "Consumer Tech", "Materials Science")
-- "count": Number of patents in this cluster
-- "examples": Array of the patent titles that belong to this cluster
-
-Group related patents together. Use clear, business-friendly category names. Return ONLY the JSON array, no other text.`;
 
   try {
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -73,32 +58,31 @@ Group related patents together. Use clear, business-friendly category names. Ret
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: "You are an innovation analyst. Return only valid JSON arrays." },
-          { role: "user", content: prompt },
+          {
+            role: "user",
+            content: `Given the following patent titles from "${companyName}", categorize them into Innovation Clusters.\n\nPatent titles:\n${patentTitles.map((t, i) => `${i + 1}. ${t}`).join('\n')}\n\nReturn a JSON array of clusters. Each cluster:\n- "theme": concise category (e.g. "Artificial Intelligence", "Biotech", "Supply Chain")\n- "count": number of patents in cluster\n- "examples": array of patent titles in this cluster\n\nReturn ONLY the JSON array.`,
+          },
         ],
         temperature: 0.3,
       }),
     });
 
+    if (!response.ok) {
+      console.error("AI gateway error:", response.status);
+      return [{ theme: "General Innovation", count: patentTitles.length, examples: patentTitles.slice(0, 5) }];
+    }
+
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "";
-
-    // Extract JSON from response
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (!jsonMatch) return [];
-
-    const clusters = JSON.parse(jsonMatch[0]);
-    return clusters;
+    return JSON.parse(jsonMatch[0]);
   } catch (error) {
     console.error("LLM categorization error:", error);
-    // Fallback: put all in one cluster
-    return [{
-      theme: "General Innovation",
-      count: patentTitles.length,
-      examples: patentTitles.slice(0, 5),
-    }];
+    return [{ theme: "General Innovation", count: patentTitles.length, examples: patentTitles.slice(0, 5) }];
   }
 }
 
@@ -120,38 +104,25 @@ serve(async (req) => {
     console.log(`Searching patents for: ${companyName}`);
 
     // Step 1: Search Google Patents
-    const { totalResults, titles, links } = await searchGooglePatents(companyName);
+    let { totalResults, titles, links } = await searchGooglePatents(companyName);
 
+    // Retry with simplified name
     if (titles.length === 0) {
-      // Try simplified company name
       const simpleName = companyName.replace(/,?\s*(Inc\.?|Corp\.?|LLC|Ltd\.?|Company|Co\.)$/i, '').trim();
       const retry = await searchGooglePatents(simpleName);
+      totalResults = retry.totalResults;
+      titles = retry.titles;
+      links = retry.links;
+    }
 
-      if (retry.titles.length === 0) {
-        return new Response(
-          JSON.stringify({
-            totalResults: 0,
-            clusters: [],
-            topPatents: [],
-            message: "No patents found for this company.",
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      // Use retry results
-      const clusters = await categorizeWithLLM(simpleName, retry.titles);
+    if (titles.length === 0) {
       return new Response(
-        JSON.stringify({
-          totalResults: retry.totalResults,
-          clusters,
-          topPatents: retry.titles.map((t, i) => ({ title: t, url: retry.links[i] || null })),
-        }),
+        JSON.stringify({ totalResults: 0, clusters: [], topPatents: [] }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Step 2: Categorize with LLM
+    // Step 2: AI categorization
     const clusters = await categorizeWithLLM(companyName, titles);
 
     return new Response(
