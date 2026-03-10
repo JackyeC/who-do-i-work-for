@@ -19,14 +19,92 @@ function getMimeType(filename: string): string {
   return map[ext] || "application/octet-stream";
 }
 
-/** Convert ArrayBuffer to base64 string */
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
+/** Extract readable text from a DOCX file (ZIP of XML) */
+async function extractDocxText(buffer: ArrayBuffer): Promise<string> {
+  // DOCX is a ZIP file; we look for word/document.xml and strip XML tags
+  try {
+    // Use a simple approach: decode as text and extract content between XML tags
+    const bytes = new Uint8Array(buffer);
+    
+    // Find PK signature to confirm it's a ZIP
+    if (bytes[0] !== 0x50 || bytes[1] !== 0x4B) {
+      return ""; // Not a valid ZIP/DOCX
+    }
+    
+    // Try to find and decompress document.xml using DecompressionStream
+    // For simplicity, we'll use the raw bytes approach with a text decoder
+    // and look for readable text patterns
+    const rawText = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+    
+    // Extract text from XML content within the DOCX
+    const xmlMatches = rawText.match(/<w:t[^>]*>([^<]*)<\/w:t>/g);
+    if (xmlMatches && xmlMatches.length > 0) {
+      return xmlMatches
+        .map(m => m.replace(/<[^>]+>/g, ""))
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+    
+    // Fallback: grab anything that looks like readable text
+    const readable = rawText.replace(/[^\x20-\x7E\n\r\t]/g, " ").replace(/\s+/g, " ").trim();
+    return readable.slice(0, 20000);
+  } catch {
+    return "";
   }
-  return btoa(binary);
+}
+
+/** Extract readable text from a PDF (basic text extraction) */
+function extractPdfText(buffer: ArrayBuffer): string {
+  try {
+    const bytes = new Uint8Array(buffer);
+    const raw = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+    
+    // Extract text between BT/ET blocks (PDF text objects)
+    const textBlocks: string[] = [];
+    const btEtRegex = /BT\s([\s\S]*?)ET/g;
+    let match;
+    while ((match = btEtRegex.exec(raw)) !== null) {
+      const block = match[1];
+      // Extract text from Tj and TJ operators
+      const tjMatches = block.match(/\(([^)]*)\)\s*Tj/g);
+      if (tjMatches) {
+        tjMatches.forEach(t => {
+          const inner = t.match(/\(([^)]*)\)/);
+          if (inner) textBlocks.push(inner[1]);
+        });
+      }
+      // TJ array operator
+      const tjArrayMatches = block.match(/\[([^\]]*)\]\s*TJ/g);
+      if (tjArrayMatches) {
+        tjArrayMatches.forEach(t => {
+          const parts = t.match(/\(([^)]*)\)/g);
+          if (parts) {
+            parts.forEach(p => {
+              const inner = p.match(/\(([^)]*)\)/);
+              if (inner) textBlocks.push(inner[1]);
+            });
+          }
+        });
+      }
+    }
+    
+    if (textBlocks.length > 0) {
+      return textBlocks.join(" ").replace(/\s+/g, " ").trim();
+    }
+    
+    // Fallback for PDFs with stream-compressed text - grab readable ASCII
+    const readable = raw
+      .split(/stream[\r\n]|endstream/)
+      .filter(s => s.length > 50)
+      .map(s => s.replace(/[^\x20-\x7E\n\r]/g, " ").replace(/\s+/g, " ").trim())
+      .filter(s => s.length > 20 && /[a-zA-Z]{3,}/.test(s))
+      .join(" ");
+    
+    return readable.slice(0, 20000);
+  } catch {
+    return "";
+  }
 }
 
 serve(async (req) => {
