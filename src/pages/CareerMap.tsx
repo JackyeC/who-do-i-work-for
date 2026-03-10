@@ -19,14 +19,14 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Upload, Heart, Compass, Route, Users, Wand2, ChevronRight,
-  CheckCircle2, Circle, ArrowLeft
+  CheckCircle2, Circle, ArrowLeft, User
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
   { id: "upload", label: "Upload Resume", icon: Upload, description: "Upload your resume or career documents to build your profile." },
   { id: "values", label: "Define Values", icon: Heart, description: "Tell us what matters to you in an employer." },
-  { id: "personality", label: "Work Style", icon: Upload, description: "Describe how you work best and your personality strengths." },
+  { id: "personality", label: "Work Style", icon: User, description: "Describe how you work best and your personality strengths." },
   { id: "explore", label: "Map My Path", icon: Compass, description: "Visualize your career journey with SMART goals." },
   { id: "plan", label: "Plan Your Move", icon: Route, description: "Get a gap analysis and learning plan for your target role." },
   { id: "connect", label: "Connect", icon: Users, description: "Find people who can help you get there." },
