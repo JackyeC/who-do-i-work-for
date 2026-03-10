@@ -53,7 +53,7 @@ export function TargetDestinationStep({ profileData, onComplete }: Props) {
 
       if (error) throw error;
 
-      const suggestions = data?.suggestions || data?.roles || [];
+      const suggestions = data?.data?.suggestions || data?.suggestions || [];
       if (suggestions.length > 0) {
         setAiSuggestions(suggestions);
       } else {
