@@ -27,7 +27,8 @@ export function ExportDossierButton({ companyId, companyName, company }: ExportD
   const navigate = useNavigate();
 
   const isTracked = isCompanyTracked(companyId);
-  const canExport = isTracked && isPremium;
+  // Allow export for any logged-in user (premium gating handled at dossier level)
+  const canExport = true;
 
   const handleExport = async () => {
     if (!canExport) {
