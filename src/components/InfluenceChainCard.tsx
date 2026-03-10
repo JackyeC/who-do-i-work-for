@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -7,9 +7,9 @@ import { useInfluenceChain } from "@/hooks/use-roi-pipeline";
 import { PartyBadge, computeRecipientMix } from "@/components/PartyBadge";
 import { Link } from "react-router-dom";
 import {
-  ArrowRight, ArrowDown, GitBranch, Loader2, DollarSign, Users, Landmark,
-  FileCheck, RotateCcw, Globe, ChevronDown, ChevronRight, HelpCircle, User,
-  ExternalLink, Share2, Copy,
+  ArrowRight, GitBranch, Loader2, DollarSign, Users, Landmark,
+  FileCheck, RotateCcw, Globe, ChevronDown, HelpCircle, User,
+  ExternalLink, Share2, Copy, Handshake, ShieldCheck, Building2,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -27,7 +27,57 @@ interface ChainStep {
   description: string;
 }
 
-/* ── Plain-language labels for every link type ── */
+/* ── Category definitions ── */
+interface Category {
+  key: string;
+  title: string;
+  subtitle: string;
+  icon: React.ElementType;
+  iconClass: string;
+  explainer: string;
+  linkTypes: string[];
+}
+
+const CATEGORIES: Category[] = [
+  {
+    key: "money",
+    title: "Money Trail",
+    subtitle: "Direct political spending — where the dollars go",
+    icon: DollarSign,
+    iconClass: "bg-[hsl(var(--civic-red))]/10 text-[hsl(var(--civic-red))]",
+    explainer: "This tracks actual money moving from the company to political candidates, PACs, and party committees. Every dollar here comes from public campaign finance filings — these are the receipts.",
+    linkTypes: ["donation_to_member", "dark_money_channel", "foundation_grant_to_district"],
+  },
+  {
+    key: "access",
+    title: "Political Access",
+    subtitle: "How company money buys a seat at the table",
+    icon: Users,
+    iconClass: "bg-[hsl(var(--civic-blue))]/10 text-[hsl(var(--civic-blue))]",
+    explainer: "Politicians who receive money sit on congressional committees that control policy. This section shows which committees those politicians are on, and what topics they oversee — like healthcare, taxes, or defense spending.",
+    linkTypes: ["member_on_committee", "revolving_door", "advisory_committee_appointment", "interlocking_directorate"],
+  },
+  {
+    key: "lobbying",
+    title: "Lobbying & Influence",
+    subtitle: "Paid professionals working to shape laws and rules",
+    icon: Handshake,
+    iconClass: "bg-[hsl(var(--civic-yellow))]/10 text-[hsl(var(--civic-yellow))]",
+    explainer: "Lobbying means paying someone to talk to lawmakers on your behalf. This section shows which bills, agencies, and issues the company is trying to influence — and how much they're spending to do it.",
+    linkTypes: ["lobbying_on_bill", "trade_association_lobbying", "state_lobbying_contract", "international_influence"],
+  },
+  {
+    key: "benefits",
+    title: "Government Benefits",
+    subtitle: "What the company gets back from government",
+    icon: Building2,
+    iconClass: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))]",
+    explainer: "After spending money on politics, companies often receive government contracts, subsidies, or favorable regulations. This section shows the other side of the equation — what comes back.",
+    linkTypes: ["committee_oversight_of_contract"],
+  },
+];
+
+/* ── Plain-language labels ── */
 const LINK_TYPE_CONFIG: Record<string, { label: string; plainLabel: string; color: string; icon: React.ElementType }> = {
   donation_to_member:              { label: "Donation",            plainLabel: "Gave money to",                                    color: "text-[hsl(var(--civic-red))]",    icon: DollarSign },
   member_on_committee:             { label: "Committee Seat",      plainLabel: "Sits on a committee that oversees",                 color: "text-[hsl(var(--civic-blue))]",   icon: Users },
@@ -43,81 +93,46 @@ const LINK_TYPE_CONFIG: Record<string, { label: string; plainLabel: string; colo
   international_influence:         { label: "International",       plainLabel: "Has influence activities in other countries",         color: "text-[hsl(var(--civic-blue))]",   icon: Globe },
 };
 
-/* ── Map committee names to plain-language issue areas ── */
 const COMMITTEE_ISSUES: Record<string, string[]> = {
-  "armed services":       ["Military & defense spending"],
-  "appropriations":       ["Government spending decisions"],
-  "energy and commerce":  ["Energy policy", "Healthcare", "Consumer protection"],
+  "armed services": ["Military & defense spending"], "appropriations": ["Government spending decisions"],
+  "energy and commerce": ["Energy policy", "Healthcare", "Consumer protection"],
   "energy and natural resources": ["Energy policy", "Public lands"],
-  "finance":              ["Taxes", "Healthcare funding", "Trade"],
-  "judiciary":            ["Immigration", "Civil rights", "Criminal justice"],
-  "education and labor":  ["Education", "Worker rights", "Minimum wage"],
-  "education and the workforce": ["Education", "Worker rights"],
-  "health":               ["Healthcare policy"],
-  "ways and means":       ["Tax policy", "Social Security", "Trade"],
-  "foreign affairs":      ["Foreign policy", "International aid"],
-  "foreign relations":    ["Foreign policy", "Treaties"],
-  "homeland security":    ["Border security", "Immigration enforcement"],
-  "agriculture":          ["Farm policy", "Food safety", "Rural programs"],
-  "banking":              ["Banking rules", "Housing policy"],
-  "commerce":             ["Business regulation", "Consumer protection"],
-  "environment":          ["Environmental protection", "Climate policy"],
-  "veterans":             ["Veterans benefits", "VA healthcare"],
-  "intelligence":         ["National security", "Surveillance"],
-  "budget":               ["Federal budget", "Government spending"],
-  "small business":       ["Small business support", "Entrepreneurship"],
-  "transportation":       ["Roads", "Airlines", "Infrastructure"],
-  "rules":                ["How Congress operates"],
-  "oversight":            ["Government accountability", "Investigations"],
+  "finance": ["Taxes", "Healthcare funding", "Trade"], "judiciary": ["Immigration", "Civil rights", "Criminal justice"],
+  "education and labor": ["Education", "Worker rights", "Minimum wage"],
+  "education and the workforce": ["Education", "Worker rights"], "health": ["Healthcare policy"],
+  "ways and means": ["Tax policy", "Social Security", "Trade"],
+  "foreign affairs": ["Foreign policy", "International aid"], "foreign relations": ["Foreign policy", "Treaties"],
+  "homeland security": ["Border security", "Immigration enforcement"],
+  "agriculture": ["Farm policy", "Food safety", "Rural programs"],
+  "banking": ["Banking rules", "Housing policy"], "commerce": ["Business regulation", "Consumer protection"],
+  "environment": ["Environmental protection", "Climate policy"],
+  "veterans": ["Veterans benefits", "VA healthcare"], "intelligence": ["National security", "Surveillance"],
+  "budget": ["Federal budget", "Government spending"], "small business": ["Small business support", "Entrepreneurship"],
+  "transportation": ["Roads", "Airlines", "Infrastructure"],
+  "rules": ["How Congress operates"], "oversight": ["Government accountability", "Investigations"],
 };
 
-function getCommitteeIssues(committeeName: string): string[] {
-  const lower = committeeName.toLowerCase();
+function getCommitteeIssues(name: string): string[] {
+  const lower = name.toLowerCase();
   for (const [key, issues] of Object.entries(COMMITTEE_ISSUES)) {
     if (lower.includes(key)) return issues;
   }
   return [];
 }
 
-/* ── Clean up ugly entity names so humans can read them ── */
 function cleanEntityName(name: string): string {
   if (!name) return "Unknown";
-  // Remove SEC CIK identifiers like "SEC CIK 0001234567" or "(CIK: 0001234567)"
   let cleaned = name.replace(/\b(SEC\s*)?CIK[\s:#]*\d+/gi, "").trim();
-  // Remove FEC IDs like "C00123456" or "(FEC ID: C00123456)"
   cleaned = cleaned.replace(/\(?\s*FEC\s*(ID)?[\s:#]*C\d+\s*\)?/gi, "").trim();
-  // Remove standalone alphanumeric codes like "C00123456" at end
   cleaned = cleaned.replace(/\s*C\d{8,}\s*/g, " ").trim();
-  // Remove EIN numbers
   cleaned = cleaned.replace(/\b(EIN|TIN)[\s:#]*\d[\d-]+/gi, "").trim();
-  // Remove DUNS numbers
   cleaned = cleaned.replace(/\bDUNS[\s:#]*\d+/gi, "").trim();
-  // Remove trailing dashes, commas, or parens left behind
   cleaned = cleaned.replace(/[\s,\-()]+$/, "").replace(/^[\s,\-()]+/, "").trim();
-  // If we stripped everything, return original
   return cleaned || name;
 }
 
-/* ── Plain-language entity type labels ── */
-const ENTITY_TYPE_LABELS: Record<string, string> = {
-  company: "Company",
-  pac: "Political fund — pools money from employees to donate to politicians",
-  super_pac: "Outside spending group — can raise unlimited money",
-  politician: "Politician",
-  member: "Member of Congress",
-  committee: "Congressional committee — a group of lawmakers who control specific policy areas",
-  agency: "Government agency",
-  contract: "Government contract",
-  lobbyist: "Lobbyist — someone paid to talk to lawmakers on behalf of a company",
-  trade_association: "Industry group — companies in the same industry pooling money together",
-};
-
 const PARTY_FULL_NAMES: Record<string, string> = {
-  D: "Democrat",
-  R: "Republican",
-  I: "Independent",
-  L: "Libertarian",
-  G: "Green Party",
+  D: "Democrat", R: "Republican", I: "Independent", L: "Libertarian", G: "Green Party",
 };
 
 function extractPartyFromDescription(description: string | null, name: string): string | null {
@@ -140,216 +155,191 @@ function extractLocationFromDescription(description: string | null): string | nu
   return null;
 }
 
-function getEntityStyle(type: string) {
+function getEntityLink(name: string, type: string): string | null {
+  const cleanName = cleanEntityName(name);
   switch (type) {
-    case "company": return "bg-primary/10 border-primary/30 text-primary";
-    case "pac": case "super_pac": return "bg-[hsl(var(--civic-red))]/10 border-[hsl(var(--civic-red))]/30 text-[hsl(var(--civic-red))]";
-    case "politician": case "member": return "bg-[hsl(var(--civic-blue))]/10 border-[hsl(var(--civic-blue))]/30 text-[hsl(var(--civic-blue))]";
-    case "committee": return "bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/30 text-[hsl(var(--civic-yellow))]";
-    case "agency": case "contract": return "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/30 text-[hsl(var(--civic-green))]";
-    case "lobbyist": case "trade_association": return "bg-muted border-border text-muted-foreground";
-    default: return "bg-muted border-border text-foreground";
+    case "pac": case "super_pac":
+      return `https://www.fec.gov/data/committee/?q=${encodeURIComponent(cleanName)}`;
+    case "politician": case "member":
+      return `https://www.fec.gov/data/candidates/?search=${encodeURIComponent(cleanName)}`;
+    case "committee":
+      return `https://www.congress.gov/search?q=${encodeURIComponent(cleanName)}&searchResultViewType=expanded`;
+    case "agency": case "contract":
+      return `https://www.usaspending.gov/search/?hash=keyword-${encodeURIComponent(cleanName)}`;
+    case "lobbyist":
+      return `https://lda.senate.gov/filings/public/filing/search/?search=${encodeURIComponent(cleanName)}`;
+    default: return null;
   }
 }
 
-function ConfidenceDot({ confidence }: { confidence: number }) {
-  const label = confidence >= 0.8 ? "Strong evidence" : confidence >= 0.5 ? "Some evidence" : "Weak evidence";
+/* ── Confidence labels ── */
+function ConfidenceTag({ confidence }: { confidence: number }) {
+  if (confidence >= 0.8) {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))]">
+        ✓ Strong
+      </span>
+    );
+  }
+  if (confidence >= 0.5) {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[hsl(var(--civic-yellow))]/10 text-[hsl(var(--civic-yellow))]">
+        ~ Likely
+      </span>
+    );
+  }
   return (
-    <div className="flex items-center gap-1" title={label}>
-      <div className={cn(
-        "w-1.5 h-1.5 rounded-full",
-        confidence >= 0.8 ? "bg-[hsl(var(--civic-green))]" : confidence >= 0.5 ? "bg-[hsl(var(--civic-yellow))]" : "bg-[hsl(var(--civic-red))]"
-      )} />
-      <span className="text-[10px] text-muted-foreground">{label}</span>
+    <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+      ? Possible
+    </span>
+  );
+}
+
+/* ── Single link item ── */
+function LinkItem({ step }: { step: ChainStep }) {
+  const config = LINK_TYPE_CONFIG[step.link_type] || { label: step.link_type, plainLabel: "Connected to", color: "text-muted-foreground", icon: ArrowRight };
+  const targetParty = extractPartyFromDescription(step.description, step.target_name);
+  const targetLocation = extractLocationFromDescription(step.description);
+  const externalLink = getEntityLink(step.target_name, step.target_type);
+  const isPolitician = step.target_type === "politician" || step.target_type === "member";
+
+  // Committee issues for politicians
+  const issues = isPolitician
+    ? getCommitteeIssues(step.target_name)
+    : step.link_type === "member_on_committee"
+    ? getCommitteeIssues(step.target_name)
+    : [];
+
+  const sourceName = cleanEntityName(step.source_name);
+  const targetName = cleanEntityName(step.target_name);
+
+  return (
+    <div className="flex items-start gap-3 px-4 py-3 border-b border-border/30 last:border-b-0 hover:bg-accent/30 transition-colors">
+      {/* From → To pills */}
+      <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary max-w-[100px] truncate">
+          {sourceName}
+        </span>
+        <ArrowRight className="w-3 h-3 text-muted-foreground" />
+        <span className={cn(
+          "text-[10px] font-semibold px-2 py-0.5 rounded-full max-w-[100px] truncate",
+          isPolitician ? "bg-[hsl(var(--civic-blue))]/10 text-[hsl(var(--civic-blue))]" : "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))]"
+        )}>
+          {targetName}
+        </span>
+      </div>
+
+      {/* Description */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 mb-0.5">
+          <span className="text-sm font-semibold text-foreground">
+            {sourceName} {config.plainLabel.toLowerCase()} {targetName}
+          </span>
+          {targetParty && <PartyBadge party={targetParty} entityType={step.target_type} />}
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          {step.amount > 0 && <>{formatCurrency(step.amount)} · </>}
+          {targetParty && <>{PARTY_FULL_NAMES[targetParty] || targetParty}{targetLocation ? `, ${targetLocation}` : ""} · </>}
+          {step.description && step.description.length < 200 ? step.description : config.label}
+        </p>
+        {issues.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1.5">
+            {issues.slice(0, 4).map((issue) => (
+              <Link
+                key={issue}
+                to={`/values-search?issue=${encodeURIComponent(issue.toLowerCase().replace(/\s+/g, '_'))}`}
+                className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-colors text-muted-foreground hover:text-foreground"
+              >
+                {issue}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Right side: confidence + link */}
+      <div className="flex items-center gap-2 shrink-0">
+        <ConfidenceTag confidence={step.confidence} />
+        {externalLink && (
+          <a href={externalLink} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" title="View source">
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        )}
+      </div>
     </div>
   );
 }
 
-/** Build politician detail from chain context */
-function getPoliticianDetail(name: string, party: string | null, location: string | null, chain: ChainStep[]) {
-  const committees: string[] = [];
-  const allIssues: string[] = [];
+/* ── Category section with collapse ── */
+function CategorySection({ category, steps, defaultOpen }: { category: Category; steps: ChainStep[]; defaultOpen: boolean }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const Icon = category.icon;
+  const totalAmount = steps.reduce((s, step) => s + (step.amount || 0), 0);
 
-  for (const step of chain) {
-    if (step.source_name === name && step.link_type === "member_on_committee") {
-      committees.push(step.target_name);
-      allIssues.push(...getCommitteeIssues(step.target_name));
-    }
-  }
+  if (steps.length === 0) return null;
 
-  return { committees, issues: [...new Set(allIssues)] };
-}
+  return (
+    <div className="rounded-xl border border-border/50 bg-card shadow-sm overflow-hidden">
+      {/* Header */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center gap-3 p-4 hover:bg-accent/30 transition-colors text-left"
+      >
+        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", category.iconClass)}>
+          <Icon className="w-5 h-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-semibold text-foreground">{category.title}</div>
+          <div className="text-xs text-muted-foreground">{category.subtitle}</div>
+        </div>
+        <Badge variant="secondary" className="text-[10px] shrink-0">
+          {steps.length} link{steps.length !== 1 ? "s" : ""}
+        </Badge>
+        {totalAmount > 0 && (
+          <span className="text-xs font-bold text-[hsl(var(--civic-green))] shrink-0">{formatCurrency(totalAmount)}</span>
+        )}
+        <ChevronDown className={cn("w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200", !isOpen && "-rotate-90")} />
+      </button>
 
-/* ── Build external links for entities ── */
-function getEntityLink(name: string, type: string): string | null {
-  const cleanName = cleanEntityName(name);
-  switch (type) {
-    case "pac":
-    case "super_pac":
-      return `https://www.fec.gov/data/committee/?q=${encodeURIComponent(cleanName)}`;
-    case "politician":
-    case "member":
-      return `https://www.fec.gov/data/candidates/?search=${encodeURIComponent(cleanName)}`;
-    case "committee":
-      return `https://www.congress.gov/search?q=${encodeURIComponent(cleanName)}&searchResultViewType=expanded`;
-    case "agency":
-      return `https://www.usaspending.gov/search/?hash=keyword-${encodeURIComponent(cleanName)}`;
-    case "contract":
-      return `https://www.usaspending.gov/search/?hash=keyword-${encodeURIComponent(cleanName)}`;
-    case "lobbyist":
-      return `https://lda.senate.gov/filings/public/filing/search/?search=${encodeURIComponent(cleanName)}`;
-    default:
-      return null;
-  }
-}
-
-function EntityNode({
-  name, type, party, location, committees, issues,
-}: {
-  name: string;
-  type: string;
-  party?: string | null;
-  location?: string | null;
-  committees?: string[];
-  issues?: string[];
-}) {
-  const style = getEntityStyle(type);
-  const plainType = ENTITY_TYPE_LABELS[type] || type.replace(/_/g, " ");
-  const showParty = type !== "company" && type !== "agency" && type !== "contract";
-  const isPolitician = type === "politician" || type === "member";
-  const partyName = party ? PARTY_FULL_NAMES[party] || party : null;
-  const displayName = cleanEntityName(name);
-  const externalLink = getEntityLink(name, type);
-
-  const content = (
-    <div className={cn(
-      "px-3 py-2 rounded-lg border text-sm font-medium max-w-[280px] transition-all",
-      style,
-      externalLink ? "cursor-pointer hover:shadow-md hover:scale-[1.02] group" : "cursor-default"
-    )}>
-      <div className="flex items-center gap-1.5">
-        {isPolitician && <User className="w-3.5 h-3.5 shrink-0" />}
-        <span className="truncate">{displayName}</span>
-        {showParty && <PartyBadge party={party} entityType={type} />}
-        {location && <span className="text-[9px] text-muted-foreground shrink-0">{location}</span>}
-        {externalLink && <ExternalLink className="w-3 h-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />}
-      </div>
-      {/* Inline politician detail */}
-      {isPolitician && (partyName || (committees && committees.length > 0)) && (
-        <div className="mt-1.5 pt-1.5 border-t border-current/10 space-y-1">
-          {partyName && (
-            <p className="text-[10px] opacity-80">{partyName}{location ? ` — ${location}` : ""}</p>
-          )}
-          {committees && committees.length > 0 && (
-            <p className="text-[10px] opacity-70">
-              Sits on: {committees.join(", ")}
+      {/* Body */}
+      {isOpen && (
+        <div className="border-t border-border/50">
+          {/* In Plain English explainer */}
+          <div className="flex gap-2.5 bg-primary/5 px-4 py-3 border-b border-border/30">
+            <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <strong className="text-foreground">In plain English:</strong> {category.explainer}
             </p>
-          )}
-          {issues && issues.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-0.5">
-              {issues.slice(0, 4).map((issue) => (
-                <Link
-                  key={issue}
-                  to={`/values-search?issue=${encodeURIComponent(issue.toLowerCase().replace(/\s+/g, '_'))}`}
-                  className="text-[9px] px-1.5 py-0 rounded-full bg-background/50 border border-current/10 hover:bg-primary/10 hover:border-primary/30 transition-colors"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {issue}
-                </Link>
-              ))}
-              {issues.length > 4 && (
-                <span className="text-[9px] text-muted-foreground">+{issues.length - 4} more</span>
-              )}
-            </div>
-          )}
+          </div>
+
+          {/* Link items */}
+          <div>
+            {steps.map((step, i) => (
+              <LinkItem key={`${step.chain_id}-${step.step}-${i}`} step={step} />
+            ))}
+          </div>
         </div>
       )}
     </div>
   );
-
-  if (externalLink) {
-    return (
-      <a href={externalLink} target="_blank" rel="noopener noreferrer" title={`View ${displayName} on ${type === "committee" ? "Congress.gov" : type === "agency" || type === "contract" ? "USASpending.gov" : "FEC.gov"}`}>
-        {content}
-      </a>
-    );
-  }
-
-  return content;
 }
 
-function ChainRow({ step, chain }: { step: ChainStep; chain: ChainStep[] }) {
-  const config = LINK_TYPE_CONFIG[step.link_type] || { label: step.link_type, plainLabel: "Connected to", color: "text-muted-foreground", icon: ArrowRight };
-  const LinkIcon = config.icon;
-  const targetParty = extractPartyFromDescription(step.description, step.target_name);
-  const targetLocation = extractLocationFromDescription(step.description);
-  const sourceParty = extractPartyFromDescription(step.description, step.source_name);
+/* ── Categorize steps ── */
+function categorizeSteps(steps: ChainStep[]): Record<string, ChainStep[]> {
+  const result: Record<string, ChainStep[]> = {};
+  CATEGORIES.forEach(c => { result[c.key] = []; });
 
-  const sourceIsPolitician = step.source_type === "politician" || step.source_type === "member";
-  const targetIsPolitician = step.target_type === "politician" || step.target_type === "member";
-
-  const sourceDetail = sourceIsPolitician ? getPoliticianDetail(step.source_name, sourceParty, extractLocationFromDescription(step.description), chain) : { committees: [], issues: [] };
-  const targetDetail = targetIsPolitician ? getPoliticianDetail(step.target_name, targetParty, targetLocation, chain) : { committees: [], issues: [] };
-
-  return (
-    <div className="space-y-2">
-      {/* Plain-language sentence */}
-      <p className="text-xs text-muted-foreground">
-        <strong className="text-foreground">{cleanEntityName(step.source_name)}</strong>
-        {" "}{config.plainLabel.toLowerCase()}{" "}
-        <strong className="text-foreground">{cleanEntityName(step.target_name)}</strong>
-        {targetParty && ` (${PARTY_FULL_NAMES[targetParty] || targetParty}${targetLocation ? `, ${targetLocation}` : ""})`}
-        {step.amount > 0 && <> — <strong className="text-foreground">{formatCurrency(step.amount)}</strong></>}
-      </p>
-
-      {/* Visual connection */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <EntityNode
-          name={step.source_name}
-          type={step.source_type}
-          party={sourceParty}
-          committees={sourceDetail.committees}
-          issues={sourceDetail.issues}
-        />
-        <div className="flex flex-col items-center gap-0.5 shrink-0">
-          <div className={cn("flex items-center gap-1", config.color)}>
-            <LinkIcon className="w-3.5 h-3.5" />
-            <ArrowRight className="w-3 h-3" />
-          </div>
-          {step.amount > 0 && (
-            <span className="text-[10px] font-bold text-foreground">{formatCurrency(step.amount)}</span>
-          )}
-          <ConfidenceDot confidence={step.confidence} />
-        </div>
-        <EntityNode
-          name={step.target_name}
-          type={step.target_type}
-          party={targetParty}
-          location={targetLocation}
-          committees={targetDetail.committees}
-          issues={targetDetail.issues}
-        />
-      </div>
-    </div>
-  );
-}
-
-function groupChains(steps: ChainStep[]): ChainStep[][] {
-  const chains: ChainStep[][] = [];
-  let currentChain: ChainStep[] = [];
-  let lastTarget = "";
   for (const step of steps) {
-    if (currentChain.length === 0 || step.source_name === lastTarget) {
-      currentChain.push(step);
-      lastTarget = step.target_name;
+    const cat = CATEGORIES.find(c => c.linkTypes.includes(step.link_type));
+    if (cat) {
+      result[cat.key].push(step);
     } else {
-      if (currentChain.length > 0) chains.push(currentChain);
-      currentChain = [step];
-      lastTarget = step.target_name;
+      // Default to lobbying for unmatched types
+      result["lobbying"].push(step);
     }
   }
-  if (currentChain.length > 0) chains.push(currentChain);
-  return chains;
+
+  return result;
 }
 
 function collectRecipients(steps: ChainStep[]) {
@@ -363,53 +353,9 @@ function collectRecipients(steps: ChainStep[]) {
     }));
 }
 
-/** Generate a plain-language story for an entire chain */
-function chainStory(chain: ChainStep[], companyName: string): string {
-  if (chain.length === 0) return "";
-
-  const first = chain[0];
-  const last = chain[chain.length - 1];
-  const totalAmount = chain.reduce((s, c) => s + (c.amount || 0), 0);
-  const lastParty = extractPartyFromDescription(last.description, last.target_name);
-  const partyName = lastParty ? PARTY_FULL_NAMES[lastParty] : null;
-
-  // Find committees mentioned
-  const committees = chain
-    .filter(s => s.link_type === "member_on_committee")
-    .map(s => s.target_name);
-
-  const issues = committees.flatMap(c => getCommitteeIssues(c));
-  const uniqueIssues = [...new Set(issues)];
-
-  let story = "";
-
-  if (chain.some(s => s.link_type === "donation_to_member")) {
-    story = `${companyName} gave money`;
-    if (totalAmount > 0) story += ` (${formatCurrency(totalAmount)})`;
-    story += ` to ${cleanEntityName(last.target_name)}`;
-    if (partyName) story += `, a ${partyName}`;
-
-    if (committees.length > 0) {
-      story += `, who sits on the ${cleanEntityName(committees[0])}`;
-      if (uniqueIssues.length > 0) {
-        story += `. That committee handles: ${uniqueIssues.slice(0, 3).join(", ")}`;
-      }
-    }
-    story += ".";
-  } else if (chain.some(s => s.link_type === "lobbying_on_bill")) {
-    story = `${companyName} paid lobbyists to influence legislation connected to ${cleanEntityName(last.target_name)}.`;
-  } else if (chain.some(s => s.link_type === "revolving_door")) {
-    story = `${companyName} hired ${cleanEntityName(last.target_name)}, who used to work in government. This is called a "revolving door" — people moving between government jobs and private companies.`;
-  } else {
-    story = `${companyName} is connected to ${cleanEntityName(last.target_name)} through ${chain.length} step${chain.length !== 1 ? "s" : ""}.`;
-  }
-
-  return story;
-}
-
 export function InfluenceChainCard({ companyId, companyName }: { companyId: string; companyName: string }) {
   const { data: chainData, isLoading } = useInfluenceChain(companyId);
-  const [expandedChains, setExpandedChains] = useState<Set<number>>(new Set([0]));
+  const [activeFilter, setActiveFilter] = useState("all");
 
   if (isLoading) {
     return (
@@ -424,88 +370,83 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
 
   if (!chainData || chainData.length === 0) return null;
 
-  const chains = groupChains(chainData as ChainStep[]);
   const allSteps = chainData as ChainStep[];
+  const categorized = categorizeSteps(allSteps);
   const uniqueEntities = new Set([...allSteps.map(s => s.source_name), ...allSteps.map(s => s.target_name)]).size;
-
+  const totalSpending = allSteps.reduce((s, step) => s + (step.amount || 0), 0);
+  const strongLinks = allSteps.filter(s => s.confidence >= 0.8).length;
+  const linkTypes = new Set(allSteps.map(s => s.link_type)).size;
   const recipients = collectRecipients(allSteps);
   const recipientMix = computeRecipientMix(recipients);
 
-  const toggleChain = (idx: number) => {
-    setExpandedChains(prev => {
-      const next = new Set(prev);
-      if (next.has(idx)) next.delete(idx);
-      else next.add(idx);
-      return next;
-    });
+  const filledCategories = CATEGORIES.filter(c => categorized[c.key].length > 0);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const text = `See where ${companyName} sends political money — ${allSteps.length} connections traced`;
+    if (navigator.share) {
+      try { await navigator.share({ title: text, url }); } catch {}
+    } else {
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      toast("Link copied!", { description: "Share this influence chain with anyone." });
+    }
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <GitBranch className="w-5 h-5 text-primary" />
-          Where Does the Money Go?
-        </CardTitle>
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground flex-1">
-            This shows how {companyName} spends money on politics — and what happens after.
-            Think of it like a trail: the company sends money somewhere, that money reaches a politician or group,
-            and that politician or group has power over government decisions that affect the company.
-          </p>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1.5 text-xs shrink-0 ml-2"
-            onClick={async () => {
-              const url = window.location.href;
-              const text = `See where ${companyName} sends political money — ${chains.length} money trail${chains.length !== 1 ? "s" : ""} found`;
-              if (navigator.share) {
-                try { await navigator.share({ title: text, url }); } catch {}
-              } else {
-                await navigator.clipboard.writeText(`${text}\n${url}`);
-                toast("Link copied!", { description: "Share this influence chain with anyone." });
-              }
-            }}
-          >
-            <Share2 className="w-3.5 h-3.5" /> Share
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {/* How to read this */}
-        <div className="p-4 rounded-xl bg-muted/40 border border-border/40 mb-5">
-          <div className="flex items-center gap-2 mb-2">
-            <HelpCircle className="w-4 h-4 text-primary shrink-0" />
-            <h3 className="text-sm font-semibold text-foreground">How to read this</h3>
+    <Card className="overflow-hidden">
+      {/* Hero / Summary banner */}
+      <div className="bg-gradient-to-br from-primary to-primary/70 text-primary-foreground p-6 relative overflow-hidden">
+        <div className="absolute top-[-40px] right-[-40px] w-48 h-48 rounded-full bg-white/5" />
+        <div className="absolute bottom-[-60px] left-[30%] w-72 h-72 rounded-full bg-white/[0.03]" />
+
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide uppercase mb-3">
+            <GitBranch className="w-3.5 h-3.5" /> Influence Chain
           </div>
-          <div className="space-y-2 text-xs text-muted-foreground leading-relaxed">
-            <p>Each trail below shows <strong className="text-foreground">where the money goes</strong> and <strong className="text-foreground">who it reaches</strong>.</p>
-            <p>For each politician, you'll see their <strong className="text-foreground">political party</strong>, what <strong className="text-foreground">committees</strong> they sit on, and what <strong className="text-foreground">topics</strong> those committees control — like healthcare, taxes, or the environment.</p>
-            <p>This matters because the committees a politician sits on decide which companies get government contracts and which rules get written.</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 border-t border-border/40">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[hsl(var(--civic-green))]" /> Strong evidence — from official filings</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[hsl(var(--civic-yellow))]" /> Some evidence — connects the dots</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[hsl(var(--civic-red))]" /> Weak evidence — possible but not confirmed</span>
+          <h2 className="text-xl font-bold font-display mb-2">Where does the money go?</h2>
+          <p className="text-sm opacity-90 max-w-lg leading-relaxed">
+            We traced {companyName}'s political spending from start to finish. Think of it like a trail — the company sends money somewhere, it reaches politicians and groups, and those people make decisions that affect the company.
+          </p>
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
+            <div className="bg-white/10 rounded-xl p-3">
+              <div className="text-2xl font-bold font-display">{allSteps.length}</div>
+              <div className="text-[11px] opacity-80">Connections found</div>
+            </div>
+            <div className="bg-white/10 rounded-xl p-3">
+              <div className="text-2xl font-bold font-display">{linkTypes}</div>
+              <div className="text-[11px] opacity-80">Types of links</div>
+            </div>
+            <div className="bg-white/10 rounded-xl p-3">
+              <div className="text-2xl font-bold font-display">{strongLinks}</div>
+              <div className="text-[11px] opacity-80">Strong matches</div>
+            </div>
+            <div className="bg-white/10 rounded-xl p-3">
+              <div className="text-2xl font-bold font-display">{uniqueEntities}</div>
+              <div className="text-[11px] opacity-80">People & groups</div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Summary stats */}
-        <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg mb-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-foreground">{chains.length}</div>
-            <div className="text-xs text-muted-foreground">Money trail{chains.length !== 1 ? "s" : ""} found</div>
+      <CardContent className="p-5 space-y-5">
+        {/* Explainer */}
+        <div className="rounded-xl border-l-4 border-primary bg-card shadow-sm p-4">
+          <div className="flex items-center gap-2 mb-1.5">
+            <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
+            <span className="text-sm font-semibold text-foreground">What is an Influence Chain?</span>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-foreground">{uniqueEntities}</div>
-            <div className="text-xs text-muted-foreground">People & groups involved</div>
-          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            An Influence Chain shows <strong className="text-foreground">how a company's political money connects to government decisions</strong>. 
+            Every link is traced from public records — campaign filings, lobbying reports, and contract databases. 
+            The stronger the link, the more directly the money connects to political power.
+          </p>
         </div>
 
-        {/* Recipient Mix */}
+        {/* Recipient mix bar */}
         {recipientMix.length > 0 && (
-          <div className="p-3 bg-card border border-border rounded-lg mb-5">
+          <div className="p-3 bg-card border border-border rounded-lg">
             <span className="text-xs font-semibold text-foreground">Who gets the money? (by political party)</span>
             <div className="flex h-3 rounded-full overflow-hidden my-2">
               {recipientMix.map((mix, i) => (
@@ -542,96 +483,58 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
           </div>
         )}
 
-        {/* Chain paths */}
-        <div className="space-y-3">
-          {chains.map((chain, chainIdx) => {
-            const isExpanded = expandedChains.has(chainIdx);
-            const chainTotal = chain.reduce((sum, s) => sum + (s.amount || 0), 0);
-            const firstStep = chain[0];
-            const lastStep = chain[chain.length - 1];
-            const lastParty = extractPartyFromDescription(lastStep.description, lastStep.target_name);
-            const story = chainStory(chain, companyName);
-
-            return (
-              <div key={chainIdx} className="border border-border rounded-lg overflow-hidden">
-                <button
-                  onClick={() => toggleChain(chainIdx)}
-                  className="w-full flex items-center justify-between p-3 bg-card hover:bg-accent/50 transition-colors text-left"
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Badge variant="outline" className="shrink-0 text-[10px]">
-                      {chainIdx + 1}
-                    </Badge>
-                    <span className="text-sm font-medium text-foreground truncate">
-                      {cleanEntityName(firstStep.source_name)}
-                    </span>
-                    <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
-                    <span className="text-[10px] text-muted-foreground shrink-0">
-                      {chain.length} {chain.length === 1 ? "step" : "steps"}
-                    </span>
-                    <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
-                    <span className="text-sm font-medium text-foreground truncate">
-                      {cleanEntityName(lastStep.target_name)}
-                    </span>
-                    <PartyBadge party={lastParty} entityType={lastStep.target_type} />
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0 ml-2">
-                    {chainTotal > 0 && (
-                      <span className="text-xs font-bold text-[hsl(var(--civic-green))]">{formatCurrency(chainTotal)}</span>
-                    )}
-                    {isExpanded ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
-                  </div>
-                </button>
-
-                {isExpanded && (
-                  <div className="border-t border-border bg-muted/30">
-                    {/* Plain-language story summary — clickable to copy */}
-                    {story && (
-                      <div className="px-4 pt-3 pb-2">
-                        <button
-                          onClick={async () => {
-                            await navigator.clipboard.writeText(story);
-                            toast("Copied!", { description: "Plain-English summary copied to clipboard." });
-                          }}
-                          className="w-full text-left p-3 rounded-lg bg-primary/5 border border-primary/10 hover:bg-primary/10 hover:border-primary/20 transition-colors group cursor-pointer"
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="text-sm text-foreground leading-relaxed">
-                              <strong>In plain English:</strong> {story}
-                            </p>
-                            <Copy className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5" />
-                          </div>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Step-by-step detail */}
-                    <div className="p-4 space-y-4 overflow-x-auto">
-                      {chain.map((step, stepIdx) => (
-                        <div key={stepIdx} className="flex items-start gap-3">
-                          <div className="shrink-0 flex flex-col items-center">
-                            <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-[10px] font-bold text-primary">
-                              {step.step}
-                            </div>
-                            {stepIdx < chain.length - 1 && <div className="w-px h-12 bg-border" />}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <ChainRow step={step} chain={chain} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        {/* Filter pills */}
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          <button
+            onClick={() => setActiveFilter("all")}
+            className={cn(
+              "shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
+              activeFilter === "all"
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground"
+            )}
+          >
+            All Connections
+          </button>
+          {filledCategories.map(cat => (
+            <button
+              key={cat.key}
+              onClick={() => setActiveFilter(cat.key)}
+              className={cn(
+                "shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
+                activeFilter === cat.key
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-card text-muted-foreground border-border hover:border-primary/30 hover:text-foreground"
+              )}
+            >
+              {cat.title}
+            </button>
+          ))}
         </div>
 
-        <p className="text-[10px] text-muted-foreground mt-4 border-t border-border pt-3">
-          All of this comes from public records — campaign finance filings, lobbying reports, and government contract databases.
-          We connect the dots so you can see how money moves from a company to the people who make government decisions.
-        </p>
+        {/* Category sections */}
+        <div className="space-y-3">
+          {filledCategories
+            .filter(cat => activeFilter === "all" || activeFilter === cat.key)
+            .map((cat, idx) => (
+              <CategorySection
+                key={cat.key}
+                category={cat}
+                steps={categorized[cat.key]}
+                defaultOpen={idx === 0 || activeFilter !== "all"}
+              />
+            ))}
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-3 border-t border-border">
+          <p className="text-[10px] text-muted-foreground">
+            All data from public records — FEC filings, lobbying reports, USASpending.gov
+          </p>
+          <Button variant="ghost" size="sm" className="gap-1.5 text-xs" onClick={handleShare}>
+            <Share2 className="w-3.5 h-3.5" /> Share
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
