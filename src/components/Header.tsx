@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { ViewModeToggle } from "@/components/ViewModeToggle";
 import {
   Accordion,
   AccordionContent,
