@@ -105,6 +105,9 @@ export default function CareerIntelligence() {
           <TabsContent value="pathing" className="mt-6">
             <CareerMappingView />
           </TabsContent>
+          <TabsContent value="checklist" className="mt-6">
+            <CareerChecklist />
+          </TabsContent>
         </Tabs>
 
         {/* Data Wipe - always visible at bottom */}
