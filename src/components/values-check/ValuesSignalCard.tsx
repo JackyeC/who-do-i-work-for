@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PartyBadge } from "@/components/PartyBadge";
+import { cleanEntityName } from "@/lib/entityUtils";
 import { cn } from "@/lib/utils";
 import { type ValuesCheckSignal, ISSUE_AREAS } from "./ValuesCheckSection";
 
@@ -193,7 +194,7 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
                 {signal.related_entity_name && (
                   <div>
                     <span className="text-muted-foreground font-medium">Related Entity:</span>
-                    <p className="text-foreground mt-0.5">{signal.related_entity_name}</p>
+                    <p className="text-foreground mt-0.5">{cleanEntityName(signal.related_entity_name)}</p>
                   </div>
                 )}
                 {signal.year && (
