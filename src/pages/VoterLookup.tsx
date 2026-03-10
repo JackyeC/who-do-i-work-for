@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { AddressAutocomplete } from "@/components/AddressAutocomplete";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -114,15 +114,11 @@ export default function VoterLookup() {
 
           {/* Search */}
           <form onSubmit={handleSearch} className="flex gap-2 mb-10">
-            <div className="relative flex-1">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter your street address, city, state (e.g. 1600 Pennsylvania Ave, Washington, DC)"
-                className="pl-10"
-              />
-            </div>
+            <AddressAutocomplete
+              value={address}
+              onChange={setAddress}
+              placeholder="Enter your street address, city, state (e.g. 1600 Pennsylvania Ave, Washington, DC)"
+            />
             <Button type="submit" disabled={isSearching || !address.trim()} className="gap-1.5 shrink-0">
               {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               {isSearching ? "Looking up..." : "Find My Reps"}
