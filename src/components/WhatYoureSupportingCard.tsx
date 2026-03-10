@@ -143,7 +143,9 @@ export function WhatYoureSupportingCard({
             </p>
             <div className="flex flex-wrap gap-1.5">
               {topIssuesLobbied.slice(0, 8).map((issue, i) => (
-                <Badge key={i} variant="outline" className="text-xs">{issue}</Badge>
+                <Link key={i} to={`/values-search?issue=${encodeURIComponent(issue.toLowerCase().replace(/\s+/g, '_'))}`}>
+                  <Badge variant="outline" className="text-xs cursor-pointer hover:bg-primary/10 hover:border-primary/30 transition-colors">{issue}</Badge>
+                </Link>
               ))}
             </div>
           </div>
