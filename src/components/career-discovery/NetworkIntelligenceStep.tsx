@@ -165,10 +165,10 @@ export function NetworkIntelligenceStep() {
   const hasConnections = (connections || []).length > 0;
 
   // Categorize and filter
-  const categorized = (connections || []).map(c => ({
-    ...c,
-    category: categorizeConnection(c),
-  }));
+  const categorized = (connections || []).map(c => {
+    const cat = categorizeConnection(c);
+    return { connection: c, category: cat };
+  });
   const filtered = activeFilter
     ? categorized.filter(c => c.category === activeFilter)
     : categorized;
