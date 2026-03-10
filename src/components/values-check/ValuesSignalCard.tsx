@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PartyBadge } from "@/components/PartyBadge";
+import { cleanEntityName } from "@/lib/entityUtils";
 import { cn } from "@/lib/utils";
 import { type ValuesCheckSignal, ISSUE_AREAS } from "./ValuesCheckSection";
 
