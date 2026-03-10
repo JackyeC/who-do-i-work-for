@@ -89,6 +89,7 @@ const App = () => (
               <Route path="/request-correction" element={<RequestCorrection />} />
               <Route path="/offer-check/:companyId" element={<OfferCheck />} />
               <Route path="/offer-clarity" element={<OfferClarity />} />
+              <Route path="/strategic-offer-review" element={<StrategicOfferReview />} />
               <Route path="/offer-review/:companyId" element={
                 <ProtectedRoute>
                   <OfferReview />
