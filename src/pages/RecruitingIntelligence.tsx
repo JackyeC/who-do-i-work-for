@@ -1,15 +1,26 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CandidatePersonaBuilder } from "@/components/recruiting/CandidatePersonaBuilder";
 import { EVPIntelligence } from "@/components/recruiting/EVPIntelligence";
 import { RecruitingInsightsDashboard } from "@/components/recruiting/RecruitingInsightsDashboard";
-import { Users, Megaphone, BarChart3, Target } from "lucide-react";
+import { ResponseStudio } from "@/components/recruiting/ResponseStudio";
+import { Users, Megaphone, BarChart3, Target, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useEffect } from "react";
 
 export default function RecruitingIntelligence() {
-  const [tab, setTab] = useState("insights");
+  const [searchParams] = useSearchParams();
+  const urlTab = searchParams.get("tab");
+  const [tab, setTab] = useState(urlTab || "insights");
+
+  useEffect(() => {
+    if (urlTab && ["insights", "evp", "personas", "response-studio"].includes(urlTab)) {
+      setTab(urlTab);
+    }
+  }, [urlTab]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -33,7 +44,7 @@ export default function RecruitingIntelligence() {
             <Badge variant="outline" className="text-xs">For Recruiters</Badge>
             <Badge variant="outline" className="text-xs">For Candidates</Badge>
             <Badge variant="outline" className="text-xs">Employer Signals</Badge>
-            <Badge variant="outline" className="text-xs">Talent Alignment</Badge>
+            <Badge variant="outline" className="text-xs">Facts Over Feelings</Badge>
           </div>
         </div>
 
@@ -45,7 +56,11 @@ export default function RecruitingIntelligence() {
             </TabsTrigger>
             <TabsTrigger value="evp" className="gap-1.5">
               <Megaphone className="w-4 h-4" />
-              Employer Positioning
+              EVP Audit
+            </TabsTrigger>
+            <TabsTrigger value="response-studio" className="gap-1.5">
+              <FileText className="w-4 h-4" />
+              Response Studio
             </TabsTrigger>
             <TabsTrigger value="personas" className="gap-1.5">
               <Users className="w-4 h-4" />
@@ -58,6 +73,9 @@ export default function RecruitingIntelligence() {
           </TabsContent>
           <TabsContent value="evp">
             <EVPIntelligence />
+          </TabsContent>
+          <TabsContent value="response-studio">
+            <ResponseStudio />
           </TabsContent>
           <TabsContent value="personas">
             <CandidatePersonaBuilder />
