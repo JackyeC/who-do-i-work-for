@@ -69,6 +69,8 @@ export default function Dashboard() {
     switch (tab) {
       case "overview":
         return <DashboardOverview onNavigate={setTab} />;
+      case "tracked":
+        return <SlotManagementDashboard />;
       case "matches":
         return <AlignedJobsList />;
       case "values":
