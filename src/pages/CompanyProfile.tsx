@@ -741,7 +741,7 @@ export default function CompanyProfile() {
                           View SEC filings →
                         </a>
                       </TooltipContent>
-                    </Tooltip>
+                    </UITooltip>
                   )}
                   {(dbCompany as any).sec_cik && !(dbCompany as any).ticker && (
                     <Badge variant="outline" className="text-xs text-muted-foreground">
