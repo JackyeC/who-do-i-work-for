@@ -792,7 +792,7 @@ export default function CompanyProfile() {
               </p>
             </div>
 
-            {/* Summary Cards */}
+            {/* Summary Cards — clickable to open detail drawers */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
               <ExplainableMetric metricKey="civic-footprint" className="h-full">
                 <Card className="overflow-hidden h-full flex flex-col">
@@ -808,7 +808,7 @@ export default function CompanyProfile() {
                 </Card>
               </ExplainableMetric>
               <ExplainableMetric metricKey="pac-spending" className="h-full">
-                <Card className="overflow-hidden h-full flex flex-col">
+                <Card className="overflow-hidden h-full flex flex-col cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" onClick={() => setPacDrawerOpen(true)}>
                   <CardContent className="p-5 flex flex-col flex-1">
                     <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
                       <DollarSign className="w-3.5 h-3.5" />
@@ -818,11 +818,12 @@ export default function CompanyProfile() {
                       {dbCompany.total_pac_spending > 0 ? formatCurrency(dbCompany.total_pac_spending) : "None"}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-auto pt-2 leading-snug">Money donated by the company's PAC directly to political candidates this cycle.</p>
+                    <span className="text-[10px] text-primary font-medium mt-1">View details →</span>
                   </CardContent>
                 </Card>
               </ExplainableMetric>
               <ExplainableMetric metricKey="lobbying" className="h-full">
-                <Card className="overflow-hidden h-full flex flex-col">
+                <Card className="overflow-hidden h-full flex flex-col cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" onClick={() => setLobbyingDrawerOpen(true)}>
                   <CardContent className="p-5 flex flex-col flex-1">
                     <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
                       <Megaphone className="w-3.5 h-3.5" />
@@ -832,12 +833,13 @@ export default function CompanyProfile() {
                       {dbCompany.lobbying_spend ? formatCurrency(dbCompany.lobbying_spend) : "None"}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-auto pt-2 leading-snug">Annual spending on lobbyists who advocate for the company in Congress.</p>
+                    <span className="text-[10px] text-primary font-medium mt-1">View details →</span>
                   </CardContent>
                 </Card>
               </ExplainableMetric>
               {(dbCompany.government_contracts || dbCompany.subsidies_received) && (
                 <ExplainableMetric metricKey="gov-contracts" className="h-full">
-                  <Card className="overflow-hidden h-full flex flex-col">
+                  <Card className="overflow-hidden h-full flex flex-col cursor-pointer hover:border-primary/30 hover:shadow-md transition-all" onClick={() => setContractsDrawerOpen(true)}>
                     <CardContent className="p-5 flex flex-col flex-1">
                       <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
                         <Landmark className="w-3.5 h-3.5" />
@@ -847,6 +849,7 @@ export default function CompanyProfile() {
                         {dbCompany.government_contracts ? formatCurrency(dbCompany.government_contracts) : "—"}
                       </div>
                       <p className="text-[11px] text-muted-foreground mt-auto pt-2 leading-snug">Federal contracts awarded to this company — taxpayer money received.</p>
+                      <span className="text-[10px] text-primary font-medium mt-1">View details →</span>
                     </CardContent>
                   </Card>
                 </ExplainableMetric>
