@@ -346,7 +346,7 @@ function CategorySection({ category, steps, defaultOpen, onEntityClick }: { cate
           {/* Evidence cards */}
           <div className="p-3 space-y-2">
             {displaySteps.map((step, i) => (
-              <EvidenceCard key={`${step.chain_id}-${step.step}-${i}`} step={step} />
+              <EvidenceCard key={`${step.chain_id}-${step.step}-${i}`} step={step} onEntityClick={onEntityClick} />
             ))}
           </div>
 
