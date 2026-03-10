@@ -78,20 +78,24 @@ async function findCIK(companyName: string): Promise<{ cik: string; ticker: stri
       }
     }
     
-    // Partial match
+    // Partial match — require the search term to be a substantial substring
     for (const entry of Object.values(tickers)) {
       const normalizedTitle = entry.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
-      if (normalizedTitle.includes(normalizedSearch) || normalizedSearch.includes(normalizedTitle)) {
+      // Only match if the shorter string is at least 60% the length of the longer
+      const shorter = normalizedSearch.length < normalizedTitle.length ? normalizedSearch : normalizedTitle;
+      const longer = normalizedSearch.length < normalizedTitle.length ? normalizedTitle : normalizedSearch;
+      if (shorter.length >= longer.length * 0.6 && longer.includes(shorter)) {
         return { cik: String(entry.cik_str).padStart(10, '0'), ticker: entry.ticker, name: entry.title };
       }
     }
 
-    // Word-based fuzzy match (match first 2 words)
-    const searchWords = normalizedSearch.split(/\s+/).slice(0, 2);
-    if (searchWords.length >= 1 && searchWords[0].length > 3) {
+    // Word-based match — require ALL significant words (3+ chars) to match
+    const searchWords = normalizedSearch.split(/\s+/).filter(w => w.length > 2);
+    if (searchWords.length >= 2) {
       for (const entry of Object.values(tickers)) {
         const titleWords = entry.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
-        if (searchWords.every(w => titleWords.some(tw => tw.startsWith(w) || w.startsWith(tw)))) {
+        // All search words must appear in the title
+        if (searchWords.every(sw => titleWords.some(tw => tw === sw || (tw.length > 4 && sw.length > 4 && (tw.startsWith(sw) || sw.startsWith(tw)))))) {
           return { cik: String(entry.cik_str).padStart(10, '0'), ticker: entry.ticker, name: entry.title };
         }
       }
@@ -327,6 +331,7 @@ Deno.serve(async (req) => {
     }
 
     // Store entity linkages for SEC data
+    const isPubliclyTraded = !!cikResult.ticker && cikResult.ticker.length > 0;
     const linkages: any[] = [];
     
     // Link company to SEC entity
@@ -339,7 +344,7 @@ Deno.serve(async (req) => {
       target_entity_id: cikResult.cik,
       link_type: 'interlocking_directorate',
       confidence_score: 1.0,
-      description: `SEC-registered entity${cikResult.ticker ? ` (${cikResult.ticker})` : ''} — ${(dbCompany as any)?.is_publicly_traded !== false ? 'publicly traded' : 'privately held'}`,
+      description: `SEC-registered entity${cikResult.ticker ? ` (${cikResult.ticker})` : ''} — ${isPubliclyTraded ? 'publicly traded' : 'SEC filer'}`,
       source_citation: JSON.stringify([{
         source: 'SEC EDGAR',
         url: `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cikResult.cik}`,
@@ -348,12 +353,14 @@ Deno.serve(async (req) => {
     });
 
     // Persist CIK, ticker, and public trading status to the companies table
-    const isPubliclyTraded = !!cikResult.ticker && cikResult.ticker.length > 0;
-    await supabase.from('companies').update({
+    const { error: updateErr } = await supabase.from('companies').update({
       sec_cik: cikResult.cik,
       ticker: cikResult.ticker || null,
       is_publicly_traded: isPubliclyTraded,
     }).eq('id', companyId);
+    if (updateErr) console.error('[sync-sec-edgar] Failed to update company CIK/ticker:', updateErr);
+    else console.log(`[sync-sec-edgar] Saved CIK=${cikResult.cik} ticker=${cikResult.ticker} publicly_traded=${isPubliclyTraded}`);
+
     // Insert signals
     if (signalRows.length > 0) {
       // Clear old SEC signals
