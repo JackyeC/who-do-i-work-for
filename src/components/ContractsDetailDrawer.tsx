@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ExternalLink, Landmark, AlertTriangle } from "lucide-react";
+import { ExternalLink, Landmark, AlertTriangle, ChevronDown, ChevronRight } from "lucide-react";
 import { formatCurrency } from "@/data/sampleData";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -16,7 +17,17 @@ interface ContractsDetailDrawerProps {
   totalSubsidies: number | null;
 }
 
+interface AgencyGroup {
+  agency: string;
+  total: number;
+  count: number;
+  contracts: any[];
+  hasControversy: boolean;
+}
+
 export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyName, totalContracts, totalSubsidies }: ContractsDetailDrawerProps) {
+  const [expandedAgencies, setExpandedAgencies] = useState<Set<string>>(new Set());
+
   const { data: contracts, isLoading } = useQuery({
     queryKey: ["contracts-detail", companyId],
     queryFn: async () => {
@@ -33,15 +44,28 @@ export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyNa
   const controversialContracts = (contracts || []).filter((c: any) => c.controversy_flag);
   const totalValue = (contracts || []).reduce((sum: number, c: any) => sum + (c.contract_value || 0), 0);
 
-  // Group by agency
-  const byAgency = (contracts || []).reduce<Record<string, { total: number; count: number }>>((acc, c: any) => {
-    const key = c.agency_name;
-    if (!acc[key]) acc[key] = { total: 0, count: 0 };
-    acc[key].total += c.contract_value || 0;
-    acc[key].count += 1;
-    return acc;
-  }, {});
-  const topAgencies = Object.entries(byAgency).sort((a, b) => b[1].total - a[1].total).slice(0, 10);
+  // Group by agency into sorted list
+  const agencyGroups: AgencyGroup[] = (() => {
+    const map: Record<string, AgencyGroup> = {};
+    for (const c of contracts || []) {
+      const key = c.agency_name || "Unknown Agency";
+      if (!map[key]) map[key] = { agency: key, total: 0, count: 0, contracts: [], hasControversy: false };
+      map[key].total += c.contract_value || 0;
+      map[key].count += 1;
+      map[key].contracts.push(c);
+      if (c.controversy_flag) map[key].hasControversy = true;
+    }
+    return Object.values(map).sort((a, b) => b.total - a.total);
+  })();
+
+  const toggleAgency = (agency: string) => {
+    setExpandedAgencies(prev => {
+      const next = new Set(prev);
+      if (next.has(agency)) next.delete(agency);
+      else next.add(agency);
+      return next;
+    });
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -52,7 +76,7 @@ export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyNa
             Government Contracts
           </SheetTitle>
           <SheetDescription>
-            Federal contracts awarded to {companyName} — which agencies and how much.
+            Federal contracts awarded to {companyName} — grouped by agency.
           </SheetDescription>
         </SheetHeader>
 
@@ -62,16 +86,19 @@ export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyNa
             <CardContent className="p-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-xs text-muted-foreground">Contracts</div>
-                  <div className="text-xl font-bold text-foreground">{totalContracts ? formatCurrency(totalContracts) : formatCurrency(totalValue)}</div>
+                  <div className="text-xs text-muted-foreground">Total Contract Value</div>
+                  <div className="text-xl font-bold text-foreground">{formatCurrency(totalContracts || totalValue)}</div>
                 </div>
-                {totalSubsidies && (
-                  <div>
-                    <div className="text-xs text-muted-foreground">Subsidies & Tax Breaks</div>
-                    <div className="text-xl font-bold text-foreground">{formatCurrency(totalSubsidies)}</div>
-                  </div>
-                )}
+                <div>
+                  <div className="text-xs text-muted-foreground">Agencies</div>
+                  <div className="text-xl font-bold text-foreground">{agencyGroups.length}</div>
+                </div>
               </div>
+              {totalSubsidies ? (
+                <div className="mt-2 text-xs text-muted-foreground">
+                  Subsidies & Tax Breaks: <span className="font-semibold text-foreground">{formatCurrency(totalSubsidies)}</span>
+                </div>
+              ) : null}
               <a
                 href={`https://www.usaspending.gov/search/?hash=&filters=%7B%22keyword%22%3A%22${encodeURIComponent(companyName)}%22%7D`}
                 target="_blank"
@@ -92,7 +119,7 @@ export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyNa
                 <div className="p-3 rounded-lg bg-destructive/5 border border-destructive/20">
                   <div className="flex items-center gap-2 mb-2">
                     <AlertTriangle className="w-4 h-4 text-destructive" />
-                    <span className="text-sm font-semibold text-destructive">{controversialContracts.length} Controversial Contracts</span>
+                    <span className="text-sm font-semibold text-destructive">{controversialContracts.length} Controversial Contract{controversialContracts.length > 1 ? "s" : ""}</span>
                   </div>
                   <div className="space-y-2">
                     {controversialContracts.map((c: any) => (
@@ -105,44 +132,68 @@ export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyNa
                 </div>
               )}
 
-              {/* By agency */}
-              {topAgencies.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-3">Contracts by Agency</h3>
-                  <div className="space-y-2">
-                    {topAgencies.map(([agency, data]) => (
-                      <div key={agency} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/40 border border-border/60">
-                        <div>
-                          <div className="text-sm font-medium text-foreground">{agency}</div>
-                          <div className="text-[10px] text-muted-foreground">{data.count} contract{data.count > 1 ? "s" : ""}</div>
-                        </div>
-                        <span className="text-sm font-semibold text-foreground">{formatCurrency(data.total)}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Agency accordion groups */}
+              {agencyGroups.length > 0 && (
+                <div className="space-y-1.5">
+                  <h3 className="text-sm font-semibold text-foreground mb-2">Contracts by Agency</h3>
+                  {agencyGroups.map(group => {
+                    const isExpanded = expandedAgencies.has(group.agency);
+                    return (
+                      <div key={group.agency} className="rounded-lg border border-border/60 overflow-hidden">
+                        {/* Agency header — clickable */}
+                        <button
+                          onClick={() => toggleAgency(group.agency)}
+                          className="w-full flex items-center justify-between p-3 hover:bg-muted/50 transition-colors text-left"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            {isExpanded
+                              ? <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                              : <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                            }
+                            <div className="min-w-0">
+                              <div className="text-sm font-medium text-foreground truncate">{group.agency}</div>
+                              <div className="text-[10px] text-muted-foreground">
+                                {group.count} contract{group.count > 1 ? "s" : ""}
+                                {group.hasControversy && <span className="text-destructive ml-1.5">• Controversy flagged</span>}
+                              </div>
+                            </div>
+                          </div>
+                          <span className="text-sm font-semibold text-foreground shrink-0 ml-2">{formatCurrency(group.total)}</span>
+                        </button>
 
-              {/* Individual contracts */}
-              {contracts && contracts.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-3">Contract Details</h3>
-                  <div className="space-y-2 max-h-72 overflow-y-auto">
-                    {contracts.map((c: any) => (
-                      <div key={c.id} className="p-3 rounded-lg bg-muted/40 border border-border/60">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-medium text-foreground">{c.agency_name}</span>
-                          {c.contract_value && <span className="text-xs font-semibold text-foreground">{formatCurrency(c.contract_value)}</span>}
-                        </div>
-                        {c.contract_description && <p className="text-[10px] text-muted-foreground mb-1">{c.contract_description}</p>}
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {c.fiscal_year && <Badge variant="outline" className="text-[10px]">FY{c.fiscal_year}</Badge>}
-                          {c.controversy_flag && <Badge variant="destructive" className="text-[10px]">Controversy</Badge>}
-                          <Badge variant="outline" className="text-[10px]">{c.confidence === "high" ? "Strong evidence" : c.confidence === "medium" ? "Some evidence" : "Weak evidence"}</Badge>
-                        </div>
+                        {/* Expanded contract list */}
+                        {isExpanded && (
+                          <div className="border-t border-border/40 bg-muted/20 p-2 space-y-1.5 max-h-64 overflow-y-auto">
+                            {group.contracts.map((c: any) => (
+                              <div key={c.id} className={`p-2.5 rounded-md border ${c.controversy_flag ? "border-destructive/20 bg-destructive/5" : "border-border/40 bg-background"}`}>
+                                <div className="flex items-center justify-between mb-1">
+                                  {c.contract_description
+                                    ? <span className="text-xs text-foreground line-clamp-2">{c.contract_description}</span>
+                                    : <span className="text-xs text-muted-foreground italic">No description</span>
+                                  }
+                                  {c.contract_value != null && (
+                                    <span className="text-xs font-semibold text-foreground shrink-0 ml-2">{formatCurrency(c.contract_value)}</span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2 flex-wrap mt-1">
+                                  {c.fiscal_year && <Badge variant="outline" className="text-[10px]">FY{c.fiscal_year}</Badge>}
+                                  {c.controversy_flag && <Badge variant="destructive" className="text-[10px]">Controversy</Badge>}
+                                  <Badge variant="outline" className="text-[10px]">
+                                    {c.confidence === "high" ? "Strong evidence" : c.confidence === "medium" ? "Some evidence" : "Weak evidence"}
+                                  </Badge>
+                                  {c.source && (
+                                    <a href={c.source} target="_blank" rel="noopener noreferrer" className="text-[10px] text-primary hover:underline flex items-center gap-0.5">
+                                      Source <ExternalLink className="w-2.5 h-2.5" />
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
               )}
 
