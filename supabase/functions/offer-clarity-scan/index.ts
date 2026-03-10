@@ -68,14 +68,14 @@ serve(async (req) => {
     const prompt = `You are an expert compensation analyst and employment advisor. Analyze this job offer and produce a structured Offer Clarity Score.
 
 ## Offer Details
-- Company: ${companyName}
-- Role: ${offerData.roleTitle || "Not specified"}
-- Location: ${offerData.location || "Not specified"}
-- Years of Experience: ${offerData.yearsExperience || "Not specified"}
-- Base Salary: ${offerData.baseSalary ? `$${offerData.baseSalary}` : "Not specified"}
-- Bonus/Commission: ${offerData.bonus || "None"}
-- Equity: ${offerData.equity || "None"}
-- Additional Details: ${offerData.additionalDetails || "None"}
+- Company: ${sanitize(companyName, 200)}
+- Role: ${sanitizedOffer.roleTitle || "Not specified"}
+- Location: ${sanitizedOffer.location || "Not specified"}
+- Years of Experience: ${sanitizedOffer.yearsExperience || "Not specified"}
+- Base Salary: ${sanitizedOffer.baseSalary ? `$${sanitizedOffer.baseSalary}` : "Not specified"}
+- Bonus/Commission: ${sanitizedOffer.bonus || "None"}
+- Equity: ${sanitizedOffer.equity || "None"}
+- Additional Details: ${sanitizedOffer.additionalDetails || "None"}
 
 ## Company Signals from Database
 ${JSON.stringify(companySignals, null, 2)}
