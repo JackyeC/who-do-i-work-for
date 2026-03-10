@@ -201,10 +201,15 @@ Deno.serve(async (req) => {
         const timeoutMs = isRetry ? 45_000 : 55_000;
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
+        // Some modules use snake_case params (e.g. warn-scan)
+        const bodyPayload = (mod as any).paramStyle === 'snake'
+          ? { company_id: companyId, company_name: companyName, searchNames, entityMap }
+          : { companyId, companyName, searchNames, entityMap };
+
         const moduleResp = await fetch(`${supabaseUrl}/functions/v1/${mod.fn}`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ companyId, companyName, searchNames, entityMap }),
+          body: JSON.stringify(bodyPayload),
           signal: controller.signal,
         });
 
