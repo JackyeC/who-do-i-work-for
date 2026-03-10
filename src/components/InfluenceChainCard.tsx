@@ -452,11 +452,30 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
           <GitBranch className="w-5 h-5 text-primary" />
           Where Does the Money Go?
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          This shows how {companyName} spends money on politics — and what happens after.
-          Think of it like a trail: the company sends money somewhere, that money reaches a politician or group,
-          and that politician or group has power over government decisions that affect the company.
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground flex-1">
+            This shows how {companyName} spends money on politics — and what happens after.
+            Think of it like a trail: the company sends money somewhere, that money reaches a politician or group,
+            and that politician or group has power over government decisions that affect the company.
+          </p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 text-xs shrink-0 ml-2"
+            onClick={async () => {
+              const url = window.location.href;
+              const text = `See where ${companyName} sends political money — ${chains.length} money trail${chains.length !== 1 ? "s" : ""} found`;
+              if (navigator.share) {
+                try { await navigator.share({ title: text, url }); } catch {}
+              } else {
+                await navigator.clipboard.writeText(`${text}\n${url}`);
+                toast("Link copied!", { description: "Share this influence chain with anyone." });
+              }
+            }}
+          >
+            <Share2 className="w-3.5 h-3.5" /> Share
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         {/* How to read this */}
