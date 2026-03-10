@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/data/sampleData";
 import { cn } from "@/lib/utils";
+import { cleanEntityName } from "@/lib/entityUtils";
 import {
   ArrowRight, DollarSign, Users, Landmark, FileText,
   Loader2, Search, Radar, ShieldCheck, ShieldX, CheckCircle2, Building2,
