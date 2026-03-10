@@ -43,6 +43,7 @@ import ReportEditor from "./pages/ReportEditor";
 import OfferClarity from "./pages/OfferClarity";
 import RecruitingIntelligence from "./pages/RecruitingIntelligence";
 import CompanyDossier from "./pages/CompanyDossier";
+import Pricing from "./pages/Pricing";
 const queryClient = new QueryClient();
 
 const App = () => (
