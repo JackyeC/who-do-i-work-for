@@ -73,8 +73,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <div className="flex flex-col">
 
       {/* ─── HERO: Ultra-simple ─── */}
       <section className="relative overflow-hidden">
