@@ -102,7 +102,7 @@ export function SurvivorAlertCard({ companyName, dbCompanyId }: SurvivorAlertPro
     );
   }
 
-  if (!data || data.totalNotices === 0) return null;
+  if (!data || !data.totalNotices) return null;
 
   return (
     <Card className="border-destructive/30">
@@ -113,7 +113,7 @@ export function SurvivorAlertCard({ companyName, dbCompanyId }: SurvivorAlertPro
             RIF Intelligence & Survivor Alerts
           </CardTitle>
           <Badge variant="destructive" className="text-[10px]">
-            {data.totalAffected.toLocaleString()} affected
+            {(data.totalAffected ?? 0).toLocaleString()} affected
           </Badge>
         </div>
         <p className="text-xs text-muted-foreground">
