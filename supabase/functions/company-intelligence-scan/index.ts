@@ -345,12 +345,27 @@ Deno.serve(async (req) => {
     console.log(`[intelligence-scan] ═══ Phase 1b: Congress Cross-Reference (post-FEC) ═══`);
     await runAndSave(CONGRESS_MODULE, true);
 
-    // ─── Phase 2: Web research modules — ALL IN PARALLEL ───
-    console.log(`[intelligence-scan] ═══ Phase 2: Web Research Modules (parallel) ═══`);
-    await Promise.all(RESEARCH_MODULES.map(mod => {
-      console.log(`[intelligence-scan] Running research module: ${mod.key}`);
-      return runAndSave(mod, false);
-    }));
+    // ─── Phase 2: Web research modules — STAGGERED BATCHES ───
+    console.log(`[intelligence-scan] ═══ Phase 2: Web Research Modules (staggered) ═══`);
+    const BATCH_SIZE = 4;
+    for (let i = 0; i < RESEARCH_MODULES.length; i += BATCH_SIZE) {
+      const batch = RESEARCH_MODULES.slice(i, i + BATCH_SIZE);
+      console.log(`[intelligence-scan] Research batch ${Math.floor(i / BATCH_SIZE) + 1}: ${batch.map(m => m.key).join(', ')}`);
+      await Promise.all(batch.map(mod => {
+        return runAndSave(mod, false);
+      }));
+    }
+
+    // ─── Phase 2b: Retry timed-out modules sequentially ───
+    if (retryQueue.length > 0) {
+      console.log(`[intelligence-scan] ═══ Phase 2b: Retrying ${retryQueue.length} timed-out modules ═══`);
+      for (const { mod, isPipeline } of retryQueue) {
+        console.log(`[intelligence-scan] Retrying: ${mod.key}`);
+        moduleStatuses[mod.key] = { status: 'retrying', label: mod.label, phase: mod.phase, startedAt: new Date().toISOString() };
+        await runModule(mod, isPipeline, true);
+        await updateProgress();
+      }
+    }
 
     // ─── Phase 3: Calculate influence ROI from pipeline data ───
     console.log(`[intelligence-scan] ═══ Phase 3: Calculating Influence ROI ═══`);
