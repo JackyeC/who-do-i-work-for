@@ -102,7 +102,7 @@ export function SurvivorAlertCard({ companyName, dbCompanyId }: SurvivorAlertPro
     );
   }
 
-  if (!data || data.totalNotices === 0) return null;
+  if (!data || !data.totalNotices) return null;
 
   return (
     <Card className="border-destructive/30">
