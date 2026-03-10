@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ViewModeProvider } from "@/contexts/ViewModeContext";
+import { DossierLensProvider } from "@/contexts/DossierLensContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
@@ -52,6 +53,7 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ViewModeProvider>
+        <DossierLensProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -146,6 +148,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
+        </DossierLensProvider>
         </ViewModeProvider>
       </AuthProvider>
     </QueryClientProvider>

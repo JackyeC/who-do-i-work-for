@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   Building2, Lightbulb, Network, Landmark,
   Sparkles, Users, Heart, Loader2, ShoppingCart,
-  BarChart3, TrendingUp,
+  BarChart3, TrendingUp, User, Megaphone, Target,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -16,6 +16,7 @@ import { useTrackedCompanies } from "@/hooks/use-tracked-companies";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { Badge } from "@/components/ui/badge";
 import { ExportDossierButton } from "@/components/dossier/ExportDossierButton";
+import { useDossierLens } from "@/contexts/DossierLensContext";
 
 // Layer components
 import { ProductsPlatformsLayer } from "@/components/dossier/ProductsPlatformsLayer";
@@ -28,15 +29,21 @@ import { TalentContextLayer } from "@/components/dossier/TalentContextLayer";
 import { ValuesSignalsLayer } from "@/components/dossier/ValuesSignalsLayer";
 import { FullEvidenceLayer } from "@/components/dossier/FullEvidenceLayer";
 import { DecisionMakerLayer } from "@/components/dossier/DecisionMakerLayer";
-
-// New layers
 import { WorkforceDemographicsLayer } from "@/components/dossier/WorkforceDemographicsLayer";
 import { BuyingLogicLayer } from "@/components/dossier/BuyingLogicLayer";
 import { StockPatentsLayer } from "@/components/dossier/StockPatentsLayer";
 
+/* ─── Lens config ─── */
+const LENS_META = {
+  candidate: { label: "Candidate View", icon: User, color: "text-primary" },
+  sales: { label: "Sales Intelligence", icon: TrendingUp, color: "text-amber-500" },
+  hr: { label: "HR Strategy", icon: Users, color: "text-teal-500" },
+} as const;
+
 export default function CompanyDossier() {
   const { id } = useParams();
   const { isCompanyTracked } = useTrackedCompanies();
+  const { lens } = useDossierLens();
 
   const { data: company, isLoading } = useQuery({
     queryKey: ["dossier-company", id],
@@ -55,7 +62,6 @@ export default function CompanyDossier() {
   const companyId = company?.id;
   const isTracked = companyId ? isCompanyTracked(companyId) : false;
 
-  // Load related data
   const { data: executives } = useQuery({
     queryKey: ["dossier-executives", companyId],
     queryFn: async () => {
@@ -142,13 +148,14 @@ export default function CompanyDossier() {
   }
 
   const influenceScore = company.civic_footprint_score || 0;
-  const hasFullAccess = isTracked; // used to pass unlocked prop
+  const hasFullAccess = isTracked;
+  const LensMeta = LENS_META[lens];
+  const LensIcon = LensMeta.icon;
 
-  // Layer 1: Overview — always visible
+  /* ─── Shared overview (always visible) ─── */
   const overviewContent = (
     <>
-      {/* Company header */}
-      <div className="flex items-center gap-5 mb-8">
+      <div className="flex items-center gap-5 mb-4">
         <CompanyLogo companyName={company.name} logoUrl={company.logo_url} size="lg" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1">
@@ -165,6 +172,13 @@ export default function CompanyDossier() {
         <ExportDossierButton companyId={companyId!} companyName={company.name} company={company} />
       </div>
 
+      {/* Active lens indicator */}
+      <div className="flex items-center gap-2 mb-6 px-4 py-2.5 rounded-xl border border-border/40 bg-muted/30">
+        <LensIcon className={`w-4 h-4 ${LensMeta.color}`} />
+        <span className="text-sm font-medium text-foreground">{LensMeta.label}</span>
+        <span className="text-xs text-muted-foreground ml-1">— viewing dossier through this lens. Switch via header toggle.</span>
+      </div>
+
       {/* Score gauges */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 p-6 rounded-2xl border border-border/40 bg-card">
         <InfluenceGauge value={influenceScore} label="Influence Score" />
@@ -173,7 +187,7 @@ export default function CompanyDossier() {
         <InfluenceGauge value={0} label="Attraction Score" />
       </div>
 
-      {/* Layer 1: Basics */}
+      {/* Layer 1: Basics — always shown */}
       <DossierLayer title="Basics" subtitle="Products, markets, segments, and company overview" icon={Building2} layerNumber={1} defaultOpen>
         <div className="space-y-6">
           {company.description && (
@@ -184,8 +198,8 @@ export default function CompanyDossier() {
         </div>
       </DossierLayer>
 
-      {/* Innovation & Stock — always visible but blurred for non-subscribers */}
-      <DossierLayer title="Innovation & Patents" subtitle="Stock timeline, patent clusters, R&D themes, and technology bets" icon={Lightbulb} layerNumber={2}>
+      {/* Innovation — always visible */}
+      <DossierLayer title="Innovation & Patents" subtitle="Stock timeline, patent clusters, R&D themes" icon={Lightbulb} layerNumber={2}>
         <div className="space-y-8">
           <StockPatentsLayer companyId={companyId!} companyName={company.name} unlocked={hasFullAccess} />
           <div className="border-t border-border/30 pt-6">
@@ -196,23 +210,22 @@ export default function CompanyDossier() {
     </>
   );
 
-  // Layers 3–11: Full dossier — gated
-  const fullContent = (
+  /* ─── CANDIDATE LENS — values, workforce, career ─── */
+  const candidateContent = (
     <>
-
-      <DossierLayer title="Ecosystem & Subcontractors" subtitle="Supply chain, federal contracts, and operational dependencies" icon={Network} layerNumber={3}>
-        <EcosystemSubcontractorsLayer entities={[]} companyName={company.name} />
+      <DossierLayer title="Values Filter" subtitle="Evidence-based filtering across 14 issue lenses" icon={Heart} layerNumber={3} defaultOpen>
+        <ValuesSignalsLayer signals={mappedValues} companyName={company.name} />
       </DossierLayer>
 
-      <DossierLayer title="Workforce Demographics" subtitle="Role distribution, pay equity, diversity, and promotion signals" icon={BarChart3} layerNumber={4}>
+      <DossierLayer title="Workforce Signals" subtitle="WARN notices, hiring stability, workforce signals" icon={Users} layerNumber={4} defaultOpen>
+        <TalentContextLayer signals={[]} companyName={company.name} />
+      </DossierLayer>
+
+      <DossierLayer title="Workforce Demographics" subtitle="Role distribution, pay equity, diversity, and promotion signals" icon={BarChart3} layerNumber={5}>
         <WorkforceDemographicsLayer companyId={companyId!} companyName={company.name} />
       </DossierLayer>
 
-      <DossierLayer title="Decision & Buying Logic" subtitle="Typical buying committees, approval layers, and decision-maker mapping" icon={ShoppingCart} layerNumber={5}>
-        <BuyingLogicLayer companyId={companyId!} companyName={company.name} industry={company.industry} />
-      </DossierLayer>
-
-      <DossierLayer title="Influence & Policy Signals" subtitle="PAC giving, lobbying, government contracts, and policy links" icon={Landmark} layerNumber={6} defaultOpen>
+      <DossierLayer title="Influence & Policy Signals" subtitle="PAC giving, lobbying, government contracts" icon={Landmark} layerNumber={6}>
         <InfluencePolicyLayer
           politicalGiving={politicalGiving}
           lobbyingActivity={[]}
@@ -224,13 +237,65 @@ export default function CompanyDossier() {
       <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
         <PatternsSynthesisLayer patterns={[]} companyName={company.name} />
       </DossierLayer>
+    </>
+  );
 
-      <DossierLayer title="Talent Context" subtitle="WARN notices, hiring stability, workforce signals" icon={Users} layerNumber={8}>
+  /* ─── SALES LENS — buying logic, ecosystem, regulatory ─── */
+  const salesContent = (
+    <>
+      <DossierLayer title="Decision & Buying Logic" subtitle="Typical buying committees, approval layers, decision-maker mapping" icon={ShoppingCart} layerNumber={3} defaultOpen>
+        <BuyingLogicLayer companyId={companyId!} companyName={company.name} industry={company.industry} />
+      </DossierLayer>
+
+      <DossierLayer title="Key Decision Makers" subtitle="Executives, leadership team, and political activity" icon={Target} layerNumber={4} defaultOpen>
+        <DecisionMakerLayer decisionMakers={[]} companyName={company.name} />
+      </DossierLayer>
+
+      <DossierLayer title="Ecosystem & Subcontractors" subtitle="Supply chain, federal contracts, operational dependencies" icon={Network} layerNumber={5}>
+        <EcosystemSubcontractorsLayer entities={[]} companyName={company.name} />
+      </DossierLayer>
+
+      <DossierLayer title="Government Contracts & Regulatory Exposure" subtitle="Federal contracts and policy dependencies" icon={Landmark} layerNumber={6}>
+        <InfluencePolicyLayer
+          politicalGiving={politicalGiving}
+          lobbyingActivity={[]}
+          governmentContracts={governmentContractSignals}
+          policyLinks={[]}
+        />
+      </DossierLayer>
+
+      <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
+        <PatternsSynthesisLayer patterns={[]} companyName={company.name} />
+      </DossierLayer>
+    </>
+  );
+
+  /* ─── HR STRATEGY LENS — talent, EVP, demographics, messaging ─── */
+  const hrContent = (
+    <>
+      <DossierLayer title="Workforce Demographics" subtitle="Role distribution, pay equity, diversity, and promotion signals" icon={BarChart3} layerNumber={3} defaultOpen>
+        <WorkforceDemographicsLayer companyId={companyId!} companyName={company.name} />
+      </DossierLayer>
+
+      <DossierLayer title="Talent Supply & Demand" subtitle="WARN notices, hiring stability, market scarcity" icon={Users} layerNumber={4} defaultOpen>
         <TalentContextLayer signals={[]} companyName={company.name} />
       </DossierLayer>
 
-      <DossierLayer title="Values Filter" subtitle="Evidence-based filtering across 14 issue lenses" icon={Heart} layerNumber={9}>
+      <DossierLayer title="EVP & Values Alignment" subtitle="Employer Value Proposition signals and Say-Do gap indicators" icon={Megaphone} layerNumber={5}>
         <ValuesSignalsLayer signals={mappedValues} companyName={company.name} />
+      </DossierLayer>
+
+      <DossierLayer title="Influence & Policy Signals" subtitle="PAC giving and lobbying that may impact employer brand" icon={Landmark} layerNumber={6}>
+        <InfluencePolicyLayer
+          politicalGiving={politicalGiving}
+          lobbyingActivity={[]}
+          governmentContracts={governmentContractSignals}
+          policyLinks={[]}
+        />
+      </DossierLayer>
+
+      <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
+        <PatternsSynthesisLayer patterns={[]} companyName={company.name} />
       </DossierLayer>
 
       <div className="rounded-2xl border border-border/40 bg-card p-6">
@@ -247,6 +312,8 @@ export default function CompanyDossier() {
       </div>
     </>
   );
+
+  const fullContent = lens === "candidate" ? candidateContent : lens === "sales" ? salesContent : hrContent;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
