@@ -854,12 +854,14 @@ export default function CompanyProfile() {
                   <CardContent className="p-5 flex flex-col flex-1">
                     <div className="flex items-center gap-2 text-caption text-muted-foreground mb-2">
                       <Megaphone className="w-3.5 h-3.5" />
-                      Lobbying
+                      Federal Lobbying
                     </div>
                     <div className="text-3xl font-bold text-foreground font-display-number">
                       {dbCompany.lobbying_spend ? formatCurrency(dbCompany.lobbying_spend) : "None"}
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-auto pt-2 leading-snug">Annual spending on lobbyists who advocate for the company in Congress.</p>
+                    <p className="text-[11px] text-muted-foreground mt-auto pt-2 leading-snug">
+                      {dbCompany.lobbying_spend ? `${new Date().getFullYear() - 1}–${new Date().getFullYear()} Senate LDA filings — spending on lobbyists who advocate in Congress.` : "No federal lobbying filings detected."}
+                    </p>
                     <span className="text-[10px] text-primary font-medium mt-1">View details →</span>
                   </CardContent>
                 </Card>

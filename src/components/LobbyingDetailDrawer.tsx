@@ -93,19 +93,26 @@ export function LobbyingDetailDrawer({ open, onOpenChange, companyId, companyNam
           {/* Total */}
           {totalLobbyingSpend && totalLobbyingSpend > 0 && (
             <Card className="border-primary/20 bg-primary/5">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <div className="text-xs text-muted-foreground">Total Federal Lobbying</div>
-                  <div className="text-2xl font-bold text-foreground">{formatCurrency(totalLobbyingSpend)}</div>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <div>
+                    <div className="text-xs text-muted-foreground">
+                      Total Federal Lobbying ({new Date().getFullYear() - 1}–{new Date().getFullYear()})
+                    </div>
+                    <div className="text-2xl font-bold text-foreground">{formatCurrency(totalLobbyingSpend)}</div>
+                  </div>
+                  <a
+                    href={`https://lda.senate.gov/filings/public/filing/search/?registrant=${encodeURIComponent(companyName)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline flex items-center gap-1"
+                  >
+                    View Senate LDA filings <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
-                <a
-                  href={`https://lda.senate.gov/filings/public/filing/search/?registrant=${encodeURIComponent(companyName)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-primary hover:underline flex items-center gap-1"
-                >
-                  View Senate LDA filings <ExternalLink className="w-3 h-3" />
-                </a>
+                <p className="text-[10px] text-muted-foreground">
+                  Aggregated from quarterly Senate Lobbying Disclosure Act filings. This is what {companyName} paid to registered lobbying firms to advocate on their behalf in Congress — the money goes to lobbying firms, not directly to politicians.
+                </p>
               </CardContent>
             </Card>
           )}
@@ -167,27 +174,51 @@ export function LobbyingDetailDrawer({ open, onOpenChange, companyId, companyNam
                 </div>
               )}
 
-              {/* Entity linkage trails */}
+              {/* Who receives the money — lobbying firms */}
               {lobbyingLinkages && lobbyingLinkages.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-foreground mb-1 flex items-center gap-2">
                     <DollarSign className="w-4 h-4 text-muted-foreground" />
-                    Lobbying Influence Trails
+                    Who Receives the Money
                   </h3>
+                  <p className="text-[10px] text-muted-foreground mb-3">
+                    Lobbying dollars go to registered lobbying firms — not directly to politicians.
+                    These firms advocate on {companyName}'s behalf in Congress.
+                  </p>
                   <div className="space-y-2">
-                    {lobbyingLinkages.map((l: any) => (
-                      <div key={l.id} className="p-3 rounded-lg bg-muted/40 border border-border/60">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-medium text-foreground">{l.target_entity_name}</span>
-                          {l.amount && <Badge variant="secondary" className="text-xs">{formatCurrency(l.amount)}</Badge>}
+                    {lobbyingLinkages.map((l: any) => {
+                      const meta = (() => { try { return JSON.parse(l.metadata || "{}"); } catch { return {}; } })();
+                      return (
+                        <div key={l.id} className="p-3 rounded-lg bg-muted/40 border border-border/60">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-medium text-foreground">{l.target_entity_name}</span>
+                            {l.amount && <Badge variant="secondary" className="text-xs">{formatCurrency(l.amount)}</Badge>}
+                          </div>
+                          {l.description && <p className="text-xs text-muted-foreground">{l.description}</p>}
+                          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                            <Badge variant="outline" className="text-[10px]">Lobbying Firm</Badge>
+                            {meta.filing_year && <span className="text-[10px] text-muted-foreground">Filed: {meta.filing_year}</span>}
+                            <span className="text-[10px] text-muted-foreground">
+                              {Math.round(l.confidence_score * 100) >= 80 ? "Strong evidence" : Math.round(l.confidence_score * 100) >= 50 ? "Some evidence" : "Weak evidence"}
+                            </span>
+                          </div>
+                          {l.source_citation && (() => {
+                            try {
+                              const citations = JSON.parse(l.source_citation);
+                              const url = citations?.[0]?.url;
+                              if (url && url.startsWith("http")) {
+                                return (
+                                  <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline mt-1">
+                                    <ExternalLink className="w-2.5 h-2.5" /> View filing
+                                  </a>
+                                );
+                              }
+                            } catch {}
+                            return null;
+                          })()}
                         </div>
-                        {l.description && <p className="text-xs text-muted-foreground">{l.description}</p>}
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className="text-[10px]">{l.link_type.replace(/_/g, " ")}</Badge>
-                          <span className="text-[10px] text-muted-foreground">{Math.round(l.confidence_score * 100) >= 80 ? "Strong evidence" : Math.round(l.confidence_score * 100) >= 50 ? "Some evidence" : "Weak evidence"}</span>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
