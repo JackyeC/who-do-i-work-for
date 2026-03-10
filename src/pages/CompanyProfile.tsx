@@ -1427,6 +1427,11 @@ export default function CompanyProfile() {
               <InfluenceChainCard
                 companyId={dbCompanyId || company.id}
                 companyName={company.name}
+                onExecutiveClick={(exec) => {
+                  const match = dbExecutives?.find(e => e.name.toLowerCase().includes(exec.name.toLowerCase().split(",")[0]) || exec.name.toLowerCase().includes(e.name.toLowerCase().split(",")[0]));
+                  handleExecutiveClick(match || { id: "", name: exec.name, title: "Executive", total_donations: exec.total_donations || 0 });
+                }}
+                onCandidateClick={handleCandidateClick}
               />
             </div>
 
