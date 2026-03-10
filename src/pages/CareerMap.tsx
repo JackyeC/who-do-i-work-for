@@ -15,9 +15,10 @@ import { NetworkIntelligenceStep } from "@/components/career-discovery/NetworkIn
 import { useAuth } from "@/contexts/AuthContext";
 import { useCareerDiscovery, type CareerProfile } from "@/hooks/use-career-discovery";
 import { Navigate } from "react-router-dom";
+import { CareerWrappedStep } from "@/components/career-discovery/CareerWrappedStep";
 import {
   Upload, Anchor, Compass, Sparkles, Building2, BarChart3,
-  GitBranch, ClipboardList, Users, ChevronRight, ArrowLeft, CheckCircle2,
+  GitBranch, ClipboardList, Users, ChevronRight, ArrowLeft, CheckCircle2, Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
