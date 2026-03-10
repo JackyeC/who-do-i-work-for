@@ -494,10 +494,7 @@ export default function Jobs() {
             {/* ──── AUTO-APPLY TAB ──── */}
             <TabsContent value="auto-apply">
               {user ? (
-                <div className="space-y-6">
-                  <AutoApplySettings />
-                  <ApplyQueueDashboard />
-                </div>
+                <AutoApplyGated />
               ) : (
                 <EmptyState
                   icon={Zap}
