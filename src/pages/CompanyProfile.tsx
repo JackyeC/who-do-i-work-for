@@ -1260,9 +1260,9 @@ export default function CompanyProfile() {
                     <div className="h-56">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
-                          <Pie data={company.partyBreakdown} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="amount" nameKey="party">
+                          <Pie data={company.partyBreakdown} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="amount" nameKey="party" className="cursor-pointer">
                             {company.partyBreakdown.map((entry, i) => (
-                              <Cell key={i} fill={entry.color} />
+                              <Cell key={i} fill={entry.color} className="hover:opacity-80 transition-opacity" />
                             ))}
                           </Pie>
                           <Tooltip formatter={(value: number) => formatCurrency(value)} />
@@ -1271,10 +1271,10 @@ export default function CompanyProfile() {
                     </div>
                     <div className="flex justify-center gap-6 mt-2">
                       {company.partyBreakdown.map((entry) => (
-                        <div key={entry.party} className="flex items-center gap-2 text-sm">
+                        <Link key={entry.party} to={`/values-search?issue=${entry.party === "Republican" || entry.party === "R" ? "conservative_alignment" : "progressive_alignment"}`} className="flex items-center gap-2 text-sm hover:underline cursor-pointer group">
                           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
-                          <span className="text-muted-foreground">{entry.party}: {formatCurrency(entry.amount)}</span>
-                        </div>
+                          <span className="text-muted-foreground group-hover:text-foreground transition-colors">{entry.party}: {formatCurrency(entry.amount)}</span>
+                        </Link>
                       ))}
                     </div>
                   </CardContent>
