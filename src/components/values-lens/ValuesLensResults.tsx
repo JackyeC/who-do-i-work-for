@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { Search, ArrowLeft, HelpCircle, Shield, DollarSign, Megaphone, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
