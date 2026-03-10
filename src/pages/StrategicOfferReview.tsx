@@ -76,8 +76,13 @@ export default function StrategicOfferReview() {
     nonCompete: "", arbitrationClause: false, ipClause: false,
   });
 
-  const update = (field: keyof OfferInput, value: any) =>
+  const update = (field: keyof OfferInput, value: any) => {
+    if (typeof value === "string") {
+      const maxLen = field === "additionalDetails" || field === "nonCompete" ? 2000 : 500;
+      value = sanitize(value, maxLen);
+    }
     setOffer(d => ({ ...d, [field]: value }));
+  };
 
   const searchCompany = async (name: string) => {
     const clean = sanitize(name, 200);
