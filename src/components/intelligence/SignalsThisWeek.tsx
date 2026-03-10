@@ -284,8 +284,11 @@ export function SignalsThisWeek() {
                     ) : (
                       <>
                         <p className="text-sm text-foreground/80 mb-1">{signal.signal_type}</p>
-                        {signal.signal_value && (
+                        {signal.signal_value && !signal.signal_value.startsWith('{') && !signal.signal_value.startsWith('[') && (
                           <p className="text-xs text-muted-foreground">Public signals suggest: {signal.signal_value}</p>
+                        )}
+                        {signal.signal_value && (signal.signal_value.startsWith('{') || signal.signal_value.startsWith('[')) && (
+                          <p className="text-xs text-muted-foreground">Structured data detected — view company profile for details.</p>
                         )}
                       </>
                     )}
