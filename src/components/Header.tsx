@@ -6,7 +6,7 @@ import {
   Briefcase, FileCheck, Map, Heart, Leaf, Users, Scale,
   Stethoscope, ShieldAlert, GraduationCap, Globe2, ShoppingCart,
   FileText, BarChart3, Eye, Landmark, Network, Home, Target,
-  Megaphone, UserCheck,
+  Megaphone,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -302,7 +302,7 @@ export function Header() {
 
       {/* ── Mobile nav ── */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-border/40 bg-card px-4 py-4 max-h-[80vh] overflow-y-auto animate-fade-in space-y-4">
+        <div className="lg:hidden border-t border-border/40 bg-card px-4 py-4 max-h-[80vh] overflow-y-auto animate-in fade-in-0 duration-200 space-y-4">
           {/* Mobile search */}
           <form onSubmit={(e) => { handleSearch(e); setMobileOpen(false); }}>
             <div className="relative">
