@@ -15,7 +15,7 @@ const CHANGE_ICONS: Record<string, typeof Plus> = {
 const CHANGE_COLORS: Record<string, string> = {
   "New Signal": "text-[hsl(var(--civic-green))] bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/30",
   "Signal Removed": "text-destructive bg-destructive/10 border-destructive/30",
-  "Confidence Change": "text-[hsl(var(--civic-yellow))] bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/30",
+  "Evidence Update": "text-[hsl(var(--civic-yellow))] bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/30",
   "Source Change": "text-primary bg-primary/10 border-primary/30",
 };
 
