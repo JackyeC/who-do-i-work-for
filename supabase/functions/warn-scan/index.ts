@@ -98,19 +98,22 @@ Deno.serve(async (req) => {
           },
           {
             role: "user",
-            content: `Extract WARN Act layoff notices for "${company_name}" from the following search results. Include subsidiary and acquired company notices.
+            content: `Extract layoff and WARN Act notices for "${company_name}" from the following search results. Include:
+- Official WARN Act filings
+- Announced layoffs from news sources (Reuters, CNBC, Fox Business, etc.)
+- Subsidiary and acquired company notices
 
 Return ONLY a JSON array. Each notice:
-- notice_date (YYYY-MM-DD)
+- notice_date (YYYY-MM-DD, use announcement date if filing date unknown)
 - effective_date (YYYY-MM-DD or null)
-- employees_affected (integer)
+- employees_affected (integer, use best estimate from reporting)
 - layoff_type ("layoff", "closure", "relocation", "mass_layoff", "temporary")
 - location_city (string or null)
 - location_state (US state abbreviation or null)
-- reason (brief description or null)
+- reason (brief description, e.g. "AI restructuring", "cost cuts", "demand decline")
 - source_url (URL where found)
 
-Be strict about matching "${company_name}" or known subsidiaries. Return [] if none found.
+Prioritize ${currentYear} data. Be strict about matching "${company_name}" or known subsidiaries. Return [] if none found.
 
 Search results:
 ${combinedText}`,
