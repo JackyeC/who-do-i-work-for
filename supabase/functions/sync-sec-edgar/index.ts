@@ -331,6 +331,7 @@ Deno.serve(async (req) => {
     }
 
     // Store entity linkages for SEC data
+    const isPubliclyTraded = !!cikResult.ticker && cikResult.ticker.length > 0;
     const linkages: any[] = [];
     
     // Link company to SEC entity
@@ -352,12 +353,14 @@ Deno.serve(async (req) => {
     });
 
     // Persist CIK, ticker, and public trading status to the companies table
-    const isPubliclyTraded = !!cikResult.ticker && cikResult.ticker.length > 0;
-    await supabase.from('companies').update({
+    const { error: updateErr } = await supabase.from('companies').update({
       sec_cik: cikResult.cik,
       ticker: cikResult.ticker || null,
       is_publicly_traded: isPubliclyTraded,
     }).eq('id', companyId);
+    if (updateErr) console.error('[sync-sec-edgar] Failed to update company CIK/ticker:', updateErr);
+    else console.log(`[sync-sec-edgar] Saved CIK=${cikResult.cik} ticker=${cikResult.ticker} publicly_traded=${isPubliclyTraded}`);
+
     // Insert signals
     if (signalRows.length > 0) {
       // Clear old SEC signals
