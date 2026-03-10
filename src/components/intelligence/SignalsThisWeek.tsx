@@ -183,12 +183,26 @@ export function SignalsThisWeek() {
   return (
     <div className="max-w-4xl space-y-6">
       {/* Live header */}
-      <div className="flex items-center justify-between gap-3 mb-2">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-2">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           <span className="text-xs font-semibold text-primary uppercase tracking-wider">Employer Reality Signal Feed</span>
-          <span className="text-xs text-muted-foreground">· {signals.length} signals detected in the last 30 days</span>
+          <span className="text-xs text-muted-foreground">· {signals.length} signals detected</span>
         </div>
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1 bg-muted/50 rounded-lg p-0.5">
+            {TIME_RANGE_OPTIONS.map(tr => (
+              <Button
+                key={tr.value}
+                variant={timeRange === tr.value ? "default" : "ghost"}
+                size="sm"
+                onClick={() => { setTimeRange(tr.value); setTranslated(false); setTranslations({}); }}
+                className="text-[10px] h-7 px-2.5"
+              >
+                {tr.label}
+              </Button>
+            ))}
+          </div>
         <Button
           variant={translated ? "outline" : "default"}
           size="sm"
