@@ -53,6 +53,10 @@ const STEPS = [
   { label: "Full Review", icon: Scale },
 ];
 
+// Input sanitization helper — strips potential XSS/injection content
+const sanitize = (v: string, maxLen = 500): string =>
+  v.replace(/[<>"'`]/g, "").substring(0, maxLen).trim();
+
 export default function StrategicOfferReview() {
   const { toast } = useToast();
   const [inputMode, setInputMode] = useState<InputMode>(null);
