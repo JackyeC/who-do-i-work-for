@@ -33,6 +33,7 @@ const RESEARCH_MODULES = [
   { key: 'worker_benefits', label: 'Worker Benefits & Protections', fn: 'worker-benefits-scan', phase: 'research' },
   { key: 'pay_equity', label: 'Pay Equity & Compensation Transparency', fn: 'pay-equity-scan', phase: 'research' },
   { key: 'worker_sentiment', label: 'Worker Sentiment', fn: 'worker-sentiment-scan', phase: 'research' },
+  { key: 'warn_notices', label: 'WARN Act & Layoff Tracker', fn: 'warn-scan', phase: 'research', paramStyle: 'snake' },
   { key: 'ideology', label: 'Ideology & Controversy Signals', fn: 'ideology-scan', phase: 'research' },
   { key: 'social', label: 'Social & Media Monitoring', fn: 'social-scan', phase: 'research' },
   { key: 'agency_contracts', label: 'Government Contracts', fn: 'agency-scan', phase: 'research' },
