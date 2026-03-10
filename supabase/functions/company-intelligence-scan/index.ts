@@ -285,17 +285,33 @@ Deno.serve(async (req) => {
         }
       } catch (e) {
         const moduleCompletedAt = new Date().toISOString();
-        failed++;
         const msg = e instanceof Error ? e.message : 'Unknown error';
+        const isTimeout = msg.includes('abort') || msg.includes('timeout') || msg.includes('signal');
+
+        // Queue for retry if it was a timeout on first attempt
+        if (isTimeout && !isRetry) {
+          retryQueue.push({ mod, isPipeline });
+          moduleStatuses[mod.key] = {
+            status: 'queued_retry', label: mod.label, phase: mod.phase,
+            error: 'Timed out, will retry', errorType: 'timeout',
+            startedAt: moduleStartedAt, completedAt: moduleCompletedAt,
+            sourcesScanned: 0, signalsFound: 0,
+          };
+          console.warn(`[intelligence-scan] ${mod.key} timed out, queued for retry`);
+          return; // Don't count as failed yet
+        }
+
+        failed++;
         moduleStatuses[mod.key] = {
           status: 'failed', label: mod.label, phase: mod.phase,
-          error: msg, errorType: 'exception',
+          error: msg, errorType: isTimeout ? 'timeout' : 'exception',
           startedAt: moduleStartedAt, completedAt: moduleCompletedAt,
           sourcesScanned: 0, signalsFound: 0,
+          retried: isRetry,
         };
         warnings.push(`${mod.label} failed: ${msg}`);
-        errorLog.push({ module: mod.key, errorType: 'exception', error: msg, timestamp: moduleCompletedAt });
-        console.error(`[intelligence-scan] ${mod.key} exception:`, e);
+        errorLog.push({ module: mod.key, errorType: isTimeout ? 'timeout' : 'exception', error: msg, timestamp: moduleCompletedAt, retried: isRetry });
+        console.error(`[intelligence-scan] ${mod.key} ${isRetry ? '(retry) ' : ''}exception:`, e);
       }
     }
 
