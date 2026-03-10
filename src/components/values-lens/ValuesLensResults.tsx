@@ -274,10 +274,16 @@ export function ValuesLensResults({ lensKey, onBack }: Props) {
         <Input
           value={textFilter}
           onChange={(e) => setTextFilter(e.target.value)}
-          placeholder="Filter by company name or industry..."
+          onKeyDown={handleSearchSubmit}
+          placeholder="Search a company or filter results… (Enter to search)"
           className="pl-10"
         />
       </div>
+      {textFilter.trim() && results.length === 0 && !isLoading && (
+        <p className="text-sm text-muted-foreground mb-4">
+          No results here for "{textFilter}" — press <strong>Enter</strong> to search for this company.
+        </p>
+      )}
 
       {/* Conflict alerts */}
       {conflictAlerts.length > 0 && (
