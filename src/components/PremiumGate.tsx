@@ -22,7 +22,7 @@ export function PremiumGate({ feature, description, children }: PremiumGateProps
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: STRIPE_TIERS.pro.price_id },
+        body: { priceId: STRIPE_TIERS.starter.price_id },
       });
       if (error) throw error;
       if (data?.url) {
