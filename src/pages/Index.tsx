@@ -6,8 +6,6 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 const fadeUp = {
