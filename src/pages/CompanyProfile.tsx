@@ -1725,7 +1725,7 @@ export default function CompanyProfile() {
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                         <XAxis dataKey="cycle" className="text-xs" />
                         <YAxis tickFormatter={(v) => formatCurrency(v)} className="text-xs" />
-                        <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                        <RechartsTooltip formatter={(value: number) => formatCurrency(value)} />
                         <Legend />
                         <Bar dataKey="pacSpending" name="PAC Spending" fill="hsl(220, 65%, 48%)" radius={[2, 2, 0, 0]} />
                         <Bar dataKey="lobbyingSpend" name="Lobbying" fill="hsl(215, 15%, 47%)" radius={[2, 2, 0, 0]} />
