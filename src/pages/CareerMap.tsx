@@ -127,6 +127,17 @@ export default function CareerMap() {
         return <ActionPlanStep data={actionPlan.data} loading={actionPlan.loading} error={actionPlan.error} onRetry={() => discover("action_plan")} />;
       case "network":
         return <NetworkIntelligenceStep />;
+      case "wrapped":
+        return (
+          <CareerWrappedStep
+            profile={profile!}
+            careerPaths={careerPaths.data}
+            companies={companies.data}
+            skillGap={skillGap.data}
+            futures={futures.data}
+            actionPlan={actionPlan.data}
+          />
+        );
     }
   };
 
