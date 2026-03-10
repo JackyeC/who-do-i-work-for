@@ -590,14 +590,23 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
 
                 {isExpanded && (
                   <div className="border-t border-border bg-muted/30">
-                    {/* Plain-language story summary */}
+                    {/* Plain-language story summary — clickable to copy */}
                     {story && (
                       <div className="px-4 pt-3 pb-2">
-                        <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
-                          <p className="text-sm text-foreground leading-relaxed">
-                            <strong>In plain English:</strong> {story}
-                          </p>
-                        </div>
+                        <button
+                          onClick={async () => {
+                            await navigator.clipboard.writeText(story);
+                            toast("Copied!", { description: "Plain-English summary copied to clipboard." });
+                          }}
+                          className="w-full text-left p-3 rounded-lg bg-primary/5 border border-primary/10 hover:bg-primary/10 hover:border-primary/20 transition-colors group cursor-pointer"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <p className="text-sm text-foreground leading-relaxed">
+                              <strong>In plain English:</strong> {story}
+                            </p>
+                            <Copy className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5" />
+                          </div>
+                        </button>
                       </div>
                     )}
 
