@@ -124,6 +124,9 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
                       </button>
                     ))}
                   </div>
+                  <p className="text-center text-[11px] text-primary mt-2 cursor-pointer hover:underline" onClick={() => onPartyClick?.("")}>
+                    Click a party to see recipients · or tap here for full PAC detail →
+                  </p>
                 </CardContent>
               </Card>
             </ExplainableMetric>
