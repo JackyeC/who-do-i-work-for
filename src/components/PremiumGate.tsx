@@ -56,7 +56,7 @@ export function PremiumGate({ feature, description, children }: PremiumGateProps
           ) : (
             <Button size="default" onClick={handleUpgrade} disabled={loading} className="gap-1.5">
               {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Lock className="w-3.5 h-3.5" />}
-              Upgrade to Pro — $29/mo
+              Unlock — Starting at $29/mo
             </Button>
           )}
         </div>
