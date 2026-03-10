@@ -188,6 +188,18 @@ const TOOLS: Record<string, { name: string; description: string; parameters: any
       additionalProperties: false,
     },
   },
+  intro_email: {
+    name: "intro_email",
+    description: "Generate a professional introduction/outreach email.",
+    parameters: {
+      type: "object",
+      properties: {
+        email: { type: "string", description: "The full email message text" },
+      },
+      required: ["email"],
+      additionalProperties: false,
+    },
+  },
 };
 
 const SYSTEM_PROMPTS: Record<string, string> = {
@@ -225,6 +237,14 @@ Each path should include realistic role progressions, required skills, real comp
 3. Next 6 Months (3-4 actions)
 4. Next 12 Months (3-4 actions)
 Each action should be specific and actionable. Include courses, skills, projects, networking activities, and companies to research. Use real course names and platforms when possible.`,
+
+  intro_email: `You are a professional networking coach. Write a warm, authentic introduction email. The tone should be professional but human — not corporate or stiff. The email should:
+1. Reference how you know them (connection via LinkedIn)
+2. Mention their current role/company naturally
+3. Briefly explain what you're working on (the action context)
+4. Make a specific, low-pressure ask (quick chat, advice, perspective)
+5. Keep it under 120 words
+Never be presumptuous. Don't assume they can get you a job. Be genuinely curious about their experience.`,
 };
 
 serve(async (req) => {
@@ -242,7 +262,19 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const profileSummary = `
+    let userPrompt: string;
+
+    if (type === "intro_email") {
+      userPrompt = `Write an introduction email to:
+Name: ${profile.connectionName || "Contact"}
+Title: ${profile.connectionTitle || ""}
+Company: ${profile.connectionCompany || "their company"}
+
+Context: I'm working on this career action item: "${profile.actionContext || "exploring new opportunities"}"
+
+We're connected on LinkedIn. Write a warm, professional outreach email.`;
+    } else {
+      const profileSummary = `
 Job Title: ${profile.jobTitle || "Not specified"}
 Years of Experience: ${profile.yearsExperience || "Not specified"}
 Industries: ${(profile.industries || []).join(", ") || "Not specified"}
@@ -254,7 +286,9 @@ Lifestyle: ${(profile.lifestylePrefs || []).join(", ") || "Not specified"}
 Values: ${(profile.values || []).join(", ") || "Not specified"}
 Career Anchors: ${(profile.anchors || []).join(", ") || "Not specified"}
 Target Role: ${profile.targetRole || "AI should suggest roles"}
-    `.trim();
+      `.trim();
+      userPrompt = `Here is my career profile:\n\n${profileSummary}\n\nGenerate ${type.replace("_", " ")} results.`;
+    }
 
     const tool = TOOLS[type];
 
@@ -268,7 +302,7 @@ Target Role: ${profile.targetRole || "AI should suggest roles"}
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: SYSTEM_PROMPTS[type] },
-          { role: "user", content: `Here is my career profile:\n\n${profileSummary}\n\nGenerate ${type.replace("_", " ")} results.` },
+          { role: "user", content: userPrompt },
         ],
         tools: [{
           type: "function",
