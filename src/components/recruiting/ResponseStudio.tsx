@@ -160,7 +160,10 @@ export function ResponseStudio() {
             const severityColor = point.severity === "high" ? "text-destructive" : point.severity === "medium" ? "text-yellow-600 dark:text-yellow-400" : "text-green-600 dark:text-green-400";
 
             return (
-              <Card key={i} className="border-l-4" style={{ borderLeftColor: point.severity === "high" ? "hsl(var(--destructive))" : point.severity === "medium" ? "#ca8a04" : "#16a34a" }}>
+              <Card key={i} className={cn(
+                "border-l-4",
+                point.severity === "high" ? "border-l-destructive" : point.severity === "medium" ? "border-l-yellow-500" : "border-l-green-500"
+              )}>
                 <CardContent className="p-5">
                   <div className="flex items-start gap-3 mb-3">
                     <SeverityIcon className={`w-4 h-4 mt-0.5 shrink-0 ${severityColor}`} />
