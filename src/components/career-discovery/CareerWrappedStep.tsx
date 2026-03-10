@@ -16,7 +16,7 @@ import html2canvas from "html2canvas";
 import type { CareerDiscoveryData, CompanyDiscoveryData, SkillGapData, MultipleFuturesData, ActionPlanData, CareerProfile } from "@/hooks/use-career-discovery";
 
 interface CareerWrappedStepProps {
-  profile: CareerProfile;
+  profile: CareerProfile | null;
   careerPaths: CareerDiscoveryData | null;
   companies: CompanyDiscoveryData | null;
   skillGap: SkillGapData | null;
@@ -42,13 +42,22 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
 
   // Auto-advance slides
   useEffect(() => {
+    if (!profile) return;
     if (!autoPlaying || currentSlide >= REVEAL_SLIDES.length - 1) {
       if (currentSlide >= REVEAL_SLIDES.length - 1) setRevealed(true);
       return;
     }
     const timer = setTimeout(() => setCurrentSlide(s => s + 1), 3000);
     return () => clearTimeout(timer);
-  }, [currentSlide, autoPlaying]);
+  }, [currentSlide, autoPlaying, profile]);
+
+  if (!profile) {
+    return (
+      <Card className="border-border bg-card p-8 text-center">
+        <p className="text-muted-foreground">Complete your profile first to see your Career Wrapped summary.</p>
+      </Card>
+    );
+  }
 
   const pathCount = (careerPaths?.likely?.length || 0) + (careerPaths?.adjacent?.length || 0) + (careerPaths?.unexpected?.length || 0);
   const companyCount = companies?.companies?.length || 0;
