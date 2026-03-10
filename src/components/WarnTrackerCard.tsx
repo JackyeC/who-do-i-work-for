@@ -46,11 +46,11 @@ export function WarnTrackerCard({ companyName, dbCompanyId }: { companyName: str
   const displayedRecent = showAll ? recentNotices : recentNotices.slice(0, 5);
   const displayedOlder = showAll ? olderNotices : olderNotices.slice(0, 3);
 
-  const handleScan = async () => {
+  const handleScan = async (national = false) => {
     setIsScanning(true);
     try {
       await supabase.functions.invoke("warn-scan", {
-        body: { company_id: dbCompanyId, company_name: companyName },
+        body: { company_id: dbCompanyId, company_name: companyName, national },
       });
       setTimeout(() => refetch(), 3000);
     } catch (e) {
