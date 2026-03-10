@@ -175,23 +175,38 @@ Only include flags with actual evidence of a POLITICAL connection. Do NOT flag c
       }
     }
 
-    // 4. Store flags and match to watchlist
-    const flags = (analysis.flags || []).map((f: any) => {
-      const match = aliasMap.get(f.orgName?.toLowerCase());
-      return {
-        company_id: companyId,
-        watchlist_org_id: match?.id || null,
-        category: f.category,
-        org_name: f.orgName,
-        relationship_type: f.relationshipType || 'lobbying_alignment',
-        description: f.description,
-        amount: f.amount,
-        evidence_url: f.evidenceUrl,
-        severity: f.severity || 'medium',
-        confidence: f.confidence || 'inferred',
-        detected_by: 'ai_scan',
-      };
-    });
+    // 4. Store flags and match to watchlist (with false-positive filtering)
+    const FALSE_POSITIVE_NAMES = [
+      "church's chicken", "church & dwight", "churchhill", "church's texas chicken",
+      "temple industries", "bishop staffing", "christian dior", "christian louboutin",
+      "st. jude", "salvation army thrift", "goodwill industries",
+    ];
+
+    const flags = (analysis.flags || [])
+      .filter((f: any) => {
+        const orgLower = (f.orgName || "").toLowerCase();
+        // Filter out commercial brands with religious-sounding names
+        if (FALSE_POSITIVE_NAMES.some(fp => orgLower.includes(fp))) return false;
+        // Filter out flags with no org name
+        if (!f.orgName || f.orgName.trim().length < 3) return false;
+        return true;
+      })
+      .map((f: any) => {
+        const match = aliasMap.get(f.orgName?.toLowerCase());
+        return {
+          company_id: companyId,
+          watchlist_org_id: match?.id || null,
+          category: f.category,
+          org_name: f.orgName,
+          relationship_type: f.relationshipType || 'lobbying_alignment',
+          description: f.description,
+          amount: f.amount,
+          evidence_url: f.evidenceUrl,
+          severity: f.severity || 'medium',
+          confidence: f.confidence || 'inferred',
+          detected_by: 'ai_scan',
+        };
+      });
 
     if (flags.length > 0) {
       const { error } = await supabase.from('company_ideology_flags').insert(flags);
