@@ -441,6 +441,9 @@ function categorizeSteps(steps: ChainStep[]): Record<string, ChainStep[]> {
   CATEGORIES.forEach(c => { result[c.key] = []; });
 
   for (const step of steps) {
+    // Filter out non-displayable entries (SEC identity confirmations, etc.)
+    if (!isDisplayableStep(step)) continue;
+    
     const cat = CATEGORIES.find(c => c.linkTypes.includes(step.link_type));
     if (cat) {
       result[cat.key].push(step);
@@ -449,9 +452,17 @@ function categorizeSteps(steps: ChainStep[]): Record<string, ChainStep[]> {
     }
   }
 
-  // Sort each category by importance
+  // Deduplicate by target name within each category (keep highest amount)
   for (const key of Object.keys(result)) {
-    result[key] = sortByImportance(result[key]);
+    const seen = new Map<string, ChainStep>();
+    for (const step of result[key]) {
+      const dedupKey = `${step.target_name}-${step.link_type}`;
+      const existing = seen.get(dedupKey);
+      if (!existing || (step.amount || 0) > (existing.amount || 0)) {
+        seen.set(dedupKey, step);
+      }
+    }
+    result[key] = sortByImportance(Array.from(seen.values()));
   }
 
   return result;
