@@ -289,7 +289,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
       </Card>
     ) : null,
     "roi-pipeline": <ExplainableMetric metricKey="roi-pipeline"><div key="roi-pipeline" className="mb-6"><ROIPipelineCard data={livePipeline || { moneyIn: [], network: [], benefitsOut: [], linkages: [], totalSpending: 0, totalBenefits: 0 }} isSearching={!livePipeline && !!dbCompany.id} onTriggerScan={triggerScan} autoScanning={autoScanning} hasBeenScanned={hasBeenScanned} enrichmentData={enrichmentData} />{enrichmentData && <div className="mt-4"><OpenSecretsEnrichmentCard data={enrichmentData} /></div>}</div></ExplainableMetric>,
-    "influence-chain": <ExplainableMetric metricKey="influence-chain"><div key="influence-chain" className="mb-6"><InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} /></div></ExplainableMetric>,
+    "influence-chain": <ExplainableMetric metricKey="influence-chain"><div key="influence-chain" className="mb-6"><InfluenceChainCard companyId={dbCompany.id} companyName={dbCompany.name} onExecutiveClick={(exec) => { const match = dbExecutives?.find(e => e.name.toLowerCase().includes(exec.name.toLowerCase().split(",")[0]) || exec.name.toLowerCase().includes(e.name.toLowerCase().split(",")[0])); onExecutiveClick?.(match || { id: "", name: exec.name, title: "Executive", total_donations: exec.total_donations || 0 }); }} onCandidateClick={onCandidateClick} /></div></ExplainableMetric>,
     "social-monitor": <ExplainableMetric metricKey="social-monitor"><div key="social-monitor" className="mb-6"><SocialMonitorCard companyId={dbCompany.slug} companyName={dbCompany.name} executiveNames={dbExecutives?.map(e => e.name) || []} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
     "agency-contracts": <ExplainableMetric metricKey="agency-contracts"><div key="agency-contracts" className="mb-6"><AgencyContractsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
     "ideology-flags": <ExplainableMetric metricKey="ideology-flags"><div key="ideology-flags" className="mb-6"><IdeologyFlagsCard companyName={dbCompany.name} dbCompanyId={dbCompany.id} /></div></ExplainableMetric>,
@@ -1427,6 +1427,11 @@ export default function CompanyProfile() {
               <InfluenceChainCard
                 companyId={dbCompanyId || company.id}
                 companyName={company.name}
+                onExecutiveClick={(exec) => {
+                  const match = dbExecutives?.find(e => e.name.toLowerCase().includes(exec.name.toLowerCase().split(",")[0]) || exec.name.toLowerCase().includes(e.name.toLowerCase().split(",")[0]));
+                  handleExecutiveClick(match || { id: "", name: exec.name, title: "Executive", total_donations: exec.total_donations || 0 });
+                }}
+                onCandidateClick={handleCandidateClick}
               />
             </div>
 

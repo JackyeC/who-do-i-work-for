@@ -197,7 +197,7 @@ function ConfidenceTag({ confidence }: { confidence: number }) {
 }
 
 /* ── Evidence card (replaces flat rows) ── */
-function EvidenceCard({ step }: { step: ChainStep }) {
+function EvidenceCard({ step, onEntityClick }: { step: ChainStep; onEntityClick?: (entity: { name: string; type: string; linkType: string; amount: number }) => void }) {
   const config = LINK_TYPE_CONFIG[step.link_type] || { label: step.link_type, plainLabel: "Connected to", color: "text-muted-foreground", icon: ArrowRight };
   const Icon = config.icon;
   const targetParty = extractPartyFromDescription(step.description, step.target_name);
@@ -207,9 +207,27 @@ function EvidenceCard({ step }: { step: ChainStep }) {
   const issues = (isPolitician || step.link_type === "member_on_committee") ? getCommitteeIssues(step.target_name) : [];
   const sourceName = cleanEntityName(step.source_name);
   const targetName = cleanEntityName(step.target_name);
+  const isExecutiveDonation = step.source_type === "executive" || step.link_type === "donation_to_member" && step.source_type === "executive";
+  const isDonationToMember = step.link_type === "donation_to_member";
+  const isClickable = !!onEntityClick && (isExecutiveDonation || isDonationToMember);
+
+  const handleClick = () => {
+    if (!onEntityClick) return;
+    if (isExecutiveDonation) {
+      onEntityClick({ name: step.source_name, type: "executive", linkType: step.link_type, amount: step.amount });
+    } else if (isDonationToMember) {
+      onEntityClick({ name: step.target_name, type: "candidate", linkType: step.link_type, amount: step.amount });
+    }
+  };
 
   return (
-    <div className="rounded-lg border border-border/60 bg-card p-3.5 hover:border-primary/20 hover:shadow-sm transition-all">
+    <div
+      className={cn(
+        "rounded-lg border border-border/60 bg-card p-3.5 transition-all",
+        isClickable ? "cursor-pointer hover:border-primary/30 hover:shadow-md" : "hover:border-primary/20 hover:shadow-sm"
+      )}
+      onClick={isClickable ? handleClick : undefined}
+    >
       {/* Top row: type badge + confidence */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -239,6 +257,14 @@ function EvidenceCard({ step }: { step: ChainStep }) {
         {targetParty && <> ({PARTY_FULL_NAMES[targetParty] || targetParty})</>}
       </p>
 
+      {/* Click CTA */}
+      {isClickable && (
+        <p className="text-[10px] text-primary font-medium mt-1.5 flex items-center gap-1">
+          {isExecutiveDonation ? "See who they donated to" : "View their voting record & politics"}
+          <ChevronRight className="w-3 h-3" />
+        </p>
+      )}
+
       {/* Issue tags + source link */}
       {(issues.length > 0 || externalLink) && (
         <div className="flex items-center justify-between mt-2">
@@ -248,13 +274,14 @@ function EvidenceCard({ step }: { step: ChainStep }) {
                 key={issue}
                 to={`/values-search?issue=${encodeURIComponent(issue.toLowerCase().replace(/\s+/g, '_'))}`}
                 className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-colors text-muted-foreground hover:text-foreground"
+                onClick={(e) => e.stopPropagation()}
               >
                 {issue}
               </Link>
             ))}
           </div>
           {externalLink && (
-            <a href={externalLink} target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-0.5">
+            <a href={externalLink} target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
               Source <ExternalLink className="w-3 h-3" />
             </a>
           )}
@@ -265,7 +292,7 @@ function EvidenceCard({ step }: { step: ChainStep }) {
 }
 
 /* ── Category section with top-5 + expand ── */
-function CategorySection({ category, steps, defaultOpen }: { category: Category; steps: ChainStep[]; defaultOpen: boolean }) {
+function CategorySection({ category, steps, defaultOpen, onEntityClick }: { category: Category; steps: ChainStep[]; defaultOpen: boolean; onEntityClick?: (entity: { name: string; type: string; linkType: string; amount: number }) => void }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [showAll, setShowAll] = useState(false);
   const Icon = category.icon;
@@ -319,7 +346,7 @@ function CategorySection({ category, steps, defaultOpen }: { category: Category;
           {/* Evidence cards */}
           <div className="p-3 space-y-2">
             {displaySteps.map((step, i) => (
-              <EvidenceCard key={`${step.chain_id}-${step.step}-${i}`} step={step} />
+              <EvidenceCard key={`${step.chain_id}-${step.step}-${i}`} step={step} onEntityClick={onEntityClick} />
             ))}
           </div>
 
@@ -443,7 +470,7 @@ function collectRecipients(steps: ChainStep[]) {
 }
 
 /* ── Main component ── */
-export function InfluenceChainCard({ companyId, companyName }: { companyId: string; companyName: string }) {
+export function InfluenceChainCard({ companyId, companyName, onExecutiveClick, onCandidateClick }: { companyId: string; companyName: string; onExecutiveClick?: (executive: any) => void; onCandidateClick?: (candidate: any) => void }) {
   const { data: chainData, isLoading } = useInfluenceChain(companyId);
   const [showFullEvidence, setShowFullEvidence] = useState(false);
 
@@ -455,6 +482,17 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
 
   const totalSpending = allSteps.reduce((s, step) => s + (step.amount || 0), 0);
   const filledCategories = CATEGORIES.filter(c => categorized[c.key].length > 0);
+
+  const handleEntityClick = useMemo(() => {
+    if (!onExecutiveClick && !onCandidateClick) return undefined;
+    return (entity: { name: string; type: string; linkType: string; amount: number }) => {
+      if (entity.type === "executive" && onExecutiveClick) {
+        onExecutiveClick({ name: entity.name, total_donations: entity.amount });
+      } else if (entity.type === "candidate" && onCandidateClick) {
+        onCandidateClick({ name: entity.name, amount: entity.amount });
+      }
+    };
+  }, [onExecutiveClick, onCandidateClick]);
 
   if (isLoading) {
     return (
@@ -602,6 +640,7 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
               category={cat}
               steps={categorized[cat.key]}
               defaultOpen={idx === 0}
+              onEntityClick={handleEntityClick}
             />
           ))}
         </div>
@@ -621,7 +660,7 @@ export function InfluenceChainCard({ companyId, companyName }: { companyId: stri
             {showFullEvidence && (
               <div className="mt-3 space-y-2 max-h-[600px] overflow-y-auto">
                 {sortByImportance(allSteps).map((step, i) => (
-                  <EvidenceCard key={`full-${step.chain_id}-${step.step}-${i}`} step={step} />
+                  <EvidenceCard key={`full-${step.chain_id}-${step.step}-${i}`} step={step} onEntityClick={handleEntityClick} />
                 ))}
               </div>
             )}
