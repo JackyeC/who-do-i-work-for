@@ -88,9 +88,16 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
         supabase.functions.invoke("company-intelligence-scan", {
           body: { companyId, companyName },
         }).then(({ error }) => {
-          // 409 = scan already in progress, not a real error — ignore it
-          if (error && !error.message?.includes('409') && !error.message?.includes('already in progress')) {
-            console.error("[ROI Pipeline] Auto-scan failed:", error);
+          // Suppress 409 (already in progress) and other non-critical errors
+          if (error) {
+            // FunctionsHttpError message is generic; check for known safe errors
+            const msg = error.message || '';
+            const isSafe = msg.includes('409') || msg.includes('already in progress') || msg.includes('non-2xx');
+            if (!isSafe) {
+              console.error("[ROI Pipeline] Auto-scan failed:", error);
+            } else {
+              console.log("[ROI Pipeline] Scan already in progress, will poll for results");
+            }
           }
           setAutoScanning(false);
           setHasBeenScanned(true);

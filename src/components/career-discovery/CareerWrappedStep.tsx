@@ -40,6 +40,14 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
   const cardRef = useRef<HTMLDivElement>(null);
   const { isPremium } = usePremium();
 
+  if (!profile) {
+    return (
+      <Card className="border-border bg-card p-8 text-center">
+        <p className="text-muted-foreground">Complete your profile first to see your Career Wrapped summary.</p>
+      </Card>
+    );
+  }
+
   // Auto-advance slides
   useEffect(() => {
     if (!autoPlaying || currentSlide >= REVEAL_SLIDES.length - 1) {
