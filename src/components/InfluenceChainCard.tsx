@@ -197,7 +197,7 @@ function ConfidenceTag({ confidence }: { confidence: number }) {
 }
 
 /* ── Evidence card (replaces flat rows) ── */
-function EvidenceCard({ step }: { step: ChainStep }) {
+function EvidenceCard({ step, onEntityClick }: { step: ChainStep; onEntityClick?: (entity: { name: string; type: string; linkType: string; amount: number }) => void }) {
   const config = LINK_TYPE_CONFIG[step.link_type] || { label: step.link_type, plainLabel: "Connected to", color: "text-muted-foreground", icon: ArrowRight };
   const Icon = config.icon;
   const targetParty = extractPartyFromDescription(step.description, step.target_name);
@@ -207,9 +207,27 @@ function EvidenceCard({ step }: { step: ChainStep }) {
   const issues = (isPolitician || step.link_type === "member_on_committee") ? getCommitteeIssues(step.target_name) : [];
   const sourceName = cleanEntityName(step.source_name);
   const targetName = cleanEntityName(step.target_name);
+  const isExecutiveDonation = step.source_type === "executive" || step.link_type === "donation_to_member" && step.source_type === "executive";
+  const isDonationToMember = step.link_type === "donation_to_member";
+  const isClickable = !!onEntityClick && (isExecutiveDonation || isDonationToMember);
+
+  const handleClick = () => {
+    if (!onEntityClick) return;
+    if (isExecutiveDonation) {
+      onEntityClick({ name: step.source_name, type: "executive", linkType: step.link_type, amount: step.amount });
+    } else if (isDonationToMember) {
+      onEntityClick({ name: step.target_name, type: "candidate", linkType: step.link_type, amount: step.amount });
+    }
+  };
 
   return (
-    <div className="rounded-lg border border-border/60 bg-card p-3.5 hover:border-primary/20 hover:shadow-sm transition-all">
+    <div
+      className={cn(
+        "rounded-lg border border-border/60 bg-card p-3.5 transition-all",
+        isClickable ? "cursor-pointer hover:border-primary/30 hover:shadow-md" : "hover:border-primary/20 hover:shadow-sm"
+      )}
+      onClick={isClickable ? handleClick : undefined}
+    >
       {/* Top row: type badge + confidence */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -239,6 +257,14 @@ function EvidenceCard({ step }: { step: ChainStep }) {
         {targetParty && <> ({PARTY_FULL_NAMES[targetParty] || targetParty})</>}
       </p>
 
+      {/* Click CTA */}
+      {isClickable && (
+        <p className="text-[10px] text-primary font-medium mt-1.5 flex items-center gap-1">
+          {isExecutiveDonation ? "See who they donated to" : "View their voting record & politics"}
+          <ChevronRight className="w-3 h-3" />
+        </p>
+      )}
+
       {/* Issue tags + source link */}
       {(issues.length > 0 || externalLink) && (
         <div className="flex items-center justify-between mt-2">
@@ -248,13 +274,14 @@ function EvidenceCard({ step }: { step: ChainStep }) {
                 key={issue}
                 to={`/values-search?issue=${encodeURIComponent(issue.toLowerCase().replace(/\s+/g, '_'))}`}
                 className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted border border-border/50 hover:bg-primary/10 hover:border-primary/30 transition-colors text-muted-foreground hover:text-foreground"
+                onClick={(e) => e.stopPropagation()}
               >
                 {issue}
               </Link>
             ))}
           </div>
           {externalLink && (
-            <a href={externalLink} target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-0.5">
+            <a href={externalLink} target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
               Source <ExternalLink className="w-3 h-3" />
             </a>
           )}
