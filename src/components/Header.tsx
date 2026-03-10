@@ -6,7 +6,7 @@ import {
   Briefcase, FileCheck, Map, Heart, Leaf, Users, Scale,
   Stethoscope, ShieldAlert, GraduationCap, Globe2, ShoppingCart,
   FileText, BarChart3, Eye, Landmark, Network, Home, Target,
-  Megaphone, UserCheck,
+  Megaphone,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
