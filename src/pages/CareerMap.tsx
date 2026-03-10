@@ -122,6 +122,8 @@ export default function CareerMap() {
         return <AICareerDiscoveryStep data={careerPaths.data} loading={careerPaths.loading} error={careerPaths.error} onRetry={() => discover("career_discovery")} />;
       case "companies":
         return <AICompanyDiscoveryStep data={companies.data} loading={companies.loading} error={companies.error} onRetry={() => discover("company_discovery")} />;
+      case "economic":
+        return profile ? <EconomicIntelligenceStep profile={profile} /> : null;
       case "skills":
         return <SkillGapStep data={skillGap.data} loading={skillGap.loading} error={skillGap.error} onRetry={() => discover("skill_gap")} />;
       case "futures":
