@@ -48,7 +48,13 @@ import CompanyDossier from "./pages/CompanyDossier";
 import Pricing from "./pages/Pricing";
 import RelationshipIntelligence from "./pages/RelationshipIntelligence";
 import StrategicOfferReview from "./pages/StrategicOfferReview";
-const queryClient = new QueryClient();
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
 
 const App = () => (
   <ErrorBoundary>
