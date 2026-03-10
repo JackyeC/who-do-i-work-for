@@ -197,7 +197,6 @@ The letter must read like something a smart, busy professional would actually se
 
     let matchingStatement = '';
     let targetedIntro = '';
-    let hrTechAlignment = '';
     let valuesCheck = '';
 
     if (aiResponse.ok) {
@@ -206,34 +205,29 @@ The letter must read like something a smart, busy professional would actually se
       if (toolCall?.function?.arguments) {
         try {
           const parsed = JSON.parse(toolCall.function.arguments);
-          targetedIntro = parsed.targeted_intro || '';
-          hrTechAlignment = parsed.hr_tech_alignment || '';
-          valuesCheck = parsed.values_check || '';
-          matchingStatement = parsed.matching_statement || '';
+          matchingStatement = parsed.cover_letter || '';
+          targetedIntro = parsed.one_line_pitch || '';
+          valuesCheck = parsed.values_alignment_note || '';
         } catch (e) {
           console.error('Failed to parse tool call:', e);
-          // Fallback to content
           matchingStatement = aiData.choices?.[0]?.message?.content || '';
         }
       } else {
         matchingStatement = aiData.choices?.[0]?.message?.content || '';
       }
     } else if (aiResponse.status === 429) {
-      targetedIntro = `${company.name} maintains a ${company.civic_footprint_score}/100 civic footprint score. ${biasAuditStatus === 'Verified Bias Audit' ? 'Their verified bias audit demonstrates commitment to fair hiring.' : 'Their transparency practices are worth tracking.'}`;
-      hrTechAlignment = `I understand ${company.name} uses ${detectedVendor} in their hiring process and am prepared to engage with their technology stack.`;
-      valuesCheck = matchedSignals.length > 0 ? `I value ${company.name}'s commitment to ${matchedSignals.slice(0, 2).join(' and ').toLowerCase()}.` : `I prioritize employers committed to workforce transparency.`;
-      matchingStatement = `${targetedIntro} ${hrTechAlignment} ${valuesCheck}`;
+      targetedIntro = `Experienced professional interested in ${company.name}'s approach to ${matchedSignals[0]?.toLowerCase() || 'workplace transparency'}.`;
+      matchingStatement = `${company.name} caught my attention because of your ${company.civic_footprint_score}/100 civic footprint score — that kind of transparency is rare. My background in ${(profile.skills || []).slice(0, 2).join(' and ') || 'this space'} maps directly to the work you're doing. I'd love to talk about how I can contribute.`;
+      valuesCheck = matchedSignals.length > 0 ? `I value ${company.name}'s commitment to ${matchedSignals.slice(0, 2).join(' and ').toLowerCase()}.` : `I look for employers who prioritize transparency.`;
     } else if (aiResponse.status === 402) {
-      targetedIntro = `${company.name}'s civic transparency practices align with my professional values.`;
-      hrTechAlignment = `I'm familiar with ${detectedVendor} hiring technology.`;
+      targetedIntro = `${company.name}'s transparency practices stand out.`;
+      matchingStatement = `I'm drawn to ${company.name}'s approach to civic accountability. My experience aligns well with your mission, and I'd welcome a conversation about the role.`;
       valuesCheck = 'I prioritize employers committed to ethical hiring and workforce transparency.';
-      matchingStatement = `${targetedIntro} ${hrTechAlignment} ${valuesCheck}`;
     } else {
       console.error('AI gateway error:', aiResponse.status);
-      targetedIntro = `I value ${company.name}'s approach to corporate transparency.`;
-      hrTechAlignment = `I'm prepared to engage with ${detectedVendor}-based hiring processes.`;
-      valuesCheck = 'Ethical employment practices are central to my career decisions.';
-      matchingStatement = `${targetedIntro} ${hrTechAlignment} ${valuesCheck}`;
+      targetedIntro = `Interested in ${company.name}'s mission and culture.`;
+      matchingStatement = `${company.name}'s work in ${company.industry} resonates with my background. I'd love to explore how my experience could contribute to your team.`;
+      valuesCheck = 'Ethical employment practices matter to me.';
     }
 
     return new Response(JSON.stringify({
@@ -245,7 +239,7 @@ The letter must read like something a smart, busy professional would actually se
         linkedinUrl: profile.linkedin_url || '',
         matchingStatement: matchingStatement.trim(),
         targetedIntro: targetedIntro.trim(),
-        hrTechAlignment: hrTechAlignment.trim(),
+        hrTechAlignment: '', // deprecated field kept for backwards compat
         valuesCheck: valuesCheck.trim(),
         detectedVendor,
         biasAuditStatus,
