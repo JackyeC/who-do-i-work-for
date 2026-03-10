@@ -251,39 +251,64 @@ export function ValuesLensResults({ lensKey, onBack }: Props) {
           <div className="text-center mb-8">
             <Shield className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              No records found yet for {lensInfo?.label}
+              Scanning records for {lensInfo?.label}
             </h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              We haven't found public filings connected to this topic yet. As more companies are scanned, results will show up here automatically.
+              We are scanning campaign finance records, lobbying disclosures, and government contracts for this issue area.
             </p>
           </div>
 
-          {/* Plain language methodology */}
+          {/* Scan progress stats */}
+          {scanStatus && (
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="text-center p-4 rounded-xl bg-muted/40 border border-border/40">
+                <p className="text-2xl font-bold text-foreground">{scanStatus.companies_scanned || 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Companies Scanned</p>
+              </div>
+              <div className="text-center p-4 rounded-xl bg-muted/40 border border-border/40">
+                <p className="text-2xl font-bold text-foreground">{scanStatus.records_analyzed || 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">Records Analyzed</p>
+              </div>
+              <div className="text-center p-4 rounded-xl bg-muted/40 border border-border/40">
+                <p className="text-2xl font-bold text-foreground">
+                  {scanStatus.last_scan_at ? new Date(scanStatus.last_scan_at).toLocaleDateString() : "—"}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">Last Updated</p>
+              </div>
+            </div>
+          )}
+
+          {/* Data source methodology */}
           <div className="space-y-4 text-left">
             <div className="flex items-center gap-2">
               <HelpCircle className="w-4 h-4 text-primary shrink-0" />
-              <h4 className="text-sm font-semibold text-foreground">Where does this data come from?</h4>
+              <h4 className="text-sm font-semibold text-foreground">How this works</h4>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              When companies want to influence laws, they have to file paperwork with the government. We read those filings and organize them by topic. Here's what we look for:
+              We trace money from corporate PACs to politicians, then map those politicians to the legislation they sponsor. Here's the pipeline:
             </p>
 
             <div className="grid gap-3">
               {[
                 {
                   icon: DollarSign,
-                  title: "Follow the money",
-                  desc: "Companies and their executives donate to politicians. Those donations are public record. We check who got the money and how those politicians voted on this topic.",
-                },
-                {
-                  icon: Megaphone,
-                  title: "Follow the lobbying",
-                  desc: "When a company hires someone to talk to lawmakers about changing rules, they have to report it. We check those reports to see if they mention this topic.",
+                  title: "Step 1: Follow the money",
+                  desc: "We query FEC records for PAC donations and individual executive contributions to political candidates.",
                 },
                 {
                   icon: FileText,
-                  title: "Follow the paperwork",
-                  desc: "Companies file reports with government agencies about their workforce, contracts, and business practices. We scan those for relevant information.",
+                  title: "Step 2: Map to legislation",
+                  desc: "For each recipient politician, we pull their sponsored bills from Congress.gov and map bill policy areas to this issue.",
+                },
+                {
+                  icon: Megaphone,
+                  title: "Step 3: Check lobbying filings",
+                  desc: "We search Senate lobbying disclosures for issue-specific lobbying activity by the company or its agents.",
+                },
+                {
+                  icon: Shield,
+                  title: "Step 4: Link government contracts",
+                  desc: "USASpending data reveals federal contracts with agencies relevant to this policy area.",
                 },
               ].map((item) => (
                 <div key={item.title} className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
