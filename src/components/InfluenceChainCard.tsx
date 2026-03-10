@@ -470,7 +470,7 @@ function collectRecipients(steps: ChainStep[]) {
 }
 
 /* ── Main component ── */
-export function InfluenceChainCard({ companyId, companyName }: { companyId: string; companyName: string }) {
+export function InfluenceChainCard({ companyId, companyName, onExecutiveClick, onCandidateClick }: { companyId: string; companyName: string; onExecutiveClick?: (executive: any) => void; onCandidateClick?: (candidate: any) => void }) {
   const { data: chainData, isLoading } = useInfluenceChain(companyId);
   const [showFullEvidence, setShowFullEvidence] = useState(false);
 
