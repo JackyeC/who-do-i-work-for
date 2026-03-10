@@ -42,7 +42,7 @@ export function ExecutiveSummaryLayer({ company, influenceScore = 0, innovationS
     <div className="space-y-6">
       {/* Company identity */}
       <div className="flex items-start gap-5">
-        <CompanyLogo name={company.name} logoUrl={company.logo_url} size="lg" />
+        <CompanyLogo companyName={company.name} logoUrl={company.logo_url} size="lg" />
         <div className="flex-1 min-w-0">
           <h2 className="text-headline text-foreground">{company.name}</h2>
           <div className="flex flex-wrap items-center gap-3 mt-2 text-caption text-muted-foreground">
