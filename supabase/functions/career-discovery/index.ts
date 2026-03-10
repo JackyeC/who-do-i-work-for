@@ -188,6 +188,18 @@ const TOOLS: Record<string, { name: string; description: string; parameters: any
       additionalProperties: false,
     },
   },
+  intro_email: {
+    name: "intro_email",
+    description: "Generate a professional introduction/outreach email.",
+    parameters: {
+      type: "object",
+      properties: {
+        email: { type: "string", description: "The full email message text" },
+      },
+      required: ["email"],
+      additionalProperties: false,
+    },
+  },
 };
 
 const SYSTEM_PROMPTS: Record<string, string> = {
