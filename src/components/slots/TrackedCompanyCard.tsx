@@ -20,7 +20,7 @@ export function TrackedCompanyCard({ tracked, onUntrack, isUntracking }: Tracked
 
   return (
     <div className="rounded-xl border border-border/40 bg-card p-5 flex items-center gap-4 hover:border-primary/20 transition-colors group">
-      <CompanyLogo name={company.name} logoUrl={company.logo_url} size="md" />
+      <CompanyLogo companyName={company.name} logoUrl={company.logo_url} size="md" />
 
       <div className="flex-1 min-w-0">
         <h4 className="font-semibold text-foreground truncate">{company.name}</h4>
