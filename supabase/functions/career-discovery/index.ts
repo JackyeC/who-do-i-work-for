@@ -262,7 +262,19 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const profileSummary = `
+    let userPrompt: string;
+
+    if (type === "intro_email") {
+      userPrompt = `Write an introduction email to:
+Name: ${profile.connectionName || "Contact"}
+Title: ${profile.connectionTitle || ""}
+Company: ${profile.connectionCompany || "their company"}
+
+Context: I'm working on this career action item: "${profile.actionContext || "exploring new opportunities"}"
+
+We're connected on LinkedIn. Write a warm, professional outreach email.`;
+    } else {
+      const profileSummary = `
 Job Title: ${profile.jobTitle || "Not specified"}
 Years of Experience: ${profile.yearsExperience || "Not specified"}
 Industries: ${(profile.industries || []).join(", ") || "Not specified"}
@@ -274,7 +286,9 @@ Lifestyle: ${(profile.lifestylePrefs || []).join(", ") || "Not specified"}
 Values: ${(profile.values || []).join(", ") || "Not specified"}
 Career Anchors: ${(profile.anchors || []).join(", ") || "Not specified"}
 Target Role: ${profile.targetRole || "AI should suggest roles"}
-    `.trim();
+      `.trim();
+      userPrompt = `Here is my career profile:\n\n${profileSummary}\n\nGenerate ${type.replace("_", " ")} results.`;
+    }
 
     const tool = TOOLS[type];
 
@@ -288,7 +302,7 @@ Target Role: ${profile.targetRole || "AI should suggest roles"}
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: SYSTEM_PROMPTS[type] },
-          { role: "user", content: `Here is my career profile:\n\n${profileSummary}\n\nGenerate ${type.replace("_", " ")} results.` },
+          { role: "user", content: userPrompt },
         ],
         tools: [{
           type: "function",
