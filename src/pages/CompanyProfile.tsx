@@ -5,7 +5,8 @@ import {
   Building2, ArrowLeft, Calendar, DollarSign, Users, Flag,
   Network, Scale, MessageSquareWarning, ExternalLink, Shield, Megaphone,
   AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark, FileText,
-  BarChart3, Loader2, Sparkles, Search, ClipboardCheck, CheckCircle2, HelpCircle
+  BarChart3, Loader2, Sparkles, Search, ClipboardCheck, CheckCircle2, HelpCircle,
+  Heart, Brain, Briefcase
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { LensSelector } from "@/components/LensSelector";
