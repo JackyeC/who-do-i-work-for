@@ -81,6 +81,8 @@ export default function Dashboard() {
         return <HowDoIGetThere />;
       case "outreach":
         return <OutreachIntelligence />;
+      case "relationships":
+        return <RelationshipDashboard />;
       case "tracker":
         return <TrackingDashboard />;
       case "auto-apply":
