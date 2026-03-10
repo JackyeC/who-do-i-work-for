@@ -122,53 +122,7 @@ function getCommitteeIssues(name: string): string[] {
   return [];
 }
 
-function cleanEntityName(name: string): string {
-  if (!name) return "Unknown";
-  // Remove technical identifiers
-  let cleaned = name.replace(/\b(SEC\s*)?CIK[\s:#]*\d+/gi, "").trim();
-  cleaned = cleaned.replace(/\(?\s*FEC\s*(ID)?[\s:#]*C\d+\s*\)?/gi, "").trim();
-  cleaned = cleaned.replace(/\s*C\d{8,}\s*/g, " ").trim();
-  cleaned = cleaned.replace(/\b(EIN|TIN)[\s:#]*\d[\d-]+/gi, "").trim();
-  cleaned = cleaned.replace(/\bDUNS[\s:#]*\d+/gi, "").trim();
-  cleaned = cleaned.replace(/\(?\s*Ticker:\s*[A-Z]+\s*\)?/gi, "").trim();
-  cleaned = cleaned.replace(/[\s,\-()]+$/, "").replace(/^[\s,\-()]+/, "").trim();
-  // Convert ALL CAPS to Title Case for readability
-  if (cleaned.length > 3 && cleaned === cleaned.toUpperCase()) {
-    cleaned = cleaned.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-    // Fix common words back
-    cleaned = cleaned.replace(/\b(Pac|Llc|Inc|Ltd|Co|Corp)\b/g, m => m.toUpperCase());
-  }
-  return cleaned || name;
-}
-
-/** Truncate long descriptions to a readable summary */
-function summarizeDescription(description: string | null, linkType: string, sourceName: string, targetName: string): string {
-  if (!description) return "";
-  // For contracts, extract just the title/purpose
-  if (linkType === "committee_oversight_of_contract" && description.length > 200) {
-    const titleMatch = description.match(/TITLE:\s*([^\n]+)/i);
-    const awardMatch = description.match(/\(Award ID:\s*([^)]+)\)/i);
-    if (titleMatch) {
-      const title = titleMatch[1].trim().length > 120 
-        ? titleMatch[1].trim().substring(0, 120) + "…" 
-        : titleMatch[1].trim();
-      return `Federal contract: ${title}${awardMatch ? ` (${awardMatch[1]})` : ""}`;
-    }
-    return description.substring(0, 150) + "…";
-  }
-  // For SEC entities, simplify
-  if (linkType === "interlocking_directorate" && /SEC EDGAR/i.test(description)) {
-    const tickerMatch = description.match(/Ticker:\s*([A-Z]+)/i);
-    return tickerMatch 
-      ? `Publicly traded company (${tickerMatch[1]}) — SEC filing confirms corporate identity`
-      : "SEC filing confirms corporate identity";
-  }
-  // General truncation
-  if (description.length > 200) {
-    return description.substring(0, 180) + "…";
-  }
-  return description;
-}
+// Imported from @/lib/entityUtils
 
 /** Check if a step should be filtered from display */
 function isDisplayableStep(step: ChainStep): boolean {
