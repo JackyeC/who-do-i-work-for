@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const CHANGE_ICONS: Record<string, typeof Plus> = {
   "New Signal": Plus,
   "Signal Removed": Minus,
-  "Confidence Change": RefreshCw,
+  "Evidence Update": RefreshCw,
   "Source Change": RefreshCw,
 };
 
