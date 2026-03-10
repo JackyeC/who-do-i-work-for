@@ -244,7 +244,8 @@ export function NetworkIntelligenceStep() {
             {filtered.slice(0, 20).map(({ connection: conn, category }) => {
               const config = TYPE_CONFIG[category];
               const Icon = config.icon;
-              const company = conn.matched_company?.name || conn.company || "";
+              const enriched = conn as EnrichedConnection;
+              const company = enriched.matched_company?.name || conn.company || "";
               return (
                 <Card key={conn.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
