@@ -138,7 +138,7 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
                 <button className="w-full text-left p-3 bg-muted/50 rounded-lg border border-border hover:bg-muted/80 transition-colors">
                   <div className="flex items-center gap-1.5">
                     {item.confidence !== undefined && <ConfidenceDot confidence={item.confidence} />}
-                    <div className="text-sm font-medium text-foreground truncate flex-1">{item.label}</div>
+                    <div className="text-sm font-medium text-foreground truncate flex-1">{cleanEntityName(item.label)}</div>
                     {isExpanded ? <ChevronDown className="w-3 h-3 text-muted-foreground shrink-0" /> : <ChevronRight className="w-3 h-3 text-muted-foreground shrink-0" />}
                   </div>
                   {item.amount !== undefined && item.amount > 0 && (
