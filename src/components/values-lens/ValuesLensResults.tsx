@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { Search, ArrowLeft, HelpCircle, Shield, DollarSign, Megaphone, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -17,8 +18,15 @@ interface Props {
 }
 
 export function ValuesLensResults({ lensKey, onBack }: Props) {
+  const navigate = useNavigate();
   const [textFilter, setTextFilter] = useState("");
   const lensInfo = VALUES_LENSES.find((l) => l.key === lensKey);
+
+  const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && textFilter.trim()) {
+      navigate(`/search?q=${encodeURIComponent(textFilter.trim())}`);
+    }
+  };
 
   const { data: signals, isLoading: loadingSignals } = useQuery({
     queryKey: ["values-lens-signals", lensKey],
@@ -266,10 +274,16 @@ export function ValuesLensResults({ lensKey, onBack }: Props) {
         <Input
           value={textFilter}
           onChange={(e) => setTextFilter(e.target.value)}
-          placeholder="Filter by company name or industry..."
+          onKeyDown={handleSearchSubmit}
+          placeholder="Search a company or filter results… (Enter to search)"
           className="pl-10"
         />
       </div>
+      {textFilter.trim() && results.length === 0 && !isLoading && (
+        <p className="text-sm text-muted-foreground mb-4">
+          No results here for "{textFilter}" — press <strong>Enter</strong> to search for this company.
+        </p>
+      )}
 
       {/* Conflict alerts */}
       {conflictAlerts.length > 0 && (
