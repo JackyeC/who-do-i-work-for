@@ -57,6 +57,7 @@ import { WarnTrackerCard } from "@/components/WarnTrackerCard";
 import { PromotionEquityCard } from "@/components/PromotionEquityCard";
 import { RelatedReportsCard } from "@/components/RelatedReportsCard";
 import { MonitoringStatusCard } from "@/components/MonitoringStatusCard";
+import { ProfileInsightsSummary } from "@/components/ProfileInsightsSummary";
 import { useROIPipeline } from "@/hooks/use-roi-pipeline";
 import { WhatYoureSupportingCard } from "@/components/WhatYoureSupportingCard";
 import { TransparencyIndex } from "@/components/TransparencyIndex";
