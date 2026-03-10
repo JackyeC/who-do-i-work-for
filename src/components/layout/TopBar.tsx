@@ -47,24 +47,25 @@ export function TopBar() {
   };
 
   return (
-    <header className="h-12 flex items-center justify-between gap-4 border-b border-border/30 bg-card/80 backdrop-blur-sm px-4 sticky top-0 z-40">
-      <div className="flex items-center gap-2">
-        <SidebarTrigger className="-ml-1" />
+    <header className="h-12 flex items-center gap-3 border-b border-border/30 bg-card/80 backdrop-blur-sm px-3 sticky top-0 z-40">
+      <SidebarTrigger className="shrink-0" />
+
+      <div className="hidden sm:block">
+        <ViewModeToggle />
       </div>
 
-      <div className="flex items-center gap-2">
-        <ViewModeToggle />
-        <form onSubmit={handleSearch} className="relative hidden sm:block">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search employers…"
-            className="h-8 w-[180px] xl:w-[220px] pl-8 text-sm rounded-xl bg-muted/50 border-border/40 focus:w-[260px] transition-all duration-200"
-          />
-        </form>
-        <ThemeToggle />
-      </div>
+      <div className="flex-1" />
+
+      <form onSubmit={handleSearch} className="relative hidden sm:block">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+        <Input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search employers…"
+          className="h-8 w-[180px] xl:w-[220px] pl-8 text-sm rounded-xl bg-muted/50 border-border/40 focus:w-[260px] transition-all duration-200"
+        />
+      </form>
+      <ThemeToggle />
     </header>
   );
 }
