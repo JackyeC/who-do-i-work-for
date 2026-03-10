@@ -16,15 +16,46 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const batchSize = body.batchSize || 10;
+    const batchSize = body.batchSize || 20;
     const offset = body.offset || 0;
+    const onlyScanned = body.onlyScanned !== false; // Default: only process companies with scan data
 
-    // Get companies
-    const { data: companies, error } = await supabase
+    let query = supabase
       .from('companies')
       .select('id, name')
       .order('name')
       .range(offset, offset + batchSize - 1);
+
+    // Only process companies that have been scanned (have signal_scans or linkages)
+    if (onlyScanned) {
+      // Get companies that have entity_linkages or signal_scans
+      const { data: linkedCompanies } = await supabase
+        .from('entity_linkages')
+        .select('company_id')
+        .limit(1000);
+      
+      const { data: scannedCompanies } = await supabase
+        .from('company_signal_scans')
+        .select('company_id')
+        .limit(1000);
+
+      const companyIds = new Set<string>();
+      for (const l of linkedCompanies || []) companyIds.add(l.company_id);
+      for (const s of scannedCompanies || []) companyIds.add(s.company_id);
+
+      if (companyIds.size === 0) {
+        return new Response(JSON.stringify({
+          success: true,
+          companiesProcessed: 0,
+          message: 'No companies with scan data found',
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      const ids = Array.from(companyIds).slice(offset, offset + batchSize);
+      query = supabase.from('companies').select('id, name').in('id', ids);
+    }
+
+    const { data: companies, error } = await query;
 
     if (error || !companies) {
       return new Response(JSON.stringify({ success: false, error: 'Failed to fetch companies' }), {
@@ -32,9 +63,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Process all companies (even ones with existing signals to pick up new keywords)
     const results: any[] = [];
-    
+    let totalSignals = 0;
+
     for (const company of companies) {
       try {
         console.log(`[backfill] Processing ${company.name} (${company.id})`);
@@ -48,14 +79,49 @@ Deno.serve(async (req) => {
         });
         const data = await resp.json();
         results.push({ company: company.name, ...data });
+        totalSignals += data.signalsFound || 0;
       } catch (e) {
         results.push({ company: company.name, error: String(e) });
       }
     }
 
+    // Update aggregate scan status
+    const allCategories = new Set<string>();
+    for (const r of results) {
+      if (r.categoryCounts) {
+        for (const cat of Object.keys(r.categoryCounts)) allCategories.add(cat);
+      }
+    }
+
+    for (const category of allCategories) {
+      // Get total signals for this category
+      const { count } = await supabase
+        .from('issue_signals')
+        .select('id', { count: 'exact', head: true })
+        .eq('issue_category', category);
+
+      // Get distinct companies
+      const { data: distinctCompanies } = await supabase
+        .from('issue_signals')
+        .select('entity_id')
+        .eq('issue_category', category);
+
+      const uniqueCompanies = new Set((distinctCompanies || []).map((d: any) => d.entity_id)).size;
+
+      await supabase.from('issue_scan_status').upsert({
+        issue_category: category,
+        signals_generated: count || 0,
+        companies_scanned: uniqueCompanies,
+        last_scan_at: new Date().toISOString(),
+        scan_status: 'completed',
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'issue_category' });
+    }
+
     return new Response(JSON.stringify({
       success: true,
       companiesProcessed: results.length,
+      totalSignals,
       results,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
