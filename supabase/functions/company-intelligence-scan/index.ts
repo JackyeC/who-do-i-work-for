@@ -187,15 +187,18 @@ Deno.serve(async (req) => {
     let totalSources = 0, totalSignals = 0;
     const warnings: string[] = [];
     const errorLog: any[] = [];
+    const retryQueue: { mod: typeof ALL_MODULES[0]; isPipeline: boolean }[] = [];
 
     // Helper: run a single module and return its result
-    async function runModule(mod: typeof ALL_MODULES[0], isPipeline: boolean) {
+    async function runModule(mod: typeof ALL_MODULES[0], isPipeline: boolean, isRetry = false) {
       const moduleStartedAt = new Date().toISOString();
-      moduleStatuses[mod.key] = { status: 'in_progress', label: mod.label, phase: mod.phase, startedAt: moduleStartedAt };
+      moduleStatuses[mod.key] = { status: isRetry ? 'retrying' : 'in_progress', label: mod.label, phase: mod.phase, startedAt: moduleStartedAt };
 
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30_000);
+        // 55s timeout for first attempt, 45s for retries
+        const timeoutMs = isRetry ? 45_000 : 55_000;
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
         const moduleResp = await fetch(`${supabaseUrl}/functions/v1/${mod.fn}`, {
           method: 'POST',
