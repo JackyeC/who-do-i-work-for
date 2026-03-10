@@ -113,7 +113,7 @@ export function SurvivorAlertCard({ companyName, dbCompanyId }: SurvivorAlertPro
             RIF Intelligence & Survivor Alerts
           </CardTitle>
           <Badge variant="destructive" className="text-[10px]">
-            {data.totalAffected.toLocaleString()} affected
+            {(data.totalAffected ?? 0).toLocaleString()} affected
           </Badge>
         </div>
         <p className="text-xs text-muted-foreground">
