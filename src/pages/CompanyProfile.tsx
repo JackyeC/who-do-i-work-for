@@ -747,8 +747,30 @@ export default function CompanyProfile() {
               );
             })()}
 
+            {/* Low-signal company insights summary */}
+            {(() => {
+              const hasPoliticalSpending = (dbCompany.total_pac_spending || 0) > 0 || (dbCompany.lobbying_spend || 0) > 0 || (dbCandidates?.length || 0) > 0;
+              const insights = [
+                { key: "executives", label: "Leadership Identified", found: (dbExecutives?.length || 0) > 0, detail: `${dbExecutives?.length || 0} executive(s) found in public filings`, icon: <Users className="w-4 h-4 text-primary" /> },
+                { key: "stances", label: "Public Stances Mapped", found: (dbPublicStances?.length || 0) > 0, detail: `${dbPublicStances?.length || 0} topic(s) analyzed for say-vs-do alignment`, icon: <Shield className="w-4 h-4 text-primary" /> },
+                { key: "values", label: "Values Check Signals", found: (valuesCheckSignals?.length || 0) > 0, detail: `${valuesCheckSignals?.length || 0} values signal(s) mapped from evidence`, icon: <Heart className="w-4 h-4 text-primary" /> },
+                { key: "sentiment", label: "Worker Sentiment", found: !!tiSentiment, detail: "Employee experience signals detected", icon: <TrendingUp className="w-4 h-4 text-primary" /> },
+                { key: "hiring", label: "Hiring Technology", found: !!tiAiHr, detail: "AI/automated hiring tools detected", icon: <Brain className="w-4 h-4 text-primary" /> },
+                { key: "benefits", label: "Benefits Data", found: !!tiBenefits, detail: "Worker benefits signals found", icon: <Briefcase className="w-4 h-4 text-primary" /> },
+              ];
+              return (
+                <ProfileInsightsSummary
+                  companyName={dbCompany.name}
+                  hasPoliticalSpending={hasPoliticalSpending}
+                  insights={insights}
+                />
+              );
+            })()}
+
             {/* Enrich prompt when no detailed data and not discovering */}
-            {!hasDetailedData && !isEnriching && !isDiscovering && (
+            {!hasDetailedData && !isEnriching && !isDiscovering && !(
+              (dbExecutives?.length || 0) > 0 || (dbPublicStances?.length || 0) > 0 || (valuesCheckSignals?.length || 0) > 0
+            ) && (
               <Card className="mb-8 border-dashed border-2 border-primary/30 bg-primary/5">
                 <CardContent className="p-6 text-center">
                   <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
