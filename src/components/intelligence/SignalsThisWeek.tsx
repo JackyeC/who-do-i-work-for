@@ -44,24 +44,44 @@ interface Translation {
   freshness_note: string;
 }
 
+type TimeRange = "30d" | "6mo" | "1yr" | "2yr";
+
+const TIME_RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
+  { value: "30d", label: "30 days" },
+  { value: "6mo", label: "6 months" },
+  { value: "1yr", label: "1 year" },
+  { value: "2yr", label: "2 years" },
+];
+
+function getCutoffDate(range: TimeRange): Date {
+  const d = new Date();
+  switch (range) {
+    case "30d": d.setDate(d.getDate() - 30); break;
+    case "6mo": d.setMonth(d.getMonth() - 6); break;
+    case "1yr": d.setFullYear(d.getFullYear() - 1); break;
+    case "2yr": d.setFullYear(d.getFullYear() - 2); break;
+  }
+  return d;
+}
+
 export function SignalsThisWeek() {
   const { toast } = useToast();
   const [translations, setTranslations] = useState<Record<number, Translation>>({});
   const [translating, setTranslating] = useState(false);
   const [translated, setTranslated] = useState(false);
+  const [timeRange, setTimeRange] = useState<TimeRange>("30d");
 
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const cutoffDate = getCutoffDate(timeRange);
 
   const { data: signals, isLoading } = useQuery({
-    queryKey: ["signals-this-week"],
+    queryKey: ["signals-this-week", timeRange],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("company_signal_scans")
         .select("id, company_id, signal_category, signal_type, signal_value, confidence_level, scan_timestamp, source_url")
-        .gte("scan_timestamp", thirtyDaysAgo.toISOString())
+        .gte("scan_timestamp", cutoffDate.toISOString())
         .order("scan_timestamp", { ascending: false })
-        .limit(100);
+        .limit(200);
       if (error) throw error;
       return data || [];
     },
