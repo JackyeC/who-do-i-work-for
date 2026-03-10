@@ -20,7 +20,8 @@ import { PlatformPhilosophy } from "@/components/PlatformPhilosophy";
 import { type LensId, getLens } from "@/lib/lensConfig";
 import { ShareableScorecard } from "@/components/ShareableScorecard";
 import { EmbedBadge } from "@/components/EmbedBadge";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -115,7 +116,7 @@ function DbLensModules({ activeLens, dbCompany, dbPartyBreakdown, dbCandidates, 
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart><Pie data={dbPartyBreakdown} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="amount" nameKey="party" className="cursor-pointer" onClick={(_, index) => onPartyClick?.(dbPartyBreakdown[index]?.party)}>
                         {dbPartyBreakdown.map((entry, i) => <Cell key={i} fill={entry.color} className="hover:opacity-80 transition-opacity" />)}
-                      </Pie><Tooltip formatter={(val: number) => formatCurrency(val)} /></PieChart>
+                      </Pie><RechartsTooltip formatter={(val: number) => formatCurrency(val)} /></PieChart>
                     </ResponsiveContainer>
                   </div>
                   <div className="flex justify-center gap-4 mt-2">
@@ -716,6 +717,38 @@ export default function CompanyProfile() {
                   <Badge variant="secondary">{dbCompany.state}</Badge>
                   {dbCompany.revenue && <Badge variant="secondary">Revenue: {dbCompany.revenue}</Badge>}
                   {dbCompany.employee_count && <Badge variant="secondary">{dbCompany.employee_count} employees</Badge>}
+                  
+                  {/* Market & Regulatory IDs */}
+                  {(dbCompany as any).ticker && (
+                    <Badge variant="outline" className="font-mono text-xs">
+                      {(dbCompany as any).ticker}
+                    </Badge>
+                  )}
+                  {(dbCompany as any).sec_cik && (
+                    <UITooltip>
+                      <TooltipTrigger asChild>
+                        <Badge variant="outline" className="text-xs cursor-help gap-1">
+                          <Shield className="w-3 h-3" />
+                          {(dbCompany as any).is_publicly_traded ? "Publicly Traded" : "SEC Registered"}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-xs text-xs">
+                        <p className="font-semibold mb-1">SEC CIK: {(dbCompany as any).sec_cik}</p>
+                        <p>This is the SEC Central Index Key — a permanent 10-digit ID used for regulatory filings. Unlike stock tickers, this ID never changes, ensuring intelligence remains accurate even if the company rebrands or moves exchanges.</p>
+                        <a href={`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${(dbCompany as any).sec_cik}&type=&dateb=&owner=include&count=40`} 
+                          target="_blank" rel="noopener noreferrer"
+                          className="text-primary hover:underline mt-1 inline-block">
+                          View SEC filings →
+                        </a>
+                      </TooltipContent>
+                    </UITooltip>
+                  )}
+                  {(dbCompany as any).sec_cik && !(dbCompany as any).ticker && (
+                    <Badge variant="outline" className="text-xs text-muted-foreground">
+                      Privately Held
+                    </Badge>
+                  )}
+                  
                   <CivicFootprintBadge score={dbCompany.civic_footprint_score} />
                 </div>
               </div>
@@ -1314,7 +1347,7 @@ export default function CompanyProfile() {
                               <Cell key={i} fill={entry.color} className="hover:opacity-80 transition-opacity" />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                          <RechartsTooltip formatter={(value: number) => formatCurrency(value)} />
                         </PieChart>
                       </ResponsiveContainer>
                     </div>
@@ -1692,7 +1725,7 @@ export default function CompanyProfile() {
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                         <XAxis dataKey="cycle" className="text-xs" />
                         <YAxis tickFormatter={(v) => formatCurrency(v)} className="text-xs" />
-                        <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                        <RechartsTooltip formatter={(value: number) => formatCurrency(value)} />
                         <Legend />
                         <Bar dataKey="pacSpending" name="PAC Spending" fill="hsl(220, 65%, 48%)" radius={[2, 2, 0, 0]} />
                         <Bar dataKey="lobbyingSpend" name="Lobbying" fill="hsl(215, 15%, 47%)" radius={[2, 2, 0, 0]} />
