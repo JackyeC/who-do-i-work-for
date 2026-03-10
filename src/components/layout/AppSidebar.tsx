@@ -135,7 +135,7 @@ export function AppSidebar() {
           );
 
           return (
-            <SidebarGroup key={group.label} defaultOpen={groupHasActive || group.label === "Home"}>
+            <SidebarGroup key={group.label}>
               {group.label !== "Home" && (
                 <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/50 font-semibold px-3">
                   {group.label}
