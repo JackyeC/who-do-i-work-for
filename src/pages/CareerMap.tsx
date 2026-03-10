@@ -99,10 +99,12 @@ export default function CareerMap() {
         );
       case "values":
         return <MyValuesProfile />;
+      case "personality":
+        return <PersonalityProfile />;
       case "explore":
         return (
           <div className="space-y-6">
-            <CareerMappingView />
+            <CareerJourneyTimeline />
             <CareerProfile />
           </div>
         );
