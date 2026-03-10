@@ -109,14 +109,14 @@ function PipelineColumn({ title, icon: Icon, items, color }: {
   };
 
   const EVIDENCE_LABELS: Record<string, string> = {
-    fec_filing: "FEC Filing",
-    lobbying_disclosure: "Senate Lobbying Disclosure",
-    usaspending_contract: "USASpending Contract Record",
-    sec_filing: "SEC EDGAR Filing",
-    opencorporates: "OpenCorporates Registry",
-    dol_enforcement: "DOL Enforcement Record",
-    opensecrets: "OpenSecrets Profile",
-    ai_analysis: "AI-Synthesized Analysis",
+    fec_filing: "Federal Election Commission filing",
+    lobbying_disclosure: "Senate lobbying disclosure report",
+    usaspending_contract: "Federal contract record (USASpending.gov)",
+    sec_filing: "Securities and Exchange Commission filing",
+    opencorporates: "Corporate registry record",
+    dol_enforcement: "Department of Labor enforcement record",
+    opensecrets: "Campaign finance profile (OpenSecrets)",
+    ai_analysis: "AI-synthesized analysis of public records",
   };
 
   return (
