@@ -40,6 +40,17 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
   const cardRef = useRef<HTMLDivElement>(null);
   const { isPremium } = usePremium();
 
+  // Auto-advance slides
+  useEffect(() => {
+    if (!profile) return;
+    if (!autoPlaying || currentSlide >= REVEAL_SLIDES.length - 1) {
+      if (currentSlide >= REVEAL_SLIDES.length - 1) setRevealed(true);
+      return;
+    }
+    const timer = setTimeout(() => setCurrentSlide(s => s + 1), 3000);
+    return () => clearTimeout(timer);
+  }, [currentSlide, autoPlaying, profile]);
+
   if (!profile) {
     return (
       <Card className="border-border bg-card p-8 text-center">
@@ -47,16 +58,6 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
       </Card>
     );
   }
-
-  // Auto-advance slides
-  useEffect(() => {
-    if (!autoPlaying || currentSlide >= REVEAL_SLIDES.length - 1) {
-      if (currentSlide >= REVEAL_SLIDES.length - 1) setRevealed(true);
-      return;
-    }
-    const timer = setTimeout(() => setCurrentSlide(s => s + 1), 3000);
-    return () => clearTimeout(timer);
-  }, [currentSlide, autoPlaying]);
 
   const pathCount = (careerPaths?.likely?.length || 0) + (careerPaths?.adjacent?.length || 0) + (careerPaths?.unexpected?.length || 0);
   const companyCount = companies?.companies?.length || 0;
