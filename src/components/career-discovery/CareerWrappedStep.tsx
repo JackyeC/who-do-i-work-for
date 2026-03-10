@@ -16,7 +16,7 @@ import html2canvas from "html2canvas";
 import type { CareerDiscoveryData, CompanyDiscoveryData, SkillGapData, MultipleFuturesData, ActionPlanData, CareerProfile } from "@/hooks/use-career-discovery";
 
 interface CareerWrappedStepProps {
-  profile: CareerProfile;
+  profile: CareerProfile | null;
   careerPaths: CareerDiscoveryData | null;
   companies: CompanyDiscoveryData | null;
   skillGap: SkillGapData | null;
