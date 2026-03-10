@@ -704,7 +704,9 @@ export default function CompanyProfile() {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="secondary">{dbCompany.industry}</Badge>
+                  <Link to={`/browse?industry=${encodeURIComponent(dbCompany.industry)}`}>
+                    <Badge variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-colors">{dbCompany.industry}</Badge>
+                  </Link>
                   <Badge variant="secondary">{dbCompany.state}</Badge>
                   {dbCompany.revenue && <Badge variant="secondary">Revenue: {dbCompany.revenue}</Badge>}
                   {dbCompany.employee_count && <Badge variant="secondary">{dbCompany.employee_count} employees</Badge>}
