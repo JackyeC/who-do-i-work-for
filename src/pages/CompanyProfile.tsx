@@ -725,7 +725,7 @@ export default function CompanyProfile() {
                     </Badge>
                   )}
                   {(dbCompany as any).sec_cik && (
-                    <Tooltip>
+                    <UITooltip>
                       <TooltipTrigger asChild>
                         <Badge variant="outline" className="text-xs cursor-help gap-1">
                           <Shield className="w-3 h-3" />
