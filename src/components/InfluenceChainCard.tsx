@@ -125,6 +125,24 @@ function getCommitteeIssues(name: string): string[] {
 
 // Imported from @/lib/entityUtils
 
+/** Check if a step is an executive aggregate (exec → company, not a real recipient) */
+function isExecAggregate(step: ChainStep, companyName?: string): boolean {
+  if (step.link_type !== "donation_to_member") return false;
+  const desc = (step.description || "").toLowerCase();
+  const isExecDonor = desc.includes("executive donor") || desc.includes("personal contributions");
+  if (!isExecDonor) return false;
+  // Target is the company itself, not a real politician
+  const targetLower = step.target_name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const sourceLower = step.source_name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (companyName) {
+    const companyLower = companyName.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (targetLower.includes(companyLower) || companyLower.includes(targetLower)) return true;
+  }
+  // If the target contains "group", "inc", "corp" and source looks like a person name
+  if (sourceLower.includes(",") && (targetLower.includes("group") || targetLower.includes("inc") || targetLower.includes("corp"))) return true;
+  return false;
+}
+
 /** Check if a step should be filtered from display */
 function isDisplayableStep(step: ChainStep): boolean {
   // Filter out SEC entity confirmations — these are identity matches, not influence
