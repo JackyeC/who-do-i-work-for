@@ -140,13 +140,51 @@ export function ValuesLensResults({ lensKey, onBack }: Props) {
     for (const s of (issueSignals || []) as any[]) {
       const entry = map.get(s.entity_id);
       if (entry) {
+        // Map source_dataset to readable labels
+        const sourceLabels: Record<string, string> = {
+          campaign_finance: "FEC Filing",
+          fec_direct: "FEC Filing",
+          congress_legislation: "Congress.gov",
+          lobbying_disclosure: "Senate LDA",
+          government_contract: "USASpending",
+          issue_legislation_map: "Legislation Link",
+          ideology_scan: "Ideology Scan",
+          company_signal_scan: "Signal Scan",
+          known_corporate_actions: "Public Record",
+          company_profile: "Company Profile",
+          public_stance_analysis: "Public Stance",
+        };
+        const sourceLabel = sourceLabels[s.source_dataset] || s.source_dataset;
+
+        // Map signal_type to neutral display labels
+        const typeLabels: Record<string, string> = {
+          legislation_sponsorship: "Legislative Donation Link",
+          committee_assignment: "Committee Influence",
+          pac_disbursement: "PAC Disbursement",
+          pac_donation: "Campaign Contribution",
+          pac_activity: "PAC Activity",
+          lobbying_issue: "Lobbying Activity Detected",
+          government_contract: "Federal Contract Relationship",
+          agency_contract: "Agency Contract Link",
+          keyword_match: "Policy Influence Signal",
+          ideology_flag: "Ideology Connection",
+          public_stance: "Public Position",
+          corporate_policy_action: "Corporate Policy Action",
+          legislation_link: "Legislative Connection",
+          signal_scan: "Signal Detected",
+          company_description: "Industry Signal",
+        };
+        const typeLabel = typeLabels[s.signal_type] || s.signal_type?.replace(/_/g, " ");
+
         entry.signals.push({
           id: s.id,
           signal_label: s.description,
+          signal_summary: `${typeLabel} · Source: ${sourceLabel}`,
           signal_direction: "informational_signal",
           confidence_level: s.confidence_score || "medium",
           evidence_url: s.source_url,
           signal_type: s.signal_type,
+          evidence_text: s.amount ? `$${Number(s.amount).toLocaleString()}` : undefined,
         });
       }
     }
