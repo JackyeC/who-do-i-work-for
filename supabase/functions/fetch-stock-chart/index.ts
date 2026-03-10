@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { ticker, range = "5y", interval = "1mo" } = await req.json();
+    const { ticker, range = "max", interval = "1mo" } = await req.json();
 
     if (!ticker) {
       return new Response(
@@ -20,12 +20,12 @@ serve(async (req) => {
       );
     }
 
-    // Fetch from Yahoo Finance v8 chart API
+    // Use Yahoo Finance query1 endpoint for lifetime monthly data
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?range=${range}&interval=${interval}&includePrePost=false`;
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; CivicLens/1.0)',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'application/json',
       },
     });
@@ -40,8 +40,8 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-
     const result = data?.chart?.result?.[0];
+
     if (!result) {
       return new Response(
         JSON.stringify({ error: "No chart data found for ticker", ticker }),
@@ -50,14 +50,17 @@ serve(async (req) => {
     }
 
     const timestamps = result.timestamp || [];
-    const closes = result.indicators?.quote?.[0]?.close || [];
+    const quote = result.indicators?.quote?.[0] || {};
+    const closes = quote.close || [];
+    const volumes = quote.volume || [];
     const meta = result.meta || {};
 
-    // Map to clean data points
+    // Map to clean monthly data points
     const chartData = timestamps.map((ts: number, i: number) => ({
       date: new Date(ts * 1000).toISOString().split('T')[0],
       timestamp: ts,
       close: closes[i] != null ? Math.round(closes[i] * 100) / 100 : null,
+      volume: volumes[i] || null,
     })).filter((d: any) => d.close !== null);
 
     return new Response(
