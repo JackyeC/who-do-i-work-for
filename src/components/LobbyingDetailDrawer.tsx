@@ -93,19 +93,26 @@ export function LobbyingDetailDrawer({ open, onOpenChange, companyId, companyNam
           {/* Total */}
           {totalLobbyingSpend && totalLobbyingSpend > 0 && (
             <Card className="border-primary/20 bg-primary/5">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div>
-                  <div className="text-xs text-muted-foreground">Total Federal Lobbying</div>
-                  <div className="text-2xl font-bold text-foreground">{formatCurrency(totalLobbyingSpend)}</div>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <div>
+                    <div className="text-xs text-muted-foreground">
+                      Total Federal Lobbying ({new Date().getFullYear() - 1}–{new Date().getFullYear()})
+                    </div>
+                    <div className="text-2xl font-bold text-foreground">{formatCurrency(totalLobbyingSpend)}</div>
+                  </div>
+                  <a
+                    href={`https://lda.senate.gov/filings/public/filing/search/?registrant=${encodeURIComponent(companyName)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline flex items-center gap-1"
+                  >
+                    View Senate LDA filings <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
-                <a
-                  href={`https://lda.senate.gov/filings/public/filing/search/?registrant=${encodeURIComponent(companyName)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-primary hover:underline flex items-center gap-1"
-                >
-                  View Senate LDA filings <ExternalLink className="w-3 h-3" />
-                </a>
+                <p className="text-[10px] text-muted-foreground">
+                  Aggregated from quarterly Senate Lobbying Disclosure Act filings. This is what {companyName} paid to registered lobbying firms to advocate on their behalf in Congress — the money goes to lobbying firms, not directly to politicians.
+                </p>
               </CardContent>
             </Card>
           )}
