@@ -203,21 +203,22 @@ export function SignalsThisWeek() {
               </Button>
             ))}
           </div>
-        <Button
-          variant={translated ? "outline" : "default"}
-          size="sm"
-          onClick={handleTranslate}
-          disabled={translating}
-          className="gap-1.5 shrink-0"
-        >
-          {translating ? (
-            <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Verifying...</>
-          ) : translated ? (
-            <><CheckCircle2 className="w-3.5 h-3.5" /> Verified ✓</>
-          ) : (
-            <><Sparkles className="w-3.5 h-3.5" /> Explain in Plain English</>
-          )}
-        </Button>
+          <Button
+            variant={translated ? "outline" : "default"}
+            size="sm"
+            onClick={handleTranslate}
+            disabled={translating}
+            className="gap-1.5 shrink-0"
+          >
+            {translating ? (
+              <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Verifying...</>
+            ) : translated ? (
+              <><CheckCircle2 className="w-3.5 h-3.5" /> Verified ✓</>
+            ) : (
+              <><Sparkles className="w-3.5 h-3.5" /> Explain in Plain English</>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Summary cards */}
