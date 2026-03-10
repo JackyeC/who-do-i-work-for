@@ -347,6 +347,13 @@ Deno.serve(async (req) => {
       }]),
     });
 
+    // Persist CIK, ticker, and public trading status to the companies table
+    const isPubliclyTraded = !!cikResult.ticker && cikResult.ticker.length > 0;
+    await supabase.from('companies').update({
+      sec_cik: cikResult.cik,
+      ticker: cikResult.ticker || null,
+      is_publicly_traded: isPubliclyTraded,
+    }).eq('id', companyId);
     // Insert signals
     if (signalRows.length > 0) {
       // Clear old SEC signals

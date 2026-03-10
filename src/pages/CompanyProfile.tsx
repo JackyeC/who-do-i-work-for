@@ -716,6 +716,38 @@ export default function CompanyProfile() {
                   <Badge variant="secondary">{dbCompany.state}</Badge>
                   {dbCompany.revenue && <Badge variant="secondary">Revenue: {dbCompany.revenue}</Badge>}
                   {dbCompany.employee_count && <Badge variant="secondary">{dbCompany.employee_count} employees</Badge>}
+                  
+                  {/* Market & Regulatory IDs */}
+                  {(dbCompany as any).ticker && (
+                    <Badge variant="outline" className="font-mono text-xs">
+                      {(dbCompany as any).ticker}
+                    </Badge>
+                  )}
+                  {(dbCompany as any).sec_cik && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge variant="outline" className="text-xs cursor-help gap-1">
+                          <Shield className="w-3 h-3" />
+                          {(dbCompany as any).is_publicly_traded ? "Publicly Traded" : "SEC Registered"}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-xs text-xs">
+                        <p className="font-semibold mb-1">SEC CIK: {(dbCompany as any).sec_cik}</p>
+                        <p>This is the SEC Central Index Key — a permanent 10-digit ID used for regulatory filings. Unlike stock tickers, this ID never changes, ensuring intelligence remains accurate even if the company rebrands or moves exchanges.</p>
+                        <a href={`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${(dbCompany as any).sec_cik}&type=&dateb=&owner=include&count=40`} 
+                          target="_blank" rel="noopener noreferrer"
+                          className="text-primary hover:underline mt-1 inline-block">
+                          View SEC filings →
+                        </a>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                  {(dbCompany as any).sec_cik && !(dbCompany as any).ticker && (
+                    <Badge variant="outline" className="text-xs text-muted-foreground">
+                      Privately Held
+                    </Badge>
+                  )}
+                  
                   <CivicFootprintBadge score={dbCompany.civic_footprint_score} />
                 </div>
               </div>
