@@ -43,6 +43,7 @@ import ReportEditor from "./pages/ReportEditor";
 import OfferClarity from "./pages/OfferClarity";
 import RecruitingIntelligence from "./pages/RecruitingIntelligence";
 import CompanyDossier from "./pages/CompanyDossier";
+import Pricing from "./pages/Pricing";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -59,6 +60,7 @@ const App = () => (
               <Route path="/check" element={<Check />} />
               <Route path="/company/:id" element={<CompanyProfile />} />
               <Route path="/dossier/:id" element={<CompanyDossier />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/browse" element={<Browse />} />
               <Route path="/methodology" element={<Methodology />} />
