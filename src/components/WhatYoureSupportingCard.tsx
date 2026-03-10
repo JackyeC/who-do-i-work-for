@@ -13,6 +13,12 @@ interface LobbyingDetail {
   amount?: number;
 }
 
+interface PublicStance {
+  topic: string;
+  public_position: string;
+  spending_reality: string;
+}
+
 interface Props {
   companyName: string;
   totalPacSpending: number;
@@ -20,6 +26,7 @@ interface Props {
   topCandidates?: { name: string; party: string; amount: number; state?: string; committees?: string[] }[];
   topIssuesLobbied?: string[];
   lobbyingDetails?: LobbyingDetail[];
+  publicStances?: PublicStance[];
   darkMoneyConnections?: number;
   flaggedOrgCount?: number;
 }
@@ -40,6 +47,7 @@ export function WhatYoureSupportingCard({
   topCandidates = [],
   topIssuesLobbied = [],
   lobbyingDetails = [],
+  publicStances = [],
   darkMoneyConnections = 0,
   flaggedOrgCount = 0,
 }: Props) {
@@ -131,8 +139,34 @@ export function WhatYoureSupportingCard({
           </div>
         )}
 
-        {/* Issue tags if no detail records */}
-        {lobbyingDetails.length === 0 && topIssuesLobbied.length > 0 && (
+        {/* Public stances — what they actually lobby on (fallback when no bill-level data) */}
+        {lobbyingDetails.length === 0 && publicStances.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Scale className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">What They're Lobbying For</span>
+            </div>
+            <p className="text-xs text-muted-foreground mb-2">
+              Based on {companyName}'s lobbying filings and public statements, here's what they're spending that money on:
+            </p>
+            <div className="space-y-2">
+              {publicStances.slice(0, 5).map((stance, i) => (
+                <div key={i} className="py-2.5 px-3 rounded-lg bg-muted/30 border border-border/50">
+                  <p className="text-sm font-medium text-foreground">{stance.topic}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{stance.public_position}</p>
+                  {stance.spending_reality && (
+                    <p className="text-[10px] text-muted-foreground mt-1 italic">
+                      Evidence: {stance.spending_reality}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Issue tags if no detail records and no stances */}
+        {lobbyingDetails.length === 0 && publicStances.length === 0 && topIssuesLobbied.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Scale className="w-4 h-4 text-muted-foreground" />
