@@ -671,6 +671,25 @@ export default function CompanyProfile() {
                       governmentContracts: dbCompany.government_contracts ?? undefined,
                       partyBreakdown: dbPartyBreakdown?.map(p => ({ party: p.party, amount: p.amount, color: p.color })),
                     }} />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-1.5"
+                      onClick={async () => {
+                        const url = window.location.href;
+                        if (navigator.share) {
+                          try {
+                            await navigator.share({ title: `${dbCompany.name} — Who Do I Work For?`, url });
+                          } catch {}
+                        } else {
+                          await navigator.clipboard.writeText(url);
+                          toast({ title: "Link copied!", description: "Share this company profile with anyone." });
+                        }
+                      }}
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Share
+                    </Button>
                     <EmbedBadge slug={dbCompany.slug} companyName={dbCompany.name} />
                     <WatchCompanyButton companyId={dbCompany.id} companyName={dbCompany.name} />
                     <Button
