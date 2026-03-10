@@ -116,7 +116,12 @@ export function useROIPipeline(companyId: string | undefined, companyName?: stri
       const { error } = await supabase.functions.invoke("company-intelligence-scan", {
         body: { companyId, companyName },
       });
-      if (error && !error.message?.includes('409') && !error.message?.includes('already in progress')) throw error;
+      if (error) {
+        const msg = error.message || '';
+        const isSafe = msg.includes('409') || msg.includes('already in progress') || msg.includes('non-2xx');
+        if (!isSafe) throw error;
+        console.log("[ROI Pipeline] Scan already in progress");
+      }
     } catch (e) {
       console.error("[ROI Pipeline] Manual scan failed:", e);
     } finally {
