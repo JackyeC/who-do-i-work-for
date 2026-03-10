@@ -1288,10 +1288,20 @@ export default function CompanyProfile() {
                   <CardContent>
                     <div className="space-y-3 max-h-80 overflow-y-auto">
                       {company.candidates.map((candidate) => (
-                        <div
+                        <button
                           key={candidate.name}
+                          onClick={() => handleCandidateClick({
+                            name: candidate.name,
+                            party: candidate.party === "R" ? "Republican" : candidate.party === "D" ? "Democrat" : candidate.party,
+                            state: candidate.state,
+                            amount: candidate.amount,
+                            donation_type: candidate.type,
+                            flagged: candidate.flagged,
+                            flag_reason: candidate.flagReason,
+                            district: candidate.district,
+                          })}
                           className={cn(
-                            "flex items-start justify-between p-3 rounded-lg border",
+                            "w-full flex items-start justify-between p-3 rounded-lg border text-left transition-colors hover:bg-primary/5 hover:border-primary/20 cursor-pointer",
                             candidate.flagged ? "border-civic-red/20 bg-civic-red/5" : "border-border"
                           )}
                         >
@@ -1310,7 +1320,7 @@ export default function CompanyProfile() {
                             {candidate.flagReason && <p className="text-xs text-civic-red mt-1">{candidate.flagReason}</p>}
                           </div>
                           <span className="text-sm font-medium text-foreground shrink-0">{formatCurrency(candidate.amount)}</span>
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </CardContent>
