@@ -80,12 +80,13 @@ export default function StrategicOfferReview() {
     setOffer(d => ({ ...d, [field]: value }));
 
   const searchCompany = async (name: string) => {
-    update("companyName", name);
-    if (name.length < 2) { setCompanyResults([]); return; }
+    const clean = sanitize(name, 200);
+    update("companyName", clean);
+    if (clean.length < 2) { setCompanyResults([]); return; }
     const { data } = await supabase
       .from("companies")
       .select("id, name, industry, state")
-      .ilike("name", `%${name}%`)
+      .ilike("name", `%${clean}%`)
       .limit(5);
     setCompanyResults(data || []);
   };
