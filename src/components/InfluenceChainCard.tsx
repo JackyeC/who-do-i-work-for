@@ -1,14 +1,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
 import { useInfluenceChain } from "@/hooks/use-roi-pipeline";
 import { PartyBadge, computeRecipientMix } from "@/components/PartyBadge";
+import { Link } from "react-router-dom";
 import {
   ArrowRight, ArrowDown, GitBranch, Loader2, DollarSign, Users, Landmark,
   FileCheck, RotateCcw, Globe, ChevronDown, ChevronRight, HelpCircle, User,
+  ExternalLink, Share2, Copy,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   Tooltip,
   TooltipContent,
