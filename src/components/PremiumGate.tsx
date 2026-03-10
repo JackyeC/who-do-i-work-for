@@ -61,7 +61,7 @@ export function PremiumGate({ feature, description, children }: PremiumGateProps
           )}
         </div>
         <p className="text-micro text-muted-foreground mt-4">
-          Cancel anytime. Unlimited Offer Checks, alerts, and full report access.
+          Starter $29/mo (3 companies) · Pro $250/mo (25 companies) · Team $800/mo (100 companies)
         </p>
       </CardContent>
     </Card>
