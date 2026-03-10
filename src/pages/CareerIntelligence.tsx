@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,15 +9,17 @@ import { DreamJobAlerts } from "@/components/career/DreamJobAlerts";
 import { MyDocuments } from "@/components/career/MyDocuments";
 import { ResumeTailor } from "@/components/career/ResumeTailor";
 import { DataWipeButton } from "@/components/career/DataWipeButton";
+import { CareerChecklist } from "@/components/career/CareerChecklist";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, User, Bell, Upload, Wand2, Compass } from "lucide-react";
+import { FileText, User, Bell, Upload, Wand2, Compass, CheckCircle2 } from "lucide-react";
 import { CareerMappingView } from "@/components/career/CareerMappingView";
 
 export default function CareerIntelligence() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("upload");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "upload");
 
   // Auto-create a career profile for every authenticated user
   useEffect(() => {
