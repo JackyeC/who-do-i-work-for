@@ -9,8 +9,9 @@ import { DreamJobAlerts } from "@/components/career/DreamJobAlerts";
 import { MyDocuments } from "@/components/career/MyDocuments";
 import { ResumeTailor } from "@/components/career/ResumeTailor";
 import { DataWipeButton } from "@/components/career/DataWipeButton";
-import { CareerMappingView } from "@/components/career/CareerMappingView";
+import { CareerJourneyTimeline } from "@/components/career/CareerJourneyTimeline";
 import { MyValuesProfile } from "@/components/career/MyValuesProfile";
+import { PersonalityProfile } from "@/components/career/PersonalityProfile";
 import { HowDoIGetThere } from "@/components/career/HowDoIGetThere";
 import { OutreachIntelligence } from "@/components/career/OutreachIntelligence";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,14 +19,15 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Upload, Heart, Compass, Route, Users, Wand2, ChevronRight,
-  CheckCircle2, Circle, ArrowLeft
+  CheckCircle2, Circle, ArrowLeft, User
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
   { id: "upload", label: "Upload Resume", icon: Upload, description: "Upload your resume or career documents to build your profile." },
   { id: "values", label: "Define Values", icon: Heart, description: "Tell us what matters to you in an employer." },
-  { id: "explore", label: "Explore Paths", icon: Compass, description: "See where your career could go next." },
+  { id: "personality", label: "Work Style", icon: User, description: "Describe how you work best and your personality strengths." },
+  { id: "explore", label: "Map My Path", icon: Compass, description: "Visualize your career journey with SMART goals." },
   { id: "plan", label: "Plan Your Move", icon: Route, description: "Get a gap analysis and learning plan for your target role." },
   { id: "connect", label: "Connect", icon: Users, description: "Find people who can help you get there." },
   { id: "apply", label: "Tailor & Apply", icon: Wand2, description: "Tailor your resume and set up job alerts." },
@@ -97,10 +99,12 @@ export default function CareerMap() {
         );
       case "values":
         return <MyValuesProfile />;
+      case "personality":
+        return <PersonalityProfile />;
       case "explore":
         return (
           <div className="space-y-6">
-            <CareerMappingView />
+            <CareerJourneyTimeline />
             <CareerProfile />
           </div>
         );
