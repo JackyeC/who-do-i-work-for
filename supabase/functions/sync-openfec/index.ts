@@ -150,15 +150,59 @@ Deno.serve(async (req) => {
 
     const electionCycle = cycle || '2024';
 
-    // Use entity resolution: search PACs using all resolved names
-    const namesToSearch = searchNames?.length
-      ? searchNames.filter((n: string) => {
-          const type = entityMap?.[n];
-          return !type || type !== 'legal_variant'; // Skip pure legal variants for PAC search
-        }).slice(0, 5)
-      : [pacName || companyName];
+    // ─── Entity Resolution: build search names from DB ───
+    let namesToSearch: string[] = [];
 
-    console.log(`[sync-openfec] OpenFEC ingestion for ${namesToSearch.length} name variants (cycle ${electionCycle})...`);
+    if (searchNames?.length) {
+      namesToSearch = searchNames.filter((n: string) => {
+        const type = entityMap?.[n];
+        return !type || type !== 'legal_variant';
+      }).slice(0, 8);
+    } else {
+      // Auto-resolve: pull parent company and known PAC names from DB
+      namesToSearch = [pacName || companyName];
+
+      const { data: companyRecord } = await supabase
+        .from('companies')
+        .select('name, parent_company')
+        .eq('id', companyId)
+        .single();
+
+      if (companyRecord) {
+        // Add parent company name variant
+        if (companyRecord.parent_company && !namesToSearch.includes(companyRecord.parent_company)) {
+          namesToSearch.push(companyRecord.parent_company);
+        }
+        // Add cleaned company name (strip Inc., Corp., etc.)
+        const cleanName = companyRecord.name
+          .replace(/,?\s*(Inc\.?|Corp\.?|Corporation|LLC|Ltd\.?|Co\.?|Company|Group|Holdings?)\s*$/i, '')
+          .trim();
+        if (cleanName !== companyRecord.name && !namesToSearch.includes(cleanName)) {
+          namesToSearch.push(cleanName);
+        }
+      }
+
+      // Check entity_relationships for subsidiaries/PAC names
+      const { data: relationships } = await supabase
+        .from('entity_relationships' as any)
+        .select('related_name, relationship_type')
+        .eq('company_id', companyId)
+        .in('relationship_type', ['pac', 'subsidiary', 'parent', 'dba'])
+        .limit(5);
+
+      if (relationships) {
+        for (const rel of relationships) {
+          if (rel.related_name && !namesToSearch.includes(rel.related_name)) {
+            namesToSearch.push(rel.related_name);
+          }
+        }
+      }
+    }
+
+    // Deduplicate and limit
+    namesToSearch = [...new Set(namesToSearch)].slice(0, 8);
+
+    console.log(`[sync-openfec] OpenFEC ingestion for ${namesToSearch.length} name variants: ${namesToSearch.join(', ')} (cycle ${electionCycle})...`);
 
     // ─── Step 1: Find PAC committees matching company name variants ───
     const committeeTypes = normalizeCommitteeTypes('Q,N,O,U,V,W');
