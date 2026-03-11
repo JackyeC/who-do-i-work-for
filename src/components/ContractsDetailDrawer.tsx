@@ -154,7 +154,7 @@ export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyNa
                               <div className="text-sm font-medium text-foreground truncate">{group.agency}</div>
                               <div className="text-[10px] text-muted-foreground">
                                 {group.count} contract{group.count > 1 ? "s" : ""}
-                                {group.hasControversy && <span className="text-destructive ml-1.5">• Controversy flagged</span>}
+                                {group.hasNotableContext && <span className="text-muted-foreground ml-1.5">• Additional context</span>}
                               </div>
                             </div>
                           </div>
