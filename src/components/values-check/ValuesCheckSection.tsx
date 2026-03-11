@@ -104,6 +104,7 @@ export function ValuesCheckSection({
   onGenerateSignals,
   isGenerating,
   onExecutiveClick,
+  onDonationsClick,
 }: ValuesCheckSectionProps) {
   const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const [issueFilterExpanded, setIssueFilterExpanded] = useState(false);
