@@ -67,6 +67,7 @@ interface ValuesCheckSectionProps {
   onGenerateSignals?: () => void;
   isGenerating?: boolean;
   onExecutiveClick?: (executive: { id: string; name: string; title: string; total_donations: number }) => void;
+  onDonationsClick?: () => void;
 }
 
 function getConfidenceBadge(label: string) {
@@ -103,6 +104,7 @@ export function ValuesCheckSection({
   onGenerateSignals,
   isGenerating,
   onExecutiveClick,
+  onDonationsClick,
 }: ValuesCheckSectionProps) {
   const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const [issueFilterExpanded, setIssueFilterExpanded] = useState(false);
@@ -233,13 +235,13 @@ export function ValuesCheckSection({
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                     {summaryStats.totalDonations > 0 && (
                       <button
-                        onClick={() => document.getElementById("cat-political_giving")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                        onClick={() => onDonationsClick ? onDonationsClick() : document.getElementById("cat-political_giving")?.scrollIntoView({ behavior: "smooth", block: "center" })}
                         className="bg-card rounded-lg p-3 border border-border/30 text-left hover:border-primary/20 hover:bg-primary/[0.02] transition-all cursor-pointer group"
                       >
                         <DollarSign className="w-4 h-4 text-primary mb-1" />
                         <p className="text-lg font-bold text-foreground font-data group-hover:text-primary transition-colors">{formatAmount(summaryStats.totalDonations)}</p>
                         <p className="text-[10px] text-muted-foreground">Political donations</p>
-                        <p className="text-[8px] text-primary opacity-0 group-hover:opacity-100 transition-opacity mt-1">Click to view ↓</p>
+                        <p className="text-[8px] text-primary opacity-0 group-hover:opacity-100 transition-opacity mt-1">Click to see recipients →</p>
                       </button>
                     )}
                     {summaryStats.totalLobbying > 0 && (
@@ -255,13 +257,13 @@ export function ValuesCheckSection({
                     )}
                     {summaryStats.uniqueRecipients > 0 && (
                       <button
-                        onClick={() => document.getElementById("cat-political_giving")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                        onClick={() => onDonationsClick ? onDonationsClick() : document.getElementById("cat-political_giving")?.scrollIntoView({ behavior: "smooth", block: "center" })}
                         className="bg-card rounded-lg p-3 border border-border/30 text-left hover:border-primary/20 hover:bg-primary/[0.02] transition-all cursor-pointer group"
                       >
                         <Users className="w-4 h-4 text-primary mb-1" />
                         <p className="text-lg font-bold text-foreground font-data group-hover:text-primary transition-colors">{summaryStats.uniqueRecipients}</p>
                         <p className="text-[10px] text-muted-foreground">Recipients funded</p>
-                        <p className="text-[8px] text-primary opacity-0 group-hover:opacity-100 transition-opacity mt-1">Click to view ↓</p>
+                        <p className="text-[8px] text-primary opacity-0 group-hover:opacity-100 transition-opacity mt-1">Click to see who →</p>
                       </button>
                     )}
                     {summaryStats.execCount > 0 && (
