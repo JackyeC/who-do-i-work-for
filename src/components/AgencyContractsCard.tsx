@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Shield, AlertTriangle, Loader2, Globe, ShieldAlert, Factory, ChevronDown, ChevronUp } from "lucide-react";
+import { Shield, AlertTriangle, Loader2, Globe, ShieldAlert, Factory, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
