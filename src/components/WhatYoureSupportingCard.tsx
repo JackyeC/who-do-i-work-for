@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, HandCoins, Users, Scale, HelpCircle, ExternalLink, Share2 } from "lucide-react";
+import { AlertTriangle, HandCoins, Users, Scale, HelpCircle, ExternalLink, Share2, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
 import { PartyBadge } from "@/components/PartyBadge";
