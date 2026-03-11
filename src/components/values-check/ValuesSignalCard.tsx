@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, ExternalLink, MousePointerClick } from "lucide-react";
+import { ChevronDown, ChevronUp, ExternalLink, MousePointerClick, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PartyBadge } from "@/components/PartyBadge";
 import { cleanEntityName } from "@/lib/entityUtils";
@@ -23,9 +23,10 @@ interface Props {
   signal: ValuesCheckSignal;
   getConfidenceBadge: (label: string) => { text: string; className: string };
   getVerificationBadge: (status: string) => { text: string; className: string };
+  onExecutiveClick?: (executive: { id: string; name: string; title: string; total_donations: number }) => void;
 }
 
-export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBadge }: Props) {
+export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBadge, onExecutiveClick }: Props) {
   const [expanded, setExpanded] = useState(false);
   const conf = getConfidenceBadge(signal.confidence_label);
   const verif = getVerificationBadge(signal.verification_status);
@@ -158,7 +159,7 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
                 </div>
               )}
 
-              {/* Individual executive donations — clickable to FEC */}
+              {/* Individual executive donations — clickable to open drawer */}
               {individualRecipients.length > 0 && (
                 <div className="space-y-1.5">
                   <p className="text-[11px] font-semibold text-foreground flex items-center gap-1.5">
@@ -166,29 +167,48 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
                     <Badge variant="outline" className="text-[9px] px-1 py-0 font-normal">Individual</Badge>
                   </p>
                   <div className="space-y-1">
-                    {individualRecipients.map((r, i) => (
-                      <a
-                        key={`ind-${i}`}
-                        href={fecSearchUrl(r.name)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between text-[11px] py-1.5 px-2.5 rounded-lg bg-muted/40 hover:bg-primary/5 hover:border-primary/20 border border-transparent transition-colors cursor-pointer group/r"
-                      >
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="font-medium text-foreground truncate group-hover/r:text-primary transition-colors">{r.name}</span>
-                          <PartyBadge party={r.party} entityType={r.entity_type} size="xs" />
+                    {individualRecipients.map((r, i) => {
+                      // Extract exec name from signal title (e.g. "Executive donations: Jamie Dimon")
+                      const execName = signal.related_person_name || signal.signal_title?.replace(/^Executive donations:\s*/i, "") || "";
+                      const canOpenDrawer = !!onExecutiveClick && !!execName;
+
+                      return (
+                        <div
+                          key={`ind-${i}`}
+                          className="flex items-center justify-between text-[11px] py-1.5 px-2.5 rounded-lg bg-muted/40 hover:bg-primary/5 hover:border-primary/20 border border-transparent transition-colors cursor-pointer group/r"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (canOpenDrawer) {
+                              onExecutiveClick({
+                                id: "",
+                                name: execName,
+                                title: signal.signal_description?.match(/\(([^)]+)\)/)?.[1] || "Executive",
+                                total_donations: signal.amount || 0,
+                              });
+                            } else {
+                              window.open(fecSearchUrl(r.name), "_blank");
+                            }
+                          }}
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="font-medium text-foreground truncate group-hover/r:text-primary transition-colors">{r.name}</span>
+                            <PartyBadge party={r.party} entityType={r.entity_type} size="xs" />
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                            {r.amount > 0 && (
+                              <span className="text-[10px] font-bold text-primary">
+                                {formatAmount(r.amount)}
+                              </span>
+                            )}
+                            <ArrowRight className="w-2.5 h-2.5 text-muted-foreground opacity-0 group-hover/r:opacity-100 transition-opacity" />
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                          {r.amount > 0 && (
-                            <span className="text-[10px] font-bold text-primary">
-                              {formatAmount(r.amount)}
-                            </span>
-                          )}
-                          <ExternalLink className="w-2.5 h-2.5 text-muted-foreground opacity-0 group-hover/r:opacity-100 transition-opacity" />
-                        </div>
-                      </a>
-                    ))}
+                      );
+                    })}
                   </div>
+                  {onExecutiveClick && (
+                    <p className="text-[9px] text-muted-foreground mt-1">Click to see full donation breakdown & voting records</p>
+                  )}
                 </div>
               )}
 

@@ -66,6 +66,7 @@ interface ValuesCheckSectionProps {
   isLoading?: boolean;
   onGenerateSignals?: () => void;
   isGenerating?: boolean;
+  onExecutiveClick?: (executive: { id: string; name: string; title: string; total_donations: number }) => void;
 }
 
 function getConfidenceBadge(label: string) {
@@ -101,6 +102,7 @@ export function ValuesCheckSection({
   isLoading,
   onGenerateSignals,
   isGenerating,
+  onExecutiveClick,
 }: ValuesCheckSectionProps) {
   const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   const [issueFilterExpanded, setIssueFilterExpanded] = useState(false);
@@ -449,6 +451,7 @@ export function ValuesCheckSection({
                           signal={signal}
                           getConfidenceBadge={getConfidenceBadge}
                           getVerificationBadge={getVerificationBadge}
+                          onExecutiveClick={onExecutiveClick}
                         />
                       ))}
 
@@ -464,6 +467,7 @@ export function ValuesCheckSection({
                           signal={signal}
                           getConfidenceBadge={getConfidenceBadge}
                           getVerificationBadge={getVerificationBadge}
+                          onExecutiveClick={onExecutiveClick}
                         />
                       ))}
                     </div>

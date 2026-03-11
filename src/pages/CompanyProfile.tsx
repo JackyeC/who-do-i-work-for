@@ -966,6 +966,7 @@ export default function CompanyProfile() {
                 signals={valuesCheckSignals || []}
                 onGenerateSignals={handleGenerateValuesCheck}
                 isGenerating={isGeneratingValues}
+                onExecutiveClick={handleExecutiveClick}
               />
             </div>
 
