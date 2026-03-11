@@ -165,7 +165,7 @@ export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyNa
                         {isExpanded && (
                           <div className="border-t border-border/40 bg-muted/20 p-2 space-y-1.5 max-h-64 overflow-y-auto">
                             {group.contracts.map((c: any) => (
-                              <div key={c.id} className={`p-2.5 rounded-md border ${c.controversy_flag ? "border-destructive/20 bg-destructive/5" : "border-border/40 bg-background"}`}>
+                              <div key={c.id} className={`p-2.5 rounded-md border ${c.controversy_flag ? "border-primary/20 bg-primary/5" : "border-border/40 bg-background"}`}>
                                 <div className="flex items-center justify-between mb-1">
                                   {c.contract_description
                                     ? <span className="text-xs text-foreground line-clamp-2">{c.contract_description}</span>
