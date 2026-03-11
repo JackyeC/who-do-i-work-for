@@ -429,7 +429,7 @@ export function ValuesCheckSection({
                 const generalSignals = catSignals.filter(s => s.issue_area === "general");
 
                 return (
-                  <div key={cat.key}>
+                  <div key={cat.key} id={`cat-${cat.key}`}>
                     <div className="flex items-center gap-2.5 mb-1.5">
                       <div className="w-8 h-8 rounded-xl bg-primary/5 border border-primary/10 flex items-center justify-center">
                         <CatIcon className="w-4 h-4 text-primary" />
