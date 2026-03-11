@@ -23,9 +23,10 @@ interface Props {
   signal: ValuesCheckSignal;
   getConfidenceBadge: (label: string) => { text: string; className: string };
   getVerificationBadge: (status: string) => { text: string; className: string };
+  onExecutiveClick?: (executive: { id: string; name: string; title: string; total_donations: number }) => void;
 }
 
-export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBadge }: Props) {
+export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBadge, onExecutiveClick }: Props) {
   const [expanded, setExpanded] = useState(false);
   const conf = getConfidenceBadge(signal.confidence_label);
   const verif = getVerificationBadge(signal.verification_status);
