@@ -133,6 +133,7 @@ export function AgencyContractsCard({ companyName, dbCompanyId }: Props) {
 
   const totalFlags = (result?.agencyContracts?.filter(c => c.controversyFlag).length || 0) +
     (result?.supplyChainFlags?.length || 0);
+  // Note: "flags" here means "notable context items" — not judgments
 
   return (
     <Card className={cn(totalFlags > 0 && "border-civic-red/20")}>
