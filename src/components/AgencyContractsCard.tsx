@@ -13,8 +13,8 @@ interface AgencyContract {
   description: string;
   estimatedValue?: number;
   controversyFlag: boolean;
-  controversyCategory?: string;
-  controversyDescription?: string;
+  notableCategory?: string;
+  notableDescription?: string;
   source?: string;
   confidence: string;
 }
