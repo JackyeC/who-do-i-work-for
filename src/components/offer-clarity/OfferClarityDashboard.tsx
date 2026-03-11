@@ -8,6 +8,10 @@ import {
   ArrowLeft, Download, Share2, TrendingUp, TrendingDown, Minus,
   CheckCircle2, AlertTriangle, XCircle
 } from "lucide-react";
+import { BLSWageBenchmarkCard } from "@/components/bls/BLSWageBenchmarkCard";
+import { BLSECITrendCard } from "@/components/bls/BLSECITrendCard";
+import { BLSDemographicsCard } from "@/components/bls/BLSDemographicsCard";
+import { BLSBenefitsCard } from "@/components/bls/BLSBenefitsCard";
 
 export interface OfferClarityReport {
   compensation: {
@@ -209,6 +213,16 @@ export function OfferClarityDashboard({ report, offerData, onStartOver }: Props)
           </div>
         </CardContent>
       </Card>
+
+      {/* BLS Data Intelligence */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <BLSWageBenchmarkCard occupationTitle={offerData.roleTitle} offeredSalary={baseSalary} />
+        <BLSECITrendCard />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <BLSDemographicsCard offeredSalary={baseSalary} />
+        <BLSBenefitsCard />
+      </div>
 
       {/* Category Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
