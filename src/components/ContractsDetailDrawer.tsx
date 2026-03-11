@@ -49,7 +49,7 @@ export function ContractsDetailDrawer({ open, onOpenChange, companyId, companyNa
     const map: Record<string, AgencyGroup> = {};
     for (const c of contracts || []) {
       const key = c.agency_name || "Unknown Agency";
-      if (!map[key]) map[key] = { agency: key, total: 0, count: 0, contracts: [], hasControversy: false };
+      if (!map[key]) map[key] = { agency: key, total: 0, count: 0, contracts: [], hasNotableContext: false };
       map[key].total += c.contract_value || 0;
       map[key].count += 1;
       map[key].contracts.push(c);
