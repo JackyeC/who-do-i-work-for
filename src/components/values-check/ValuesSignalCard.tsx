@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronUp, ExternalLink, MousePointerClick } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PartyBadge } from "@/components/PartyBadge";
 import { cleanEntityName } from "@/lib/entityUtils";
@@ -10,6 +10,13 @@ import { type ValuesCheckSignal, ISSUE_AREAS } from "./ValuesCheckSection";
 function formatAmount(amount: number | null) {
   if (!amount) return null;
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(amount);
+}
+
+function fecSearchUrl(name: string, type: "candidate" | "committee" | "contributor" = "candidate") {
+  if (type === "contributor") {
+    return `https://www.fec.gov/data/receipts/?contributor_name=${encodeURIComponent(name)}`;
+  }
+  return `https://www.fec.gov/data/candidates/?search=${encodeURIComponent(name)}`;
 }
 
 interface Props {
@@ -35,19 +42,28 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
     return [];
   })();
 
-  // Group recipients by donation type for display
   const pacRecipients = recipients.filter(r => r.donation_type !== "Individual");
   const individualRecipients = recipients.filter(r => r.donation_type === "Individual");
+  const hasDetail = recipients.length > 0 || signal.signal_description || signal.source_url;
 
   return (
-    <div className="rounded-xl border border-border/40 bg-card overflow-hidden hover:border-primary/15 transition-colors group">
+    <div
+      className={cn(
+        "rounded-xl border bg-card overflow-hidden transition-all duration-200",
+        expanded
+          ? "border-primary/25 shadow-sm"
+          : "border-border/40 hover:border-primary/20 hover:shadow-sm"
+      )}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-start gap-3 p-4 text-left cursor-pointer"
+        className="w-full flex items-start gap-3 p-4 text-left cursor-pointer group"
       >
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <h4 className="text-sm font-semibold text-foreground">{signal.signal_title}</h4>
+            <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+              {signal.signal_title}
+            </h4>
             {signal.amount && (
               <span className="text-xs font-bold text-primary font-data">
                 {formatAmount(signal.amount)}
@@ -75,11 +91,18 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
             </Badge>
           </div>
         </div>
-        <div className="shrink-0 mt-1">
+
+        {/* Expand indicator */}
+        <div className="shrink-0 mt-1 flex flex-col items-center gap-0.5">
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-muted-foreground" />
+            <ChevronUp className="w-4 h-4 text-primary" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          )}
+          {!expanded && hasDetail && (
+            <span className="text-[8px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              details
+            </span>
           )}
         </div>
       </button>
@@ -94,14 +117,14 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
             className="overflow-hidden"
           >
             <div className="px-4 pb-4 space-y-2.5 border-t border-border/30 pt-3">
-              {/* Full description (not truncated) */}
+              {/* Full description */}
               {signal.signal_description && (
                 <p className="text-xs text-foreground/80 leading-relaxed">
                   {signal.signal_description}
                 </p>
               )}
 
-              {/* PAC donation recipients */}
+              {/* PAC donation recipients — clickable to FEC */}
               {pacRecipients.length > 0 && (
                 <div className="space-y-1.5">
                   <p className="text-[11px] font-semibold text-foreground flex items-center gap-1.5">
@@ -110,23 +133,32 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
                   </p>
                   <div className="space-y-1">
                     {pacRecipients.map((r, i) => (
-                      <div key={`pac-${i}`} className="flex items-center justify-between text-[11px] py-1 px-2 rounded-lg bg-muted/40">
+                      <a
+                        key={`pac-${i}`}
+                        href={fecSearchUrl(r.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between text-[11px] py-1.5 px-2.5 rounded-lg bg-muted/40 hover:bg-primary/5 hover:border-primary/20 border border-transparent transition-colors cursor-pointer group/r"
+                      >
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="font-medium text-foreground truncate">{r.name}</span>
+                          <span className="font-medium text-foreground truncate group-hover/r:text-primary transition-colors">{r.name}</span>
                           <PartyBadge party={r.party} entityType={r.entity_type} size="xs" />
                         </div>
-                        {r.amount > 0 && (
-                          <span className="text-[10px] font-bold text-primary shrink-0 ml-2">
-                            {formatAmount(r.amount)}
-                          </span>
-                        )}
-                      </div>
+                        <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                          {r.amount > 0 && (
+                            <span className="text-[10px] font-bold text-primary">
+                              {formatAmount(r.amount)}
+                            </span>
+                          )}
+                          <ExternalLink className="w-2.5 h-2.5 text-muted-foreground opacity-0 group-hover/r:opacity-100 transition-opacity" />
+                        </div>
+                      </a>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Individual executive donations */}
+              {/* Individual executive donations — clickable to FEC */}
               {individualRecipients.length > 0 && (
                 <div className="space-y-1.5">
                   <p className="text-[11px] font-semibold text-foreground flex items-center gap-1.5">
@@ -135,17 +167,26 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
                   </p>
                   <div className="space-y-1">
                     {individualRecipients.map((r, i) => (
-                      <div key={`ind-${i}`} className="flex items-center justify-between text-[11px] py-1 px-2 rounded-lg bg-muted/40">
+                      <a
+                        key={`ind-${i}`}
+                        href={fecSearchUrl(r.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between text-[11px] py-1.5 px-2.5 rounded-lg bg-muted/40 hover:bg-primary/5 hover:border-primary/20 border border-transparent transition-colors cursor-pointer group/r"
+                      >
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="font-medium text-foreground truncate">{r.name}</span>
+                          <span className="font-medium text-foreground truncate group-hover/r:text-primary transition-colors">{r.name}</span>
                           <PartyBadge party={r.party} entityType={r.entity_type} size="xs" />
                         </div>
-                        {r.amount > 0 && (
-                          <span className="text-[10px] font-bold text-primary shrink-0 ml-2">
-                            {formatAmount(r.amount)}
-                          </span>
-                        )}
-                      </div>
+                        <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                          {r.amount > 0 && (
+                            <span className="text-[10px] font-bold text-primary">
+                              {formatAmount(r.amount)}
+                            </span>
+                          )}
+                          <ExternalLink className="w-2.5 h-2.5 text-muted-foreground opacity-0 group-hover/r:opacity-100 transition-opacity" />
+                        </div>
+                      </a>
                     ))}
                   </div>
                 </div>
@@ -157,17 +198,26 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
                   <p className="text-[11px] font-semibold text-foreground">Donated to:</p>
                   <div className="space-y-1">
                     {recipients.map((r, i) => (
-                      <div key={i} className="flex items-center justify-between text-[11px] py-1 px-2 rounded-lg bg-muted/40">
+                      <a
+                        key={i}
+                        href={fecSearchUrl(r.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between text-[11px] py-1.5 px-2.5 rounded-lg bg-muted/40 hover:bg-primary/5 border border-transparent transition-colors cursor-pointer group/r"
+                      >
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="font-medium text-foreground truncate">{r.name}</span>
+                          <span className="font-medium text-foreground truncate group-hover/r:text-primary transition-colors">{r.name}</span>
                           <PartyBadge party={r.party} size="xs" />
                         </div>
-                        {r.amount > 0 && (
-                          <span className="text-[10px] font-bold text-primary shrink-0 ml-2">
-                            {formatAmount(r.amount)}
-                          </span>
-                        )}
-                      </div>
+                        <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                          {r.amount > 0 && (
+                            <span className="text-[10px] font-bold text-primary">
+                              {formatAmount(r.amount)}
+                            </span>
+                          )}
+                          <ExternalLink className="w-2.5 h-2.5 text-muted-foreground opacity-0 group-hover/r:opacity-100 transition-opacity" />
+                        </div>
+                      </a>
                     ))}
                   </div>
                 </div>
@@ -227,9 +277,9 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
                   href={signal.source_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline"
+                  className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium"
                 >
-                  View source <ExternalLink className="w-3 h-3" />
+                  View original filing <ExternalLink className="w-3 h-3" />
                 </a>
               )}
             </div>
