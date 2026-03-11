@@ -1020,10 +1020,15 @@ export default function CompanyProfile() {
                     spending_reality: s.spending_reality,
                   }))}
                   topIssuesLobbied={
-                    (dbStateLobbying || []).flatMap((s: any) => s.issues || []).filter((v: string, i: number, a: string[]) => a.indexOf(v) === i).slice(0, 8)
+                    // Merge state lobbying issues + issue_signals categories
+                    [
+                      ...(dbStateLobbying || []).flatMap((s: any) => s.issues || []),
+                      ...(dbIssueSignals || []).map((s: any) => s.issue_category?.replace(/_/g, ' ')),
+                    ].filter((v: string, i: number, a: string[]) => v && a.indexOf(v) === i).slice(0, 12)
                   }
                   darkMoneyConnections={(dbDarkMoney || []).length}
                   flaggedOrgCount={0}
+                  issueSignals={dbIssueSignals || []}
                 />
               </div>
             )}
