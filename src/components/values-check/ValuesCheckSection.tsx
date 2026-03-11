@@ -451,6 +451,7 @@ export function ValuesCheckSection({
                           signal={signal}
                           getConfidenceBadge={getConfidenceBadge}
                           getVerificationBadge={getVerificationBadge}
+                          onExecutiveClick={onExecutiveClick}
                         />
                       ))}
 
