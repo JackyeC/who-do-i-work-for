@@ -19,6 +19,15 @@ interface PublicStance {
   spending_reality: string;
 }
 
+interface IssueSignal {
+  issue_category: string;
+  signal_type: string;
+  description: string;
+  amount: number | null;
+  confidence_score: string;
+  source_url: string | null;
+}
+
 interface Props {
   companyName: string;
   totalPacSpending: number;
@@ -29,6 +38,7 @@ interface Props {
   publicStances?: PublicStance[];
   darkMoneyConnections?: number;
   flaggedOrgCount?: number;
+  issueSignals?: IssueSignal[];
 }
 
 const PARTY_FULL: Record<string, string> = {
