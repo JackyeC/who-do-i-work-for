@@ -49,6 +49,9 @@ import CompanyDossier from "./pages/CompanyDossier";
 import Pricing from "./pages/Pricing";
 import RelationshipIntelligence from "./pages/RelationshipIntelligence";
 import StrategicOfferReview from "./pages/StrategicOfferReview";
+import PolicyHub from "./pages/PolicyHub";
+import PolicyDetail from "./pages/PolicyDetail";
+import EconomyDashboard from "./pages/EconomyDashboard";
 const queryClient = new QueryClient();
 
 function ScrollToTop() {
@@ -73,6 +76,9 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/check" element={<Check />} />
+                <Route path="/policy" element={<PolicyHub />} />
+                <Route path="/policy/:id" element={<PolicyDetail />} />
+                <Route path="/economy" element={<EconomyDashboard />} />
                 <Route path="/company/:id" element={<CompanyProfile />} />
                 <Route path="/dossier/:id" element={<CompanyDossier />} />
                 <Route path="/pricing" element={<Pricing />} />
