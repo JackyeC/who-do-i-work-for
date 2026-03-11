@@ -214,6 +214,16 @@ export function OfferClarityDashboard({ report, offerData, onStartOver }: Props)
         </CardContent>
       </Card>
 
+      {/* BLS Data Intelligence */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <BLSWageBenchmarkCard occupationTitle={offerData.roleTitle} offeredSalary={baseSalary} />
+        <BLSECITrendCard />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <BLSDemographicsCard offeredSalary={baseSalary} />
+        <BLSBenefitsCard />
+      </div>
+
       {/* Category Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {CATEGORY_CONFIG.map(config => {
