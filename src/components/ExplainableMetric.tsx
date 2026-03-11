@@ -127,8 +127,8 @@ const METRIC_EXPLANATIONS: Record<string, MetricExplanation> = {
     source: "SEC filings, state disclosures, job posting analysis",
   },
   "ideology-flags": {
-    title: "Ideology & Controversy Flags",
-    what: "Connections between this company and organizations on ideological watchlists — including extremist groups, politically controversial nonprofits, and organizations flagged by civil rights monitors.",
+    title: "Ideology & Affiliation Flags",
+    what: "Connections between this company and organizations on ideological watchlists — including politically active nonprofits and organizations flagged by civil rights monitors.",
     why: "These flags don't mean a company endorses extremism. They identify financial or organizational relationships that could affect workplace culture, brand perception, or stakeholder trust.",
     source: "SPLC, ADL, lobbying disclosures, IRS 990 filings",
     context: "Severity levels: Critical (direct funding of flagged orgs), High (board/leadership overlap), Medium (trade association membership), Low (indirect connection).",
