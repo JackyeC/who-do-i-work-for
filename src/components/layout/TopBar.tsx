@@ -7,8 +7,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import {
   Search, Sun, Moon, ClipboardCheck, LogIn, LogOut,
-  Home, Compass, Briefcase, Shield, LayoutDashboard,
-  ChevronDown, Menu, X,
+  Landmark, Building2, Briefcase, LayoutDashboard,
+  ChevronDown, Menu, X, TrendingUp,
 } from "lucide-react";
 
 function ThemeToggle() {
@@ -42,53 +42,57 @@ function ThemeToggle() {
 
 export const MAIN_SECTIONS = [
   {
-    id: "home",
-    label: "Home",
-    icon: Home,
-    path: "/",
-    matchPaths: ["/"],
-    subItems: [],
-  },
-  {
-    id: "explore",
-    label: "Explore",
-    icon: Compass,
-    path: "/browse",
-    matchPaths: ["/browse", "/search", "/add-company", "/examples", "/search-your-employer", "/values-search", "/company/", "/dossier/"],
+    id: "policy",
+    label: "Policy",
+    icon: Landmark,
+    path: "/policy",
+    matchPaths: ["/policy", "/intelligence"],
     subItems: [
-      { label: "Employer Directory", path: "/browse" },
-      { label: "Search", path: "/search" },
-      { label: "Add Company", path: "/add-company" },
-      { label: "Top Searched", path: "/examples" },
-      { label: "Recent Scans", path: "/search-your-employer" },
-      { label: "Signal Search", path: "/values-search" },
+      { label: "Policy Impact Hub", path: "/policy" },
+      { label: "Legislation Tracker", path: "/policy?view=tracker" },
+      { label: "Evidence Receipts", path: "/intelligence" },
+      { label: "Signals This Week", path: "/intelligence?type=weekly_brief" },
     ],
   },
   {
-    id: "career",
-    label: "Career",
+    id: "companies",
+    label: "Companies",
+    icon: Building2,
+    path: "/browse",
+    matchPaths: ["/browse", "/search", "/company/", "/dossier/", "/add-company", "/examples", "/search-your-employer", "/values-search", "/recruiting"],
+    subItems: [
+      { label: "Employer Directory", path: "/browse" },
+      { label: "Signal Search", path: "/values-search" },
+      { label: "Add Company", path: "/add-company" },
+      { label: "EVP Audit", path: "/recruiting?tab=evp" },
+      { label: "Talent Dashboard", path: "/recruiting?tab=insights" },
+    ],
+  },
+  {
+    id: "careers",
+    label: "Careers",
     icon: Briefcase,
-    path: "/check?tab=company",
+    path: "/check",
     matchPaths: ["/check", "/career-map", "/jobs", "/offer-check", "/offer-clarity", "/offer-review", "/strategic-offer-review"],
     subItems: [
       { label: "Employer Scan", path: "/check?tab=company" },
       { label: "Offer Check", path: "/check?tab=offer" },
-      { label: "Career Path Explorer", path: "/career-map", auth: true },
+      { label: "Career Discovery", path: "/career-map", auth: true },
       { label: "Job Board", path: "/jobs" },
+      { label: "Offer Clarity", path: "/offer-clarity" },
     ],
   },
   {
-    id: "intelligence",
-    label: "Intelligence",
-    icon: Shield,
-    path: "/intelligence",
-    matchPaths: ["/intelligence", "/recruiting"],
+    id: "economy",
+    label: "Economy",
+    icon: TrendingUp,
+    path: "/economy",
+    matchPaths: ["/economy"],
     subItems: [
-      { label: "Evidence Receipts", path: "/intelligence" },
-      { label: "Signals This Week", path: "/intelligence?type=weekly_brief" },
-      { label: "Influence Map", path: "/check?tab=candidate" },
-      { label: "EVP Audit", path: "/recruiting?tab=evp" },
-      { label: "Talent Dashboard", path: "/recruiting?tab=insights" },
+      { label: "Economic Dashboard", path: "/economy" },
+      { label: "Industry Growth", path: "/economy?view=industries" },
+      { label: "Labor Market", path: "/economy?view=labor" },
+      { label: "Federal Spending", path: "/economy?view=spending" },
     ],
   },
   {
@@ -102,16 +106,13 @@ export const MAIN_SECTIONS = [
       { label: "Overview", path: "/dashboard" },
       { label: "Tracked Companies", path: "/dashboard?tab=tracked" },
       { label: "Matched Jobs", path: "/dashboard?tab=matches" },
-      { label: "Auto-Apply", path: "/dashboard?tab=auto-apply" },
       { label: "Signal Alerts", path: "/dashboard?tab=alerts" },
       { label: "Preferences", path: "/dashboard?tab=preferences" },
-      { label: "Profile", path: "/dashboard?tab=profile" },
     ],
   },
 ];
 
 function isSectionActive(section: typeof MAIN_SECTIONS[0], pathname: string) {
-  if (section.id === "home") return pathname === "/";
   return section.matchPaths.some(p => {
     if (p === "/") return pathname === "/";
     return pathname.startsWith(p);
@@ -135,31 +136,30 @@ export function TopBar() {
     }
   };
 
-  // Close mobile menu on navigation
   useEffect(() => {
     setMobileMenuOpen(false);
     setOpenDropdown(null);
   }, [location.pathname, location.search]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/30 bg-card/95 backdrop-blur-md">
-      {/* Main bar */}
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-card/95 backdrop-blur-md">
       <div className="flex items-center h-14 px-4 gap-3">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 shrink-0 mr-2">
+        <Link to="/" className="flex items-center gap-2.5 shrink-0 mr-3">
           <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-sm overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
             <ClipboardCheck className="w-4 h-4 text-primary-foreground relative z-10" />
           </div>
-          <div className="hidden md:block leading-none">
+          <div className="hidden lg:block leading-none">
             <p className="text-sm font-bold text-foreground tracking-tight font-display">
-              Who Do I Work For?
+              CivicLens
             </p>
+            <p className="text-[10px] text-muted-foreground -mt-0.5">Policy → Company → Career</p>
           </div>
         </Link>
 
-        {/* Desktop main nav */}
-        <nav className="hidden md:flex items-center gap-1 flex-1">
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-0.5 flex-1">
           {MAIN_SECTIONS.map(section => {
             if (section.auth && !user) return null;
             const active = isSectionActive(section, location.pathname);
@@ -189,10 +189,9 @@ export function TopBar() {
                 >
                   <Icon className="w-4 h-4" />
                   {section.label}
-                  {hasDropdown && <ChevronDown className="w-3 h-3 ml-0.5" />}
+                  {hasDropdown && <ChevronDown className="w-3 h-3 ml-0.5 opacity-50" />}
                 </Link>
 
-                {/* Dropdown */}
                 {hasDropdown && openDropdown === section.id && (
                   <div className="absolute top-full left-0 mt-1 w-52 bg-popover border border-border rounded-xl shadow-lg py-1.5 z-50 animate-in fade-in-0 zoom-in-95 duration-100">
                     {section.subItems.map(sub => {
@@ -261,7 +260,6 @@ export function TopBar() {
             </Link>
           )}
 
-          {/* Mobile hamburger */}
           <button
             className="md:hidden p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
