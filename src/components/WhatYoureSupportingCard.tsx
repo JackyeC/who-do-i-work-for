@@ -71,9 +71,11 @@ export function WhatYoureSupportingCard({
   lobbyingDetails = [],
   publicStances = [],
   darkMoneyConnections = 0,
+  darkMoneyRecords = [],
   flaggedOrgCount = 0,
   issueSignals = [],
 }: Props) {
+  const [worthKnowingExpanded, setWorthKnowingExpanded] = useState(false);
   const hasActivity = totalPacSpending > 0 || lobbyingSpend > 0 || topCandidates.length > 0 || issueSignals.length > 0;
 
   // Aggregate issue signals by category
