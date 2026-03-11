@@ -215,10 +215,17 @@ export function EconomicIntelligenceStep({ profile }: Props) {
         </CardContent>
       </Card>
 
+      {/* BLS Real Wage Data */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <BLSWageBenchmarkCard occupationTitle={profile.jobTitle} />
+        <BLSECITrendCard />
+      </div>
+
       {/* Data sources */}
       <div className="p-3 rounded-xl bg-muted/50 border border-border">
         <p className="text-[10px] text-muted-foreground">
           <span className="font-semibold">Data sources:</span> BLS National Employment Matrix (2024–2034 projections),
+          BLS Occupational Employment & Wage Statistics (OES), BLS Employment Cost Index (ECI),
           FRED Business Survey Indexes (ISM PMI, Q1 2026), BEA Real GDP by Industry (Q4 2025–Q1 2026),
           Zillow Market Forecast (March 2026), Anthropic/BLS Working Paper (March 2026).
           Stability scores are modeled estimates and should not be used as sole career decision factors.
