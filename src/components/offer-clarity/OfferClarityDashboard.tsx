@@ -8,6 +8,10 @@ import {
   ArrowLeft, Download, Share2, TrendingUp, TrendingDown, Minus,
   CheckCircle2, AlertTriangle, XCircle
 } from "lucide-react";
+import { BLSWageBenchmarkCard } from "@/components/bls/BLSWageBenchmarkCard";
+import { BLSECITrendCard } from "@/components/bls/BLSECITrendCard";
+import { BLSDemographicsCard } from "@/components/bls/BLSDemographicsCard";
+import { BLSBenefitsCard } from "@/components/bls/BLSBenefitsCard";
 
 export interface OfferClarityReport {
   compensation: {
