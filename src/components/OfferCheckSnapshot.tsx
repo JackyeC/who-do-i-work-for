@@ -170,6 +170,7 @@ export function deriveSnapshotVerdict(sections: SnapshotSection[]): SnapshotVerd
 }
 
 /* ── Generate Jackye's Take for the snapshot ── */
+/* Voice: The Redline Auditor. "Facts over Feelings." Accountability Intelligence. */
 
 export function generateSnapshotJackyeTake(
   verdict: SnapshotVerdict,
@@ -177,22 +178,31 @@ export function generateSnapshotJackyeTake(
 ): string {
   const warnings = sections.filter(s => s.status === "warning");
   const missing = sections.filter(s => s.status === "missing");
+  const influenceWarning = warnings.find(w => w.key === "influence_spending");
+  const hiringWarning = warnings.find(w => w.key === "hiring_transparency");
 
   if (verdict === "Strong Fit") {
-    return "This offer looks solid on paper, and the company behind it has the receipts to match. That's rare. Still — ask the questions below, because good character holds up under scrutiny. Facts over Feelings.";
+    return "I don't hand out gold stars easily, but this one earned it. The receipts match the rhetoric — and in this market, that's not just rare, it's remarkable. Still, ask the questions below. Good character holds up under scrutiny. That's how trust gets built. Facts over Feelings.";
   }
 
   if (verdict === "Needs Deeper Review") {
     const warningLabels = warnings.map(w => w.label.toLowerCase()).join(", ");
-    return `Ugly Baby alert. The offer may look fine on paper, but the company behind it is showing red in ${warningLabels}. Before you sign anything, look at the flow of funds vs. the marketing fluff. Don't let a nice salary blind you to the character gaps. Run the chain first. Always.`;
+    // Dirty Receipt callout if influence + another gap
+    if (influenceWarning && warnings.length >= 2) {
+      const otherWarnings = warnings.filter(w => w.key !== "influence_spending").map(w => w.label.toLowerCase()).join(" and ");
+      return `Ugly Baby alert. They know how to write checks in DC, but when it comes to ${otherWarnings}? Silence. That's a massive character gap — they're obsessed with automation but ghosting on humanization. AI can simulate competence, but these signals reveal who they actually are. Don't let a nice salary blind you to the Dirty Receipts. Run the chain first. Always.`;
+    }
+    return `Ugly Baby alert. The marketing is pretty, but the receipts are messy — showing red in ${warningLabels}. Before you sign anything, look at the flow of funds vs. the marketing fluff. Human frailty is real, but so is corporate negligence. Don't commit your talent until they can show the work. Run the chain first. Always.`;
   }
 
   // Proceed with Caution
-  if (missing.length >= 2) {
-    return "This offer may look good on paper, but the bigger question is whether the company behind it makes sense for your goals, values, and risk tolerance. This snapshot shows you where to look before you say yes. The receipts are incomplete — and silence is a strategy, not an accident.";
+  if (influenceWarning && hiringWarning) {
+    return "Dirty Receipt: they're spending money to shape policy but haven't published a Bias Audit for their own AI hiring tools. They'll lobby Congress about workforce issues but won't tell you how their algorithm screens you out. That's not oversight — that's a character issue. Before you commit your talent, ask them about the audit. If they can't show the work, they don't get your time.";
   }
-
-  return "This offer may look good on paper, but the bigger question is whether the company behind it makes sense for your goals, values, and risk tolerance. This snapshot shows you where to look before you say yes.";
+  if (missing.length >= 2) {
+    return "The receipts are incomplete, and silence is a strategy, not an accident. AI can simulate competence all day long, but these signals reveal character — and right now, the character sheet has blank spots that should worry you. Ask the hard questions before you say yes. Facts over Feelings.";
+  }
+  return "This offer may look good on paper, but the bigger question is whether the company behind it makes sense for your goals, values, and risk tolerance. Look at the flow of funds vs. the marketing fluff. Don't just sign the offer — ask them why their spending doesn't match their messaging. Trust is the currency here; don't spend yours blindly.";
 }
 
 /* ── Component ── */
