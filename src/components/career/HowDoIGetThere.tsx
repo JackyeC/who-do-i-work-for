@@ -3,12 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { EmptyState } from "@/components/EmptyState";
+import { useToast } from "@/hooks/use-toast";
 import {
   GraduationCap, Target, Users, Building2, ExternalLink,
   BookOpen, Video, Award, Newspaper, ChevronRight, Compass,
-  Loader2
+  Loader2, Trash2
 } from "lucide-react";
 
 const RESOURCE_ICONS: Record<string, any> = {
