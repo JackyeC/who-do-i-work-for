@@ -111,7 +111,7 @@ ${scriptTag}`;
         </Tabs>
 
         <p className="text-xs text-muted-foreground">
-          The badge automatically fetches live data from CivicLens. No API key required. Works on any website.
+          The badge automatically fetches live data. No API key required. Works on any website.
         </p>
       </DialogContent>
     </Dialog>

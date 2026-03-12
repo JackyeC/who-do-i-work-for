@@ -120,7 +120,7 @@ export default function RequestCorrection() {
           Request a Correction
         </h1>
         <p className="text-muted-foreground mb-8">
-          CivicLens uses publicly available data to compile company transparency profiles. If you believe any information is inaccurate, outdated, or missing important context, please submit a correction request below.
+          Who Do I Work For? uses publicly available data to compile company transparency profiles. If you believe any information is inaccurate, outdated, or missing important context, please submit a correction request below.
         </p>
 
         <Card className="mb-8 border-primary/20 bg-primary/5">

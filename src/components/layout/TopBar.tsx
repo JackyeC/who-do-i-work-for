@@ -156,7 +156,7 @@ export function TopBar() {
           </div>
           <div className="hidden lg:block leading-none">
             <p className="text-sm font-bold text-foreground tracking-tight font-display">
-              CivicLens
+              WDIWF?
             </p>
             <p className="text-[10px] text-muted-foreground -mt-0.5">Policy → Company → Career</p>
           </div>
