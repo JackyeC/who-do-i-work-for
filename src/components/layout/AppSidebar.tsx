@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import {
   Home, Search, Building2, PlusCircle, TrendingUp, ScanSearch, Heart,
   Briefcase, FileCheck, Map, FileText, BarChart3, Eye, Landmark, Network,
-  Megaphone, Users, Target,
+  Megaphone, Users, Target, CreditCard,
   LayoutDashboard, Zap, Bell, Settings, User, ClipboardCheck,
   LogIn, LogOut, Compass, Flame, Shield,
 } from "lucide-react";
@@ -78,6 +78,7 @@ const NAV_GROUPS = [
       { id: "alerts", label: "Signal Alerts", icon: Bell, path: "/dashboard?tab=alerts" },
       { id: "preferences", label: "Preferences", icon: Settings, path: "/dashboard?tab=preferences" },
       { id: "profile", label: "Profile", icon: User, path: "/dashboard?tab=profile" },
+      { id: "pricing", label: "Pricing & Plans", icon: CreditCard, path: "/pricing" },
     ],
   },
 ];

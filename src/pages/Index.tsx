@@ -231,8 +231,8 @@ const Index = () => {
               <Button onClick={() => navigate("/login")} size="lg" className="h-13 px-8 rounded-xl text-base font-semibold gap-2">
                 Get Started <ArrowRight className="w-4 h-4" />
               </Button>
-              <Button onClick={() => navigate("/policy")} size="lg" variant="outline" className="h-13 px-8 rounded-xl text-base font-semibold">
-                Browse Policy
+              <Button onClick={() => navigate("/pricing")} size="lg" variant="outline" className="h-13 px-8 rounded-xl text-base font-semibold">
+                View Pricing
               </Button>
             </div>
           </motion.div>
