@@ -8,25 +8,17 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 export const MAIN_SECTIONS = [
   {
     id: "intelligence",
-    label: "Intelligence",
+    label: "Company Intelligence",
     path: "/browse",
     matchPaths: ["/browse", "/search", "/company/", "/dossier/", "/add-company", "/values-search", "/intelligence"],
-    subItems: [
-      { label: "Employer Directory", path: "/browse" },
-      { label: "Signal Search", path: "/values-search" },
-      { label: "Add Company", path: "/add-company" },
-      { label: "Evidence Receipts", path: "/intelligence" },
-    ],
+    subItems: [],
   },
   {
     id: "offer",
-    label: "Offer Analyzer",
+    label: "Offer Intelligence",
     path: "/check",
     matchPaths: ["/check", "/offer-check", "/offer-review", "/strategic-offer-review"],
-    subItems: [
-      { label: "Employer Scan", path: "/check?tab=company" },
-      { label: "Offer Check", path: "/check?tab=offer" },
-    ],
+    subItems: [],
   },
   {
     id: "coach",
@@ -36,14 +28,12 @@ export const MAIN_SECTIONS = [
     subItems: [],
   },
   {
-    id: "evp",
-    label: "EVP Intelligence",
-    path: "/recruiting",
-    matchPaths: ["/recruiting"],
-    subItems: [
-      { label: "EVP Audit", path: "/recruiting?tab=evp" },
-      { label: "Talent Dashboard", path: "/recruiting?tab=insights" },
-    ],
+    id: "career",
+    label: "Career Intelligence",
+    path: "/career-intelligence",
+    matchPaths: ["/career-intelligence", "/career-map"],
+    auth: true,
+    subItems: [],
   },
   {
     id: "dashboard",
@@ -51,11 +41,7 @@ export const MAIN_SECTIONS = [
     path: "/dashboard",
     matchPaths: ["/dashboard"],
     auth: true,
-    subItems: [
-      { label: "Overview", path: "/dashboard" },
-      { label: "Tracked Companies", path: "/dashboard?tab=tracked" },
-      { label: "Signal Alerts", path: "/dashboard?tab=alerts" },
-    ],
+    subItems: [],
   },
 ];
 
