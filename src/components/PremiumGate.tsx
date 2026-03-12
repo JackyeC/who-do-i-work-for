@@ -47,8 +47,8 @@ export function PremiumGate({ feature, description, requiredTier = "candidate", 
               Sign Up Free
             </Button>
           ) : (
-            <Button size="default" onClick={handleUpgrade} disabled={loading} className="gap-1.5">
-              {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Lock className="w-3.5 h-3.5" />}
+            <Button size="default" onClick={handleUpgrade} className="gap-1.5">
+              <Lock className="w-3.5 h-3.5" />
               Upgrade to {targetTier.label} — {targetTier.price}
             </Button>
           )}
