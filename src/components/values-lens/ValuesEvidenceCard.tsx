@@ -184,6 +184,3 @@ export function ValuesEvidenceCard({ evidence }: Props) {
     </div>
   );
 }
-
-// Import Scale from lucide-react at top
-import { Scale } from "lucide-react";
