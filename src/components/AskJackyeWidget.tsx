@@ -2,6 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
+const MarkdownWrapper = ({ content }: { content: string }) => (
+  <div className="prose prose-sm prose-invert max-w-none [&_p]:mb-2 [&_p]:leading-relaxed [&_strong]:text-primary [&_li]:text-foreground">
+    <ReactMarkdown>{content}</ReactMarkdown>
+  </div>
+);
+
 type Msg = { role: "user" | "assistant"; content: string };
 
 const QUICK_PROMPTS = [
