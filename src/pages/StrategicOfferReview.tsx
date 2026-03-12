@@ -784,7 +784,7 @@ export default function StrategicOfferReview() {
                 {/* Disclaimer */}
                 <div className="p-4 bg-muted/30 rounded-xl border border-border/40">
                   <p className="text-[11px] text-muted-foreground text-center">
-                    Created by Jackye Clayton. This tool provides educational guidance and risk signals based on publicly available data and user-provided terms. It does not constitute legal, financial, or employment advice.
+                    Created by Jackye Clayton. This tool provides educational insights and risk signals based on publicly available data and user-provided terms. It does not constitute legal, financial, or employment advice.
                   </p>
                 </div>
               </div>
