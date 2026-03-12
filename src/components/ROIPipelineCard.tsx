@@ -258,7 +258,7 @@ const EVIDENCE_SOURCE_LABELS: Record<string, string> = {
   congress_vote: "Congressional voting record",
 };
 
-function LinkageChain({ linkages }: { linkages: ROIPipelineData["linkages"] }) {
+const LinkageChain = forwardRef<HTMLDivElement, { linkages: ROIPipelineData["linkages"] }>(({ linkages }, ref) => {
   const [expandedLink, setExpandedLink] = useState<number | null>(null);
 
   return (
