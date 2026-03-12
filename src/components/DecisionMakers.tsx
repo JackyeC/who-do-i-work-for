@@ -12,6 +12,7 @@ import { formatCurrency } from "@/data/sampleData";
 import { FollowLeaderButton } from "@/components/FollowLeaderButton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 const CSUITE_TITLES = /\b(CEO|COO|CFO|CTO|CIO|CISO|CHRO|CLO|CPO|CRO|CMO|CDO|CSO|CCO|CAO|CHIEF|PRESIDENT|CHAIRMAN|CHAIRWOMAN|CHAIR|FOUNDER|CO-?FOUNDER)\b/i;
 
