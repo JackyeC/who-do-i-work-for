@@ -36,6 +36,8 @@ import { ValuesCheckSection, type ValuesCheckSignal } from "@/components/values-
 import { InfluenceChainCard } from "@/components/InfluenceChainCard";
 import { EmployerClarityScore } from "@/components/EmployerClarityScore";
 import { DataFreshnessCard } from "@/components/DataFreshnessCard";
+import { DecisionMakers } from "@/components/DecisionMakers";
+import { PowerMap } from "@/components/PowerMap";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -531,34 +533,37 @@ export default function CompanyProfile() {
           <Separator className="mb-8" />
 
           {/* ═══════════════════════════════════════════════════════════
-              3. LEADERSHIP
+              3. DECISION MAKERS
              ═══════════════════════════════════════════════════════════ */}
           {dbExecutives && dbExecutives.length > 0 && (
             <section className="mb-8">
-              <SectionHeader icon={Users} title="Leadership" subtitle={`${dbExecutives.length} executive(s) identified`} />
-              <div className="space-y-2 pl-12">
-                {dbExecutives.map((exec) => (
-                  <button key={exec.id} onClick={() => handleExecutiveClick(exec)} className="w-full flex items-center justify-between p-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 hover:bg-primary/[0.03] transition-all text-left group">
-                    <div className="flex items-center gap-3">
-                      {exec.photo_url ? (
-                        <img src={exec.photo_url} alt={exec.name} className="w-9 h-9 rounded-full object-cover border border-border/60" crossOrigin="anonymous" referrerPolicy="no-referrer" />
-                      ) : (
-                        <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center border border-border/60"><Users className="w-4 h-4 text-muted-foreground/70" /></div>
-                      )}
-                      <div>
-                        <div className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">{exec.name}</div>
-                        <div className="text-[11px] text-muted-foreground">{exec.title}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {exec.total_donations > 0 && <Badge variant="secondary" className="text-xs">{formatCurrency(exec.total_donations)} donated</Badge>}
-                      <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  </button>
-                ))}
+              <SectionHeader icon={Users} title="Decision Makers" subtitle="C-suite executives and board members shaping company strategy" />
+              <div className="pl-12">
+                <DecisionMakers
+                  executives={dbExecutives}
+                  companyId={dbCompanyId}
+                  companyName={name}
+                  onExecutiveClick={handleExecutiveClick}
+                />
               </div>
             </section>
           )}
+
+          {/* ═══════════════════════════════════════════════════════════
+              3b. POWER MAP
+             ═══════════════════════════════════════════════════════════ */}
+          <section className="mb-8">
+            <SectionHeader icon={Network} title="Power Map" subtitle="Interactive leadership influence network" />
+            <div className="pl-12">
+              <PowerMap
+                companyId={dbCompanyId}
+                companyName={name}
+                executives={dbExecutives || []}
+              />
+            </div>
+          </section>
+
+          <Separator className="mb-8" />
 
           {/* ═══════════════════════════════════════════════════════════
               4. WORKFORCE INTELLIGENCE

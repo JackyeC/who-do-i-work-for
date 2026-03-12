@@ -61,6 +61,7 @@ import EmployerReceipt from "./pages/EmployerReceipt";
 import EVPRealityCheck from "./pages/EVPRealityCheck";
 import WhatAmISupporting from "./pages/WhatAmISupporting";
 import IntelligenceChain from "./pages/IntelligenceChain";
+import BoardIntelligence from "./pages/BoardIntelligence";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +92,7 @@ const App = () => (
                 <Route path="/evp-reality-check" element={<EVPRealityCheck />} />
                 <Route path="/what-am-i-supporting" element={<WhatAmISupporting />} />
                 <Route path="/intelligence-chain" element={<IntelligenceChain />} />
+                <Route path="/board-intelligence" element={<BoardIntelligence />} />
                 <Route path="/one-pager" element={<OnePager />} />
                 <Route path="/check" element={<Check />} />
                 <Route path="/policy" element={<PolicyHub />} />
