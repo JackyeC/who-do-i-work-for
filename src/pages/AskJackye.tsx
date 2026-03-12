@@ -2,6 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
