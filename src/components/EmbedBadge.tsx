@@ -44,7 +44,7 @@ ${scriptTag}`;
         </DialogHeader>
 
         <p className="text-sm text-muted-foreground">
-          Add this badge to your careers page or website to show your civic transparency profile. The badge links back to your full profile on CivicLens.
+          Add this badge to your careers page or website to show your transparency profile. The badge links back to your full profile on Who Do I Work For?.
         </p>
 
         <Tabs defaultValue="light">
