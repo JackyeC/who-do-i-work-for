@@ -38,6 +38,7 @@ import { EmployerClarityScore } from "@/components/EmployerClarityScore";
 import { DataFreshnessCard } from "@/components/DataFreshnessCard";
 import { DecisionMakers } from "@/components/DecisionMakers";
 import { PowerMap } from "@/components/PowerMap";
+import { BoardGovernanceTab } from "@/components/BoardGovernanceTab";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -550,7 +551,24 @@ export default function CompanyProfile() {
           )}
 
           {/* ═══════════════════════════════════════════════════════════
-              3b. POWER MAP
+              3b. BOARD GOVERNANCE
+             ═══════════════════════════════════════════════════════════ */}
+          {dbCompanyId && (
+            <section className="mb-8">
+              <SectionHeader icon={Shield} title="Board Governance" subtitle="Committee structure, independence, and governance documents" />
+              <div className="pl-12">
+                <BoardGovernanceTab
+                  companyId={dbCompanyId}
+                  companyName={name}
+                  ticker={dbCompany?.ticker}
+                  secCik={dbCompany?.sec_cik}
+                />
+              </div>
+            </section>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════════
+              3c. POWER MAP
              ═══════════════════════════════════════════════════════════ */}
           <section className="mb-8">
             <SectionHeader icon={Network} title="Power Map" subtitle="Interactive leadership influence network" />

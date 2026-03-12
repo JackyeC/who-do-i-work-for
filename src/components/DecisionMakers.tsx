@@ -12,6 +12,7 @@ import { formatCurrency } from "@/data/sampleData";
 import { FollowLeaderButton } from "@/components/FollowLeaderButton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 const CSUITE_TITLES = /\b(CEO|COO|CFO|CTO|CIO|CISO|CHRO|CLO|CPO|CRO|CMO|CDO|CSO|CCO|CAO|CHIEF|PRESIDENT|CHAIRMAN|CHAIRWOMAN|CHAIR|FOUNDER|CO-?FOUNDER)\b/i;
 
@@ -133,8 +134,8 @@ function LeaderCard({
 
             {/* Action buttons */}
             <div className="flex flex-wrap gap-1.5 mt-3">
-              <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={onViewProfile}>
-                <User className="w-3 h-3" /> View Profile
+              <Button variant="outline" size="sm" className="h-7 text-xs gap-1" asChild>
+                <Link to={`/leader/${leaderId}`}><User className="w-3 h-3" /> View Profile</Link>
               </Button>
               {onTraceInfluence && (
                 <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={onTraceInfluence}>
