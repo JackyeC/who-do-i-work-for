@@ -137,11 +137,19 @@ export function HowDoIGetThere() {
                 <Target className="w-4 h-4 text-[hsl(var(--civic-blue))]" />
                 Path to: {track.target_role}
               </CardTitle>
-              <Badge variant={track.skills_match_pct >= 75 ? "success" : "secondary"} className="text-xs">
-                {track.skills_match_pct}% ready
-              </Badge>
-            </div>
-          </CardHeader>
+              <div className="flex items-center gap-2">
+                <Badge variant={track.skills_match_pct >= 75 ? "success" : "secondary"} className="text-xs">
+                  {track.skills_match_pct}% ready
+                </Badge>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-7 h-7 text-muted-foreground hover:text-destructive"
+                  onClick={() => handleDeleteTrack(track.id)}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </Button>
+              </div>
           <CardContent className="space-y-4">
             {/* Why it matches */}
             {track.gap_analysis?.rationale && (
