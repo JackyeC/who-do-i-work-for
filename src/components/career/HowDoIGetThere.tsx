@@ -22,8 +22,23 @@ const RESOURCE_ICONS: Record<string, any> = {
 };
 
 export function HowDoIGetThere() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  const handleDeleteTrack = async (trackId: string) => {
+    const { error } = await supabase
+      .from("employee_growth_tracker")
+      .delete()
+      .eq("id", trackId)
+      .eq("user_id", user!.id);
+    if (error) {
+      toast({ title: "Error", description: "Failed to delete track.", variant: "destructive" });
+    } else {
+      toast({ title: "Deleted", description: "Target role removed." });
+      queryClient.invalidateQueries({ queryKey: ["growth-tracks", user?.id] });
+    }
+  };
   // Fetch growth tracks (target roles with gap analysis)
   const { data: tracks, isLoading: tracksLoading } = useQuery({
     queryKey: ["growth-tracks", user?.id],
