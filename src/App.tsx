@@ -59,6 +59,7 @@ import WouldYouWorkHere from "./pages/WouldYouWorkHere";
 import WorkWithJackye from "./pages/WorkWithJackye";
 import EmployerReceipt from "./pages/EmployerReceipt";
 import EVPRealityCheck from "./pages/EVPRealityCheck";
+import WhatAmISupporting from "./pages/WhatAmISupporting";
 
 const queryClient = new QueryClient();
 
