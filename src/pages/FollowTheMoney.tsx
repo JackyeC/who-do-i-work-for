@@ -629,16 +629,18 @@ export default function FollowTheMoney() {
       ctx.stroke();
     }
 
-    // Shape indicator
-    const fontSize = Math.max(8, 11 / globalScale);
-    ctx.font = `${fontSize}px system-ui, sans-serif`;
+    // Initials inside circle
+    const initials = node.label.split(/[\s&]+/).filter(Boolean).slice(0, 2).map((w: string) => w[0]?.toUpperCase()).join("");
+    const fontSize = Math.max(7, Math.min(r * 0.85, 14 / globalScale));
+    ctx.font = `700 ${fontSize}px system-ui, sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#fff";
-    ctx.fillText(GROUP_SHAPES[node.group] || "●", node.x, node.y);
+    ctx.fillText(initials || "?", node.x, node.y);
 
-    // Label
-    if (showLabels && globalScale > 0.5) {
+    // Label — show on hover/selected/path, or when showLabels is toggled on
+    const shouldShowLabel = showLabels || isSelected || (highlightedIds && highlightedIds.nodes.has(node.id));
+    if (shouldShowLabel && globalScale > 0.4) {
       const labelSize = Math.max(7, 10 / globalScale);
       ctx.font = `600 ${labelSize}px system-ui, sans-serif`;
       ctx.textAlign = "center";
@@ -647,7 +649,7 @@ export default function FollowTheMoney() {
       const label = node.label.length > 22 ? node.label.slice(0, 20) + "…" : node.label;
       ctx.fillText(label, node.x, node.y + r + 3);
 
-      if (node.amount && globalScale > 0.8) {
+      if (node.amount && globalScale > 0.7) {
         const amtSize = Math.max(6, 8 / globalScale);
         ctx.font = `${amtSize}px system-ui, sans-serif`;
         ctx.fillStyle = isHighlighted ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.15)";
