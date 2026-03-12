@@ -32,6 +32,8 @@ import { OfferDecisionSummary } from "@/components/strategic-offer/OfferDecision
 import { OfferClarityDashboard, type OfferClarityReport } from "@/components/offer-clarity/OfferClarityDashboard";
 import { OfferLetterUpload } from "@/components/offer-review/OfferLetterUpload";
 import { OfferReviewResults } from "@/components/offer-review/OfferReviewResults";
+import { LegalDisclaimer } from "@/components/strategic-offer/LegalDisclaimer";
+import { ConsentModal } from "@/components/strategic-offer/ConsentModal";
 
 type InputMode = null | "manual" | "upload";
 
