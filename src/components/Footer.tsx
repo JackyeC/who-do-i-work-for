@@ -21,7 +21,7 @@ export function Footer() {
               </div>
               <div className="flex flex-col leading-none">
                 <span className="font-bold text-primary-foreground font-display text-lg">Who Do I Work For?</span>
-                <span className="text-[8px] text-primary-foreground/40 tracking-[0.2em] uppercase font-semibold mt-0.5">Talent Intelligence by Jackye Clayton</span>
+                <span className="text-[8px] text-primary-foreground/40 tracking-[0.2em] uppercase font-semibold mt-0.5">Know Before You Go by Jackye Clayton</span>
               </div>
             </div>
             <p className="text-sm text-primary-foreground/45 leading-relaxed">
@@ -61,7 +61,7 @@ export function Footer() {
         </div>
         <div className="mt-14 pt-8 border-t border-primary-foreground/[0.06]">
           <p className="text-xs text-primary-foreground/30">
-            © {new Date().getFullYear()} Who Do I Work For? — Talent Intelligence by Jackye Clayton. All rights reserved. This platform surfaces publicly available data as employer reality signals for informational purposes only.
+            © {new Date().getFullYear()} Who Do I Work For? — Know Before You Go by Jackye Clayton. All rights reserved. This platform surfaces publicly available data as employer reality signals for informational purposes only.
           </p>
         </div>
       </div>
