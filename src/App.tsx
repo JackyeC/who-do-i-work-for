@@ -43,7 +43,7 @@ import IntelligenceReports from "./pages/IntelligenceReports";
 import IntelligenceReport from "./pages/IntelligenceReport";
 import ReportsList from "./pages/ReportsList";
 import ReportEditor from "./pages/ReportEditor";
-import OfferClarity from "./pages/OfferClarity";
+// OfferClarity merged into Check page
 import RecruitingIntelligence from "./pages/RecruitingIntelligence";
 import CompanyDossier from "./pages/CompanyDossier";
 import Pricing from "./pages/Pricing";
@@ -107,7 +107,7 @@ const App = () => (
                 <Route path="/jobs" element={<Jobs />} />
                 <Route path="/request-correction" element={<RequestCorrection />} />
                 <Route path="/offer-check/:companyId" element={<OfferCheck />} />
-                <Route path="/offer-clarity" element={<OfferClarity />} />
+                {/* /offer-clarity merged into /check?tab=offer */}
                 <Route path="/strategic-offer-review" element={<StrategicOfferReview />} />
                 <Route path="/offer-review/:companyId" element={
                   <ProtectedRoute>

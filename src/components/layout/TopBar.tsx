@@ -73,13 +73,12 @@ export const MAIN_SECTIONS = [
     label: "Careers",
     icon: Briefcase,
     path: "/check",
-    matchPaths: ["/check", "/career-map", "/jobs", "/offer-check", "/offer-clarity", "/offer-review", "/strategic-offer-review"],
+    matchPaths: ["/check", "/career-map", "/jobs", "/offer-check", "/offer-review", "/strategic-offer-review"],
     subItems: [
       { label: "Employer Scan", path: "/check?tab=company" },
       { label: "Offer Check", path: "/check?tab=offer" },
       { label: "Career Discovery", path: "/career-map", auth: true },
       { label: "Job Board", path: "/jobs" },
-      { label: "Offer Clarity", path: "/offer-clarity" },
     ],
   },
   {
