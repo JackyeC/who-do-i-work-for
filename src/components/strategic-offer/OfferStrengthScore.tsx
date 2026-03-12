@@ -58,6 +58,9 @@ export function OfferStrengthScore({ result, isAIPowered, loading }: Props) {
 
   return (
     <div className="space-y-5" id="offer-strength-score">
+      {/* AI Analysis Notice */}
+      <AIAnalysisNotice />
+
       {/* Main Score Card */}
       <Card className="border-2 border-primary/20 rounded-2xl overflow-hidden">
         <CardContent className="p-7">
