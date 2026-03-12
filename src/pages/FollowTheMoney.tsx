@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ForceGraph2D, { type ForceGraphMethods } from "react-force-graph-2d";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,33 +7,42 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Search, Building2, X, ChevronRight, ExternalLink, Filter,
-  DollarSign, RotateCcw,
+  DollarSign, RotateCcw, Zap, Eye, EyeOff, Maximize2,
+  AlertTriangle, TrendingUp, Lightbulb, Route, Crosshair,
+  Download, Share2, Users, Scale, FileText, Factory, Landmark,
+  Loader2, ArrowRight, Shield, Globe, Minimize2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
 // ─── Types ───
 
 interface GraphNode {
   id: string;
   label: string;
-  group: string; // "Corporation" | "PAC" | "Politician" | "Legislation" | "Industry" | "Agency" | "Committee"
+  group: string;
   val: number;
   amount?: number;
   metadata?: Record<string, any>;
   cluster?: number;
   issueCategories?: string[];
-  // force-graph internal
+  party?: string;
+  state?: string;
   x?: number;
   y?: number;
+  fx?: number;
+  fy?: number;
 }
 
 interface GraphLink {
-  source: string;
-  target: string;
+  source: string | any;
+  target: string | any;
   label: string;
   amount?: number;
   linkType: string;
   issueCategory?: string;
+  year?: number;
+  confidence?: string;
 }
 
 interface GraphData {
@@ -44,57 +53,74 @@ interface GraphData {
 // ─── Constants ───
 
 const GROUP_COLORS: Record<string, string> = {
-  Corporation: "hsl(45, 80%, 55%)",     // gold
-  PAC: "hsl(250, 60%, 55%)",            // indigo
-  Politician: "hsl(210, 70%, 55%)",     // blue
-  Legislation: "hsl(140, 55%, 45%)",    // green
-  Industry: "hsl(0, 60%, 55%)",         // red
-  Agency: "hsl(270, 40%, 50%)",         // purple
-  Committee: "hsl(190, 50%, 50%)",      // teal
+  Company: "#D4A843",
+  PAC: "#7C5CFC",
+  Politician: "#3B82F6",
+  Legislation: "#22C55E",
+  Industry: "#EF4444",
+  Agency: "#A855F7",
+  Committee: "#14B8A6",
 };
 
-const GROUP_ICONS: Record<string, string> = {
-  Corporation: "🏢",
-  PAC: "💰",
-  Politician: "🏛️",
-  Legislation: "📜",
-  Industry: "🏭",
-  Agency: "⚖️",
-  Committee: "👥",
+const GROUP_SHAPES: Record<string, string> = {
+  Company: "◆",
+  PAC: "●",
+  Politician: "▲",
+  Legislation: "■",
+  Industry: "⬟",
+  Agency: "★",
+  Committee: "◎",
+};
+
+const GROUP_LABELS: Record<string, { icon: any; desc: string }> = {
+  Company: { icon: Building2, desc: "Corporation" },
+  PAC: { icon: DollarSign, desc: "Political Action Committee" },
+  Politician: { icon: Landmark, desc: "Elected Official" },
+  Legislation: { icon: FileText, desc: "Bill / Resolution" },
+  Industry: { icon: Factory, desc: "Industry Sector" },
+  Agency: { icon: Shield, desc: "Government Agency" },
+  Committee: { icon: Users, desc: "Congressional Committee" },
 };
 
 const ISSUE_CATEGORIES = [
-  "All",
-  "Labor Rights",
-  "Immigration",
-  "Climate",
-  "Gun Policy",
-  "Civil Rights",
-  "Healthcare",
-  "Consumer Protection",
-  "Defense",
-  "Technology",
-  "Education",
-  "Financial Services",
-  "Energy",
-  "Housing",
+  "All", "Labor Rights", "Immigration", "Climate", "Gun Policy",
+  "Civil Rights", "Healthcare", "Consumer Protection", "Defense",
+  "Technology", "Education", "Financial Services", "Energy", "Housing",
 ];
 
-// Line style by connection type
+const RELATIONSHIP_TYPES = [
+  { key: "all", label: "All" },
+  { key: "donation_to_member", label: "Donations" },
+  { key: "lobbying_on_bill", label: "Lobbying" },
+  { key: "dark_money_channel", label: "Dark Money" },
+  { key: "committee_oversight_of_contract", label: "Contracts" },
+  { key: "revolving_door", label: "Revolving Door" },
+  { key: "member_on_committee", label: "Committee" },
+];
+
 const LINK_STYLES: Record<string, { dash: number[]; color: string; label: string }> = {
-  donation_to_member:           { dash: [],       color: "rgba(76, 175, 80, 0.6)",  label: "Donation" },
-  trade_association_lobbying:   { dash: [6, 3],   color: "rgba(66, 133, 244, 0.6)", label: "Trade Lobbying" },
-  lobbying_on_bill:             { dash: [6, 3],   color: "rgba(66, 133, 244, 0.6)", label: "Lobbied On" },
-  dark_money_channel:           { dash: [2, 4],   color: "rgba(244, 67, 54, 0.5)",  label: "Dark Money" },
+  donation_to_member:           { dash: [],       color: "rgba(76, 175, 80, 0.7)",  label: "Donated to" },
+  trade_association_lobbying:   { dash: [6, 3],   color: "rgba(66, 133, 244, 0.7)", label: "Trade Lobbying" },
+  lobbying_on_bill:             { dash: [6, 3],   color: "rgba(66, 133, 244, 0.7)", label: "Lobbied On" },
+  dark_money_channel:           { dash: [2, 4],   color: "rgba(244, 67, 54, 0.6)",  label: "Dark Money" },
   member_on_committee:          { dash: [10, 5],  color: "rgba(158, 158, 158, 0.5)", label: "Committee Member" },
-  committee_oversight_of_contract: { dash: [],    color: "rgba(255, 152, 0, 0.5)",  label: "Oversight" },
-  revolving_door:               { dash: [3, 3],   color: "rgba(156, 39, 176, 0.5)", label: "Revolving Door" },
-  foundation_grant_to_district: { dash: [],       color: "rgba(0, 188, 212, 0.5)",  label: "Grant" },
-  advisory_committee_appointment: { dash: [4, 4], color: "rgba(121, 85, 72, 0.5)",  label: "Advisory Role" },
-  interlocking_directorate:     { dash: [2, 2],   color: "rgba(96, 125, 139, 0.5)", label: "Board Interlock" },
-  state_lobbying_contract:      { dash: [],       color: "rgba(255, 193, 7, 0.5)",  label: "State Contract" },
-  international_influence:      { dash: [8, 4],   color: "rgba(233, 30, 99, 0.5)",  label: "International" },
+  committee_oversight_of_contract: { dash: [],    color: "rgba(255, 152, 0, 0.6)",  label: "Contract Oversight" },
+  revolving_door:               { dash: [3, 3],   color: "rgba(156, 39, 176, 0.6)", label: "Revolving Door" },
+  foundation_grant_to_district: { dash: [],       color: "rgba(0, 188, 212, 0.6)",  label: "Grant" },
+  advisory_committee_appointment: { dash: [4, 4], color: "rgba(121, 85, 72, 0.6)",  label: "Advisory Role" },
+  interlocking_directorate:     { dash: [2, 2],   color: "rgba(96, 125, 139, 0.6)", label: "Board Interlock" },
+  state_lobbying_contract:      { dash: [],       color: "rgba(255, 193, 7, 0.6)",  label: "State Contract" },
+  international_influence:      { dash: [8, 4],   color: "rgba(233, 30, 99, 0.6)",  label: "International" },
 };
+
+const CONFIDENCE_LABELS: Record<string, string> = {
+  direct: "Direct — documented in public filings",
+  likely: "Likely — strong circumstantial evidence",
+  inferred: "Inferred — pattern-based connection",
+  partial: "Partial — limited evidence available",
+};
+
+// ─── Helpers ───
 
 function mapEntityType(raw: string): string {
   const lower = raw.toLowerCase();
@@ -104,7 +130,7 @@ function mapEntityType(raw: string): string {
   if (lower.includes("industry") || lower.includes("sector")) return "Industry";
   if (lower.includes("agency") || lower.includes("department") || lower.includes("government")) return "Agency";
   if (lower.includes("committee")) return "Committee";
-  return "Corporation";
+  return "Company";
 }
 
 function formatAmount(amount: number | null | undefined): string {
@@ -118,23 +144,18 @@ function mapLinkLabel(linkType: string): string {
   return LINK_STYLES[linkType]?.label || linkType.replace(/_/g, " ");
 }
 
-// Simple community detection: assign cluster by group + connectivity
 function assignClusters(nodes: GraphNode[], links: GraphLink[]): GraphNode[] {
-  // Build adjacency
   const adj = new Map<string, Set<string>>();
   for (const n of nodes) adj.set(n.id, new Set());
   for (const l of links) {
-    const src = typeof l.source === "string" ? l.source : (l.source as any).id;
-    const tgt = typeof l.target === "string" ? l.target : (l.target as any).id;
+    const src = typeof l.source === "string" ? l.source : l.source.id;
+    const tgt = typeof l.target === "string" ? l.target : l.target.id;
     adj.get(src)?.add(tgt);
     adj.get(tgt)?.add(src);
   }
-
-  // BFS connected components
   const visited = new Set<string>();
   let clusterId = 0;
   const clusterMap = new Map<string, number>();
-
   for (const node of nodes) {
     if (visited.has(node.id)) continue;
     const queue = [node.id];
@@ -143,47 +164,130 @@ function assignClusters(nodes: GraphNode[], links: GraphLink[]): GraphNode[] {
       const curr = queue.shift()!;
       clusterMap.set(curr, clusterId);
       for (const neighbor of adj.get(curr) || []) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor);
-          queue.push(neighbor);
-        }
+        if (!visited.has(neighbor)) { visited.add(neighbor); queue.push(neighbor); }
       }
     }
     clusterId++;
   }
-
   return nodes.map(n => ({ ...n, cluster: clusterMap.get(n.id) ?? 0 }));
+}
+
+// BFS shortest path
+function findPath(nodes: GraphNode[], links: GraphLink[], startId: string, endId: string): { nodeIds: string[]; linkIndices: number[] } | null {
+  const adj = new Map<string, { nodeId: string; linkIdx: number }[]>();
+  for (const n of nodes) adj.set(n.id, []);
+  links.forEach((l, i) => {
+    const src = typeof l.source === "string" ? l.source : l.source.id;
+    const tgt = typeof l.target === "string" ? l.target : l.target.id;
+    adj.get(src)?.push({ nodeId: tgt, linkIdx: i });
+    adj.get(tgt)?.push({ nodeId: src, linkIdx: i });
+  });
+  const visited = new Set<string>([startId]);
+  const queue: { id: string; path: string[]; linkPath: number[] }[] = [{ id: startId, path: [startId], linkPath: [] }];
+  while (queue.length > 0) {
+    const { id, path, linkPath } = queue.shift()!;
+    if (id === endId) return { nodeIds: path, linkIndices: linkPath };
+    for (const neighbor of adj.get(id) || []) {
+      if (!visited.has(neighbor.nodeId)) {
+        visited.add(neighbor.nodeId);
+        queue.push({ id: neighbor.nodeId, path: [...path, neighbor.nodeId], linkPath: [...linkPath, neighbor.linkIdx] });
+      }
+    }
+  }
+  return null;
+}
+
+// Generate insights from current graph
+function generateInsights(nodes: GraphNode[], links: GraphLink[]): string[] {
+  const insights: string[] = [];
+  const companyCounts = nodes.filter(n => n.group === "Company").length;
+  const politicianCounts = nodes.filter(n => n.group === "Politician").length;
+  const pacCounts = nodes.filter(n => n.group === "PAC").length;
+  const legislationCounts = nodes.filter(n => n.group === "Legislation").length;
+
+  // Hub detection
+  const connectionCounts = new Map<string, number>();
+  for (const l of links) {
+    const src = typeof l.source === "string" ? l.source : l.source.id;
+    const tgt = typeof l.target === "string" ? l.target : l.target.id;
+    connectionCounts.set(src, (connectionCounts.get(src) || 0) + 1);
+    connectionCounts.set(tgt, (connectionCounts.get(tgt) || 0) + 1);
+  }
+  const hub = [...connectionCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+  const hubNode = hub ? nodes.find(n => n.id === hub[0]) : null;
+  if (hubNode && hub[1] >= 3) {
+    insights.push(`${hubNode.label} is the most connected entity in this network with ${hub[1]} relationships.`);
+  }
+
+  // Money flow
+  const totalAmount = links.reduce((s, l) => s + (l.amount || 0), 0);
+  if (totalAmount > 0) {
+    insights.push(`${formatAmount(totalAmount)} in documented money flow across ${links.filter(l => l.amount).length} financial connections.`);
+  }
+
+  // Dark money
+  const darkMoneyLinks = links.filter(l => l.linkType === "dark_money_channel");
+  if (darkMoneyLinks.length > 0) {
+    insights.push(`${darkMoneyLinks.length} dark money channel${darkMoneyLinks.length > 1 ? "s" : ""} detected — these represent undisclosed political spending paths.`);
+  }
+
+  // Multi-company overlap
+  if (companyCounts > 1) {
+    insights.push(`${companyCounts} companies appear in this network — potential shared influence infrastructure.`);
+  }
+
+  // PAC-to-politician ratio
+  if (pacCounts > 0 && politicianCounts > 0) {
+    const ratio = (politicianCounts / pacCounts).toFixed(1);
+    insights.push(`Each PAC connects to an average of ${ratio} politicians in this network.`);
+  }
+
+  // Legislation reach
+  if (legislationCounts > 0) {
+    insights.push(`${legislationCounts} piece${legislationCounts > 1 ? "s" : ""} of legislation connected to this influence network.`);
+  }
+
+  return insights.slice(0, 5);
 }
 
 // ─── Sample data ───
 
 const SAMPLE_NODES: GraphNode[] = [
-  { id: "amazon", label: "Amazon", group: "Corporation", val: 20 },
-  { id: "amazon-pac", label: "Amazon PAC", group: "PAC", val: 15, amount: 1_200_000 },
-  { id: "sen-cantwell", label: "Sen. Cantwell", group: "Politician", val: 10, issueCategories: ["Technology", "Consumer Protection"] },
-  { id: "sen-wyden", label: "Sen. Wyden", group: "Politician", val: 10, issueCategories: ["Technology", "Civil Rights"] },
-  { id: "rep-delbene", label: "Rep. DelBene", group: "Politician", val: 8, issueCategories: ["Technology"] },
-  { id: "commerce-committee", label: "Commerce Committee", group: "Committee", val: 12, issueCategories: ["Technology", "Consumer Protection"] },
-  { id: "finance-committee", label: "Finance Committee", group: "Committee", val: 12, issueCategories: ["Financial Services"] },
-  { id: "ai-regulation-bill", label: "AI Regulation Act", group: "Legislation", val: 10, issueCategories: ["Technology", "Labor Rights"] },
-  { id: "data-privacy-bill", label: "Data Privacy Act", group: "Legislation", val: 10, issueCategories: ["Consumer Protection", "Technology"] },
-  { id: "tech-industry", label: "Technology", group: "Industry", val: 14, issueCategories: ["Technology"] },
-  { id: "ecommerce-industry", label: "E-Commerce", group: "Industry", val: 12, issueCategories: ["Consumer Protection"] },
-  { id: "dod", label: "Dept. of Defense", group: "Agency", val: 16, amount: 10_000_000, issueCategories: ["Defense"] },
+  { id: "amazon", label: "Amazon", group: "Company", val: 22, metadata: { industry: "Technology / E-Commerce", summary: "One of the largest corporate political spenders in tech, with extensive lobbying on AI regulation, antitrust, and labor policy." } },
+  { id: "amazon-pac", label: "Amazon.com PAC", group: "PAC", val: 16, amount: 1_200_000, metadata: { summary: "Amazon's corporate PAC disbursing funds to candidates across both parties." } },
+  { id: "sen-cantwell", label: "Sen. Maria Cantwell (D-WA)", group: "Politician", val: 12, party: "Democrat", state: "WA", issueCategories: ["Technology", "Consumer Protection"] },
+  { id: "sen-wyden", label: "Sen. Ron Wyden (D-OR)", group: "Politician", val: 12, party: "Democrat", state: "OR", issueCategories: ["Technology", "Civil Rights"] },
+  { id: "rep-delbene", label: "Rep. Suzan DelBene (D-WA)", group: "Politician", val: 10, party: "Democrat", state: "WA", issueCategories: ["Technology"] },
+  { id: "rep-mcmorris", label: "Rep. Cathy McMorris Rodgers (R-WA)", group: "Politician", val: 10, party: "Republican", state: "WA", issueCategories: ["Technology", "Energy"] },
+  { id: "commerce-committee", label: "Senate Commerce Committee", group: "Committee", val: 14, issueCategories: ["Technology", "Consumer Protection"] },
+  { id: "finance-committee", label: "Senate Finance Committee", group: "Committee", val: 14, issueCategories: ["Financial Services"] },
+  { id: "ai-regulation-bill", label: "AI Accountability Act (S.3312)", group: "Legislation", val: 12, issueCategories: ["Technology", "Labor Rights"], metadata: { status: "In Committee", description: "Requires algorithmic impact assessments for automated decision systems." } },
+  { id: "data-privacy-bill", label: "American Data Privacy Act (H.R.8152)", group: "Legislation", val: 12, issueCategories: ["Consumer Protection", "Technology"], metadata: { status: "Passed House", description: "Comprehensive federal data privacy framework." } },
+  { id: "tech-industry", label: "Technology Sector", group: "Industry", val: 16, issueCategories: ["Technology"] },
+  { id: "ecommerce-industry", label: "E-Commerce & Retail", group: "Industry", val: 14, issueCategories: ["Consumer Protection"] },
+  { id: "dod", label: "Dept. of Defense", group: "Agency", val: 18, amount: 10_000_000, issueCategories: ["Defense"] },
+  { id: "microsoft", label: "Microsoft", group: "Company", val: 18, metadata: { industry: "Technology", summary: "Major government contractor and political spender with interests in AI regulation." } },
+  { id: "ms-pac", label: "Microsoft PAC", group: "PAC", val: 14, amount: 890_000 },
 ];
 
 const SAMPLE_LINKS: GraphLink[] = [
-  { source: "amazon", target: "amazon-pac", label: "Funds", linkType: "donation_to_member", amount: 1_200_000 },
-  { source: "amazon-pac", target: "sen-cantwell", label: "Donated to", linkType: "donation_to_member", amount: 45_000 },
-  { source: "amazon-pac", target: "sen-wyden", label: "Donated to", linkType: "donation_to_member", amount: 38_000 },
-  { source: "amazon-pac", target: "rep-delbene", label: "Donated to", linkType: "donation_to_member", amount: 25_000 },
-  { source: "sen-cantwell", target: "commerce-committee", label: "Serves on", linkType: "member_on_committee" },
-  { source: "sen-wyden", target: "finance-committee", label: "Serves on", linkType: "member_on_committee" },
-  { source: "commerce-committee", target: "ai-regulation-bill", label: "Oversight", linkType: "lobbying_on_bill" },
-  { source: "finance-committee", target: "data-privacy-bill", label: "Oversight", linkType: "lobbying_on_bill" },
-  { source: "ai-regulation-bill", target: "tech-industry", label: "Affects", linkType: "committee_oversight_of_contract" },
-  { source: "data-privacy-bill", target: "ecommerce-industry", label: "Affects", linkType: "committee_oversight_of_contract" },
-  { source: "amazon", target: "dod", label: "Contract", linkType: "committee_oversight_of_contract", amount: 10_000_000 },
+  { source: "amazon", target: "amazon-pac", label: "Funds", linkType: "donation_to_member", amount: 1_200_000, confidence: "direct" },
+  { source: "amazon-pac", target: "sen-cantwell", label: "Donated $45K", linkType: "donation_to_member", amount: 45_000, year: 2024, confidence: "direct" },
+  { source: "amazon-pac", target: "sen-wyden", label: "Donated $38K", linkType: "donation_to_member", amount: 38_000, year: 2024, confidence: "direct" },
+  { source: "amazon-pac", target: "rep-delbene", label: "Donated $25K", linkType: "donation_to_member", amount: 25_000, year: 2024, confidence: "direct" },
+  { source: "amazon-pac", target: "rep-mcmorris", label: "Donated $20K", linkType: "donation_to_member", amount: 20_000, year: 2023, confidence: "direct" },
+  { source: "sen-cantwell", target: "commerce-committee", label: "Serves on", linkType: "member_on_committee", confidence: "direct" },
+  { source: "sen-wyden", target: "finance-committee", label: "Serves on", linkType: "member_on_committee", confidence: "direct" },
+  { source: "commerce-committee", target: "ai-regulation-bill", label: "Oversees", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "finance-committee", target: "data-privacy-bill", label: "Oversees", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "ai-regulation-bill", target: "tech-industry", label: "Impacts", linkType: "committee_oversight_of_contract", confidence: "likely" },
+  { source: "data-privacy-bill", target: "ecommerce-industry", label: "Impacts", linkType: "committee_oversight_of_contract", confidence: "likely" },
+  { source: "amazon", target: "dod", label: "AWS GovCloud Contract", linkType: "committee_oversight_of_contract", amount: 10_000_000, confidence: "direct" },
+  { source: "microsoft", target: "ms-pac", label: "Funds", linkType: "donation_to_member", amount: 890_000, confidence: "direct" },
+  { source: "ms-pac", target: "sen-cantwell", label: "Donated $30K", linkType: "donation_to_member", amount: 30_000, year: 2024, confidence: "direct" },
+  { source: "microsoft", target: "dod", label: "JEDI Contract", linkType: "committee_oversight_of_contract", amount: 7_500_000, confidence: "direct" },
+  { source: "microsoft", target: "tech-industry", label: "Operates in", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "amazon", target: "tech-industry", label: "Operates in", linkType: "trade_association_lobbying", confidence: "direct" },
 ];
 
 // ─── Main Component ───
@@ -202,8 +306,16 @@ export default function FollowTheMoney() {
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeIssueFilter, setActiveIssueFilter] = useState("All");
+  const [activeRelFilter, setActiveRelFilter] = useState("all");
+  const [showLabels, setShowLabels] = useState(true);
+  const [strongOnly, setStrongOnly] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 800, height: 500 });
+  const [pathMode, setPathMode] = useState(false);
+  const [pathStart, setPathStart] = useState<string | null>(null);
+  const [pathEnd, setPathEnd] = useState<string | null>(null);
+  const [activePath, setActivePath] = useState<{ nodeIds: string[]; linkIndices: number[] } | null>(null);
+  const [graphExpanded, setGraphExpanded] = useState(false);
 
   // Resize observer
   useEffect(() => {
@@ -217,46 +329,55 @@ export default function FollowTheMoney() {
     return () => ro.disconnect();
   }, []);
 
-  // Filter graph by issue category
+  // Filter graph
   const graphData: GraphData = useMemo(() => {
-    if (activeFilter === "All") {
-      const clustered = assignClusters(allNodes, allLinks);
-      return { nodes: clustered, links: allLinks };
+    let filteredLinks = [...allLinks];
+    let relevantNodeIds = new Set(allNodes.map(n => n.id));
+
+    // Relationship type filter
+    if (activeRelFilter !== "all") {
+      filteredLinks = filteredLinks.filter(l => l.linkType === activeRelFilter);
+      relevantNodeIds = new Set<string>();
+      for (const l of filteredLinks) {
+        const src = typeof l.source === "string" ? l.source : l.source.id;
+        const tgt = typeof l.target === "string" ? l.target : l.target.id;
+        relevantNodeIds.add(src);
+        relevantNodeIds.add(tgt);
+      }
+      if (selectedCompanyId) relevantNodeIds.add(selectedCompanyId);
     }
 
-    // Filter: keep nodes that have this issue category, plus connected nodes
-    const relevantNodeIds = new Set<string>();
-    // Nodes with matching issue
-    for (const n of allNodes) {
-      if (n.issueCategories?.includes(activeFilter)) relevantNodeIds.add(n.id);
+    // Issue filter
+    if (activeIssueFilter !== "All") {
+      const issueNodeIds = new Set(allNodes.filter(n => n.issueCategories?.includes(activeIssueFilter)).map(n => n.id));
+      filteredLinks = filteredLinks.filter(l => {
+        const src = typeof l.source === "string" ? l.source : l.source.id;
+        const tgt = typeof l.target === "string" ? l.target : l.target.id;
+        return issueNodeIds.has(src) || issueNodeIds.has(tgt) || l.issueCategory === activeIssueFilter;
+      });
+      relevantNodeIds = new Set<string>();
+      for (const l of filteredLinks) {
+        const src = typeof l.source === "string" ? l.source : l.source.id;
+        const tgt = typeof l.target === "string" ? l.target : l.target.id;
+        relevantNodeIds.add(src);
+        relevantNodeIds.add(tgt);
+      }
+      if (selectedCompanyId) relevantNodeIds.add(selectedCompanyId);
     }
-    // Links where either end is relevant
-    const filteredLinks = allLinks.filter(l => {
-      const src = typeof l.source === "string" ? l.source : (l.source as any).id;
-      const tgt = typeof l.target === "string" ? l.target : (l.target as any).id;
-      return relevantNodeIds.has(src) || relevantNodeIds.has(tgt) || l.issueCategory === activeFilter;
-    });
-    // Add all nodes from filtered links
-    for (const l of filteredLinks) {
-      const src = typeof l.source === "string" ? l.source : (l.source as any).id;
-      const tgt = typeof l.target === "string" ? l.target : (l.target as any).id;
-      relevantNodeIds.add(src);
-      relevantNodeIds.add(tgt);
+
+    // Strong connections only
+    if (strongOnly) {
+      filteredLinks = filteredLinks.filter(l => l.confidence === "direct" || (l.amount && l.amount >= 10000));
     }
-    // Always include the root company
-    if (selectedCompanyId) relevantNodeIds.add(selectedCompanyId);
 
     const filteredNodes = allNodes.filter(n => relevantNodeIds.has(n.id));
     const clustered = assignClusters(filteredNodes, filteredLinks);
     return { nodes: clustered, links: filteredLinks };
-  }, [allNodes, allLinks, activeFilter, selectedCompanyId]);
+  }, [allNodes, allLinks, activeIssueFilter, activeRelFilter, strongOnly, selectedCompanyId]);
 
   // Search companies
   useEffect(() => {
-    if (!query.trim() || query.length < 2) {
-      setSearchResults([]);
-      return;
-    }
+    if (!query.trim() || query.length < 2) { setSearchResults([]); return; }
     const timeout = setTimeout(async () => {
       const { data } = await supabase
         .from("companies")
@@ -276,7 +397,10 @@ export default function FollowTheMoney() {
     setQuery("");
     setSearchResults([]);
     setSelectedNode(null);
-    setActiveFilter("All");
+    setActiveIssueFilter("All");
+    setActiveRelFilter("all");
+    setPathMode(false);
+    setActivePath(null);
 
     try {
       const { data: linkages } = await supabase
@@ -284,10 +408,10 @@ export default function FollowTheMoney() {
         .select("*")
         .eq("company_id", companyId)
         .order("amount", { ascending: false })
-        .limit(100);
+        .limit(150);
 
       if (!linkages || linkages.length === 0) {
-        setAllNodes([{ id: companyId, label: companyName, group: "Corporation", val: 20 }]);
+        setAllNodes([{ id: companyId, label: companyName, group: "Company", val: 22 }]);
         setAllLinks([]);
         setLoading(false);
         return;
@@ -297,7 +421,7 @@ export default function FollowTheMoney() {
       const links: GraphLink[] = [];
 
       nodeMap.set(companyId, {
-        id: companyId, label: companyName, group: "Corporation", val: 20,
+        id: companyId, label: companyName, group: "Company", val: 22,
       });
 
       for (const link of linkages) {
@@ -330,17 +454,16 @@ export default function FollowTheMoney() {
           label: mapLinkLabel(link.link_type),
           amount: link.amount || undefined,
           linkType: link.link_type,
+          confidence: link.confidence_score >= 0.8 ? "direct" : link.confidence_score >= 0.5 ? "likely" : "inferred",
           issueCategory: link.description?.match(/issue:\s*(.+)/i)?.[1] || undefined,
         });
       }
 
-      const nodesArr = Array.from(nodeMap.values());
-      setAllNodes(assignClusters(nodesArr, links));
+      setAllNodes(assignClusters(Array.from(nodeMap.values()), links));
       setAllLinks(links);
     } catch (err) {
       console.error("Failed to load graph:", err);
     }
-
     setLoading(false);
   }, []);
 
@@ -350,165 +473,215 @@ export default function FollowTheMoney() {
     setAllNodes(SAMPLE_NODES);
     setAllLinks(SAMPLE_LINKS);
     setSelectedNode(null);
-    setActiveFilter("All");
+    setActiveIssueFilter("All");
+    setActiveRelFilter("all");
+    setPathMode(false);
+    setActivePath(null);
+    setPathStart(null);
+    setPathEnd(null);
   };
 
-  // Get full influence path from hovered node (BFS traversal)
+  // Hover highlight — trace full connected subgraph
   const highlightedIds = useMemo(() => {
+    // Path mode takes priority
+    if (activePath) {
+      return { nodes: new Set(activePath.nodeIds), links: new Set(activePath.linkIndices) };
+    }
     if (!hoveredNode) return null;
     const ids = new Set<string>();
     const linkIds = new Set<number>();
     ids.add(hoveredNode);
-    // BFS to trace full path of influence
     const queue = [hoveredNode];
     const visited = new Set<string>([hoveredNode]);
     while (queue.length > 0) {
       const curr = queue.shift()!;
       graphData.links.forEach((l, i) => {
-        const src = typeof l.source === "string" ? l.source : (l.source as any).id;
-        const tgt = typeof l.target === "string" ? l.target : (l.target as any).id;
-        if (src === curr && !visited.has(tgt)) {
-          visited.add(tgt);
-          ids.add(tgt);
-          linkIds.add(i);
-          queue.push(tgt);
-        }
-        if (tgt === curr && !visited.has(src)) {
-          visited.add(src);
-          ids.add(src);
-          linkIds.add(i);
-          queue.push(src);
-        }
+        const src = typeof l.source === "string" ? l.source : l.source.id;
+        const tgt = typeof l.target === "string" ? l.target : l.target.id;
+        if (src === curr && !visited.has(tgt)) { visited.add(tgt); ids.add(tgt); linkIds.add(i); queue.push(tgt); }
+        if (tgt === curr && !visited.has(src)) { visited.add(src); ids.add(src); linkIds.add(i); queue.push(src); }
       });
     }
     return { nodes: ids, links: linkIds };
-  }, [hoveredNode, graphData]);
+  }, [hoveredNode, graphData, activePath]);
+
+  // Path exploration
+  useEffect(() => {
+    if (pathStart && pathEnd && pathStart !== pathEnd) {
+      const result = findPath(graphData.nodes, graphData.links, pathStart, pathEnd);
+      setActivePath(result);
+    } else {
+      setActivePath(null);
+    }
+  }, [pathStart, pathEnd, graphData]);
+
+  // Handle node click in path mode
+  const handleNodeClick = useCallback((node: any) => {
+    if (pathMode) {
+      if (!pathStart) {
+        setPathStart(node.id);
+      } else if (!pathEnd && node.id !== pathStart) {
+        setPathEnd(node.id);
+      } else {
+        setPathStart(node.id);
+        setPathEnd(null);
+        setActivePath(null);
+      }
+    } else {
+      const n = graphData.nodes.find(gn => gn.id === node.id);
+      setSelectedNode(prev => prev?.id === node.id ? null : (n || null));
+    }
+  }, [pathMode, pathStart, pathEnd, graphData.nodes]);
 
   // Connected edges for selected node
   const selectedEdges = useMemo(() => {
     if (!selectedNode) return [];
     return graphData.links.filter(l => {
-      const src = typeof l.source === "string" ? l.source : (l.source as any).id;
-      const tgt = typeof l.target === "string" ? l.target : (l.target as any).id;
+      const src = typeof l.source === "string" ? l.source : l.source.id;
+      const tgt = typeof l.target === "string" ? l.target : l.target.id;
       return src === selectedNode.id || tgt === selectedNode.id;
     });
   }, [selectedNode, graphData]);
 
-  // ─── Node paint callback ───
+  // Insights
+  const insights = useMemo(() => generateInsights(graphData.nodes, graphData.links), [graphData]);
+
+  // ─── Node paint ───
   const paintNode = useCallback((node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
     const r = Math.max(4, (node.val || 8) / globalScale * 1.5);
-    const color = GROUP_COLORS[node.group] || "hsl(0, 0%, 50%)";
+    const color = GROUP_COLORS[node.group] || "#888";
     const isHighlighted = !highlightedIds || highlightedIds.nodes.has(node.id);
     const isSelected = selectedNode?.id === node.id;
-    const alpha = isHighlighted ? 1 : 0.15;
+    const isPathNode = activePath?.nodeIds.includes(node.id);
+    const isPathEndpoint = node.id === pathStart || node.id === pathEnd;
+    const alpha = isHighlighted ? 1 : 0.12;
 
     ctx.globalAlpha = alpha;
 
-    // Glow for selected
+    // Glow for path endpoints
+    if (isPathEndpoint) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, r + 6, 0, 2 * Math.PI);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2 / globalScale;
+      ctx.stroke();
+    }
+
+    // Selected glow
     if (isSelected) {
       ctx.beginPath();
       ctx.arc(node.x, node.y, r + 4, 0, 2 * Math.PI);
-      ctx.fillStyle = color.replace(")", ", 0.2)").replace("hsl(", "hsla(");
+      ctx.fillStyle = color + "33";
       ctx.fill();
     }
 
-    // Node circle
+    // Main node
     ctx.beginPath();
     ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
     ctx.fillStyle = color;
     ctx.fill();
 
     // Border
-    if (isSelected) {
-      ctx.strokeStyle = "hsl(0, 0%, 95%)";
-      ctx.lineWidth = 2 / globalScale;
+    if (isSelected || isPathNode) {
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = (isPathNode ? 2.5 : 2) / globalScale;
       ctx.stroke();
     }
 
-    // Icon
-    const fontSize = Math.max(8, 12 / globalScale);
-    ctx.font = `${fontSize}px sans-serif`;
+    // Shape indicator
+    const fontSize = Math.max(8, 11 / globalScale);
+    ctx.font = `${fontSize}px system-ui, sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(GROUP_ICONS[node.group] || "●", node.x, node.y);
+    ctx.fillStyle = "#fff";
+    ctx.fillText(GROUP_SHAPES[node.group] || "●", node.x, node.y);
 
-    // Label below
-    if (globalScale > 0.6) {
+    // Label
+    if (showLabels && globalScale > 0.5) {
       const labelSize = Math.max(7, 10 / globalScale);
       ctx.font = `600 ${labelSize}px system-ui, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "top";
-      ctx.fillStyle = isHighlighted ? "hsl(0, 0%, 90%)" : "hsl(0, 0%, 40%)";
-      const label = node.label.length > 20 ? node.label.slice(0, 18) + "…" : node.label;
+      ctx.fillStyle = isHighlighted ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.25)";
+      const label = node.label.length > 22 ? node.label.slice(0, 20) + "…" : node.label;
       ctx.fillText(label, node.x, node.y + r + 3);
 
-      // Amount label
       if (node.amount && globalScale > 0.8) {
         const amtSize = Math.max(6, 8 / globalScale);
         ctx.font = `${amtSize}px system-ui, sans-serif`;
-        ctx.fillStyle = isHighlighted ? "hsl(0, 0%, 70%)" : "hsl(0, 0%, 30%)";
+        ctx.fillStyle = isHighlighted ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.15)";
         ctx.fillText(formatAmount(node.amount), node.x, node.y + r + 3 + labelSize + 2);
       }
     }
 
     ctx.globalAlpha = 1;
-  }, [highlightedIds, selectedNode]);
+  }, [highlightedIds, selectedNode, showLabels, activePath, pathStart, pathEnd]);
 
-  // ─── Link paint callback ───
+  // ─── Link paint ───
   const paintLink = useCallback((link: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
     const src = link.source;
     const tgt = link.target;
     if (!src.x || !tgt.x) return;
 
-    const style = LINK_STYLES[link.linkType] || { dash: [], color: "rgba(150, 150, 150, 0.4)", label: "" };
+    const style = LINK_STYLES[link.linkType] || { dash: [], color: "rgba(150,150,150,0.4)", label: "" };
     const linkIdx = graphData.links.indexOf(link);
     const isHighlighted = !highlightedIds || highlightedIds.links.has(linkIdx);
-    const alpha = isHighlighted ? 1 : 0.08;
+    const isPathLink = activePath?.linkIndices.includes(linkIdx);
+    const alpha = isHighlighted ? 1 : 0.06;
 
     ctx.globalAlpha = alpha;
     ctx.beginPath();
     ctx.setLineDash(style.dash);
 
-    // Thicker line = more money
     const baseWidth = link.amount ? Math.min(Math.max(Math.log10(link.amount) - 2, 0.5), 4) : 1;
-    ctx.lineWidth = baseWidth / globalScale;
-    ctx.strokeStyle = style.color;
+    ctx.lineWidth = (isPathLink ? baseWidth * 2 : baseWidth) / globalScale;
+    ctx.strokeStyle = isPathLink ? "#fff" : style.color;
     ctx.moveTo(src.x, src.y);
     ctx.lineTo(tgt.x, tgt.y);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Amount label on link
-    if (link.amount && globalScale > 1 && isHighlighted) {
+    // Amount on link
+    if (link.amount && globalScale > 0.8 && isHighlighted) {
       const midX = (src.x + tgt.x) / 2;
       const midY = (src.y + tgt.y) / 2;
       const fontSize = Math.max(6, 8 / globalScale);
-      ctx.font = `${fontSize}px system-ui, sans-serif`;
+      ctx.font = `600 ${fontSize}px system-ui, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillStyle = "hsl(0, 0%, 70%)";
+      ctx.fillStyle = isPathLink ? "#fff" : "rgba(255,255,255,0.6)";
       ctx.fillText(formatAmount(link.amount), midX, midY - 6 / globalScale);
     }
 
     ctx.globalAlpha = 1;
-  }, [highlightedIds, graphData.links]);
+  }, [highlightedIds, graphData.links, activePath]);
+
+  // Path breadcrumb nodes
+  const pathNodes = useMemo(() => {
+    if (!activePath) return [];
+    return activePath.nodeIds.map(id => graphData.nodes.find(n => n.id === id)).filter(Boolean) as GraphNode[];
+  }, [activePath, graphData.nodes]);
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <section className="border-b border-border/30 bg-gradient-to-b from-primary/[0.03] to-transparent">
-        <div className="container mx-auto px-4 py-6 sm:py-8">
+      {/* ═══ HEADER ═══ */}
+      <section className="border-b border-border/30 bg-gradient-to-b from-primary/[0.04] to-transparent">
+        <div className="px-4 lg:px-6 py-5">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="w-5 h-5 text-primary" />
-                <span className="text-sm font-semibold text-primary uppercase tracking-wider">Follow the Money</span>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-xs font-extrabold text-primary uppercase tracking-[0.15em]">Follow the Money</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground tracking-tight mb-1">
+              <h1 className="text-2xl font-display font-bold text-foreground tracking-tight">
                 Influence Network Map
               </h1>
-              <p className="text-sm text-muted-foreground max-w-lg">
-                Trace how money flows from companies through PACs to politicians, committees, legislation, and industries. Hover to trace influence paths.
+              <p className="text-sm text-muted-foreground max-w-lg mt-0.5">
+                See how companies, PACs, politicians, legislation, and industries connect through money and influence.
               </p>
             </div>
 
@@ -540,77 +713,204 @@ export default function FollowTheMoney() {
         </div>
       </section>
 
-      {/* Topic filter bar */}
-      <div className="border-b border-border/30 bg-card/30">
-        <div className="container mx-auto px-4 py-3">
+      {/* ═══ CONTROLS BAR ═══ */}
+      <div className="border-b border-border/30 bg-card/50">
+        <div className="px-4 lg:px-6 py-2.5 space-y-2">
+          {/* Issue filter row */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider shrink-0">Topic:</span>
-            {ISSUE_CATEGORIES.map(cat => (
+            <Filter className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+            <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider shrink-0">Issue:</span>
+            {ISSUE_CATEGORIES.slice(0, 8).map(cat => (
               <Button
                 key={cat}
-                variant={activeFilter === cat ? "default" : "outline"}
+                variant={activeIssueFilter === cat ? "default" : "ghost"}
                 size="sm"
-                onClick={() => setActiveFilter(cat)}
-                className="rounded-full text-xs shrink-0 h-7"
+                onClick={() => setActiveIssueFilter(cat)}
+                className="rounded-full text-[10px] shrink-0 h-6 px-2.5"
               >
                 {cat}
               </Button>
             ))}
           </div>
+
+          {/* Relationship + controls row */}
+          <div className="flex items-center gap-2 overflow-x-auto">
+            <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider shrink-0">Link:</span>
+            {RELATIONSHIP_TYPES.map(rt => (
+              <Button
+                key={rt.key}
+                variant={activeRelFilter === rt.key ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setActiveRelFilter(rt.key)}
+                className="rounded-full text-[10px] shrink-0 h-6 px-2.5"
+              >
+                {rt.label}
+              </Button>
+            ))}
+
+            <div className="flex-1" />
+
+            <Button
+              variant={pathMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => { setPathMode(!pathMode); setPathStart(null); setPathEnd(null); setActivePath(null); }}
+              className="gap-1.5 text-[10px] h-7 shrink-0"
+            >
+              <Route className="w-3 h-3" />
+              Path Trace
+            </Button>
+            <Button
+              variant={strongOnly ? "default" : "outline"}
+              size="sm"
+              onClick={() => setStrongOnly(!strongOnly)}
+              className="gap-1 text-[10px] h-7 shrink-0"
+            >
+              <Zap className="w-3 h-3" />
+              Strong Only
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-7 h-7 shrink-0"
+              onClick={() => setShowLabels(!showLabels)}
+            >
+              {showLabels ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-7 h-7 shrink-0"
+              onClick={resetGraph}
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col lg:flex-row">
+      {/* ═══ PATH TRACE BREADCRUMB ═══ */}
+      {pathMode && (
+        <div className="border-b border-primary/20 bg-primary/[0.04] px-4 lg:px-6 py-2.5">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Route className="w-4 h-4 text-primary shrink-0" />
+            <span className="text-xs font-semibold text-primary">Path Trace:</span>
+
+            {!pathStart && (
+              <span className="text-xs text-muted-foreground italic">Click a starting node on the graph…</span>
+            )}
+            {pathStart && !pathEnd && (
+              <>
+                <Badge className="bg-primary text-primary-foreground text-[10px]">
+                  {graphData.nodes.find(n => n.id === pathStart)?.label || "Start"}
+                </Badge>
+                <ArrowRight className="w-3 h-3 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground italic">Click a destination node…</span>
+              </>
+            )}
+
+            {activePath && pathNodes.length > 0 && (
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {pathNodes.map((node, i) => (
+                  <div key={node.id} className="flex items-center gap-1.5">
+                    {i > 0 && <ArrowRight className="w-3 h-3 text-muted-foreground" />}
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] gap-1 cursor-pointer hover:bg-accent/50"
+                      style={{ borderColor: GROUP_COLORS[node.group] + "60" }}
+                      onClick={() => { setSelectedNode(node); }}
+                    >
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: GROUP_COLORS[node.group] }} />
+                      {node.label}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activePath === null && pathStart && pathEnd && (
+              <span className="text-xs text-destructive font-medium">No path found between these nodes.</span>
+            )}
+
+            {(pathStart || pathEnd) && (
+              <Button variant="ghost" size="sm" className="h-5 text-[10px] ml-auto" onClick={() => { setPathStart(null); setPathEnd(null); setActivePath(null); }}>
+                Clear Path
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ MAIN LAYOUT ═══ */}
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Graph Canvas */}
-        <div ref={containerRef} className="flex-1 relative bg-muted/20 border-b lg:border-b-0 lg:border-r border-border/30 overflow-hidden" style={{ minHeight: 400 }}>
+        <div
+          ref={containerRef}
+          className={cn(
+            "relative overflow-hidden transition-all",
+            graphExpanded ? "flex-1" : "flex-1 lg:flex-[2]",
+            "bg-[#0B0F1A]"
+          )}
+          style={{ minHeight: graphExpanded ? 600 : 420 }}
+        >
           {/* Active company badge */}
           {selectedCompanyName && (
             <div className="absolute top-3 left-3 z-10">
-              <Badge className="bg-card/90 backdrop-blur-sm text-foreground border border-border/40 gap-1.5 px-3 py-1.5">
+              <Badge className="bg-card/90 backdrop-blur-sm text-foreground border border-border/40 gap-1.5 px-3 py-1.5 shadow-lg">
                 <Building2 className="w-3 h-3" />
                 {selectedCompanyName}
-                <button onClick={resetGraph} className="ml-1 hover:text-destructive">
-                  <X className="w-3 h-3" />
-                </button>
+                <button onClick={resetGraph} className="ml-1 hover:text-destructive"><X className="w-3 h-3" /></button>
               </Badge>
             </div>
           )}
 
-          {/* Reset button */}
-          <div className="absolute top-3 right-3 z-10">
+          {/* Top-right controls */}
+          <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5">
+            <Button variant="outline" size="icon" className="w-8 h-8 bg-card/90 backdrop-blur-sm" onClick={() => setGraphExpanded(!graphExpanded)}>
+              {graphExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+            </Button>
             <Button variant="outline" size="icon" className="w-8 h-8 bg-card/90 backdrop-blur-sm" onClick={resetGraph}>
               <RotateCcw className="w-3.5 h-3.5" />
             </Button>
           </div>
 
+          {/* Node count */}
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10">
+            <Badge variant="outline" className="bg-card/80 backdrop-blur-sm text-[10px] text-muted-foreground border-border/30">
+              {graphData.nodes.length} nodes · {graphData.links.length} connections
+            </Badge>
+          </div>
+
           {/* Legend */}
-          <div className="absolute bottom-3 left-3 z-10 flex flex-wrap gap-2">
+          <div className="absolute bottom-3 left-3 z-10 flex flex-wrap gap-1.5">
             {Object.entries(GROUP_COLORS).map(([group, color]) => (
-              <div key={group} className="flex items-center gap-1.5 text-[10px] text-muted-foreground bg-card/80 backdrop-blur-sm px-2 py-1 rounded-full border border-border/30">
+              <div key={group} className="flex items-center gap-1.5 text-[9px] text-white/60 bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
                 {group}
               </div>
             ))}
           </div>
 
-          {/* Link type legend */}
-          <div className="absolute bottom-3 right-3 z-10 flex flex-col gap-1">
-            {[
-              { label: "Donation", style: "border-t-2 border-solid border-[rgba(76,175,80,0.8)]" },
-              { label: "Lobbying", style: "border-t-2 border-dashed border-[rgba(66,133,244,0.8)]" },
-              { label: "Dark Money", style: "border-t-2 border-dotted border-[rgba(244,67,54,0.8)]" },
-            ].map(l => (
-              <div key={l.label} className="flex items-center gap-2 text-[10px] text-muted-foreground bg-card/80 backdrop-blur-sm px-2 py-1 rounded border border-border/30">
-                <div className={`w-5 ${l.style}`} />
-                {l.label}
-              </div>
-            ))}
-          </div>
-
+          {/* Loading overlay */}
           {loading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-20">
-              <div className="text-sm text-muted-foreground animate-pulse">Loading influence map…</div>
+            <div className="absolute inset-0 flex items-center justify-center bg-[#0B0F1A]/80 backdrop-blur-sm z-20">
+              <div className="flex items-center gap-3 text-white/70">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span className="text-sm font-medium">Mapping influence network…</span>
+              </div>
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!loading && graphData.nodes.length === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <div className="text-center max-w-sm">
+                <Globe className="w-10 h-10 text-white/20 mx-auto mb-3" />
+                <h3 className="text-sm font-semibold text-white/60 mb-1">No connections match your filters</h3>
+                <p className="text-xs text-white/40 mb-3">Try broadening your filters or searching for a different company.</p>
+                <Button variant="outline" size="sm" onClick={resetGraph} className="gap-1.5">
+                  <RotateCcw className="w-3 h-3" /> Reset Filters
+                </Button>
+              </div>
             </div>
           )}
 
@@ -629,20 +929,14 @@ export default function FollowTheMoney() {
               ctx.fill();
             }}
             linkCanvasObject={paintLink}
-            linkDirectionalParticles={(link: any) => link.amount ? 2 : 0}
+            linkDirectionalParticles={(link: any) => link.amount && link.amount > 10000 ? 2 : 0}
             linkDirectionalParticleWidth={2}
             linkDirectionalParticleColor={(link: any) =>
               LINK_STYLES[link.linkType]?.color || "rgba(150,150,150,0.5)"
             }
             onNodeHover={(node: any) => setHoveredNode(node?.id || null)}
-            onNodeClick={(node: any) => {
-              const n = graphData.nodes.find(gn => gn.id === node.id);
-              setSelectedNode(prev => prev?.id === node.id ? null : (n || null));
-            }}
-            onNodeDragEnd={(node: any) => {
-              node.fx = node.x;
-              node.fy = node.y;
-            }}
+            onNodeClick={handleNodeClick}
+            onNodeDragEnd={(node: any) => { node.fx = node.x; node.fy = node.y; }}
             d3AlphaDecay={0.02}
             d3VelocityDecay={0.3}
             cooldownTicks={200}
@@ -652,159 +946,271 @@ export default function FollowTheMoney() {
           />
         </div>
 
-        {/* Detail Panel */}
-        <div className="w-full lg:w-80 bg-card border-l border-border/30 overflow-y-auto">
-          {selectedNode ? (
-            <div className="p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-lg"
-                    style={{ backgroundColor: (GROUP_COLORS[selectedNode.group] || "#888") + "22" }}
-                  >
-                    {GROUP_ICONS[selectedNode.group] || "●"}
+        {/* ═══ DETAIL PANEL ═══ */}
+        {!graphExpanded && (
+          <div className="w-full lg:w-[340px] bg-card border-l border-border/30 overflow-y-auto">
+            {selectedNode ? (
+              <div className="p-5 space-y-4">
+                {/* Node header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
+                      style={{ backgroundColor: GROUP_COLORS[selectedNode.group] + "22", color: GROUP_COLORS[selectedNode.group] }}
+                    >
+                      {GROUP_SHAPES[selectedNode.group]}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground font-display leading-tight">{selectedNode.label}</h3>
+                      <Badge variant="outline" className="text-[9px] mt-0.5">{selectedNode.group}</Badge>
+                    </div>
                   </div>
+                  <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => setSelectedNode(null)}>
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                {/* Party / State (politicians) */}
+                {selectedNode.party && (
+                  <div className="flex items-center gap-2">
+                    <Badge variant={selectedNode.party === "Democrat" ? "default" : "destructive"} className="text-[10px]">
+                      {selectedNode.party}
+                    </Badge>
+                    {selectedNode.state && <span className="text-xs text-muted-foreground">{selectedNode.state}</span>}
+                  </div>
+                )}
+
+                {/* Amount */}
+                {selectedNode.amount && (
+                  <div className="p-3 rounded-xl bg-primary/[0.06] border border-primary/10">
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">Documented Amount</p>
+                    <p className="text-xl font-bold font-display text-foreground">{formatAmount(selectedNode.amount)}</p>
+                  </div>
+                )}
+
+                {/* Metadata summary */}
+                {selectedNode.metadata?.summary && (
+                  <p className="text-xs text-muted-foreground leading-relaxed">{selectedNode.metadata.summary}</p>
+                )}
+                {selectedNode.metadata?.industry && (
+                  <div className="flex items-center gap-1.5">
+                    <Factory className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">{selectedNode.metadata.industry}</span>
+                  </div>
+                )}
+                {selectedNode.metadata?.status && (
+                  <Badge variant="secondary" className="text-[10px]">{selectedNode.metadata.status}</Badge>
+                )}
+                {selectedNode.metadata?.description && (
+                  <p className="text-xs text-muted-foreground leading-relaxed italic">"{selectedNode.metadata.description}"</p>
+                )}
+
+                {/* Issue Areas */}
+                {selectedNode.issueCategories && selectedNode.issueCategories.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-semibold text-foreground font-display">{selectedNode.label}</h3>
-                    <Badge variant="outline" className="text-[10px]">{selectedNode.group}</Badge>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1.5">Issue Areas</p>
+                    <div className="flex flex-wrap gap-1">
+                      {selectedNode.issueCategories.map(c => (
+                        <Badge key={c} variant="secondary" className="text-[10px] cursor-pointer hover:bg-accent" onClick={() => setActiveIssueFilter(c)}>
+                          {c}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Connections */}
+                <div>
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+                    Connections ({selectedEdges.length})
+                  </h4>
+                  <div className="space-y-1.5">
+                    {selectedEdges.map((edge, i) => {
+                      const src = typeof edge.source === "string" ? edge.source : edge.source.id;
+                      const tgt = typeof edge.target === "string" ? edge.target : edge.target.id;
+                      const isSource = src === selectedNode.id;
+                      const otherNodeId = isSource ? tgt : src;
+                      const otherNode = graphData.nodes.find(n => n.id === otherNodeId);
+                      if (!otherNode) return null;
+                      const style = LINK_STYLES[edge.linkType];
+                      const confLabel = edge.confidence ? CONFIDENCE_LABELS[edge.confidence] : null;
+
+                      return (
+                        <button
+                          key={i}
+                          className="w-full text-left p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors border border-border/20 hover:border-border/40"
+                          onClick={() => { setSelectedNode(otherNode); setHoveredNode(null); }}
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className="w-3.5 h-3.5 rounded-full shrink-0" style={{ backgroundColor: GROUP_COLORS[otherNode.group] }} />
+                            <span className="text-xs font-semibold text-foreground truncate">{otherNode.label}</span>
+                            <ChevronRight className="w-3 h-3 text-muted-foreground ml-auto shrink-0" />
+                          </div>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[10px] text-muted-foreground">{isSource ? "→" : "←"} {edge.label}</span>
+                            {style && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+                                {style.label}
+                              </span>
+                            )}
+                            {edge.amount && (
+                              <Badge variant="secondary" className="text-[10px] font-mono">{formatAmount(edge.amount)}</Badge>
+                            )}
+                          </div>
+                          {confLabel && (
+                            <p className="text-[9px] text-muted-foreground/60 mt-1 italic">{confLabel}</p>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
-                <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => setSelectedNode(null)}>
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
 
-              {selectedNode.amount && (
-                <div className="mb-4 p-3 rounded-lg bg-muted/50">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">Amount</p>
-                  <p className="text-lg font-bold font-display text-foreground">{formatAmount(selectedNode.amount)}</p>
+                {/* Actions */}
+                <div className="flex flex-col gap-1.5 pt-2 border-t border-border/30">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-1.5 text-xs"
+                    onClick={() => {
+                      setPathMode(true);
+                      setPathStart(selectedNode.id);
+                      setPathEnd(null);
+                      setActivePath(null);
+                    }}
+                  >
+                    <Route className="w-3 h-3" />
+                    Trace path from here
+                  </Button>
+                  {selectedNode.group === "Company" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full gap-1.5 text-xs"
+                      onClick={() => navigate(`/search?q=${encodeURIComponent(selectedNode.label)}`)}
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      View Company Profile
+                    </Button>
+                  )}
                 </div>
-              )}
+              </div>
+            ) : (
+              /* ═══ DEFAULT PANEL — How to Use + Insights ═══ */
+              <div className="p-5 space-y-5">
+                {/* Path mode instructions */}
+                {pathMode && (
+                  <div className="p-3 rounded-xl bg-primary/[0.06] border border-primary/10">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <Route className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-bold text-foreground">Path Trace Mode</span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                      Click two nodes on the graph to trace the path of influence between them. The system will find the shortest connection chain.
+                    </p>
+                  </div>
+                )}
 
-              {selectedNode.issueCategories && selectedNode.issueCategories.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1.5">Issue Areas</p>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedNode.issueCategories.map(c => (
-                      <Badge
-                        key={c}
-                        variant="secondary"
-                        className="text-[10px] cursor-pointer"
-                        onClick={() => setActiveFilter(c)}
-                      >
-                        {c}
-                      </Badge>
+                <div>
+                  <h3 className="text-sm font-bold text-foreground font-display mb-1.5">How to use</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Search for a company to map its influence network. <strong>Hover</strong> to trace influence paths. <strong>Click</strong> for details. <strong>Drag</strong> to rearrange. Use <strong>Path Trace</strong> to find connections between any two entities.
+                  </p>
+                </div>
+
+                {/* Node type legend */}
+                <div>
+                  <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Entity Types</h4>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {Object.entries(GROUP_LABELS).map(([group, { icon: Icon, desc }]) => (
+                      <div key={group} className="flex items-center gap-2 p-2 rounded-lg bg-muted/20">
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px]" style={{ backgroundColor: GROUP_COLORS[group] + "22", color: GROUP_COLORS[group] }}>
+                          {GROUP_SHAPES[group]}
+                        </div>
+                        <span className="text-[10px] text-foreground font-medium">{group}</span>
+                      </div>
                     ))}
                   </div>
                 </div>
-              )}
 
-              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                Connections ({selectedEdges.length})
-              </h4>
-
-              <div className="space-y-2">
-                {selectedEdges.map((edge, i) => {
-                  const src = typeof edge.source === "string" ? edge.source : (edge.source as any).id;
-                  const tgt = typeof edge.target === "string" ? edge.target : (edge.target as any).id;
-                  const isSource = src === selectedNode.id;
-                  const otherNodeId = isSource ? tgt : src;
-                  const otherNode = graphData.nodes.find(n => n.id === otherNodeId);
-                  if (!otherNode) return null;
-
-                  const style = LINK_STYLES[edge.linkType];
-
-                  return (
-                    <button
-                      key={i}
-                      className="w-full text-left p-3 rounded-lg bg-muted/40 hover:bg-muted/60 transition-colors"
-                      onClick={() => {
-                        setSelectedNode(otherNode);
-                        setHoveredNode(null);
-                      }}
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: GROUP_COLORS[otherNode.group] }} />
-                        <span className="text-sm font-medium text-foreground">{otherNode.label}</span>
-                        <ChevronRight className="w-3 h-3 text-muted-foreground ml-auto" />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-muted-foreground">{edge.label}</span>
-                        {style && (
-                          <span
-                            className="text-[9px] px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: style.color.replace("0.6", "0.15").replace("0.5", "0.15"), color: style.color.replace("0.6", "1").replace("0.5", "1") }}
-                          >
-                            {style.label}
-                          </span>
-                        )}
-                        {edge.amount && (
-                          <Badge variant="secondary" className="text-[10px]">{formatAmount(edge.amount)}</Badge>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {selectedNode.group === "Corporation" && selectedCompanyId && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full mt-4 gap-1.5"
-                  onClick={() => navigate(`/search?q=${encodeURIComponent(selectedNode.label)}`)}
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  View Company Profile
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className="p-5">
-              <h3 className="text-sm font-semibold text-foreground font-display mb-2">How to use</h3>
-              <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-                Search for a company above to map its influence network. <strong>Hover</strong> any node to trace the full path of influence. <strong>Click</strong> to see details. <strong>Drag</strong> nodes to rearrange.
-              </p>
-
-              <div className="space-y-3 mb-6">
-                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Node types</h4>
-                {Object.entries(GROUP_ICONS).map(([group, icon]) => (
-                  <div key={group} className="flex items-start gap-2.5">
-                    <span className="text-base">{icon}</span>
-                    <div>
-                      <p className="text-xs font-medium text-foreground">{group}</p>
+                {/* Insights */}
+                {insights.length > 0 && (
+                  <div>
+                    <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <Lightbulb className="w-3 h-3 text-primary" />
+                      What Stands Out
+                    </h4>
+                    <div className="space-y-2">
+                      {insights.map((insight, i) => (
+                        <div key={i} className="flex items-start gap-2 p-2.5 rounded-lg bg-primary/[0.04] border border-primary/10">
+                          <Zap className="w-3 h-3 text-primary shrink-0 mt-0.5" />
+                          <p className="text-[11px] text-foreground leading-relaxed">{insight}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
+                )}
 
-              <div className="space-y-2 mb-6">
-                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Connection types</h4>
-                {[
-                  { label: "Donation", desc: "FEC Schedule A — solid green, thicker = more $$$", color: "text-[rgba(76,175,80,1)]" },
-                  { label: "Lobbying", desc: "LDA filings — dashed blue line", color: "text-[rgba(66,133,244,1)]" },
-                  { label: "Board Interlock", desc: "SEC Form 4/10-K — dotted grey line", color: "text-muted-foreground" },
-                  { label: "Dark Money", desc: "501(c)(4) channels — dotted red line", color: "text-destructive" },
-                ].map(item => (
-                  <div key={item.label} className="flex items-start gap-2">
-                    <div className={`w-1 h-1 rounded-full mt-1.5 ${item.color} bg-current shrink-0`} />
-                    <div>
-                      <p className="text-xs font-medium text-foreground">{item.label}</p>
-                      <p className="text-[10px] text-muted-foreground">{item.desc}</p>
-                    </div>
+                {/* Connection type legend */}
+                <div>
+                  <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Connection Types</h4>
+                  <div className="space-y-1">
+                    {[
+                      { label: "Donation", desc: "FEC-documented financial contribution", color: LINK_STYLES.donation_to_member.color },
+                      { label: "Lobbying", desc: "LDA-filed lobbying activity", color: LINK_STYLES.lobbying_on_bill.color },
+                      { label: "Dark Money", desc: "501(c)(4) untraceable channel", color: LINK_STYLES.dark_money_channel.color },
+                      { label: "Contract", desc: "Federal contract or grant", color: LINK_STYLES.committee_oversight_of_contract.color },
+                      { label: "Revolving Door", desc: "Government ↔ private sector", color: LINK_STYLES.revolving_door.color },
+                    ].map(item => (
+                      <div key={item.label} className="flex items-start gap-2 py-1">
+                        <div className="w-3 h-0.5 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: item.color.replace(/[\d.]+\)$/, "1)") }} />
+                        <div>
+                          <p className="text-[10px] font-medium text-foreground">{item.label}</p>
+                          <p className="text-[9px] text-muted-foreground">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
 
-              <div className="p-3 rounded-lg bg-primary/[0.06] border border-primary/10">
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  <strong className="text-foreground">Demo mode:</strong> Showing a sample Amazon influence network.
-                  Search a tracked company to see real data from FEC, lobbying, and contract records.
-                </p>
+                {!selectedCompanyId && (
+                  <div className="p-3 rounded-xl bg-primary/[0.06] border border-primary/10">
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                      <strong className="text-foreground">Demo mode:</strong> Showing a sample influence network.
+                      Search for a tracked company to see real data from FEC, lobbying disclosures, and contract records.
+                    </p>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ═══ INSIGHTS FOOTER ═══ */}
+      {insights.length > 0 && graphExpanded && (
+        <div className="border-t border-border/30 bg-card/50 px-4 lg:px-6 py-3">
+          <div className="flex items-center gap-2 mb-1.5">
+            <Lightbulb className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider">What Stands Out</span>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {insights.slice(0, 3).map((insight, i) => (
+              <div key={i} className="flex items-center gap-1.5 text-xs text-foreground">
+                <Zap className="w-3 h-3 text-primary shrink-0" />
+                {insight}
+              </div>
+            ))}
+          </div>
         </div>
+      )}
+
+      {/* Attribution */}
+      <div className="border-t border-border/30 px-4 lg:px-6 py-2 text-center">
+        <p className="text-[9px] text-muted-foreground">
+          Built from FEC filings, Senate LDA lobbying disclosures, USASpending.gov contracts, and verified public records.
+          Connections labeled "inferred" are pattern-based — not confirmed.
+        </p>
       </div>
     </div>
   );
