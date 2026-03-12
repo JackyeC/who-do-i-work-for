@@ -128,48 +128,54 @@ function countRedFlags(flags: RedFlags): { count: number; active: string[] } {
 }
 
 /* ── Questions Generator ── */
+/* These aren't polite suggestions — they're audit questions. */
 
 function generateQuestions(signals: SignalInput[], flags: RedFlags, layoff: LayoffTiming): VerdictQuestion[] {
   const questions: VerdictQuestion[] = [];
 
-  // Signal-driven questions
+  // Signal-driven questions — specific, auditor-style
   const hiring = signals.find(s => s.key === "hiring");
   if (hiring && hiring.subscore < 50) {
-    questions.push({ text: "Can you share the bias audit for any AI tools used in your hiring process?", triggeredBy: "Hiring Transparency" });
-    questions.push({ text: "How are candidates screened before a human reviews their application?", triggeredBy: "Hiring Transparency" });
+    questions.push({ text: "Show me the bias audit for your AI screening tools. Not a summary — the actual audit.", triggeredBy: "Hiring Transparency" });
+    questions.push({ text: "How many candidates does a human actually review vs. how many your algorithm filters out?", triggeredBy: "Hiring Transparency" });
   }
 
   const comp = signals.find(s => s.key === "compensation");
   if (comp && comp.subscore < 60) {
-    questions.push({ text: "What is the salary band for this role, and how is it benchmarked?", triggeredBy: "Compensation Clarity" });
-    questions.push({ text: "Is there a published pay equity report or internal audit?", triggeredBy: "Compensation Clarity" });
+    questions.push({ text: "What's the salary band for this role, and where does this offer sit within it? Show me the benchmark methodology.", triggeredBy: "Compensation Clarity" });
+    questions.push({ text: "Has the company published a pay equity audit in the last 24 months? If not, why not?", triggeredBy: "Compensation Clarity" });
   }
 
   const workforce = signals.find(s => s.key === "workforce");
   if (workforce && workforce.subscore < 60) {
-    questions.push({ text: "Has the company filed any WARN Act notices in the past 24 months?", triggeredBy: "Workforce Stability" });
+    questions.push({ text: "Did this role exist before the most recent layoffs, or is this backfill?", triggeredBy: "Workforce Stability" });
   }
 
   const influence = signals.find(s => s.key === "influence");
   if (influence && influence.subscore < 50) {
-    questions.push({ text: "Can you explain the company's lobbying priorities and how they affect employees?", triggeredBy: "Influence Exposure" });
+    questions.push({ text: "Your company's PAC donated to [X]. How does that align with the values on your careers page?", triggeredBy: "Influence Exposure" });
+  } else if (influence && influence.subscore >= 60) {
+    questions.push({ text: "You spend significantly on lobbying and political influence. What's the connection between those priorities and how you treat your workforce?", triggeredBy: "Influence Exposure" });
   }
 
   const leadership = signals.find(s => s.key === "leadership");
   if (leadership && leadership.subscore < 60) {
-    questions.push({ text: "What percentage of leadership roles are held by underrepresented groups?", triggeredBy: "Leadership & Culture Trust" });
-    questions.push({ text: "How does the company measure and report on internal culture health?", triggeredBy: "Leadership & Culture Trust" });
+    questions.push({ text: "Three C-suite changes in two years is a pattern, not a coincidence. What's driving the turnover at the top?", triggeredBy: "Leadership & Culture Trust" });
+    questions.push({ text: "What does psychological safety actually look like on this team — not the handbook version, the real version?", triggeredBy: "Leadership & Culture Trust" });
   }
 
   // Red-flag-driven questions
   if (flags.activeLayoffsWithin90Days || (layoff.daysSinceLastLayoff !== null && layoff.daysSinceLastLayoff <= 90)) {
-    questions.push({ text: "What is the current headcount plan, and is the team I'd be joining affected by recent reductions?", triggeredBy: "Recent Layoffs" });
+    questions.push({ text: "You cut people recently. What's the current headcount plan for my team, and is the budget secured for the next 18 months?", triggeredBy: "Recent Layoffs" });
   }
   if (flags.warnWithoutTransitionSupport) {
-    questions.push({ text: "What transition support was provided to employees affected by recent layoffs?", triggeredBy: "WARN Notices" });
+    questions.push({ text: "What transition support did affected employees actually receive? Severance, outplacement, or just a calendar invite?", triggeredBy: "WARN Notices" });
+  }
+  if (flags.opaqueHiringTechnology && flags.highInfluenceExposure) {
+    questions.push({ text: "You're spending on lobbying but haven't published a Bias Audit. Why should I trust that your hiring process is fair?", triggeredBy: "Dirty Receipt: Influence vs. Transparency" });
   }
 
-  return questions.slice(0, 7); // cap at 7
+  return questions.slice(0, 7);
 }
 
 /* ── Jackye's Take Generator ── */
