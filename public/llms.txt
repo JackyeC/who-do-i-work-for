@@ -1,0 +1,67 @@
+# Who Do I Work For? — Employer Intelligence Platform
+
+> Know who you're really working for before you sign.
+
+## What is this?
+
+Who Do I Work For? is an Employer Intelligence platform created by Jackye Clayton. It connects policy, company behavior, workforce signals, compensation patterns, hiring technology use, and career strategy into a single intelligence layer.
+
+## Who is it for?
+
+- **Candidates**: Research any employer before accepting an offer. See political influence, compensation benchmarks, workforce stability, and hiring technology signals.
+- **Employees**: Understand what kind of company you're inside. Track influence exposure, culture signals, and leadership behavior.
+- **Recruiters & HR professionals**: Audit your Employee Value Proposition against real data. Anticipate candidate objections.
+- **Sales & Enterprise teams**: Understand buying committees, workforce priorities, and the political context that shapes procurement.
+- **Journalists & Researchers**: Source-linked corporate intelligence with every claim cited to public filings.
+
+## Core Tools
+
+### Company Intelligence
+Full employer intelligence report for any company. Includes workforce signals, hiring technology signals, compensation patterns, culture signals, influence mapping, and an Employer Clarity Score.
+
+### Offer Intelligence
+Upload or paste an offer letter for analysis. Benchmarks salary against verified market data, flags non-compete clauses, identifies benefits gaps, calculates walk-away math, and provides negotiation guidance.
+
+### Ask Jackye (AI Career Coach)
+Jackye Clayton's 20+ years of HR expertise available as an AI strategy layer. Interprets company signals, explains what they mean, gives tactical career advice. Not a generic chatbot — Jackye's voice, frameworks, and methodology.
+
+### Career Intelligence
+Discover career paths using skills, values, career anchors, and market intelligence. Shows possible paths, skill gaps, companies you may not have considered, and action plans.
+
+### Connection Chain
+Source-backed map of verified links between a company and political donors, lobbying firms, PACs, federal contracts, regulatory relationships, and revolving-door hires. Every connection includes confidence level, source links, and plain-English explanation.
+
+## Data Sources
+
+- FEC campaign finance filings
+- Senate lobbying disclosures
+- USAspending.gov federal contracts
+- BLS wage and employment data
+- SEC EDGAR corporate filings
+- FRED economic indicators
+- OpenSecrets
+- Google Patents
+- BEA industry data
+
+Every signal links to its source. No opinions. No ratings. Just evidence.
+
+## About Jackye Clayton
+
+Jackye Clayton is a career strategist, HR intelligence expert, and candidate advocate with over 20 years of experience in human resources, recruiting, and talent strategy. She created Who Do I Work For? because candidates deserve full information before making career decisions.
+
+## Contact
+
+- Website: https://civic-align.lovable.app
+- Advisory services: https://civic-align.lovable.app/work-with-jackye
+
+## Key Pages
+
+- Homepage: https://civic-align.lovable.app/
+- Company Intelligence: https://civic-align.lovable.app/browse
+- Offer Intelligence: https://civic-align.lovable.app/check
+- Ask Jackye: https://civic-align.lovable.app/ask-jackye
+- Career Intelligence: https://civic-align.lovable.app/career-intelligence
+- Would You Work Here?: https://civic-align.lovable.app/would-you-work-here
+- Work With Jackye: https://civic-align.lovable.app/work-with-jackye
+- Methodology: https://civic-align.lovable.app/methodology
+- Pricing: https://civic-align.lovable.app/pricing
