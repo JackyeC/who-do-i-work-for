@@ -647,12 +647,9 @@ export default function StrategicOfferReview() {
 
                 {/* 1. Offer Strength Score */}
                 <OfferStrengthScore
-                  report={report}
-                  legalFlags={legalFlags}
-                  offerSalary={Number(offer.baseSalary) || 0}
-                  annualBaseline={annualBaseline}
-                  hasEquity={!!offer.equity}
-                  hasBonus={!!offer.bonus}
+                  result={strengthScore.result}
+                  isAIPowered={strengthScore.isAIPowered}
+                  loading={strengthScore.loading}
                 />
 
                 {/* 2. Scam Detector (only if triggered) */}
