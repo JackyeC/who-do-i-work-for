@@ -975,7 +975,33 @@ export default function FollowTheMoney() {
             linkDirectionalParticleColor={(link: any) =>
               LINK_STYLES[link.linkType]?.color || "rgba(150,150,150,0.5)"
             }
-            onNodeHover={(node: any) => setHoveredNode(node?.id || null)}
+            onNodeHover={(node: any) => {
+              setHoveredNode(node?.id || null);
+              if (node) {
+                const receipts = graphData.links
+                  .filter(l => {
+                    const src = typeof l.source === "string" ? l.source : l.source.id;
+                    const tgt = typeof l.target === "string" ? l.target : l.target.id;
+                    return src === node.id || tgt === node.id;
+                  })
+                  .filter(l => l.amount)
+                  .slice(0, 3)
+                  .map(l => {
+                    const src = typeof l.source === "string" ? l.source : l.source.id;
+                    const tgt = typeof l.target === "string" ? l.target : l.target.id;
+                    const srcNode = graphData.nodes.find(n => n.id === src);
+                    const tgtNode = graphData.nodes.find(n => n.id === tgt);
+                    return `${srcNode?.label || src} → ${tgtNode?.label || tgt}: ${formatAmount(l.amount)}`;
+                  });
+                if (receipts.length > 0) {
+                  setHoverTooltip({ x: node.x || 0, y: node.y || 0, text: receipts.join("\n") });
+                } else {
+                  setHoverTooltip(null);
+                }
+              } else {
+                setHoverTooltip(null);
+              }
+            }}
             onNodeClick={handleNodeClick}
             onNodeDragEnd={(node: any) => { node.fx = node.x; node.fy = node.y; }}
             d3AlphaDecay={0.02}
