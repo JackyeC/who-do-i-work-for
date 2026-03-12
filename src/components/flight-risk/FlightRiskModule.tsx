@@ -12,6 +12,7 @@ import {
 } from "@/lib/flightRiskScore";
 import { FlightRiskGauge } from "./FlightRiskGauge";
 import { FlightRiskGraph } from "./FlightRiskGraph";
+import { CareerGPSSankey } from "./CareerGPSSankey";
 import {
   Radar, RefreshCw, Loader2, Clock, TrendingUp, UserCheck,
   ArrowRightLeft, AlertTriangle, Building2, BookOpen, BarChart3,
