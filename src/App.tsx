@@ -10,6 +10,7 @@ import { DossierLensProvider } from "@/contexts/DossierLensContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppShell } from "@/components/layout/AppShell";
+import { AskJackyeWidget } from "@/components/AskJackyeWidget";
 import Index from "./pages/Index";
 import CompanyProfile from "./pages/CompanyProfile";
 import SearchResults from "./pages/SearchResults";
@@ -53,6 +54,8 @@ import PolicyHub from "./pages/PolicyHub";
 import PolicyDetail from "./pages/PolicyDetail";
 import EconomyDashboard from "./pages/EconomyDashboard";
 import FollowTheMoney from "./pages/FollowTheMoney";
+import AskJackye from "./pages/AskJackye";
+import OnePager from "./pages/OnePager";
 const queryClient = new QueryClient();
 
 function ScrollToTop() {
@@ -76,6 +79,8 @@ const App = () => (
             <AppShell>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/ask-jackye" element={<AskJackye />} />
+                <Route path="/one-pager" element={<OnePager />} />
                 <Route path="/check" element={<Check />} />
                 <Route path="/policy" element={<PolicyHub />} />
                 <Route path="/policy/:id" element={<PolicyDetail />} />
@@ -167,6 +172,7 @@ const App = () => (
                 } />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <AskJackyeWidget />
             </AppShell>
           </BrowserRouter>
         </TooltipProvider>
