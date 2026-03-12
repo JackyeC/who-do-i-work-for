@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { usePageSEO } from "@/hooks/use-page-seo";
 
 const SERVICES = [
   {
@@ -36,6 +37,11 @@ const SERVICES = [
 
 export default function WorkWithJackye() {
   const navigate = useNavigate();
+  usePageSEO({
+    title: "Work With Jackye — Career Strategy & HR Advisory",
+    description: "Book Jackye Clayton for career strategy, recruiting advisory, HR tech go-to-market, employer brand strategy, and offer review. 20+ years of HR expertise.",
+    path: "/work-with-jackye",
+  });
 
   return (
     <div className="flex flex-col min-h-screen bg-background">

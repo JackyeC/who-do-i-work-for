@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { usePageSEO } from "@/hooks/use-page-seo";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -27,6 +28,12 @@ export default function AskJackyePage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  usePageSEO({
+    title: "Ask Jackye — AI Career Strategy Coach",
+    description: "Get career strategy, offer negotiation advice, and employer intelligence from Jackye Clayton's AI coach. Direct, practical, truth-first career guidance.",
+    path: "/ask-jackye",
+  });
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
