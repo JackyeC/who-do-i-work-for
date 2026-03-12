@@ -551,7 +551,24 @@ export default function CompanyProfile() {
           )}
 
           {/* ═══════════════════════════════════════════════════════════
-              3b. POWER MAP
+              3b. BOARD GOVERNANCE
+             ═══════════════════════════════════════════════════════════ */}
+          {dbCompanyId && (
+            <section className="mb-8">
+              <SectionHeader icon={Shield} title="Board Governance" subtitle="Committee structure, independence, and governance documents" />
+              <div className="pl-12">
+                <BoardGovernanceTab
+                  companyId={dbCompanyId}
+                  companyName={name}
+                  ticker={dbCompany?.ticker}
+                  secCik={dbCompany?.sec_cik}
+                />
+              </div>
+            </section>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════════
+              3c. POWER MAP
              ═══════════════════════════════════════════════════════════ */}
           <section className="mb-8">
             <SectionHeader icon={Network} title="Power Map" subtitle="Interactive leadership influence network" />

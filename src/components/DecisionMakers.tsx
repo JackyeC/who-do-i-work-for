@@ -134,8 +134,8 @@ function LeaderCard({
 
             {/* Action buttons */}
             <div className="flex flex-wrap gap-1.5 mt-3">
-              <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={onViewProfile}>
-                <User className="w-3 h-3" /> View Profile
+              <Button variant="outline" size="sm" className="h-7 text-xs gap-1" asChild>
+                <Link to={`/leader/${leaderId}`}><User className="w-3 h-3" /> View Profile</Link>
               </Button>
               {onTraceInfluence && (
                 <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={onTraceInfluence}>

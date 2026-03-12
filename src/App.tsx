@@ -94,6 +94,7 @@ const App = () => (
                 <Route path="/what-am-i-supporting" element={<WhatAmISupporting />} />
                 <Route path="/intelligence-chain" element={<IntelligenceChain />} />
                 <Route path="/board-intelligence" element={<BoardIntelligence />} />
+                <Route path="/leader/:id" element={<LeaderProfile />} />
                 <Route path="/one-pager" element={<OnePager />} />
                 <Route path="/check" element={<Check />} />
                 <Route path="/policy" element={<PolicyHub />} />
