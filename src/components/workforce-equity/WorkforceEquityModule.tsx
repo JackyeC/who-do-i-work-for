@@ -13,6 +13,7 @@ import { PromotionVelocityGauge } from "./PromotionVelocityGauge";
 import { ScoreBreakdownTable } from "./ScoreBreakdownTable";
 import { RepresentationSnapshot } from "./RepresentationSnapshot";
 import { SignalSection } from "./SignalSection";
+import { PromotionExitPattern } from "./PromotionExitPattern";
 import { TransparencyScoreCard } from "./TransparencyScoreCard";
 import { FlagsPanel } from "./FlagsPanel";
 import {
