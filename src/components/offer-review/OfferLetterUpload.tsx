@@ -200,7 +200,7 @@ export function OfferLetterUpload({ companyId, companyName, onReviewCreated }: O
 
         {/* Disclaimer */}
         <div className="bg-muted/50 rounded-lg p-3 text-[11px] text-muted-foreground">
-          This tool identifies terms and clauses from uploaded documents and compares them with publicly available company signals. It does not provide legal, financial, or employment advice.
+          This tool identifies terms and clauses from uploaded documents and compares them with publicly available company signals. It provides educational insights only — not legal, financial, or employment advice.
         </div>
 
         {/* Consent */}
