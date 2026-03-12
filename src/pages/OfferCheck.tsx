@@ -251,6 +251,9 @@ export default function OfferCheck() {
           {/* Stale Warning Banner */}
           <StaleWarningBanner staleSections={staleSections} total={sections.length} />
 
+          {/* Offer Check Snapshot */}
+          <OfferCheckSnapshotBlock company={company} sections={sections} />
+
           <PlatformPhilosophy />
         </motion.div>
 
