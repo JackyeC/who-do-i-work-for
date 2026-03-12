@@ -316,6 +316,49 @@ export default function FollowTheMoney() {
   const [pathEnd, setPathEnd] = useState<string | null>(null);
   const [activePath, setActivePath] = useState<{ nodeIds: string[]; linkIndices: number[] } | null>(null);
   const [graphExpanded, setGraphExpanded] = useState(false);
+  const [hoverTooltip, setHoverTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
+
+  // Cluster foci positions by group type
+  const CLUSTER_FOCI: Record<string, { x: number; y: number }> = {
+    Company:     { x: 0,    y: 0 },
+    PAC:         { x: -150, y: -100 },
+    Politician:  { x: 150,  y: -100 },
+    Legislation: { x: 200,  y: 100 },
+    Industry:    { x: -200, y: 100 },
+    Agency:      { x: 0,    y: 200 },
+    Committee:   { x: 0,    y: -200 },
+  };
+
+  // Configure D3 forces after mount
+  useEffect(() => {
+    const fg = graphRef.current;
+    if (!fg) return;
+    // @ts-ignore
+    fg.d3Force("charge")?.strength(-120).distanceMax(400);
+    // @ts-ignore
+    fg.d3Force("link")?.distance(60);
+    // @ts-ignore
+    fg.d3Force("center")?.strength(0.05);
+
+    // Add cluster foci forces
+    const d3 = (window as any).d3;
+    if (fg.d3Force) {
+      // @ts-ignore
+      fg.d3Force("clusterX", (alpha: number) => {
+        graphData.nodes.forEach((node: any) => {
+          const foci = CLUSTER_FOCI[node.group] || { x: 0, y: 0 };
+          node.vx = (node.vx || 0) + (foci.x - (node.x || 0)) * alpha * 0.03;
+        });
+      });
+      // @ts-ignore
+      fg.d3Force("clusterY", (alpha: number) => {
+        graphData.nodes.forEach((node: any) => {
+          const foci = CLUSTER_FOCI[node.group] || { x: 0, y: 0 };
+          node.vy = (node.vy || 0) + (foci.y - (node.y || 0)) * alpha * 0.03;
+        });
+      });
+    }
+  }, [graphData]);
 
   // Resize observer
   useEffect(() => {
