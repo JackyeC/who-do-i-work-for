@@ -189,9 +189,16 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
             {totalLeaders} identified
           </Badge>
         </CardTitle>
-        <p className="text-xs text-muted-foreground">
-          Key leaders who control company strategy, influence policy, and shape workforce decisions.
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">
+            Key leaders who control company strategy, influence policy, and shape workforce decisions.
+          </p>
+          <LeadershipVerifiedBadge
+            lastVerifiedAt={executives[0]?.last_verified_at}
+            source={executives[0]?.source}
+            compact
+          />
+        </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="executive" className="w-full">
