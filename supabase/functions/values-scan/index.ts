@@ -316,7 +316,7 @@ function getScrapePaths(websiteUrl: string, careersUrl: string | null): string[]
   return paths.slice(0, 7);
 }
 
-// ─── 7-Layer search queries ───
+// ─── 7-Layer search queries with career trajectory triangulation ───
 function getSearchQueries(companyName: string): string[] {
   return [
     // Layer 1 — Company Reports
@@ -331,8 +331,14 @@ function getSearchQueries(companyName: string): string[] {
     `"${companyName}" neurodiversity hiring OR disability inclusion OR deaf employment OR accessibility initiative`,
     // Layer 6 — Workforce Stability
     `"${companyName}" layoffs OR restructuring OR workforce reduction OR WARN notice`,
-    // Layer 7 — Career Path Progression
+    // Layer 7 — Career Path Progression & Trajectories
     `"${companyName}" promotion rate OR internal mobility rate OR advancement statistics OR career progression data`,
+    // Triangulation: Internal mobility keyword scan (Step B)
+    `"${companyName}" "internal applicants" OR "promotion from within" OR "leadership development program" OR "internal job posting"`,
+    // Triangulation: Career trajectory patterns
+    `"${companyName}" typical career path OR career ladder OR role progression OR "years to promotion"`,
+    // Triangulation: Exit & talent flow patterns
+    `"${companyName}" alumni OR "former employees" OR "where employees go" OR talent pipeline`,
   ];
 }
 
