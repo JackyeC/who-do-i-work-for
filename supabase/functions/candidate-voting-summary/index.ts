@@ -203,7 +203,7 @@ Include:
 Keep it factual and under 300 words. Note that this summary is based on publicly available information and may not reflect the most current data. Suggest checking Congress.gov directly for the latest records.`;
     }
 
-    const response = await fetch("https://api.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
