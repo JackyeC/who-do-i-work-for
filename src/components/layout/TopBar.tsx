@@ -227,6 +227,19 @@ export function TopBar() {
           })}
         </nav>
 
+        {/* Pricing link */}
+        <Link
+          to="/pricing"
+          className={cn(
+            "hidden md:inline-flex text-sm px-3 py-2 rounded-lg transition-colors",
+            location.pathname === "/pricing"
+              ? "text-primary font-semibold bg-primary/[0.08]"
+              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+          )}
+        >
+          Pricing
+        </Link>
+
         {/* Right side */}
         <div className="flex items-center gap-2 ml-auto">
           <div className="hidden lg:block">
