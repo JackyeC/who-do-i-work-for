@@ -19,6 +19,7 @@ import {
   UserCheck, Scale, Megaphone, X
 } from "lucide-react";
 import { WorkforceEquityModule } from "@/components/workforce-equity/WorkforceEquityModule";
+import { FlightRiskModule } from "@/components/flight-risk/FlightRiskModule";
 
 interface CompanyOption {
   id: string;
