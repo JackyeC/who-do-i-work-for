@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/data/sampleData";
 import {
   MapPin, Search, Loader2, User, DollarSign, AlertTriangle,
-  Building2, ExternalLink, LogOut, Flag
+  Building2, ExternalLink, Flag
 } from "lucide-react";
 
 interface RepData {
