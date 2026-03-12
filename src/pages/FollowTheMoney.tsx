@@ -1004,9 +1004,10 @@ export default function FollowTheMoney() {
             }}
             onNodeClick={handleNodeClick}
             onNodeDragEnd={(node: any) => { node.fx = node.x; node.fy = node.y; }}
-            d3AlphaDecay={0.02}
-            d3VelocityDecay={0.3}
-            cooldownTicks={200}
+            d3AlphaDecay={0.015}
+            d3VelocityDecay={0.25}
+            cooldownTicks={300}
+            warmupTicks={100}
             enableNodeDrag={true}
             enableZoomInteraction={true}
             enablePanInteraction={true}
