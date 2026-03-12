@@ -389,7 +389,36 @@ export default function FollowTheMoney() {
     return { nodes: clustered, links: filteredLinks };
   }, [allNodes, allLinks, activeIssueFilter, activeRelFilter, strongOnly, selectedCompanyId]);
 
-  // Search companies
+  // Configure D3 forces after graphData is ready
+  useEffect(() => {
+    const fg = graphRef.current;
+    if (!fg) return;
+    // @ts-ignore
+    fg.d3Force("charge")?.strength(-120).distanceMax(400);
+    // @ts-ignore
+    fg.d3Force("link")?.distance(60);
+    // @ts-ignore
+    fg.d3Force("center")?.strength(0.05);
+
+    // Add cluster foci forces
+    if (fg.d3Force) {
+      // @ts-ignore
+      fg.d3Force("clusterX", (alpha: number) => {
+        graphData.nodes.forEach((node: any) => {
+          const foci = CLUSTER_FOCI[node.group] || { x: 0, y: 0 };
+          node.vx = (node.vx || 0) + (foci.x - (node.x || 0)) * alpha * 0.03;
+        });
+      });
+      // @ts-ignore
+      fg.d3Force("clusterY", (alpha: number) => {
+        graphData.nodes.forEach((node: any) => {
+          const foci = CLUSTER_FOCI[node.group] || { x: 0, y: 0 };
+          node.vy = (node.vy || 0) + (foci.y - (node.y || 0)) * alpha * 0.03;
+        });
+      });
+    }
+  }, [graphData]);
+
   useEffect(() => {
     if (!query.trim() || query.length < 2) { setSearchResults([]); return; }
     const timeout = setTimeout(async () => {
