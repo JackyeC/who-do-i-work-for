@@ -62,6 +62,7 @@ import EVPRealityCheck from "./pages/EVPRealityCheck";
 import WhatAmISupporting from "./pages/WhatAmISupporting";
 import IntelligenceChain from "./pages/IntelligenceChain";
 import BoardIntelligence from "./pages/BoardIntelligence";
+import LeaderProfile from "./pages/LeaderProfile";
 
 const queryClient = new QueryClient();
 
