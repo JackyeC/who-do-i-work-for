@@ -90,7 +90,7 @@ ${scriptTag}`;
                 </div>
                 <div>
                   <div className="text-[10px] font-medium tracking-wide" style={{ color: "#94a3b8" }}>CIVIC FOOTPRINT</div>
-                  <div className="text-xs mt-0.5" style={{ color: "#94a3b8" }}>Transparency Profile Available · CivicLens</div>
+                  <div className="text-xs mt-0.5" style={{ color: "#94a3b8" }}>Transparency Profile Available · WDIWF?</div>
                 </div>
               </div>
             </div>
