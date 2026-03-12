@@ -10,6 +10,8 @@ import {
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
 import { FollowLeaderButton } from "@/components/FollowLeaderButton";
+import { LeadershipVerifiedBadge } from "@/components/LeadershipVerifiedBadge";
+import { ReportLeadershipChange } from "@/components/ReportLeadershipChange";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
@@ -22,6 +24,8 @@ interface Executive {
   title: string;
   total_donations: number;
   photo_url?: string | null;
+  source?: string | null;
+  last_verified_at?: string | null;
 }
 
 interface BoardMember {
@@ -33,6 +37,8 @@ interface BoardMember {
   previous_company?: string | null;
   committees?: string[];
   is_independent?: boolean;
+  source?: string | null;
+  last_verified_at?: string | null;
 }
 
 interface DecisionMakersProps {
@@ -187,9 +193,16 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
             {totalLeaders} identified
           </Badge>
         </CardTitle>
-        <p className="text-xs text-muted-foreground">
-          Key leaders who control company strategy, influence policy, and shape workforce decisions.
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">
+            Key leaders who control company strategy, influence policy, and shape workforce decisions.
+          </p>
+          <LeadershipVerifiedBadge
+            lastVerifiedAt={executives[0]?.last_verified_at}
+            source={executives[0]?.source}
+            compact
+          />
+        </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="executive" className="w-full">
@@ -300,6 +313,19 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Report leadership change + freshness */}
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+          <ReportLeadershipChange
+            companyId={companyId || ""}
+            companyName={companyName}
+          />
+          <LeadershipVerifiedBadge
+            lastVerifiedAt={executives[0]?.last_verified_at || boardMembers?.[0]?.last_verified_at}
+            source={executives[0]?.source || boardMembers?.[0]?.source}
+            compact
+          />
+        </div>
       </CardContent>
     </Card>
   );
