@@ -339,7 +339,7 @@ const LinkageChain = forwardRef<HTMLDivElement, { linkages: ROIPipelineData["lin
       })}
     </div>
   );
-}
+});
 
 /* ─── Main component ─── */
 
