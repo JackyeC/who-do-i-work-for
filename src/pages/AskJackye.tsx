@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { usePageSEO } from "@/hooks/use-page-seo";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
