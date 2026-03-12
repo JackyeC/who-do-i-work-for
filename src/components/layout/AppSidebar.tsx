@@ -78,6 +78,7 @@ const NAV_GROUPS = [
       { id: "alerts", label: "Signal Alerts", icon: Bell, path: "/dashboard?tab=alerts" },
       { id: "preferences", label: "Preferences", icon: Settings, path: "/dashboard?tab=preferences" },
       { id: "profile", label: "Profile", icon: User, path: "/dashboard?tab=profile" },
+      { id: "pricing", label: "Pricing & Plans", icon: CreditCard, path: "/pricing" },
     ],
   },
 ];

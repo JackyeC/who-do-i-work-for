@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Auto-refresh subscription every 60 seconds when logged in
   useEffect(() => {
     if (!user) return;
-    const interval = setInterval(checkSubscription, 60_000);
+    const interval = setInterval(checkSubscription, 300_000); // every 5 minutes
     return () => clearInterval(interval);
   }, [user, checkSubscription]);
 
