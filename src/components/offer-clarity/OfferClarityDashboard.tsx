@@ -295,8 +295,6 @@ export function OfferClarityDashboard({ report, offerData, onStartOver }: Props)
 
 /** Inline company signals section pulled from useOfferCheck */
 function CompanySignalsSection({ companyId }: { companyId: string }) {
-  const { useOfferCheck } = require("@/hooks/use-offer-check");
-  const { OfferCheckReport } = require("@/components/OfferCheckReport");
   const { sections, isLoading } = useOfferCheck(companyId);
 
   if (isLoading) return null;
