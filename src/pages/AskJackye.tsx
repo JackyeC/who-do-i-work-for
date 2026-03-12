@@ -46,6 +46,12 @@ export default function AskJackyePage() {
 
   const send = async (text: string) => {
     if (!text.trim() || isLoading) return;
+
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
     const userMsg: Msg = { role: "user", content: text.trim() };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
@@ -56,11 +62,18 @@ export default function AskJackyePage() {
     const apiMessages = [...messages.filter(m => m !== OPENING_MESSAGE), userMsg];
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        setMessages(prev => [...prev, { role: "assistant", content: "Your session has expired. Please sign in again." }]);
+        setIsLoading(false);
+        return;
+      }
+
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({ messages: apiMessages }),
       });
