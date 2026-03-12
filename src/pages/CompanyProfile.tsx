@@ -414,26 +414,34 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               EMPLOYER CLARITY SCORE
              ═══════════════════════════════════════════════════════════ */}
-          <div className="mb-6">
-            <EmployerClarityScore
-              hasWarnNotices={false}
-              hasLayoffSignals={false}
-              hasSentimentData={!!tiSentiment}
-              employeeCount={(dbCompany as any)?.employee_count}
-              hasAiHrSignals={!!tiAiHr}
-              hasBenefitsData={!!tiBenefits}
-              hasJobPostings={false}
-              totalPacSpending={totalPac}
-              lobbyingSpend={lobbyingSpend}
-              hasTradeAssociations={(dbTradeAssociations?.length || 0) > 0}
-              hasGovernmentContracts={govContracts > 0}
-              hasDarkMoney={(dbDarkMoney?.length || 0) > 0}
-              hasPayEquitySignals={!!tiPayEquity}
-              hasCompensationData={!!tiBenefits}
-              scanCompletion={(dbCompany as any)?.scan_completion}
+          <div className="mb-6 grid lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2">
+              <EmployerClarityScore
+                hasWarnNotices={false}
+                hasLayoffSignals={false}
+                hasSentimentData={!!tiSentiment}
+                employeeCount={(dbCompany as any)?.employee_count}
+                hasAiHrSignals={!!tiAiHr}
+                hasBenefitsData={!!tiBenefits}
+                hasJobPostings={false}
+                totalPacSpending={totalPac}
+                lobbyingSpend={lobbyingSpend}
+                hasTradeAssociations={(dbTradeAssociations?.length || 0) > 0}
+                hasGovernmentContracts={govContracts > 0}
+                hasDarkMoney={(dbDarkMoney?.length || 0) > 0}
+                hasPayEquitySignals={!!tiPayEquity}
+                hasCompensationData={!!tiBenefits}
+                scanCompletion={(dbCompany as any)?.scan_completion}
+                recordStatus={recordStatus}
+                hasPublicStances={(dbPublicStances?.length || 0) > 0}
+                hasIssueSignals={(dbIssueSignals?.length || 0) > 0}
+              />
+            </div>
+            <DataFreshnessCard
+              lastReviewed={dbCompany?.last_reviewed}
+              updatedAt={dbCompany?.updated_at}
               recordStatus={recordStatus}
-              hasPublicStances={(dbPublicStances?.length || 0) > 0}
-              hasIssueSignals={(dbIssueSignals?.length || 0) > 0}
+              scanCompletion={(dbCompany as any)?.scan_completion}
             />
           </div>
 
