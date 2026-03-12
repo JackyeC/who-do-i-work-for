@@ -3,9 +3,10 @@ import { Sun, Moon } from "lucide-react";
 
 export function ThemeToggle() {
   const [dark, setDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return document.documentElement.classList.contains("dark") ||
-      localStorage.getItem("theme") === "dark";
+    if (typeof window === "undefined") return true;
+    const saved = localStorage.getItem("theme");
+    if (saved) return saved === "dark";
+    return true; // Default to dark
   });
 
   useEffect(() => {
@@ -18,10 +19,13 @@ export function ThemeToggle() {
     }
   }, [dark]);
 
-  // Init on mount
+  // Init on mount — default dark
   useEffect(() => {
     const saved = localStorage.getItem("theme");
-    if (saved === "dark") {
+    if (saved === "light") {
+      document.documentElement.classList.remove("dark");
+      setDark(false);
+    } else {
       document.documentElement.classList.add("dark");
       setDark(true);
     }
