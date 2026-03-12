@@ -141,7 +141,7 @@ export default function OfferCheck() {
   });
 
   const isSaved = !!savedCheck?.is_saved;
-  const atSaveLimit = !premium.isPremium && (savedCount || 0) >= premium.maxSavedReports && !isSaved;
+  const atSaveLimit = !premium.isPremium && (savedCount || 0) >= premium.maxOfferChecks && !isSaved;
 
   const lockedSections = useMemo(() => {
     if (user) return [];
