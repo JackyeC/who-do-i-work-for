@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Scale, ShieldAlert, Clock, Lightbulb, Gavel, XCircle, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ConsultProfessionalBanner } from "@/components/strategic-offer/ConsultProfessionalBanner";
 
 export interface LegalFlag {
   id: string;
