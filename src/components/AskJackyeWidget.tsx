@@ -159,7 +159,7 @@ export function AskJackyeWidget() {
             {messages.length === 0 && (
               <div className="p-4 text-center text-muted-foreground text-[12px]">
                 <p className="font-serif text-sm text-primary mb-2">Welcome.</p>
-                <p>I'm Jackye Clayton — career strategist with 20+ years in HR. Ask me about any company, any offer, or any career decision. I'll tell you what most people won't say out loud.</p>
+                <p>I've reviewed the intelligence report. Before you make any decisions, here's what you need to understand: the connection chain tells you who this company really is — not just who they say they are on their careers page. Ask me anything.</p>
               </div>
             )}
             {messages.map((msg, i) => (
