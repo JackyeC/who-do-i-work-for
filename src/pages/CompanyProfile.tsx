@@ -379,6 +379,15 @@ export default function CompanyProfile() {
                       )}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs gap-1.5"
+                        onClick={() => navigate(`/dossier/${id}`)}
+                      >
+                        <Briefcase className="w-3.5 h-3.5" />
+                        View Full Dossier
+                      </Button>
                       <WatchCompanyButton companyId={dbCompany?.id || company?.id || ""} companyName={name} />
                       <ShareableScorecard data={{
                         name, industry, state, civicFootprintScore: civicScore,
