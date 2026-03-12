@@ -150,6 +150,9 @@ Return your analysis using the provided tool.`;
 
     const result = JSON.parse(toolCall.function.arguments);
 
+    // Log usage
+    await serviceClient.from("user_usage").insert({ user_id: user.id, function_name: "translate-signals" });
+
     return new Response(JSON.stringify({ success: true, ...result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

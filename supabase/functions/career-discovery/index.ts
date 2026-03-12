@@ -396,6 +396,9 @@ Target Role: ${profile.targetRole || "AI should suggest roles"}
 
     const result = JSON.parse(toolCall.function.arguments);
 
+    // Log usage
+    await serviceClient.from("user_usage").insert({ user_id: user.id, function_name: "career-discovery" });
+
     return new Response(JSON.stringify({ success: true, data: result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

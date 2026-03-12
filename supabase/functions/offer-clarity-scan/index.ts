@@ -227,6 +227,9 @@ Use the tool to return your analysis.`;
 
     const report = JSON.parse(toolCall.function.arguments);
 
+    // Log usage
+    await serviceQuotaClient.from("user_usage").insert({ user_id: user.id, function_name: "offer-clarity-scan" });
+
     return new Response(JSON.stringify({ success: true, report }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
