@@ -86,21 +86,8 @@ export default function VoterLookup() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-
+    <div className="flex flex-col bg-background min-h-0 flex-1">
       <div className="container mx-auto px-4 py-8 flex-1">
-        {/* User bar */}
-        <div className="flex items-center justify-between mb-8">
-          <div />
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <span>{user?.email}</span>
-            <Button variant="ghost" size="sm" onClick={signOut} className="gap-1.5">
-              <LogOut className="w-3.5 h-3.5" /> Sign out
-            </Button>
-          </div>
-        </div>
-
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
           {/* Hero */}
           <div className="text-center mb-10">
