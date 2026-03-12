@@ -13,6 +13,7 @@ import { PromotionVelocityGauge } from "./PromotionVelocityGauge";
 import { ScoreBreakdownTable } from "./ScoreBreakdownTable";
 import { RepresentationSnapshot } from "./RepresentationSnapshot";
 import { SignalSection } from "./SignalSection";
+import { PromotionExitPattern } from "./PromotionExitPattern";
 import { TransparencyScoreCard } from "./TransparencyScoreCard";
 import { FlagsPanel } from "./FlagsPanel";
 import {
@@ -249,6 +250,9 @@ export function WorkforceEquityModule({
             signals={signals}
             companyName={companyName}
           />
+
+          {/* Promotion vs Exit Pattern */}
+          <PromotionExitPattern signals={signals} companyName={companyName} />
 
           {/* Transparency Score */}
           <TransparencyScoreCard signals={signals} companyName={companyName} />
