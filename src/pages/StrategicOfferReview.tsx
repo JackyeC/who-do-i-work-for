@@ -313,7 +313,7 @@ export default function StrategicOfferReview() {
                   toast({ title: "Sign in required", description: "Create a free account to upload offer letters for private review." });
                   return;
                 }
-                setInputMode("upload");
+                setShowConsentModal(true);
               }}
             >
               <CardContent className="p-6 text-center space-y-3">
