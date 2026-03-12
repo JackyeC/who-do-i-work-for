@@ -153,7 +153,8 @@
 
 @layer utilities {
   .font-serif {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-weight: 600;
   }
 
   .font-mono {
