@@ -405,10 +405,25 @@ Deno.serve(async (req) => {
     await runAndSave(CONGRESS_MODULE, true);
 
     // ─── Phase 2: Web research modules — STAGGERED BATCHES ───
-    console.log(`[intelligence-scan] ═══ Phase 2: Web Research Modules (staggered) ═══`);
-    const BATCH_SIZE = 4;
-    for (let i = 0; i < RESEARCH_MODULES.length; i += BATCH_SIZE) {
-      const batch = RESEARCH_MODULES.slice(i, i + BATCH_SIZE);
+    // Free users: skip Firecrawl-heavy modules to save credits
+    const FIRECRAWL_HEAVY_MODULES = ['worker_sentiment', 'social', 'ideology', 'ai_accountability', 'ai_hr_scan'];
+    const researchModulesToRun = isPaidUser
+      ? RESEARCH_MODULES
+      : RESEARCH_MODULES.filter(m => !FIRECRAWL_HEAVY_MODULES.includes(m.key));
+
+    if (researchModulesToRun.length < RESEARCH_MODULES.length) {
+      const skipped = RESEARCH_MODULES.filter(m => FIRECRAWL_HEAVY_MODULES.includes(m.key));
+      for (const mod of skipped) {
+        moduleStatuses[mod.key] = { status: 'skipped', label: mod.label, phase: mod.phase, reason: 'Requires paid plan' };
+      }
+      console.log(`[intelligence-scan] Skipping ${skipped.length} Firecrawl modules (free user)`);
+      await updateProgress();
+    }
+
+    console.log(`[intelligence-scan] ═══ Phase 2: Web Research Modules (staggered, ${researchModulesToRun.length} modules) ═══`);
+    const BATCH_SIZE = 3; // Reduced from 4 to save credits
+    for (let i = 0; i < researchModulesToRun.length; i += BATCH_SIZE) {
+      const batch = researchModulesToRun.slice(i, i + BATCH_SIZE);
       console.log(`[intelligence-scan] Research batch ${Math.floor(i / BATCH_SIZE) + 1}: ${batch.map(m => m.key).join(', ')}`);
       await Promise.all(batch.map(mod => {
         return runAndSave(mod, false);
