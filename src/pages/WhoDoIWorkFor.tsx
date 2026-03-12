@@ -484,6 +484,14 @@ export default function WhoDoIWorkFor() {
                 />
               </div>
 
+              {/* Employee Flight Risk Map */}
+              <div className="mt-10 pt-8 border-t border-border">
+                <FlightRiskModule
+                  companyName={employerCompany.name}
+                  companyId={employerCompany.id}
+                />
+              </div>
+
               {/* CTA to full profile */}
               <div className="text-center mt-8">
                 <Link to={`/company/${employerCompany.slug}`}>
