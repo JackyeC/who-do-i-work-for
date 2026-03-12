@@ -297,7 +297,7 @@ export default function Jobs() {
           {/* Header */}
           <div className="mb-5">
             <h1 className="text-xl sm:text-2xl font-bold text-foreground font-display">
-              Career Intelligence
+              Know Before You Go
             </h1>
             <p className="text-muted-foreground text-sm mt-0.5">
               Find jobs at companies that align with your values. Like AIApply — but with transparency built in.

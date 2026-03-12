@@ -261,7 +261,7 @@ function buildCoverPage(doc: jsPDF, data: DossierPdfData) {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
   doc.setTextColor(...C.muted);
-  doc.text("Career Intelligence Platform", ML, PH - 12);
+  doc.text("Know Before You Go", ML, PH - 12);
   doc.text(`Generated ${AUDIT_DATE}`, PW - MR, PH - 12, { align: "right" });
 }
 
