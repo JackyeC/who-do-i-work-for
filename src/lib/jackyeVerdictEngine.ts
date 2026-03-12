@@ -184,54 +184,71 @@ function generateJackyeTake(
 ): string {
   const parts: string[] = [];
 
-  // 1. What the signals show
-  const weakSignals = signals.filter(s => s.subscore < 50).map(s => s.label.toLowerCase());
-  const strongSignals = signals.filter(s => s.subscore >= 70).map(s => s.label.toLowerCase());
+  // Helper lookups
+  const weakSignals = signals.filter(s => s.subscore < 50);
+  const strongSignals = signals.filter(s => s.subscore >= 70);
+  const influence = signals.find(s => s.key === "influence");
+  const hiring = signals.find(s => s.key === "hiring");
+  const comp = signals.find(s => s.key === "compensation");
+  const workforce = signals.find(s => s.key === "workforce");
 
-  if (weakSignals.length > 0) {
-    parts.push(`The data raises questions about ${weakSignals.join(", ")}.`);
-  }
-  if (strongSignals.length > 0) {
-    parts.push(`On the positive side, ${strongSignals.join(" and ")} look ${strongSignals.length > 1 ? "solid" : "solid"}.`);
+  // ── 1. The Lead — candid, grounded, no bot language ──
+  if (coverage === "Low") {
+    parts.push("Look, there aren't enough receipts on the table here to tell you much. That's a signal in itself — silence is a choice.");
+  } else if (weakSignals.length >= 3) {
+    parts.push("The receipts aren't matching the rhetoric here. Facts over feelings — and the facts are thin.");
+  } else if (weakSignals.length > 0) {
+    parts.push(`Let's talk character, not marketing. AI can simulate competence, but these signals reveal who this company actually is when nobody's watching.`);
+  } else {
+    parts.push("I've seen a lot of employer profiles. This one actually has the receipts to back up the talk — and that's rare.");
   }
 
-  // 2. What that means
+  // ── 2. The Analysis — specific, witty, call out contradictions ──
+
+  // High influence but weak other signals = "all talk, no receipts"
+  if (influence && influence.subscore >= 60 && weakSignals.filter(s => s.key !== "influence").length >= 2) {
+    const weakLabels = weakSignals.filter(s => s.key !== "influence").map(s => s.label.toLowerCase());
+    parts.push(`They've got a ${influence.subscore}/100 on Influence, which means they know how to play the game in DC — but they're ghosting us on ${weakLabels.join(" and ")}. That's all talk, no receipts.`);
+  } else if (strongSignals.length > 0) {
+    const strongLabels = strongSignals.map(s => `${s.label.toLowerCase()} (${s.subscore}/100)`);
+    parts.push(`Strongest signals: ${strongLabels.join(", ")}. That's actual character showing through, not a press release.`);
+  }
+
+  // Specific HR tech risk callout
+  if (flags.opaqueHiringTechnology || (hiring && hiring.subscore < 50)) {
+    if (influence && influence.subscore >= 50) {
+      parts.push("Here's what bugs me: they're spending on lobbying but haven't published a Bias Audit for their AI ranker. They'll spend money to influence policy but won't tell you how their own algorithm screens you out? That's character.");
+    } else {
+      parts.push("Their hiring tech is a black box. No published bias audits, no transparency on how their AI screens candidates. You deserve to know how you're being evaluated before a human ever sees your résumé.");
+    }
+  }
+
+  // Compensation gaps
+  if (flags.compensationTransparencyGaps || (comp && comp.subscore < 50)) {
+    parts.push("The pay transparency signals are weak. If they can't tell you the band, the benchmark methodology, or show an equity audit — ask yourself why. Companies that pay fairly aren't afraid to prove it.");
+  }
+
+  // ── Layoff timing — direct, no sugarcoating ──
+  if (layoff.daysSinceLastLayoff !== null && layoff.daysSinceLastLayoff <= 90) {
+    parts.push(`They laid people off ${layoff.daysSinceLastLayoff} days ago. That's not ancient history — that's still warm. The team you'd join may still be processing what happened. Ask about it directly, and watch how they respond.`);
+  } else if (layoff.daysSinceLastLayoff !== null && layoff.daysSinceLastLayoff <= 180) {
+    parts.push("There were cuts within the last six months. The dust may have settled, but the culture impact doesn't disappear that fast. Ask about headcount trajectory and whether your role existed before the cuts.");
+  }
+
+  // ── 3. The Call to Action — not "research," but specific ──
   switch (verdict) {
     case "Yes":
-      parts.push("This employer shows strong public signals across most categories. That's not common — and it's worth noting.");
+      parts.push("The signals are solid. Go in strong — but still ask the questions below. Good character holds up under scrutiny; you're not being difficult, you're being smart.");
       break;
     case "Proceed with caution":
-      parts.push("This isn't a red flag situation, but there are gaps that could matter. You want answers before you commit, not after.");
+      parts.push("Before you sign anything, look at the flow of funds vs. the marketing fluff. Ask them why their PAC priorities and their handbook values don't line up. Trust is the currency here — don't spend yours blindly.");
       break;
     case "Not without more answers":
-      parts.push("There's enough uncertainty here that moving forward without more information would be a risk. The gaps aren't small.");
+      parts.push("I wouldn't move forward until they can answer the questions below — in writing. If they dodge, that's your answer. Silence on these topics isn't an oversight; it's a strategy.");
       break;
     case "I would pause":
-      parts.push("The signals here are concerning. Whether it's instability, lack of transparency, or outsized political exposure — this is a situation where you need to protect yourself first.");
+      parts.push("I'd pump the brakes. The signals are telling a story the careers page isn't. If you're already in process, slow it down. No offer is worth walking into a situation where the character doesn't match the pitch. Run the chain first. Always.");
       break;
-  }
-
-  // Layoff timing context
-  if (layoff.daysSinceLastLayoff !== null && layoff.daysSinceLastLayoff <= 90) {
-    parts.push(`There were layoffs within the last ${layoff.daysSinceLastLayoff} days. That's recent enough to directly affect the role you're considering.`);
-  } else if (layoff.daysSinceLastLayoff !== null && layoff.daysSinceLastLayoff <= 180) {
-    parts.push(`Layoffs occurred within the last six months. The company may still be stabilizing — ask about the current headcount trajectory.`);
-  }
-
-  // Coverage warning
-  if (coverage === "Low") {
-    parts.push("I should be honest: there isn't a lot of public data to work with here. That doesn't mean it's bad — but it means you can't skip your own diligence.");
-  }
-
-  // 3. What to do next
-  if (verdict === "Yes") {
-    parts.push("Go in with confidence, but still ask the questions below. Good signals don't replace direct conversations.");
-  } else if (verdict === "Proceed with caution") {
-    parts.push("Ask the questions below before your next interview. If they can't answer them clearly, that tells you something too.");
-  } else if (verdict === "Not without more answers") {
-    parts.push("Before you move forward, get these questions answered — in writing if possible. Silence on these topics is a signal in itself.");
-  } else {
-    parts.push("I'd hold off. If you're already in process, slow it down and gather more information. There's no rush worth ignoring what the data is showing you.");
   }
 
   return parts.join(" ");
