@@ -89,7 +89,7 @@ export default function MyOfferChecks() {
                   style={{ width: `${Math.min(100, (savedCount / premium.maxOfferChecks) * 100)}%` }}
                 />
               </div>
-              {savedCount >= premium.maxSavedReports && (
+              {savedCount >= premium.maxOfferChecks && (
                 <Badge variant="outline" className="text-[9px] gap-1">
                   <Crown className="w-2.5 h-2.5" /> Upgrade
                 </Badge>
