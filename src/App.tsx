@@ -60,6 +60,7 @@ import WorkWithJackye from "./pages/WorkWithJackye";
 import EmployerReceipt from "./pages/EmployerReceipt";
 import EVPRealityCheck from "./pages/EVPRealityCheck";
 import WhatAmISupporting from "./pages/WhatAmISupporting";
+import IntelligenceChain from "./pages/IntelligenceChain";
 
 const queryClient = new QueryClient();
 
