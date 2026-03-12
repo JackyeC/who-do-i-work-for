@@ -364,8 +364,8 @@ export function SignalsThisWeek() {
             ? translation.plain_summary
             : buildHeadline(signal, company?.name || "Unknown Employer", config);
 
-          return (
-            <div key={signal.id} className="px-4 py-3 flex items-start gap-3 hover:bg-accent/20 transition-colors group">
+          const rowContent = (
+            <>
               {/* Time column */}
               <div className="w-14 shrink-0 pt-0.5">
                 <span className="text-[11px] font-mono text-muted-foreground">
@@ -398,17 +398,25 @@ export function SignalsThisWeek() {
 
               {/* Company + source */}
               <div className="flex items-center gap-2 shrink-0 pt-0.5">
-                {company && (
-                  <Link to={`/company/${company.slug}`} className="text-[10px] font-medium text-muted-foreground hover:text-primary whitespace-nowrap">
-                    {company.name}
-                  </Link>
-                )}
+                <span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap">
+                  {company?.name || "Unknown"}
+                </span>
                 {signal.source_url && (
-                  <a href={signal.source_url} target="_blank" rel="noopener noreferrer" className="text-primary/60 hover:text-primary">
+                  <a href={signal.source_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="text-primary/60 hover:text-primary">
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
               </div>
+            </>
+          );
+
+          return company ? (
+            <Link key={signal.id} to={`/company/${company.slug}`} className="px-4 py-3 flex items-start gap-3 hover:bg-accent/20 transition-colors group no-underline">
+              {rowContent}
+            </Link>
+          ) : (
+            <div key={signal.id} className="px-4 py-3 flex items-start gap-3 group">
+              {rowContent}
             </div>
           );
         })}
