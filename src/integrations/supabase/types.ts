@@ -503,6 +503,59 @@ export type Database = {
         }
         Relationships: []
       }
+      board_members: {
+        Row: {
+          bio: string | null
+          committees: string[] | null
+          company_id: string
+          created_at: string
+          id: string
+          is_independent: boolean | null
+          name: string
+          photo_url: string | null
+          previous_company: string | null
+          start_year: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          committees?: string[] | null
+          company_id: string
+          created_at?: string
+          id?: string
+          is_independent?: boolean | null
+          name: string
+          photo_url?: string | null
+          previous_company?: string | null
+          start_year?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          committees?: string[] | null
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_independent?: boolean | null
+          name?: string
+          photo_url?: string | null
+          previous_company?: string | null
+          start_year?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "board_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       browse_ai_change_events: {
         Row: {
           change_summary: string | null
@@ -2910,6 +2963,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      leader_follows: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          id: string
+          leader_id: string
+          leader_name: string
+          leader_type: string
+          user_id: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          leader_id: string
+          leader_name: string
+          leader_type: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          leader_id?: string
+          leader_name?: string
+          leader_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leader_follows_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       learning_resources: {
         Row: {
