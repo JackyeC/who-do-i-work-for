@@ -36,6 +36,7 @@ import { ValuesCheckSection, type ValuesCheckSignal } from "@/components/values-
 import { InfluenceChainCard } from "@/components/InfluenceChainCard";
 import { EmployerClarityScore } from "@/components/EmployerClarityScore";
 import { DataFreshnessCard } from "@/components/DataFreshnessCard";
+import { DecisionMakers } from "@/components/DecisionMakers";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
