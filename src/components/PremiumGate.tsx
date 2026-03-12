@@ -26,23 +26,12 @@ export function PremiumGate({ feature, description, requiredTier = "candidate", 
 
   const targetTier = requiredTier === "professional" ? STRIPE_TIERS.professional : STRIPE_TIERS.candidate;
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = () => {
     if (!isLoggedIn) {
       navigate("/login");
       return;
     }
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: targetTier.price_id },
-      });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch {
-      toast.error("Failed to start checkout. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    navigate("/pricing");
   };
 
   return (
