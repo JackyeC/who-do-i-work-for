@@ -65,9 +65,8 @@ serve(async (req) => {
     // Fetch company signals if companyId provided
     let companySignals: any = {};
     if (companyId) {
-      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-      const supabase = createClient(supabaseUrl, supabaseKey);
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const supabase = createClient(supabaseUrl, serviceKey);
 
       const [sentimentRes, payEquityRes, enforcementRes, ideologyRes, benefitsRes] = await Promise.all([
         supabase.from("company_worker_sentiment").select("*").eq("company_id", companyId).order("created_at", { ascending: false }).limit(1),
