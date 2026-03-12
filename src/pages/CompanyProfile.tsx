@@ -533,12 +533,12 @@ export default function CompanyProfile() {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="w-full justify-start overflow-x-auto border-b border-border bg-transparent rounded-none h-auto p-0 gap-0">
               {[
-                { value: "overview", label: "Overview" },
-                { value: "money", label: "Money Trail" },
-                { value: "workforce", label: "Workforce" },
-                { value: "values", label: "Values Check" },
-                { value: "signals", label: "Signals & Timeline" },
-              ].map(tab => (
+                { value: "overview", label: "Overview", show: true },
+                { value: "money", label: "Money Trail", show: totalPac > 0 || lobbyingSpend > 0 || (dbCandidates?.length || 0) > 0 || (dbDarkMoney?.length || 0) > 0 },
+                { value: "workforce", label: "Workforce", show: true },
+                { value: "values", label: "Values Check", show: true },
+                { value: "signals", label: "Signals & Timeline", show: !!dbCompany },
+              ].filter(tab => tab.show).map(tab => (
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
