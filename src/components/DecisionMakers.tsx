@@ -24,6 +24,8 @@ interface Executive {
   title: string;
   total_donations: number;
   photo_url?: string | null;
+  source?: string | null;
+  last_verified_at?: string | null;
 }
 
 interface BoardMember {
@@ -35,6 +37,8 @@ interface BoardMember {
   previous_company?: string | null;
   committees?: string[];
   is_independent?: boolean;
+  source?: string | null;
+  last_verified_at?: string | null;
 }
 
 interface DecisionMakersProps {
