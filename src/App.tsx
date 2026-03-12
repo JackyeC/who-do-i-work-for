@@ -58,6 +58,7 @@ import OnePager from "./pages/OnePager";
 import WouldYouWorkHere from "./pages/WouldYouWorkHere";
 import WorkWithJackye from "./pages/WorkWithJackye";
 import EmployerReceipt from "./pages/EmployerReceipt";
+import EVPRealityCheck from "./pages/EVPRealityCheck";
 
 const queryClient = new QueryClient();
 
