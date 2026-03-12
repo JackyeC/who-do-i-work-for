@@ -26,8 +26,12 @@ export function HowDoIGetThere() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
+  const [deletingAll, setDeletingAll] = useState(false);
 
   const handleDeleteTrack = async (trackId: string) => {
+    setDeletingId(trackId);
     const { error } = await supabase
       .from("employee_growth_tracker")
       .delete()
@@ -39,6 +43,24 @@ export function HowDoIGetThere() {
       toast({ title: "Deleted", description: "Target role removed." });
       queryClient.invalidateQueries({ queryKey: ["growth-tracks", user?.id] });
     }
+    setDeletingId(null);
+  };
+
+  const handleDeleteAll = async () => {
+    if (!user) return;
+    setDeletingAll(true);
+    const { error } = await supabase
+      .from("employee_growth_tracker")
+      .delete()
+      .eq("user_id", user.id);
+    if (error) {
+      toast({ title: "Error", description: "Failed to delete tracks.", variant: "destructive" });
+    } else {
+      toast({ title: "All Cleared", description: "All target roles have been removed." });
+      queryClient.invalidateQueries({ queryKey: ["growth-tracks", user?.id] });
+      setConfirmDeleteAll(false);
+    }
+    setDeletingAll(false);
   };
   // Fetch growth tracks (target roles with gap analysis)
   const { data: tracks, isLoading: tracksLoading } = useQuery({
