@@ -54,6 +54,8 @@ import PolicyHub from "./pages/PolicyHub";
 import PolicyDetail from "./pages/PolicyDetail";
 import EconomyDashboard from "./pages/EconomyDashboard";
 import FollowTheMoney from "./pages/FollowTheMoney";
+import AskJackye from "./pages/AskJackye";
+import OnePager from "./pages/OnePager";
 const queryClient = new QueryClient();
 
 function ScrollToTop() {
