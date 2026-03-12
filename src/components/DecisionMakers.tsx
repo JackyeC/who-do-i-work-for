@@ -309,6 +309,19 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Report leadership change + freshness */}
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+          <ReportLeadershipChange
+            companyId={companyId || ""}
+            companyName={companyName}
+          />
+          <LeadershipVerifiedBadge
+            lastVerifiedAt={executives[0]?.last_verified_at || boardMembers?.[0]?.last_verified_at}
+            source={executives[0]?.source || boardMembers?.[0]?.source}
+            compact
+          />
+        </div>
       </CardContent>
     </Card>
   );
