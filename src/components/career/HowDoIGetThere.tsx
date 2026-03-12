@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   GraduationCap, Target, Users, Building2, ExternalLink,
   BookOpen, Video, Award, Newspaper, ChevronRight, Compass,
-  Loader2, Trash2
+  Loader2, Trash2, AlertTriangle
 } from "lucide-react";
 
 const RESOURCE_ICONS: Record<string, any> = {
@@ -25,8 +26,12 @@ export function HowDoIGetThere() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
+  const [deletingAll, setDeletingAll] = useState(false);
 
   const handleDeleteTrack = async (trackId: string) => {
+    setDeletingId(trackId);
     const { error } = await supabase
       .from("employee_growth_tracker")
       .delete()
@@ -38,6 +43,24 @@ export function HowDoIGetThere() {
       toast({ title: "Deleted", description: "Target role removed." });
       queryClient.invalidateQueries({ queryKey: ["growth-tracks", user?.id] });
     }
+    setDeletingId(null);
+  };
+
+  const handleDeleteAll = async () => {
+    if (!user) return;
+    setDeletingAll(true);
+    const { error } = await supabase
+      .from("employee_growth_tracker")
+      .delete()
+      .eq("user_id", user.id);
+    if (error) {
+      toast({ title: "Error", description: "Failed to delete tracks.", variant: "destructive" });
+    } else {
+      toast({ title: "All Cleared", description: "All target roles have been removed." });
+      queryClient.invalidateQueries({ queryKey: ["growth-tracks", user?.id] });
+      setConfirmDeleteAll(false);
+    }
+    setDeletingAll(false);
   };
   // Fetch growth tracks (target roles with gap analysis)
   const { data: tracks, isLoading: tracksLoading } = useQuery({
@@ -146,8 +169,13 @@ export function HowDoIGetThere() {
                   size="icon"
                   className="w-7 h-7 text-muted-foreground hover:text-destructive"
                   onClick={() => handleDeleteTrack(track.id)}
+                  disabled={deletingId === track.id}
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  {deletingId === track.id ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-3.5 h-3.5" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -229,6 +257,45 @@ export function HowDoIGetThere() {
           </CardContent>
         </Card>
       ))}
+
+      {/* Clear All button */}
+      {tracks.length > 0 && (
+        <Card className="border-destructive/20">
+          <CardContent className="p-4">
+            {!confirmDeleteAll ? (
+              <div className="flex items-center justify-between">
+                <div className="flex items-start gap-3">
+                  <Trash2 className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Clear All Target Roles</p>
+                    <p className="text-xs text-muted-foreground">Remove all growth tracks and start fresh.</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm" className="text-destructive border-destructive/30 shrink-0" onClick={() => setConfirmDeleteAll(true)}>
+                  Delete All
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-destructive">Are you sure?</p>
+                    <p className="text-xs text-muted-foreground">This will permanently delete all {tracks.length} target role(s) and their gap analyses.</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 justify-end">
+                  <Button variant="outline" size="sm" onClick={() => setConfirmDeleteAll(false)} disabled={deletingAll}>Cancel</Button>
+                  <Button variant="destructive" size="sm" onClick={handleDeleteAll} disabled={deletingAll}>
+                    {deletingAll ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : null}
+                    {deletingAll ? "Deleting..." : "Yes, Delete All"}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Suggested companies */}
       {suggestedCompanies && suggestedCompanies.length > 0 && (
