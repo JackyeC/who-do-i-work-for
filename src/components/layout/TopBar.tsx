@@ -111,6 +111,11 @@ export const MAIN_SECTIONS = [
   },
 ];
 
+// Standalone links that appear in the top bar right area
+export const STANDALONE_LINKS = [
+  { label: "Pricing", path: "/pricing" },
+];
+
 function isSectionActive(section: typeof MAIN_SECTIONS[0], pathname: string) {
   return section.matchPaths.some(p => {
     if (p === "/") return pathname === "/";
