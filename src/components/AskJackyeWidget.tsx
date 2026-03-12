@@ -16,6 +16,8 @@ const QUICK_PROMPTS = [
   "What questions should I ask HR?",
   "Is this company safe to work for?",
   "Help me write a counter-offer",
+  "How would a recruiter see this company?",
+  "What does this signal mean for my career?",
 ];
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ask-jackye`;
