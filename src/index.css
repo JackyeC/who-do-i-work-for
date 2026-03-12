@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 12%;
 
-    --primary: 43 53% 42%;
+    --primary: 262 60% 50%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 14% 92%;
@@ -24,15 +24,15 @@
     --muted: 220 14% 94%;
     --muted-foreground: 220 10% 42%;
 
-    --accent: 220 14% 92%;
-    --accent-foreground: 220 20% 12%;
+    --accent: 262 40% 94%;
+    --accent-foreground: 262 60% 40%;
 
     --destructive: 7 65% 45%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 14% 86%;
     --input: 220 14% 86%;
-    --ring: 43 53% 42%;
+    --ring: 262 60% 50%;
 
     --radius: 0px;
 
@@ -45,7 +45,7 @@
     --civic-slate: 225 12% 45%;
     --civic-surface: 0 0% 100%;
 
-    /* Gold accent */
+    /* Gold accent — used for data highlights */
     --civic-gold: 43 53% 42%;
     --civic-gold-muted: 43 30% 50%;
     --civic-gold-light: 43 53% 60%;
@@ -56,14 +56,14 @@
     --surface-2: 220 14% 95%;
     --border-2: 220 12% 80%;
 
-    --sidebar-background: 220 16% 96%;
+    --sidebar-background: 262 30% 96%;
     --sidebar-foreground: 220 20% 12%;
-    --sidebar-primary: 43 53% 42%;
+    --sidebar-primary: 262 60% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 92%;
-    --sidebar-accent-foreground: 220 20% 12%;
+    --sidebar-accent: 262 40% 92%;
+    --sidebar-accent-foreground: 262 60% 40%;
     --sidebar-border: 220 14% 86%;
-    --sidebar-ring: 43 53% 42%;
+    --sidebar-ring: 262 60% 50%;
   }
 
   .dark {
