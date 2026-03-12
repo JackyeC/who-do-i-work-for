@@ -550,6 +550,22 @@ export default function CompanyProfile() {
           )}
 
           {/* ═══════════════════════════════════════════════════════════
+              3b. POWER MAP
+             ═══════════════════════════════════════════════════════════ */}
+          <section className="mb-8">
+            <SectionHeader icon={Network} title="Power Map" subtitle="Interactive leadership influence network" />
+            <div className="pl-12">
+              <PowerMap
+                companyId={dbCompanyId}
+                companyName={name}
+                executives={dbExecutives || []}
+              />
+            </div>
+          </section>
+
+          <Separator className="mb-8" />
+
+          {/* ═══════════════════════════════════════════════════════════
               4. WORKFORCE INTELLIGENCE
              ═══════════════════════════════════════════════════════════ */}
           <section className="mb-8">
