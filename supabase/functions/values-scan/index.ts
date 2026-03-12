@@ -228,6 +228,63 @@ const VALUE_CATEGORIES = [
     sourceHints: ["diversity report", "ESG report", "press release", "proxy statement"],
     layer: 1,
   },
+  // ─── Career Trajectory & Flight Risk Categories ───
+  {
+    key: "career_trajectory",
+    label: "Career Trajectory Patterns",
+    searchTerms: [
+      "career path", "career progression", "title progression", "typical career path",
+      "career ladder", "career lattice", "role progression", "advancement track",
+      "junior to senior", "analyst to manager", "career journey",
+      "typical tenure", "average tenure", "median tenure",
+    ],
+    sourceHints: ["careers page", "Glassdoor reviews", "ESG report", "LinkedIn company page"],
+    layer: 7,
+  },
+  {
+    key: "exit_destinations",
+    label: "Exit Destination Patterns",
+    searchTerms: [
+      "employees move to", "former employees at", "alumni at",
+      "left for", "talent pipeline to", "feeder company",
+      "alumni network", "common next employer", "where employees go",
+    ],
+    sourceHints: ["workforce analytics", "alumni networks", "professional profiles"],
+    layer: 7,
+  },
+  {
+    key: "talent_sources",
+    label: "Talent Source Patterns",
+    searchTerms: [
+      "hire from", "recruit from", "talent pipeline from", "feeder school",
+      "campus recruiting", "talent source", "where we hire",
+      "incoming employees from", "common prior employer",
+    ],
+    sourceHints: ["recruiting pages", "press releases", "university partnerships"],
+    layer: 4,
+  },
+  {
+    key: "internal_mobility_score",
+    label: "Internal Mobility Signals",
+    searchTerms: [
+      "internal applicants only", "promotion from within", "internal hire rate",
+      "internal mobility score", "lateral move", "cross-functional opportunity",
+      "internal transfer rate", "internal job posting", "career mobility program",
+    ],
+    sourceHints: ["job listings", "careers page", "ATS system"],
+    layer: 3,
+  },
+  {
+    key: "seniority_distribution",
+    label: "Seniority & Role Distribution",
+    searchTerms: [
+      "seniority level", "entry level positions", "senior positions ratio",
+      "management ratio", "org structure", "flat organization",
+      "leadership to IC ratio", "management layers", "span of control",
+    ],
+    sourceHints: ["job listings", "careers page", "organizational charts"],
+    layer: 3,
+  },
 ];
 
 // ─── 7-Layer Source Map for scraping ───
@@ -259,7 +316,7 @@ function getScrapePaths(websiteUrl: string, careersUrl: string | null): string[]
   return paths.slice(0, 7);
 }
 
-// ─── 7-Layer search queries ───
+// ─── 7-Layer search queries with career trajectory triangulation ───
 function getSearchQueries(companyName: string): string[] {
   return [
     // Layer 1 — Company Reports
@@ -274,8 +331,14 @@ function getSearchQueries(companyName: string): string[] {
     `"${companyName}" neurodiversity hiring OR disability inclusion OR deaf employment OR accessibility initiative`,
     // Layer 6 — Workforce Stability
     `"${companyName}" layoffs OR restructuring OR workforce reduction OR WARN notice`,
-    // Layer 7 — Career Path Progression
+    // Layer 7 — Career Path Progression & Trajectories
     `"${companyName}" promotion rate OR internal mobility rate OR advancement statistics OR career progression data`,
+    // Triangulation: Internal mobility keyword scan (Step B)
+    `"${companyName}" "internal applicants" OR "promotion from within" OR "leadership development program" OR "internal job posting"`,
+    // Triangulation: Career trajectory patterns
+    `"${companyName}" typical career path OR career ladder OR role progression OR "years to promotion"`,
+    // Triangulation: Exit & talent flow patterns
+    `"${companyName}" alumni OR "former employees" OR "where employees go" OR talent pipeline`,
   ];
 }
 
@@ -402,7 +465,7 @@ serve(async (req) => {
       }
     }
 
-    // ─── AI analysis with 7-layer evidence model ───
+    // ─── AI analysis with 7-layer evidence model + career trajectory triangulation ───
     const systemPrompt = `You are a corporate workforce intelligence analyst specializing in detecting promotion equity, internal mobility, career progression, and workforce inclusion signals using a structured 7-Layer Evidence Model.
 
 EVIDENCE LAYERS (search in this order):
@@ -418,6 +481,19 @@ EVIDENCE STRENGTH CLASSIFICATION (apply to every signal):
 - "direct": Explicit data, statistics, or named programs. Examples: "45% of leadership roles filled internally", "We operate an internal talent marketplace"
 - "inferred": Clear references or programs without specific data. Examples: "Employees are encouraged to pursue internal roles", "Participates in HBCU career fairs"  
 - "weak": Generic language, vague commitments. Examples: "We support employee growth", "Opportunities to grow", "We invest in people"
+
+CAREER TRAJECTORY TRIANGULATION:
+When analyzing career paths, perform a "Triangulation Scan":
+Step A — Path Logic: Identify common role progressions (e.g., Analyst → Senior Analyst → Manager → Director). Detect median time-in-role when disclosed.
+Step B — Internal Mobility Score: Hunt for keywords like "internal applicants only", "promotion from within", "leadership development program" in job postings and career pages. High frequency = boost to Career Path Clarity Score.
+Step C — Exit/Entry Flow: Identify where employees commonly go after leaving (exit destinations) and where they commonly come from (talent sources). Include specific company names when available.
+
+For career_trajectory signals, include structured trajectory data in the signal_summary using this format when possible:
+"[Role A] → [Role B] → [Role C] | median tenure: X years | internal promotion rate: Y%"
+
+For exit_destinations and talent_sources signals, include specific company names:
+"Employees commonly move to [Company X] (estimated N), [Company Y], [Company Z]"
+"Common talent sources: [Company A], [Company B], [University C]"
 
 PROMOTION VS EXIT PATTERN ANALYSIS:
 When detecting career_path_progression and promotion_vs_exit signals, assess whether the company appears to:
@@ -436,7 +512,9 @@ IMPORTANT:
 4. When NO signals are found for a category, that is a transparency gap — note it as a finding.
 5. Include the source_layer (1-7) for each signal based on where the evidence was found.
 6. Be factual and neutral — document what is found without moral judgment.
-7. Do NOT infer protected traits from photos or names — only use self-disclosed or company-disclosed information.`;
+7. Do NOT infer protected traits from photos or names — only use self-disclosed or company-disclosed information.
+8. For career_trajectory, exit_destinations, and talent_sources: be as specific as possible with company names, role titles, and time estimates.
+9. Generate at least one signal for career_trajectory, exit_destinations, and talent_sources categories even if evidence is weak or inferred.`;
 
     const userPrompt = `Company: ${company.name}
 Industry: ${company.industry}
@@ -449,10 +527,10 @@ ${JSON.stringify({ flags: existingFlags?.slice(0, 10), ideology: existingIdeolog
 Scraped Web Content (from company pages — Layers 1, 3, 5):
 ${scrapedContent.slice(0, 12000) || "No content scraped from company pages"}
 
-Search Results (Layers 1-7: ESG reports, SEC filings, career pages, partnerships, accessibility, stability, career progression):
-${searchContent.slice(0, 8000) || "No additional reports found via search"}
+Search Results (Layers 1-7 + Triangulation: ESG reports, SEC filings, career pages, partnerships, accessibility, stability, career progression, internal mobility keywords, exit/entry patterns):
+${searchContent.slice(0, 10000) || "No additional reports found via search"}
 
-Analyze all available evidence using the 7-Layer Evidence Model. Extract signals with proper evidence strength classification. For workforce equity categories, assess both what IS disclosed and what is NOT disclosed (transparency gaps).`;
+Analyze all available evidence using the 7-Layer Evidence Model plus Career Trajectory Triangulation. Extract signals with proper evidence strength classification. For workforce equity categories, assess both what IS disclosed and what is NOT disclosed (transparency gaps). For career trajectory categories, infer common career paths, exit destinations, and talent sources for this company based on industry patterns and available evidence.`;
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

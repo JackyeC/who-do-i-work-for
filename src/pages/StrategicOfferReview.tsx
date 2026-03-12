@@ -34,6 +34,8 @@ import { OfferLetterUpload } from "@/components/offer-review/OfferLetterUpload";
 import { OfferReviewResults } from "@/components/offer-review/OfferReviewResults";
 import { LegalDisclaimer } from "@/components/strategic-offer/LegalDisclaimer";
 import { ConsentModal } from "@/components/strategic-offer/ConsentModal";
+import { CareerPathForecast } from "@/components/strategic-offer/CareerPathForecast";
+import { useQuery } from "@tanstack/react-query";
 
 type InputMode = null | "manual" | "upload";
 
@@ -102,6 +104,21 @@ export default function StrategicOfferReview() {
     hasInterview: true, asksToBuyEquipment: false,
     signOnBonus: "", repaymentClause: "", benefitWaitingPeriod: "",
     nonCompete: "", arbitrationClause: false, ipClause: false,
+  });
+
+  // Career path signals for the forecast module (must be after offer declaration)
+  const { data: careerSignals = [] } = useQuery({
+    queryKey: ["career-forecast-signals", offer.companyId],
+    queryFn: async () => {
+      if (!offer.companyId) return [];
+      const { data } = await supabase
+        .from("company_values_signals" as any)
+        .select("*")
+        .eq("company_id", offer.companyId)
+        .order("created_at", { ascending: false });
+      return (data || []) as any[];
+    },
+    enabled: !!offer.companyId && step === 3,
   });
 
   const update = (field: keyof OfferInput, value: any) => {
@@ -751,6 +768,15 @@ export default function StrategicOfferReview() {
                   companyId={offer.companyId}
                   companyName={offer.companyName}
                 />
+
+                {/* 11.5. Career Path Forecast — Future-Value Check */}
+                {offer.companyId && careerSignals.length > 0 && (
+                  <CareerPathForecast
+                    companyName={offer.companyName}
+                    roleTitle={offer.roleTitle}
+                    signals={careerSignals}
+                  />
+                )}
 
                 {/* 12. Final Decision Summary */}
                 <OfferDecisionSummary

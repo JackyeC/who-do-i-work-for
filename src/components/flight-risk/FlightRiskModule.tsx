@@ -12,6 +12,7 @@ import {
 } from "@/lib/flightRiskScore";
 import { FlightRiskGauge } from "./FlightRiskGauge";
 import { FlightRiskGraph } from "./FlightRiskGraph";
+import { CareerGPSSankey } from "./CareerGPSSankey";
 import {
   Radar, RefreshCw, Loader2, Clock, TrendingUp, UserCheck,
   ArrowRightLeft, AlertTriangle, Building2, BookOpen, BarChart3,
@@ -402,6 +403,12 @@ export function FlightRiskModule({
               </CardContent>
             </Card>
           </div>
+
+          {/* Career GPS Sankey Diagram */}
+          <CareerGPSSankey
+            companyName={companyName}
+            signals={signals}
+          />
 
           {/* Network Graph */}
           {graphData.nodes.length > 1 && (
