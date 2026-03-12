@@ -318,7 +318,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                 {[
                   { label: "Check a company", icon: Search, href: "/check", desc: "Civic footprint & signals" },
                   { label: "Career Discovery", icon: Sparkles, href: "/career-map", desc: "AI-powered path mapping" },
-                  { label: "Offer Clarity", icon: Shield, href: "/offer-clarity", desc: "Analyze any job offer" },
+                  { label: "Offer Check", icon: Shield, href: "/check?tab=offer", desc: "Analyze any job offer" },
                   { label: "Browse companies", icon: Building2, href: "/browse", desc: "Explore the database" },
                 ].map((item) => (
                   <Link
