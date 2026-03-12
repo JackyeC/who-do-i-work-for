@@ -751,7 +751,7 @@ export default function StrategicOfferReview() {
                 <OfferDecisionSummary
                   companyName={offer.companyName}
                   roleTitle={offer.roleTitle}
-                  offerStrengthScore={offerStrengthScore}
+                  offerStrengthScore={strengthScore.result.totalScore}
                   report={report}
                   legalFlags={legalFlags}
                   offerSalary={Number(offer.baseSalary) || 0}
