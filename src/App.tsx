@@ -57,6 +57,7 @@ import AskJackye from "./pages/AskJackye";
 import OnePager from "./pages/OnePager";
 import WouldYouWorkHere from "./pages/WouldYouWorkHere";
 import WorkWithJackye from "./pages/WorkWithJackye";
+import EmployerReceipt from "./pages/EmployerReceipt";
 
 const queryClient = new QueryClient();
 
