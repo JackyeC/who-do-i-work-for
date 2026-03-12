@@ -88,6 +88,7 @@ const App = () => (
                 <Route path="/work-with-jackye" element={<WorkWithJackye />} />
                 <Route path="/employer-receipt" element={<EmployerReceipt />} />
                 <Route path="/evp-reality-check" element={<EVPRealityCheck />} />
+                <Route path="/what-am-i-supporting" element={<WhatAmISupporting />} />
                 <Route path="/one-pager" element={<OnePager />} />
                 <Route path="/check" element={<Check />} />
                 <Route path="/policy" element={<PolicyHub />} />
