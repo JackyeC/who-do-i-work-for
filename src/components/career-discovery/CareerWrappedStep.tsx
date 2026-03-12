@@ -68,7 +68,7 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
   const topFuture = futures?.futures?.[0];
 
   const handleShareLinkedIn = () => {
-    const text = `🗺️ Just mapped my career with CivicLens Career Intelligence!\n\n📊 ${pathCount} career paths discovered\n🏢 ${companyCount} aligned companies found\n💪 ${skillMatch}% skills match\n🔮 ${futureCount} possible futures explored\n\nDiscover your career path 👇`;
+    const text = `🗺️ Just mapped my career with Who Do I Work For?\n\n📊 ${pathCount} career paths discovered\n🏢 ${companyCount} aligned companies found\n💪 ${skillMatch}% skills match\n🔮 ${futureCount} possible futures explored\n\nDiscover your career path 👇`;
     const url = `${window.location.origin}/career-map`;
     const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}&summary=${encodeURIComponent(text)}`;
     window.open(linkedInUrl, "_blank", "noopener,noreferrer");

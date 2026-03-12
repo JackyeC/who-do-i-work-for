@@ -93,7 +93,7 @@ const METRIC_EXPLANATIONS: Record<string, MetricExplanation> = {
     title: "Industry Benchmarks",
     what: "How this company's political spending, civic footprint, and transparency compare to peers in the same industry. Shows industry rank, peer averages, and whether the company is an outlier.",
     why: "Context matters. A $1M lobbying spend means very different things in Big Tech vs. a small retail chain. Benchmarks help you understand if a company's political activity is typical or unusual for its sector.",
-    source: "CPA-Zicklin Index, CivicLens aggregated industry data",
+    source: "CPA-Zicklin Index, aggregated industry data",
   },
   "roi-pipeline": {
     title: "ROI Pipeline",
@@ -207,7 +207,7 @@ const METRIC_EXPLANATIONS: Record<string, MetricExplanation> = {
     title: "Signal Timeline",
     what: "A chronological view of all signals detected for this company — when each data point was first found, last verified, and any changes over time.",
     why: "Timing matters. A spike in lobbying before a regulatory vote, or a benefits page change before layoffs, tells a different story than the same signals in isolation.",
-    source: "All CivicLens data sources",
+    source: "All platform data sources",
   },
   "transparency-index": {
     title: "Transparency Index",

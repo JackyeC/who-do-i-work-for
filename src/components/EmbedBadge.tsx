@@ -15,11 +15,11 @@ export function EmbedBadge({ slug, companyName }: EmbedBadgeProps) {
 
   const scriptTag = `<script src="https://civic-align.lovable.app/embed/civiclens-badge.js" defer></script>`;
 
-  const lightEmbed = `<!-- CivicLens Transparency Badge for ${companyName} -->
+  const lightEmbed = `<!-- Who Do I Work For? Transparency Badge for ${companyName} -->
 <div data-civiclens-badge="${slug}"></div>
 ${scriptTag}`;
 
-  const darkEmbed = `<!-- CivicLens Transparency Badge for ${companyName} (Dark) -->
+  const darkEmbed = `<!-- Who Do I Work For? Transparency Badge for ${companyName} (Dark) -->
 <div data-civiclens-badge="${slug}" data-theme="dark"></div>
 ${scriptTag}`;
 
@@ -44,7 +44,7 @@ ${scriptTag}`;
         </DialogHeader>
 
         <p className="text-sm text-muted-foreground">
-          Add this badge to your careers page or website to show your civic transparency profile. The badge links back to your full profile on CivicLens.
+          Add this badge to your careers page or website to show your transparency profile. The badge links back to your full profile on Who Do I Work For?.
         </p>
 
         <Tabs defaultValue="light">
@@ -62,7 +62,7 @@ ${scriptTag}`;
                 </div>
                 <div>
                   <div className="text-[10px] text-muted-foreground font-medium tracking-wide">CIVIC FOOTPRINT</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Transparency Profile Available · CivicLens</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Transparency Profile Available · WDIWF?</div>
                 </div>
               </div>
             </div>
@@ -90,7 +90,7 @@ ${scriptTag}`;
                 </div>
                 <div>
                   <div className="text-[10px] font-medium tracking-wide" style={{ color: "#94a3b8" }}>CIVIC FOOTPRINT</div>
-                  <div className="text-xs mt-0.5" style={{ color: "#94a3b8" }}>Transparency Profile Available · CivicLens</div>
+                  <div className="text-xs mt-0.5" style={{ color: "#94a3b8" }}>Transparency Profile Available · WDIWF?</div>
                 </div>
               </div>
             </div>
@@ -111,7 +111,7 @@ ${scriptTag}`;
         </Tabs>
 
         <p className="text-xs text-muted-foreground">
-          The badge automatically fetches live data from CivicLens. No API key required. Works on any website.
+          The badge automatically fetches live data. No API key required. Works on any website.
         </p>
       </DialogContent>
     </Dialog>
