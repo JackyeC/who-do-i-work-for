@@ -15,11 +15,11 @@ export function EmbedBadge({ slug, companyName }: EmbedBadgeProps) {
 
   const scriptTag = `<script src="https://civic-align.lovable.app/embed/civiclens-badge.js" defer></script>`;
 
-  const lightEmbed = `<!-- CivicLens Transparency Badge for ${companyName} -->
+  const lightEmbed = `<!-- Who Do I Work For? Transparency Badge for ${companyName} -->
 <div data-civiclens-badge="${slug}"></div>
 ${scriptTag}`;
 
-  const darkEmbed = `<!-- CivicLens Transparency Badge for ${companyName} (Dark) -->
+  const darkEmbed = `<!-- Who Do I Work For? Transparency Badge for ${companyName} (Dark) -->
 <div data-civiclens-badge="${slug}" data-theme="dark"></div>
 ${scriptTag}`;
 
