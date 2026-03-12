@@ -70,6 +70,9 @@ export function SignalMeta({
   detectedAt,
   lastVerifiedAt,
   compact = false,
+  signalType,
+  signalId,
+  companyId,
 }: SignalMetaProps) {
   const conf = confidence ? getConfidenceDisplay(confidence) : null;
   const sourceLabel = getSourceTypeLabel(sourceType, detectionMethod);
