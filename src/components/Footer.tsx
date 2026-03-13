@@ -1,9 +1,10 @@
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { ClipboardCheck } from "lucide-react";
 
-export function Footer() {
+export const Footer = forwardRef<HTMLElement>((_, ref) => {
   return (
-    <footer className="border-t border-border/30 bg-primary text-primary-foreground mt-auto relative overflow-hidden">
+    <footer ref={ref} className="border-t border-border/30 bg-primary text-primary-foreground mt-auto relative overflow-hidden">
       {/* Gold accent line */}
       <div className="gold-line" />
       {/* Subtle texture */}
@@ -68,4 +69,6 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+});
+
+Footer.displayName = "Footer";
