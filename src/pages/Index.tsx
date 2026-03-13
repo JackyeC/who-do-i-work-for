@@ -17,7 +17,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const navigate = useNavigate();
 
   usePageSEO({
-    title: "Know Who You're Really Working For",
+    title: "Who Do I Work For? — Career Intelligence Before You Accept",
     description: "Career Intelligence platform. Company intelligence, offer analysis, connection chains, and career strategy by Jackye Clayton. Know before you sign.",
     path: "/",
     jsonLd: {
@@ -72,15 +72,23 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl lg:text-[clamp(2.4rem,5vw,3.6rem)] leading-tight mb-6 text-foreground"
           >
-            Know who you're <em className="text-primary not-italic">really</em> working for before you sign.
+            Who Do I Work For?
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-body-lg text-muted-foreground mb-8 max-w-[480px]"
+            className="text-body-lg text-foreground/80 mb-3 max-w-[480px]"
           >
-            Understand the company behind the job offer. We connect policy, company behavior, workforce signals, and compensation patterns so you make decisions with full information.
+            Career intelligence before you accept the offer.
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="text-body text-muted-foreground mb-8 max-w-[480px]"
+          >
+            Research the company behind the job offer. Understand leadership, lobbying, labor signals, and accountability data before you decide where to work.
           </motion.p>
           <HeroSearch />
           <motion.div
@@ -245,7 +253,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </section>
 
-      {/* Data Sources */}
+      {/* Evidence Sources */}
       <SectionReveal>
         <section className="bg-card border-y border-border px-6 lg:px-16 py-16">
           <div className="max-w-[1100px] mx-auto text-center">
