@@ -33,6 +33,19 @@ export default function Login() {
     }
   };
 
+  const handleAppleSignIn = async () => {
+    const { error } = await lovable.auth.signInWithOAuth("apple", {
+      redirect_uri: window.location.origin,
+    });
+    if (error) {
+      toast({
+        title: "Sign-in failed",
+        description: error.message || "Could not sign in with Apple.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
@@ -47,7 +60,7 @@ export default function Login() {
               Access career intelligence tools including job matching, offer analysis, career mapping, and company transparency insights.
             </p>
           </CardHeader>
-          <CardContent className="space-y-5 pt-0">
+          <CardContent className="space-y-3 pt-0">
             <Button
               onClick={handleGoogleSignIn}
               className="w-full gap-2.5 h-12 text-base"
@@ -62,6 +75,20 @@ export default function Login() {
               Continue with Google
               <ArrowRight className="w-4 h-4 ml-auto" />
             </Button>
+
+            <Button
+              onClick={handleAppleSignIn}
+              variant="outline"
+              className="w-full gap-2.5 h-12 text-base"
+              size="lg"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+              </svg>
+              Continue with Apple
+              <ArrowRight className="w-4 h-4 ml-auto" />
+            </Button>
+
             <p className="text-micro text-center text-muted-foreground">
               By signing in, you agree to our terms of service. We only use your email to personalize your experience.
             </p>
