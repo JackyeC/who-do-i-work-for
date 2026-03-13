@@ -26,7 +26,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               </div>
             </div>
             <p className="text-sm text-primary-foreground/45 leading-relaxed">
-              Know the company behind the job description. Employer intelligence powered by public signals — helping recruiters and candidates make informed career decisions.
+              Understand the company behind the job offer. Career intelligence powered by public signals — helping candidates, recruiters, and leaders make informed decisions.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-14">
