@@ -568,7 +568,7 @@ export default function CompanyProfile() {
               3. DECISION MAKERS
              ═══════════════════════════════════════════════════════════ */}
           {dbExecutives && dbExecutives.length > 0 && (
-            <section className="mb-8">
+            <section id="section-leadership" className="mb-8 scroll-mt-28">
               <SectionHeader icon={Users} title="Decision Makers" subtitle="C-suite executives and board members shaping company strategy" />
               <div className="pl-12">
                 <DecisionMakers
