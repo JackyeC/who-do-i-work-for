@@ -345,6 +345,13 @@ export default function CompanyProfile() {
 
   return (
     <div className="flex flex-col min-h-0">
+      {/* Sticky Score Header */}
+      <StickyScoreHeader
+        companyName={name}
+        score={transparencyScore}
+        ticker={dbCompany?.ticker}
+        industry={industry}
+      />
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Breadcrumb */}
         <Link to="/browse" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5">
