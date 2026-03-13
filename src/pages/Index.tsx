@@ -17,7 +17,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const navigate = useNavigate();
 
   usePageSEO({
-    title: "Know Who You're Really Working For",
+    title: "Who Do I Work For? — Career Intelligence Before You Accept",
     description: "Career Intelligence platform. Company intelligence, offer analysis, connection chains, and career strategy by Jackye Clayton. Know before you sign.",
     path: "/",
     jsonLd: {
