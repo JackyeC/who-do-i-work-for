@@ -194,6 +194,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/compare" element={<CompareCompanies />} />
+                <Route path="/investigative" element={<InvestigativeExplorer />} />
                 <Route path="/auto-apply" element={<Navigate to="/dashboard?tab=auto-apply" replace />} />
                 <Route path="/my-values" element={<Navigate to="/dashboard?tab=values" replace />} />
                 <Route path="/offer-checks" element={<Navigate to="/my-offer-checks" replace />} />
