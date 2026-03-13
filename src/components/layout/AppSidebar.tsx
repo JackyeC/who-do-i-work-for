@@ -63,6 +63,7 @@ const NAV_GROUPS = [
       { id: "signals-week", label: "Signals This Week", icon: Eye, path: "/intelligence?type=weekly_brief" },
       { id: "legislation", label: "Legislation Watch", icon: Landmark, path: "/intelligence?type=legislative_watch" },
       { id: "influence-map", label: "Influence Map", icon: Network, path: "/check?tab=candidate" },
+      { id: "investigative", label: "Power Networks", icon: Shield, path: "/investigative" },
       { id: "evp-audit", label: "EVP Audit", icon: Megaphone, path: "/recruiting?tab=evp" },
       { id: "talent-dash", label: "Talent Dashboard", icon: Target, path: "/recruiting?tab=insights" },
     ],

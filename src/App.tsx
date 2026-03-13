@@ -68,6 +68,7 @@ import BoardIntelligence from "./pages/BoardIntelligence";
 import LeaderProfile from "./pages/LeaderProfile";
 import Disclaimers from "./pages/Disclaimers";
 import CompareCompanies from "./pages/CompareCompanies";
+import InvestigativeExplorer from "./pages/InvestigativeExplorer";
 import { CookieNotice } from "@/components/CookieNotice";
 
 const queryClient = new QueryClient();
@@ -193,6 +194,7 @@ const App = () => (
                   </ProtectedRoute>
                 } />
                 <Route path="/compare" element={<CompareCompanies />} />
+                <Route path="/investigative" element={<InvestigativeExplorer />} />
                 <Route path="/auto-apply" element={<Navigate to="/dashboard?tab=auto-apply" replace />} />
                 <Route path="/my-values" element={<Navigate to="/dashboard?tab=values" replace />} />
                 <Route path="/offer-checks" element={<Navigate to="/my-offer-checks" replace />} />
