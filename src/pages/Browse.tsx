@@ -1,13 +1,15 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CivicFootprintBadge } from "@/components/CivicFootprintBadge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { companies as sampleCompanies, formatCurrency } from "@/data/sampleData";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Building2, ArrowRight, Search, TrendingUp, SortAsc, ChevronDown } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Building2, ArrowRight, Search, TrendingUp, SortAsc, Sparkles, Loader2 } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingState } from "@/components/LoadingState";
 import {
@@ -27,6 +29,9 @@ export default function Browse() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"name" | "score">("score");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDiscovering, setIsDiscovering] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const { data: dbCompanies, isLoading } = useQuery({
     queryKey: ["browse-companies"],
@@ -142,7 +147,47 @@ export default function Browse() {
         {isLoading ? (
           <LoadingState message="Loading companies…" />
         ) : filtered.length === 0 ? (
-          <EmptyState icon={Building2} title="No companies match" description="Try adjusting your search or filter." />
+          <div className="text-center py-12">
+            <EmptyState icon={Building2} title="No companies match" description="Try adjusting your search or filter." />
+            {searchQuery.trim().length >= 2 && (
+              <div className="mt-4">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Can't find <strong>"{searchQuery}"</strong>? We can discover and research it automatically.
+                </p>
+                <Button
+                  onClick={async () => {
+                    setIsDiscovering(true);
+                    try {
+                      const { data, error } = await supabase.functions.invoke("company-discover", {
+                        body: { searchQuery: searchQuery.trim(), companyName: searchQuery.trim() },
+                      });
+                      if (error) throw error;
+                      if (data?.success) {
+                        toast({
+                          title: data.action === "existing" ? "Company found" : "Company discovered",
+                          description: data.action === "created"
+                            ? `Building intelligence profile for ${data.identity?.name || searchQuery}...`
+                            : "Opening existing profile...",
+                        });
+                        navigate(`/company/${data.slug}`);
+                      } else {
+                        throw new Error(data?.error || "Discovery failed");
+                      }
+                    } catch (e: any) {
+                      toast({ title: "Discovery failed", description: e.message, variant: "destructive" });
+                    } finally {
+                      setIsDiscovering(false);
+                    }
+                  }}
+                  disabled={isDiscovering}
+                  className="gap-2"
+                >
+                  {isDiscovering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  {isDiscovering ? "Discovering..." : "Discover & Research"}
+                </Button>
+              </div>
+            )}
+          </div>
         ) : (
           <motion.div
             variants={stagger.container}
