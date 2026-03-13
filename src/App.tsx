@@ -60,6 +60,7 @@ import WorkWithJackye from "./pages/WorkWithJackye";
 import EmployerReceipt from "./pages/EmployerReceipt";
 import EVPRealityCheck from "./pages/EVPRealityCheck";
 import WhatAmISupporting from "./pages/WhatAmISupporting";
+import OfferClarity from "./pages/OfferClarity";
 import IntelligenceChain from "./pages/IntelligenceChain";
 import BoardIntelligence from "./pages/BoardIntelligence";
 import LeaderProfile from "./pages/LeaderProfile";
