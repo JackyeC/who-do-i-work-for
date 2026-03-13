@@ -20,7 +20,7 @@ import { EvidenceTab } from "@/components/investigative/EvidenceTab";
 import { usePageSEO } from "@/hooks/use-page-seo";
 
 export default function InvestigativeExplorer() {
-  usePageSeo({
+  usePageSEO({
     title: "Investigative Data Explorer | Power Networks Archive",
     description: "Search and explore investigative datasets revealing relationships between people, organizations, and influence networks.",
   });
