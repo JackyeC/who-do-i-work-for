@@ -10,6 +10,8 @@ import {
   Scan, BarChart3, Award, GraduationCap, Hammer, Network
 } from "lucide-react";
 import { CompanyLogo } from "@/components/CompanyLogo";
+import { StickyScoreHeader } from "@/components/StickyScoreHeader";
+import { AlignmentDashboard } from "@/components/AlignmentDashboard";
 import { ShareableScorecard } from "@/components/ShareableScorecard";
 import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { CivicFootprintBadge } from "@/components/CivicFootprintBadge";
