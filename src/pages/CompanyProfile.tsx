@@ -525,7 +525,7 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               2. QUICK INTELLIGENCE SUMMARY
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section id="section-intelligence" className="mb-8 scroll-mt-28">
             <SectionHeader icon={BarChart3} title="Quick Intelligence Summary" subtitle="Key signals at a glance" />
             <div className="grid sm:grid-cols-2 gap-2 pl-12">
               <IntelStat
