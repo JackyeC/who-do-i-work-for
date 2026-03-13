@@ -64,7 +64,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             className="font-mono text-label uppercase text-primary mb-4 flex items-center gap-2"
           >
             <span className="w-8 h-px bg-primary inline-block" />
-            Employer Intelligence Platform
+            Career Intelligence Platform
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
