@@ -127,9 +127,12 @@ export function OfferCheckReport({ sections, lockedSections = [], onUnlock }: Of
                   )}
                 </div>
               ) : !section.hasData ? (
-                <p className="text-sm text-muted-foreground py-4 italic">
-                  No public evidence detected in scanned sources for this category.
-                </p>
+                <div className="py-4 flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-muted-foreground/40" />
+                  <p className="text-sm text-muted-foreground italic">
+                    Audit Pending — no public evidence detected in scanned sources for this category.
+                  </p>
+                </div>
               ) : (
                 <div>
                   {section.signals.map((signal, i) => (
