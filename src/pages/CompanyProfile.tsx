@@ -275,6 +275,9 @@ export default function CompanyProfile() {
   const seoTarget = dbCompany || (company ? { name: company.name, industry: company.industry || "", state: company.state || "", description: "", slug: company.id } : null);
   useCompanySEO({ name: seoTarget?.name || "", industry: seoTarget?.industry || "", state: seoTarget?.state || "", description: (seoTarget as any)?.description || "", slug: id || seoTarget?.slug || "" });
 
+  // Track scan for social proof
+  useScanTracker(dbCompany?.id || undefined, dbCompany?.name || company?.name);
+
   // ─── Full Scan Handler ───
   const handleFullScan = async () => {
     if (!dbCompany) return;

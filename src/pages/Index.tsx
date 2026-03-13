@@ -1,8 +1,9 @@
 import { useState, useEffect, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, ArrowRight, Shield, FileText, MessageSquare, Compass } from "lucide-react";
+import { Search, ArrowRight, Shield, FileText, MessageSquare, Compass, ArrowLeftRight } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { LiveActivityTicker } from "@/components/viral/LiveActivityTicker";
 
 const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const [companyCount, setCompanyCount] = useState(0);
