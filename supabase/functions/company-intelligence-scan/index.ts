@@ -156,11 +156,13 @@ Deno.serve(async (req) => {
             .gte('created_at', todayStart.toISOString())
             .eq('triggered_by', 'user');
 
-          const maxScans = isPaidUser ? MAX_SCANS_PER_DAY_PAID : MAX_SCANS_PER_DAY_FREE;
+          const maxScans = isPaidUser ? DAILY_PAID_SCAN_LIMIT : DAILY_FREE_SCAN_LIMIT;
           if ((count || 0) >= maxScans) {
             return new Response(JSON.stringify({
               success: false,
               error: `Daily scan limit reached (${maxScans} per day). ${isPaidUser ? 'Try again tomorrow.' : 'Upgrade to a paid plan for more scans.'}`,
+              code: 'DAILY_SCAN_LIMIT_REACHED',
+              upgradeRequired: !isPaidUser,
             }), { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
           }
         } else {
