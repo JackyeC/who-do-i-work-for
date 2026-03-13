@@ -147,7 +147,47 @@ export default function Browse() {
         {isLoading ? (
           <LoadingState message="Loading companies…" />
         ) : filtered.length === 0 ? (
-          <EmptyState icon={Building2} title="No companies match" description="Try adjusting your search or filter." />
+          <div className="text-center py-12">
+            <EmptyState icon={Building2} title="No companies match" description="Try adjusting your search or filter." />
+            {searchQuery.trim().length >= 2 && (
+              <div className="mt-4">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Can't find <strong>"{searchQuery}"</strong>? We can discover and research it automatically.
+                </p>
+                <Button
+                  onClick={async () => {
+                    setIsDiscovering(true);
+                    try {
+                      const { data, error } = await supabase.functions.invoke("company-discover", {
+                        body: { searchQuery: searchQuery.trim(), companyName: searchQuery.trim() },
+                      });
+                      if (error) throw error;
+                      if (data?.success) {
+                        toast({
+                          title: data.action === "existing" ? "Company found" : "Company discovered",
+                          description: data.action === "created"
+                            ? `Building intelligence profile for ${data.identity?.name || searchQuery}...`
+                            : "Opening existing profile...",
+                        });
+                        navigate(`/company/${data.slug}`);
+                      } else {
+                        throw new Error(data?.error || "Discovery failed");
+                      }
+                    } catch (e: any) {
+                      toast({ title: "Discovery failed", description: e.message, variant: "destructive" });
+                    } finally {
+                      setIsDiscovering(false);
+                    }
+                  }}
+                  disabled={isDiscovering}
+                  className="gap-2"
+                >
+                  {isDiscovering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  {isDiscovering ? "Discovering..." : "Discover & Research"}
+                </Button>
+              </div>
+            )}
+          </div>
         ) : (
           <motion.div
             variants={stagger.container}
