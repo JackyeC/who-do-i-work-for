@@ -107,6 +107,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   }, [isScanning, latestScan?.scan_status, queryClient]);
 
   const runScan = async (forceRescan = false) => {
+    setScanLimitReached(false);
     setIsScanning(true);
     setShowOverlay(true);
     try {
@@ -122,6 +123,22 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       const orchResult = orchestrated.status === 'fulfilled' ? orchestrated.value : null;
       const uniResult = unified.status === 'fulfilled' ? unified.value : null;
 
+      // ─── Handle 429 scan limit as a product state, not an error ───
+      const is429 = orchResult?.error && (
+        orchResult.error.message?.includes('429') ||
+        (orchResult.error as any)?.context?.status === 429 ||
+        (orchResult.error as any)?.status === 429 ||
+        orchResult.error.message?.includes('DAILY_SCAN_LIMIT_REACHED') ||
+        orchResult.error.message?.includes('Daily scan limit reached')
+      );
+
+      if (is429) {
+        setScanLimitReached(true);
+        setIsScanning(false);
+        setShowOverlay(false);
+        return; // Don't throw — this is a product state
+      }
+
       // Check if the 409 "already in progress" was returned — treat as non-error (just poll)
       const is409 = orchResult?.error && (
         orchResult.error.message?.includes('409') ||
@@ -131,7 +148,6 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       );
 
       if (is409) {
-        // Scan is already running — just poll for results
         toast({ title: "Scan already in progress", description: "Monitoring the existing scan for results." });
         queryClient.invalidateQueries({ queryKey: ["latest-scan-run", companyId] });
         return;
