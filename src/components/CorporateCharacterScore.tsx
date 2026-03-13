@@ -12,7 +12,7 @@ import { WorkforceIntelligenceBrief } from "@/components/WorkforceIntelligenceBr
 
 /* ─── Types ─── */
 
-interface CharacterInputs {
+export interface CharacterInputs {
   // Transparency
   hasDeiReports: boolean;
   hasPayTransparency: boolean;
