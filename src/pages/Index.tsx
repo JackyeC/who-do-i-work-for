@@ -320,7 +320,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* Footer */}
       <footer className="border-t border-border px-6 lg:px-16 py-6 flex justify-between items-center flex-wrap gap-4">
         <div className="font-mono text-[9px] tracking-wider text-muted-foreground">
-          © 2026 Who Do I Work For · Employer Intelligence by Jackye Clayton
+          © 2026 Who Do I Work For · Career Intelligence by Jackye Clayton
         </div>
         <div className="flex gap-6">
           <a href="/privacy" className="font-mono text-[9px] tracking-wider text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
