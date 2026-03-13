@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   Radar, Loader2, CheckCircle2, XCircle, AlertTriangle, Clock,
-  Search, RefreshCw, CircleSlash, SkipForward
+  Search, RefreshCw, CircleSlash, SkipForward, Lock, ArrowRight
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -75,8 +76,10 @@ const statusBadgeClass = (status: string) => {
 export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   const [isScanning, setIsScanning] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  const [scanLimitReached, setScanLimitReached] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: latestScan, isLoading } = useQuery({
     queryKey: ["latest-scan-run", companyId],
@@ -104,6 +107,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   }, [isScanning, latestScan?.scan_status, queryClient]);
 
   const runScan = async (forceRescan = false) => {
+    setScanLimitReached(false);
     setIsScanning(true);
     setShowOverlay(true);
     try {
@@ -119,6 +123,22 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       const orchResult = orchestrated.status === 'fulfilled' ? orchestrated.value : null;
       const uniResult = unified.status === 'fulfilled' ? unified.value : null;
 
+      // ─── Handle 429 scan limit as a product state, not an error ───
+      const is429 = orchResult?.error && (
+        orchResult.error.message?.includes('429') ||
+        (orchResult.error as any)?.context?.status === 429 ||
+        (orchResult.error as any)?.status === 429 ||
+        orchResult.error.message?.includes('DAILY_SCAN_LIMIT_REACHED') ||
+        orchResult.error.message?.includes('Daily scan limit reached')
+      );
+
+      if (is429) {
+        setScanLimitReached(true);
+        setIsScanning(false);
+        setShowOverlay(false);
+        return; // Don't throw — this is a product state
+      }
+
       // Check if the 409 "already in progress" was returned — treat as non-error (just poll)
       const is409 = orchResult?.error && (
         orchResult.error.message?.includes('409') ||
@@ -128,7 +148,6 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       );
 
       if (is409) {
-        // Scan is already running — just poll for results
         toast({ title: "Scan already in progress", description: "Monitoring the existing scan for results." });
         queryClient.invalidateQueries({ queryKey: ["latest-scan-run", companyId] });
         return;
@@ -209,6 +228,36 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
         </div>
       </CardHeader>
       <CardContent>
+        {/* ─── Scan Limit Reached — polished upgrade state ─── */}
+        {scanLimitReached && (
+          <div className="border border-primary/30 bg-primary/5 rounded-lg p-6 text-center space-y-4 mb-4">
+            <div className="flex justify-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Lock className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-1">You've reached today's free scan limit</h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Free accounts include 2 scans per day. Upgrade for more scans or come back tomorrow.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3">
+              <Button onClick={() => navigate("/pricing")} className="gap-2">
+                Upgrade <ArrowRight className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" onClick={() => navigate("/dashboard")}>
+                Back to dashboard
+              </Button>
+            </div>
+            <button
+              onClick={() => setScanLimitReached(false)}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
         {/* Stats row — truthful counts */}
         {latestScan && (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">

@@ -80,9 +80,11 @@ function interpretPipelineResult(result: any): { sourcesScanned: number; signals
   return { sourcesScanned: Math.max(sourcesScanned, result.success ? 1 : 0), signalsFound };
 }
 
-// Daily scan cap per user to prevent credit abuse
-const MAX_SCANS_PER_DAY_FREE = 2;
-const MAX_SCANS_PER_DAY_PAID = 20;
+// ─── Configurable daily scan limits ───
+// TODO: Connect these to Stripe subscription tiers so only free users are rate-limited.
+// When Stripe integration is ready, replace `isPaidUser` logic below with actual plan lookup.
+const DAILY_FREE_SCAN_LIMIT = 2;
+const DAILY_PAID_SCAN_LIMIT = 20;
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -154,11 +156,13 @@ Deno.serve(async (req) => {
             .gte('created_at', todayStart.toISOString())
             .eq('triggered_by', 'user');
 
-          const maxScans = isPaidUser ? MAX_SCANS_PER_DAY_PAID : MAX_SCANS_PER_DAY_FREE;
+          const maxScans = isPaidUser ? DAILY_PAID_SCAN_LIMIT : DAILY_FREE_SCAN_LIMIT;
           if ((count || 0) >= maxScans) {
             return new Response(JSON.stringify({
               success: false,
               error: `Daily scan limit reached (${maxScans} per day). ${isPaidUser ? 'Try again tomorrow.' : 'Upgrade to a paid plan for more scans.'}`,
+              code: 'DAILY_SCAN_LIMIT_REACHED',
+              upgradeRequired: !isPaidUser,
             }), { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
           }
         } else {
