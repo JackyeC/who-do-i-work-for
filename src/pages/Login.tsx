@@ -33,6 +33,19 @@ export default function Login() {
     }
   };
 
+  const handleAppleSignIn = async () => {
+    const { error } = await lovable.auth.signInWithOAuth("apple", {
+      redirect_uri: window.location.origin,
+    });
+    if (error) {
+      toast({
+        title: "Sign-in failed",
+        description: error.message || "Could not sign in with Apple.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
