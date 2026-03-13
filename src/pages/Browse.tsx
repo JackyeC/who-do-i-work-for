@@ -80,13 +80,24 @@ export default function Browse() {
     <div className="flex-1">
       {/* Compact header */}
       <div className="border-b border-border/40 bg-card/30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <h1 className="text-xl font-bold text-foreground tracking-tight">
-            Employer Directory
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {allCompanies.length} companies tracked
-          </p>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-foreground tracking-tight">
+              Employer Directory
+            </h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {allCompanies.length} companies tracked
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            onClick={() => navigate("/add-company")}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            Add Company
+          </Button>
         </div>
       </div>
 
