@@ -192,6 +192,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </section>
 
+      {/* Animated Demo */}
+      <AnimatedDemo />
+
       {/* Jackye Section */}
       <SectionReveal>
         <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-24">
