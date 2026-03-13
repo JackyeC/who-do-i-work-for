@@ -343,12 +343,29 @@ export default function CompanyProfile() {
   const transparencySignals = [!!tiAiHr, !!tiBenefits, !!tiPayEquity, !!tiSentiment, (dbPublicStances?.length || 0) > 0, (dbExecutives?.length || 0) > 0, !!tiIdeology];
   const transparencyScore = Math.round((transparencySignals.filter(Boolean).length / transparencySignals.length) * 100);
 
+  // Corporate Character Score for sticky header
+  const characterScore = useMemo(() => calculateCharacterScore({
+    hasDeiReports: false, hasPayTransparency: !!tiPayEquity, hasPromotionData: false,
+    hasWorkforceDemographics: false, hasPublicReporting: !!dbCompany?.is_publicly_traded,
+    hasPublicStances: (dbPublicStances?.length || 0) > 0, hasSentimentData: !!tiSentiment,
+    hasLayoffSignals: false, hasWarnNotices: false, hasLaborViolations: false,
+    hasWorkerLawsuits: false, hasBenefitsData: !!tiBenefits, employeeCount: (dbCompany as any)?.employee_count ?? null,
+    totalPacSpending: totalPac, lobbyingSpend, hasTradeAssociations: (dbTradeAssociations?.length || 0) > 0,
+    hasGovernmentContracts: govContracts > 0, hasDarkMoney: (dbDarkMoney?.length || 0) > 0,
+    hasIssueSignals: (dbIssueSignals?.length || 0) > 0, hasSecInvestigations: false,
+    hasDojEnforcement: false, hasFtcActions: false, hasClassActionLawsuits: false,
+    hasPayEquitySignals: !!tiPayEquity, hasCompensationData: !!tiBenefits,
+    hasGovernanceDisclosures: false, hasBoardDiversity: false, hasAiHrSignals: !!tiAiHr,
+    hasJobPostings: false, scanCompletion: (dbCompany as any)?.scan_completion ?? null,
+    recordStatus: recordStatus,
+  }), [tiPayEquity, tiSentiment, tiBenefits, tiAiHr, totalPac, lobbyingSpend, govContracts, dbPublicStances, dbTradeAssociations, dbDarkMoney, dbIssueSignals, dbCompany, recordStatus]);
+
   return (
     <div className="flex flex-col min-h-0">
       {/* Sticky Score Header */}
       <StickyScoreHeader
         companyName={name}
-        score={transparencyScore}
+        score={characterScore.totalScore}
         ticker={dbCompany?.ticker}
         industry={industry}
       />
