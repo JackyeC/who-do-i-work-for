@@ -206,6 +206,7 @@ const App = () => (
         </TooltipProvider>
         </DossierLensProvider>
         </ViewModeProvider>
+        </DemoSafeModeProvider>
       </AuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>
