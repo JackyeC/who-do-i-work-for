@@ -18,12 +18,12 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
   usePageSEO({
     title: "Know Who You're Really Working For",
-    description: "Employer Intelligence platform. Company intelligence, offer analysis, connection chains, and career strategy by Jackye Clayton. Know before you sign.",
+    description: "Career Intelligence platform. Company intelligence, offer analysis, connection chains, and career strategy by Jackye Clayton. Know before you sign.",
     path: "/",
     jsonLd: {
       "@type": "WebApplication",
       name: "Who Do I Work For?",
-      description: "Employer Intelligence platform connecting policy, company behavior, and career strategy.",
+      description: "Career Intelligence platform. Understand the company behind the job offer.",
       applicationCategory: "BusinessApplication",
       creator: { "@type": "Person", name: "Jackye Clayton" },
       url: "https://civic-align.lovable.app",
