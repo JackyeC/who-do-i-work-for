@@ -2,6 +2,9 @@ import { useState, useEffect, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight } from "lucide-react";
+import { AnimatedDemo } from "@/components/landing/AnimatedDemo";
+import { FAQSection } from "@/components/landing/FAQSection";
+import { EmailCapture } from "@/components/landing/EmailCapture";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { LiveActivityTicker } from "@/components/viral/LiveActivityTicker";
 import { HeroSearch } from "@/components/landing/HeroSearch";
@@ -189,6 +192,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </section>
 
+      {/* Animated Demo */}
+      <AnimatedDemo />
+
       {/* Jackye Section */}
       <SectionReveal>
         <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-24">
@@ -278,6 +284,12 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </div>
         </section>
       </SectionReveal>
+
+      {/* FAQ */}
+      <FAQSection />
+
+      {/* Email Capture */}
+      <EmailCapture />
 
       {/* Final CTA */}
       <SectionReveal>
