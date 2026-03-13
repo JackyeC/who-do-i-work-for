@@ -282,12 +282,24 @@ export function EmployerClarityScore(props: EmployerClarityScoreProps) {
         </div>
 
         {/* Jackye's Take */}
-        <div className="rounded-lg border border-primary/15 bg-primary/5 p-4 mt-4">
-          <div className="flex items-center gap-2 mb-2">
-            <MessageSquare className="w-4 h-4 text-primary" />
-            <span className="text-sm font-semibold text-foreground">Jackye's Take</span>
+        <div className="rounded-lg border border-primary/15 bg-primary/5 p-5 mt-4">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[hsl(var(--civic-gold-muted))] to-primary flex items-center justify-center font-serif text-sm text-primary-foreground font-bold shrink-0">
+              JC
+            </div>
+            <div>
+              <span className="text-sm font-bold text-foreground block leading-tight">Jackye's Take</span>
+              <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">Accountability Intelligence</span>
+            </div>
           </div>
-          <p className="text-sm text-foreground/80 leading-relaxed">{jackyesTake}</p>
+          <div className="space-y-2.5 text-sm leading-relaxed">
+            <p className="text-foreground font-semibold">{jackyesTake.opener}</p>
+            <p className="text-foreground/75">{jackyesTake.receipt}</p>
+            <p className="text-foreground/65 text-[13px]">{jackyesTake.humanFact}</p>
+            <p className="text-primary font-semibold text-[13px] pt-1 border-t border-primary/10">
+              → {jackyesTake.closing}
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>
