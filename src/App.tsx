@@ -9,6 +9,7 @@ import { ViewModeProvider } from "@/contexts/ViewModeContext";
 import { DossierLensProvider } from "@/contexts/DossierLensContext";
 import { DemoSafeModeProvider } from "@/contexts/DemoSafeModeContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AdminRoute } from "@/components/AdminRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AppShell } from "@/components/layout/AppShell";
 import { AskJackyeWidget } from "@/components/AskJackyeWidget";
@@ -183,8 +184,8 @@ const App = () => (
                 } />
                 <Route path="/intelligence" element={<IntelligenceReports />} />
                 <Route path="/intelligence/:slug" element={<IntelligenceReport />} />
-                <Route path="/admin/reports" element={<ProtectedRoute><ReportsList /></ProtectedRoute>} />
-                <Route path="/admin/reports/:id" element={<ProtectedRoute><ReportEditor /></ProtectedRoute>} />
+                <Route path="/admin/reports" element={<AdminRoute><ReportsList /></AdminRoute>} />
+                <Route path="/admin/reports/:id" element={<AdminRoute><ReportEditor /></AdminRoute>} />
                 <Route path="/recruiting" element={<RecruitingIntelligence />} />
                 <Route path="/relationship-intelligence" element={
                   <ProtectedRoute>
