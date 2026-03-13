@@ -12,7 +12,7 @@ import { WorkforceIntelligenceBrief } from "@/components/WorkforceIntelligenceBr
 
 /* ─── Types ─── */
 
-interface CharacterInputs {
+export interface CharacterInputs {
   // Transparency
   hasDeiReports: boolean;
   hasPayTransparency: boolean;
@@ -64,7 +64,7 @@ interface CategoryScore {
 
 /* ─── Scoring Engine ─── */
 
-function calculateCharacterScore(inputs: CharacterInputs) {
+export function calculateCharacterScore(inputs: CharacterInputs) {
   const cap = (n: number) => Math.min(100, Math.max(0, n));
 
   // 1. Transparency (25%)

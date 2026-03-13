@@ -10,6 +10,8 @@ import {
   Scan, BarChart3, Award, GraduationCap, Hammer, Network
 } from "lucide-react";
 import { CompanyLogo } from "@/components/CompanyLogo";
+import { StickyScoreHeader } from "@/components/StickyScoreHeader";
+import { AlignmentDashboard } from "@/components/AlignmentDashboard";
 import { ShareableScorecard } from "@/components/ShareableScorecard";
 import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { CivicFootprintBadge } from "@/components/CivicFootprintBadge";
@@ -35,7 +37,7 @@ import { CompanyIntelligenceScanCard } from "@/components/CompanyIntelligenceSca
 import { RelatedReportsCard } from "@/components/RelatedReportsCard";
 import { ValuesCheckSection, type ValuesCheckSignal } from "@/components/values-check/ValuesCheckSection";
 import { InfluenceChainCard } from "@/components/InfluenceChainCard";
-import { CorporateCharacterScore } from "@/components/CorporateCharacterScore";
+import { CorporateCharacterScore, calculateCharacterScore } from "@/components/CorporateCharacterScore";
 import { DataFreshnessCard } from "@/components/DataFreshnessCard";
 import { useScanTracker } from "@/hooks/use-scan-tracker";
 import { DecisionMakers } from "@/components/DecisionMakers";
@@ -341,8 +343,32 @@ export default function CompanyProfile() {
   const transparencySignals = [!!tiAiHr, !!tiBenefits, !!tiPayEquity, !!tiSentiment, (dbPublicStances?.length || 0) > 0, (dbExecutives?.length || 0) > 0, !!tiIdeology];
   const transparencyScore = Math.round((transparencySignals.filter(Boolean).length / transparencySignals.length) * 100);
 
+  // Corporate Character Score for sticky header
+  const characterScore = calculateCharacterScore({
+    hasDeiReports: false, hasPayTransparency: !!tiPayEquity, hasPromotionData: false,
+    hasWorkforceDemographics: false, hasPublicReporting: !!dbCompany?.is_publicly_traded,
+    hasPublicStances: (dbPublicStances?.length || 0) > 0, hasSentimentData: !!tiSentiment,
+    hasLayoffSignals: false, hasWarnNotices: false, hasLaborViolations: false,
+    hasWorkerLawsuits: false, hasBenefitsData: !!tiBenefits, employeeCount: (dbCompany as any)?.employee_count ?? null,
+    totalPacSpending: totalPac, lobbyingSpend, hasTradeAssociations: (dbTradeAssociations?.length || 0) > 0,
+    hasGovernmentContracts: govContracts > 0, hasDarkMoney: (dbDarkMoney?.length || 0) > 0,
+    hasIssueSignals: (dbIssueSignals?.length || 0) > 0, hasSecInvestigations: false,
+    hasDojEnforcement: false, hasFtcActions: false, hasClassActionLawsuits: false,
+    hasPayEquitySignals: !!tiPayEquity, hasCompensationData: !!tiBenefits,
+    hasGovernanceDisclosures: false, hasBoardDiversity: false, hasAiHrSignals: !!tiAiHr,
+    hasJobPostings: false, scanCompletion: (dbCompany as any)?.scan_completion ?? null,
+    recordStatus: recordStatus,
+  });
+
   return (
     <div className="flex flex-col min-h-0">
+      {/* Sticky Score Header */}
+      <StickyScoreHeader
+        companyName={name}
+        score={characterScore.totalScore}
+        ticker={dbCompany?.ticker}
+        industry={industry}
+      />
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Breadcrumb */}
         <Link to="/browse" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5">
@@ -507,7 +533,7 @@ export default function CompanyProfile() {
               1. COMPANY OVERVIEW
              ═══════════════════════════════════════════════════════════ */}
           {description && (
-            <section className="mb-8">
+            <section id="section-overview" className="mb-8 scroll-mt-28">
               <SectionHeader icon={Building2} title="Company Overview" />
               <p className="text-sm text-foreground/80 leading-relaxed pl-12">{description}</p>
             </section>
@@ -516,7 +542,7 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               2. QUICK INTELLIGENCE SUMMARY
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section id="section-intelligence" className="mb-8 scroll-mt-28">
             <SectionHeader icon={BarChart3} title="Quick Intelligence Summary" subtitle="Key signals at a glance" />
             <div className="grid sm:grid-cols-2 gap-2 pl-12">
               <IntelStat
@@ -559,7 +585,7 @@ export default function CompanyProfile() {
               3. DECISION MAKERS
              ═══════════════════════════════════════════════════════════ */}
           {dbExecutives && dbExecutives.length > 0 && (
-            <section className="mb-8">
+            <section id="section-leadership" className="mb-8 scroll-mt-28">
               <SectionHeader icon={Users} title="Decision Makers" subtitle="C-suite executives and board members shaping company strategy" />
               <div className="pl-12">
                 <DecisionMakers
@@ -608,7 +634,7 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               4. WORKFORCE INTELLIGENCE
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section id="section-workforce" className="mb-8 scroll-mt-28">
             <SectionHeader icon={TrendingUp} title="Workforce Intelligence" subtitle="Worker sentiment, hiring technology, and benefits signals" />
             <div className="space-y-4 pl-12">
               <WorkerSentimentCard companyName={name} dbCompanyId={dbCompanyId} />
@@ -622,7 +648,7 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               5. COMPENSATION TRANSPARENCY
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section id="section-compensation" className="mb-8 scroll-mt-28">
             <SectionHeader icon={DollarSign} title="Compensation Transparency" subtitle="Pay equity signals and national benchmarks" />
             <div className="space-y-4 pl-12">
               <CompensationTransparencyCard companyName={name} dbCompanyId={dbCompanyId} />
@@ -646,7 +672,7 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               7. WORKFORCE STABILITY
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section id="section-stability" className="mb-8 scroll-mt-28">
             <SectionHeader icon={AlertTriangle} title="Workforce Stability" subtitle="Layoffs, WARN notices, and workforce reduction signals" />
             <div className="space-y-4 pl-12">
               <WarnTrackerCard companyName={name} dbCompanyId={dbCompanyId} />
@@ -659,7 +685,7 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               8. POLICY & INFLUENCE SIGNALS
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section id="section-influence" className="mb-8 scroll-mt-28">
             <SectionHeader icon={Landmark} title="Policy & Influence Signals" subtitle="Political donations, lobbying, trade associations, federal contracts" />
             <div className="space-y-4 pl-12">
               {/* Inline summary stats */}
@@ -741,29 +767,9 @@ export default function CompanyProfile() {
                 </Card>
               )}
 
-              {/* Say vs. Do */}
+              {/* Say vs. Do — Alignment Dashboard */}
               {dbPublicStances && dbPublicStances.length > 0 && (
-                <div>
-                  <h3 className="text-base font-semibold text-foreground mb-3 flex items-center gap-2"><MessageSquareWarning className="w-4 h-4 text-primary" /> Say vs. Do</h3>
-                  <div className="space-y-3">
-                    {dbPublicStances.map((stance) => (
-                      <Card key={stance.id}><CardContent className="p-4">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-foreground text-sm mb-2">{stance.topic}</h4>
-                            <div className="grid sm:grid-cols-2 gap-3">
-                              <div><p className="text-[11px] font-medium text-muted-foreground mb-0.5">🗣️ Public Position</p><p className="text-sm text-foreground">{stance.public_position}</p></div>
-                              <div><p className="text-[11px] font-medium text-muted-foreground mb-0.5">💰 Spending Reality</p><p className="text-sm text-foreground">{stance.spending_reality}</p></div>
-                            </div>
-                          </div>
-                          <Badge variant={stance.gap === "direct-conflict" ? "destructive" : stance.gap === "aligned" ? "secondary" : "outline"} className="shrink-0 text-xs">
-                            {stance.gap === "direct-conflict" ? "Conflict" : stance.gap === "aligned" ? "Aligned" : "Mixed"}
-                          </Badge>
-                        </div>
-                      </CardContent></Card>
-                    ))}
-                  </div>
-                </div>
+                <AlignmentDashboard stances={dbPublicStances} />
               )}
 
               {/* Dark Money + Revolving Door */}
@@ -825,7 +831,7 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               10. VALUES CHECK
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section id="section-values" className="mb-8 scroll-mt-28">
             <SectionHeader icon={Heart} title="Values Check" subtitle="How this company's actions align with your values" />
             <div className="space-y-4 pl-12">
               <ValuesCheckSection
