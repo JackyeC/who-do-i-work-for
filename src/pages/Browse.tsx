@@ -29,6 +29,9 @@ export default function Browse() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"name" | "score">("score");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDiscovering, setIsDiscovering] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const { data: dbCompanies, isLoading } = useQuery({
     queryKey: ["browse-companies"],
