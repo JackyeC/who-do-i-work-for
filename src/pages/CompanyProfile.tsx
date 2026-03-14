@@ -508,6 +508,46 @@ export default function CompanyProfile() {
             />
           </div>
 
+          {/* ═══════════════════════════════════════════════════════════
+              CORPORATE BEHAVIOR INDEX™
+             ═══════════════════════════════════════════════════════════ */}
+          {(() => {
+            const cbiInput: CBIInput = {
+              warnNoticeCount: 0,
+              hasLayoffSignals: false,
+              hasBenefitsData: !!tiBenefits,
+              hasSentimentData: !!tiSentiment,
+              sentimentPositiveRatio: 0.5,
+              hasPromotionData: false,
+              promotionVelocityScore: 0,
+              hasCareerPaths: false,
+              hasInternalMobilitySignals: false,
+              leadershipPipelineDiversity: false,
+              hasPayEquitySignals: !!tiPayEquity,
+              hasCompensationBands: false,
+              hasPublicPayReporting: !!dbCompany?.is_publicly_traded,
+              payTransparencySignalCount: tiPayEquity ? 1 : 0,
+              executiveCount: dbExecutives?.length || 0,
+              boardMemberCount: dbBoardMembers?.length || 0,
+              boardIndependentCount: dbBoardMembers?.filter((b: any) => b.is_independent)?.length || 0,
+              hasRevolvingDoor: (dbRevolvingDoor?.length || 0) > 0,
+              hasDarkMoney: (dbDarkMoney?.length || 0) > 0,
+              hasGovernanceDisclosures: (dbBoardMembers?.length || 0) > 0,
+              isPubliclyTraded: !!dbCompany?.is_publicly_traded,
+              aiHrSignalCount: tiAiHr ? 1 : 0,
+              hasBiasAudit: false,
+              hasAlgorithmTransparency: false,
+              hasComplianceDisclosure: false,
+              aiHiringToolCount: tiAiHr ? 1 : 0,
+            };
+            const cbiResult = calculateCBI(cbiInput);
+            return (
+              <div className="mb-6">
+                <CorporateBehaviorIndexCard result={cbiResult} companyName={name} />
+              </div>
+            );
+          })()}
+
           {/* CAREER RISK REPORT — Shareable viral scorecard */}
           <div className="mb-6">
             <CareerRiskReport
