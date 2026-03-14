@@ -821,6 +821,12 @@ export default function CompanyProfile() {
             <SectionHeader icon={Award} title="Workforce Mobility & Promotion Equity" subtitle="Internal promotion, leadership diversity, HBCU partnerships, skills-first hiring" />
             <div className="space-y-4">
               <PromotionEquityCard companyName={name} dbCompanyId={dbCompanyId} />
+              {(() => {
+                const subScores = deriveSubScores({ promotionSignals: [], mobilitySignals: [], diversitySignals: [], retentionSignals: [], learningSignals: [], transparencyCategories: 2, totalCategories: 6 });
+                const confidence = computeConfidence(3, false, 180);
+                const pvsResult = calculatePVS(subScores, confidence);
+                return <PromotionVelocityCard result={pvsResult} companyName={name} />;
+              })()}
             </div>
           </section>
 
