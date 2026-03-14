@@ -282,7 +282,7 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
                   />
                 ))}
 
-                {others.length > 0 && (
+                {(others.length + formerExecs.length) > 0 && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -292,7 +292,7 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
                     {showAll ? (
                       <><ChevronUp className="w-3.5 h-3.5" /> Hide Additional Leadership</>
                     ) : (
-                      <><ChevronDown className="w-3.5 h-3.5" /> View Full Leadership ({others.length} more)</>
+                      <><ChevronDown className="w-3.5 h-3.5" /> View Full Leadership ({others.length + formerExecs.length} more{formerExecs.length > 0 ? `, ${formerExecs.length} former` : ''})</>
                     )}
                   </Button>
                 )}
