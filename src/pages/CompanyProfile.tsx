@@ -867,9 +867,9 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               10. VALUES CHECK
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-values" className="mb-8 scroll-mt-28">
+          <section id="section-values" className="mb-10 scroll-mt-28">
             <SectionHeader icon={Heart} title="Values Check" subtitle="How this company's actions align with your values" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <ValuesCheckSection
                 companyName={name}
                 companyId={dbCompany?.id || ""}
