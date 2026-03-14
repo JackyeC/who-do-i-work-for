@@ -95,15 +95,15 @@ function IntelStat({ label, value, status, onClick }: { label: string; value: st
     <Wrapper
       onClick={onClick}
       className={cn(
-        "flex items-center justify-between p-3 rounded-lg border transition-colors",
+        "flex items-center justify-between p-4 rounded-lg border transition-colors",
         status === "detected" ? "bg-primary/[0.04] border-primary/15" : "bg-muted/30 border-border/40",
         onClick && "cursor-pointer hover:border-primary/30 hover:bg-primary/[0.06]"
       )}
     >
-      <span className="text-sm text-foreground font-medium">{label}</span>
+      <span className="text-base text-foreground font-medium">{label}</span>
       <div className="flex items-center gap-2">
-        <span className={cn("text-sm font-semibold", status === "detected" ? "text-foreground" : "text-muted-foreground")}>{value}</span>
-        {onClick && <ExternalLink className="w-3 h-3 text-muted-foreground" />}
+        <span className={cn("text-base font-semibold", status === "detected" ? "text-foreground" : "text-muted-foreground")}>{value}</span>
+        {onClick && <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />}
       </div>
     </Wrapper>
   );
