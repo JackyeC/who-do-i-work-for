@@ -933,7 +933,7 @@ export default function CompanyProfile() {
 
           {/* Sources footer */}
           <div className="mt-8 mb-4">
-            <p className="text-[11px] text-muted-foreground text-center leading-relaxed">
+            <p className="text-xs text-muted-foreground text-center leading-relaxed">
               Data from FEC.gov, Senate LDA, USASpending.gov, OpenCorporates, and public filings.
               Executive donations reflect personal giving. This platform provides publicly available data for informational purposes only.
             </p>
