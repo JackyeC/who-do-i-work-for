@@ -135,19 +135,35 @@ export function TopBar() {
           {MAIN_SECTIONS.map(section => {
             if ((section as any).auth && !user) return null;
             const active = isSectionActive(section, location.pathname);
+            const hasDropdown = section.subItems && section.subItems.length > 0;
             return (
-              <Link
-                key={section.id}
-                to={section.path}
-                className={cn(
-                  "font-mono text-[10px] tracking-wider uppercase px-4 h-full flex items-center border-b-2 transition-colors",
-                  active
-                    ? "text-primary border-primary"
-                    : "text-muted-foreground border-transparent hover:text-foreground"
+              <div key={section.id} className="relative h-full group">
+                <Link
+                  to={section.path}
+                  className={cn(
+                    "font-mono text-[10px] tracking-wider uppercase px-4 h-full flex items-center border-b-2 transition-colors gap-1",
+                    active
+                      ? "text-primary border-primary"
+                      : "text-muted-foreground border-transparent hover:text-foreground"
+                  )}
+                >
+                  {section.label}
+                  {hasDropdown && <ChevronDown className="w-2.5 h-2.5" />}
+                </Link>
+                {hasDropdown && (
+                  <div className="absolute top-full left-0 hidden group-hover:block bg-card border border-border shadow-lg min-w-[200px] z-50">
+                    {section.subItems.map(sub => (
+                      <Link
+                        key={sub.path}
+                        to={sub.path}
+                        className="block px-4 py-2.5 font-mono text-[10px] tracking-wider text-muted-foreground hover:text-primary hover:bg-primary/[0.04] transition-colors"
+                      >
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
                 )}
-              >
-                {section.label}
-              </Link>
+              </div>
             );
           })}
         </nav>
