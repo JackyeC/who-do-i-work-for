@@ -9,9 +9,11 @@ import { companies as sampleCompanies, formatCurrency } from "@/data/sampleData"
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, ArrowRight, Search, TrendingUp, SortAsc, Sparkles, Loader2 } from "lucide-react";
+import { Building2, ArrowRight, Search, TrendingUp, SortAsc, Sparkles, Loader2, Landmark } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { LoadingState } from "@/components/LoadingState";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { NonProfitDirectory } from "@/components/browse/NonProfitDirectory";
 import {
   Select,
   SelectContent,
@@ -78,6 +80,7 @@ export default function Browse() {
 
   return (
     <div className="flex-1">
+      <Tabs defaultValue="companies" className="w-full">
       {/* Compact header */}
       <div className="border-b border-border/40 bg-card/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-between">
@@ -89,18 +92,31 @@ export default function Browse() {
               {allCompanies.length} companies tracked
             </p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => navigate("/add-company")}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            Add Company
-          </Button>
+          <div className="flex items-center gap-3">
+            <TabsList className="bg-muted/60 h-8">
+              <TabsTrigger value="companies" className="text-xs gap-1.5 h-7 px-3">
+                <Building2 className="w-3 h-3" />
+                Companies
+              </TabsTrigger>
+              <TabsTrigger value="nonprofits" className="text-xs gap-1.5 h-7 px-3">
+                <Landmark className="w-3 h-3" />
+                Non-Profits
+              </TabsTrigger>
+            </TabsList>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => navigate("/add-company")}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Add Company
+            </Button>
+          </div>
         </div>
       </div>
 
+      <TabsContent value="companies" className="mt-0">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5">
         {/* Controls row — search, industry dropdown, sort */}
         <div className="flex flex-col sm:flex-row gap-2.5 mb-6">
@@ -236,6 +252,14 @@ export default function Browse() {
           </motion.div>
         )}
       </div>
+      </TabsContent>
+
+      <TabsContent value="nonprofits" className="mt-0">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5">
+          <NonProfitDirectory />
+        </div>
+      </TabsContent>
+      </Tabs>
     </div>
   );
 }
