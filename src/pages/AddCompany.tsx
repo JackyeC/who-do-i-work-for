@@ -137,6 +137,14 @@ export default function AddCompany() {
             {/* Existing matches */}
             {searchResults && searchResults.length > 0 && !result && (
               <div className="space-y-2">
+                {searchResults.some((co: any) => co.matchScore >= 70) && (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[hsl(var(--civic-yellow))]/10 border border-[hsl(var(--civic-yellow))]/20">
+                    <AlertTriangle className="w-4 h-4 text-[hsl(var(--civic-yellow))] shrink-0" />
+                    <p className="text-xs text-foreground">
+                      <strong>Did you mean one of these?</strong> Similar companies already exist. Click one to view it instead of creating a duplicate.
+                    </p>
+                  </div>
+                )}
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Existing companies</p>
                 {searchResults.map((co) => (
                   <button
