@@ -735,31 +735,31 @@ export default function CompanyProfile() {
               />
               {/* Inline summary stats */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2">
-                {totalPac > 0 && (
-                  <button onClick={() => setPacDrawerOpen(true)} className="p-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">PAC Spending</p>
-                    <p className="text-lg font-bold text-foreground">{formatCurrency(totalPac)}</p>
-                    <span className="text-[10px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
+               {totalPac > 0 && (
+                  <button onClick={() => setPacDrawerOpen(true)} className="p-4 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">PAC Spending</p>
+                    <p className="text-xl font-bold text-foreground">{formatCurrency(totalPac)}</p>
+                    <span className="text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
                   </button>
                 )}
                 {lobbyingSpend > 0 && (
-                  <button onClick={() => setLobbyingDrawerOpen(true)} className="p-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Federal Lobbying</p>
-                    <p className="text-lg font-bold text-foreground">{formatCurrency(lobbyingSpend)}</p>
-                    <span className="text-[10px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
+                  <button onClick={() => setLobbyingDrawerOpen(true)} className="p-4 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Federal Lobbying</p>
+                    <p className="text-xl font-bold text-foreground">{formatCurrency(lobbyingSpend)}</p>
+                    <span className="text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
                   </button>
                 )}
                 {govContracts > 0 && (
-                  <button onClick={() => setContractsDrawerOpen(true)} className="p-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Gov Contracts</p>
-                    <p className="text-lg font-bold text-foreground">{formatCurrency(govContracts)}</p>
-                    <span className="text-[10px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
+                  <button onClick={() => setContractsDrawerOpen(true)} className="p-4 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Gov Contracts</p>
+                    <p className="text-xl font-bold text-foreground">{formatCurrency(govContracts)}</p>
+                    <span className="text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
                   </button>
                 )}
                 {(dbTradeAssociations?.length || 0) > 0 && (
-                  <div className="p-3 rounded-lg bg-card border border-border/50 text-left">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Trade Associations</p>
-                    <p className="text-lg font-bold text-foreground">{dbTradeAssociations?.length}</p>
+                  <div className="p-4 rounded-lg bg-card border border-border/50 text-left">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Trade Associations</p>
+                    <p className="text-xl font-bold text-foreground">{dbTradeAssociations?.length}</p>
                   </div>
                 )}
               </div>
