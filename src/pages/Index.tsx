@@ -245,9 +245,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           {audiences.map((a, i) => (
             <SectionReveal key={a.who} delay={i * 0.05}>
               <div className="bg-card p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-[160px_1fr_2fr] gap-4 lg:gap-8 items-center">
-                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-primary">{a.who}</div>
+                <div className="font-mono text-xs tracking-[0.15em] uppercase text-primary">{a.who}</div>
                 <div className="font-serif text-base text-foreground">{a.question}</div>
-                <div className="text-[13px] text-muted-foreground">{a.desc}</div>
+                <div className="text-sm text-muted-foreground">{a.desc}</div>
               </div>
             </SectionReveal>
           ))}
