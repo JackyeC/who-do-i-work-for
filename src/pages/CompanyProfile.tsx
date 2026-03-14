@@ -1049,6 +1049,23 @@ export default function CompanyProfile() {
           <Separator className="mb-8" />
 
           {/* ═══════════════════════════════════════════════════════════
+              11. PUBLIC RECORDS & NETWORK EXPOSURE
+             ═══════════════════════════════════════════════════════════ */}
+          <section id="section-public-records" className="mb-10 scroll-mt-28">
+            <SectionHeader
+              icon={FileText}
+              title="Public Records & Network Exposure"
+              subtitle="Public records, legal filings, government disclosures, and documented network ties that may matter for reputation, trust, and decision-making"
+            />
+            <PublicRecordsExposure
+              companyName={name}
+              companyId={dbCompany?.id}
+            />
+          </section>
+
+          <Separator className="mb-8" />
+
+          {/* ═══════════════════════════════════════════════════════════
               RUN FULL SCAN BUTTON
              ═══════════════════════════════════════════════════════════ */}
           <section className="mb-8">
