@@ -258,14 +258,14 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       <SectionReveal>
         <section className="bg-card border-y border-border px-6 lg:px-16 py-16">
           <div className="max-w-[1100px] mx-auto text-center">
-            <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-primary mb-3">Methodology</div>
+            <div className="font-mono text-xs tracking-[0.2em] uppercase text-primary mb-3">Methodology</div>
             <h2 className="text-xl mb-4 text-foreground">Built on public records. Every signal sourced.</h2>
-            <p className="text-[13px] text-muted-foreground max-w-[600px] mx-auto mb-6">
+            <p className="text-sm text-muted-foreground max-w-[600px] mx-auto mb-6">
               FEC filings · Senate lobbying disclosures · USAspending contracts · BLS wage data · SEC reports · FRED indicators. Every signal links to its source.
             </p>
             <button
               onClick={() => navigate("/methodology")}
-              className="font-mono text-[10px] tracking-wider uppercase text-primary hover:underline"
+              className="font-mono text-xs tracking-wider uppercase text-primary hover:underline"
             >
               Read our methodology →
             </button>
