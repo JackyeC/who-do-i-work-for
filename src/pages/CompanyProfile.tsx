@@ -61,6 +61,7 @@ import { ContentProtector } from "@/components/ContentProtector";
 import { ReportTeaserGate } from "@/components/ReportTeaserGate";
 import { SankeyInfluenceDiagram } from "@/components/SankeyInfluenceDiagram";
 import { CareerRiskReport } from "@/components/CareerRiskReport";
+import { BoardGovernanceTab } from "@/components/BoardGovernanceTab";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -268,6 +269,11 @@ export default function CompanyProfile() {
   const { data: tiPayEquity } = useQuery({ queryKey: ["ti-pay", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("pay_equity_signals" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
   const { data: tiSentiment } = useQuery({ queryKey: ["ti-sentiment", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("company_worker_sentiment" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
   const { data: tiIdeology } = useQuery({ queryKey: ["ti-ideology", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("company_ideology_flags" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
+  const { data: dbBoardMembers } = useQuery({
+    queryKey: ["board-members-count", dbCompanyId],
+    queryFn: async () => { const { data } = await (supabase as any).from("board_members").select("id, is_independent").eq("company_id", dbCompanyId!); return data || []; },
+    enabled: !!dbCompanyId,
+  });
 
   const dbCompanyIdMap: Record<string, string> = {
     "google": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
@@ -343,7 +349,7 @@ export default function CompanyProfile() {
   const hasDetailedData = (dbCandidates?.length || 0) > 0 || (dbExecutives?.length || 0) > 0;
 
   // Transparency score (simple count-based)
-  const transparencySignals = [!!tiAiHr, !!tiBenefits, !!tiPayEquity, !!tiSentiment, (dbPublicStances?.length || 0) > 0, (dbExecutives?.length || 0) > 0, !!tiIdeology];
+  const transparencySignals = [!!tiAiHr, !!tiBenefits, !!tiPayEquity, !!tiSentiment, (dbPublicStances?.length || 0) > 0, (dbExecutives?.length || 0) > 0, !!tiIdeology, (dbBoardMembers?.length || 0) > 0];
   const transparencyScore = Math.round((transparencySignals.filter(Boolean).length / transparencySignals.length) * 100);
 
   // Corporate Character Score for sticky header
@@ -358,7 +364,7 @@ export default function CompanyProfile() {
     hasIssueSignals: (dbIssueSignals?.length || 0) > 0, hasSecInvestigations: false,
     hasDojEnforcement: false, hasFtcActions: false, hasClassActionLawsuits: false,
     hasPayEquitySignals: !!tiPayEquity, hasCompensationData: !!tiBenefits,
-    hasGovernanceDisclosures: false, hasBoardDiversity: false, hasAiHrSignals: !!tiAiHr,
+    hasGovernanceDisclosures: (dbBoardMembers?.length || 0) > 0, hasBoardDiversity: (dbBoardMembers?.length || 0) > 0, hasAiHrSignals: !!tiAiHr,
     hasJobPostings: false, scanCompletion: (dbCompany as any)?.scan_completion ?? null,
     recordStatus: recordStatus,
   });
@@ -647,6 +653,23 @@ export default function CompanyProfile() {
 
 
 
+
+          {/* ═══════════════════════════════════════════════════════════
+              3b. GOVERNANCE & BOARD STRUCTURE
+             ═══════════════════════════════════════════════════════════ */}
+          <section id="section-governance" className="mb-8 scroll-mt-28">
+            <SectionHeader icon={Shield} title="Governance & Board Structure" subtitle="Board composition, committee oversight, and ownership signals" />
+            <div className="pl-12">
+              <BoardGovernanceTab
+                companyId={dbCompanyId || ""}
+                companyName={name}
+                ticker={dbCompany?.ticker}
+                secCik={dbCompany?.sec_cik}
+              />
+            </div>
+          </section>
+
+          <Separator className="mb-8" />
 
           {/* ═══════════════════════════════════════════════════════════
               4. WORKFORCE INTELLIGENCE
