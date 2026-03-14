@@ -201,7 +201,7 @@ function StatsBar({ signals }: { signals: Signal[] }) {
 }
 
 export default function SignalFeed() {
-  usePageSeo({
+  usePageSEO({
     title: "Signal Feed — Live Employer Intelligence | Who Do I Work For?",
     description: "Real-time employer signals: PAC donations, lobbying activity, federal contracts, workforce actions. See what companies are doing before you work there.",
   });
