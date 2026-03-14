@@ -269,6 +269,11 @@ export default function CompanyProfile() {
   const { data: tiPayEquity } = useQuery({ queryKey: ["ti-pay", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("pay_equity_signals" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
   const { data: tiSentiment } = useQuery({ queryKey: ["ti-sentiment", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("company_worker_sentiment" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
   const { data: tiIdeology } = useQuery({ queryKey: ["ti-ideology", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("company_ideology_flags" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
+  const { data: dbBoardMembers } = useQuery({
+    queryKey: ["board-members-count", dbCompanyId],
+    queryFn: async () => { const { data } = await (supabase as any).from("board_members").select("id, is_independent").eq("company_id", dbCompanyId!); return data || []; },
+    enabled: !!dbCompanyId,
+  });
 
   const dbCompanyIdMap: Record<string, string> = {
     "google": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
