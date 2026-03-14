@@ -62,6 +62,7 @@ import { useCompanySEO } from "@/hooks/use-company-seo";
 import { useToast } from "@/hooks/use-toast";
 import { ContentProtector } from "@/components/ContentProtector";
 import { ReportTeaserGate } from "@/components/ReportTeaserGate";
+import { SankeyInfluenceDiagram } from "@/components/SankeyInfluenceDiagram";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
