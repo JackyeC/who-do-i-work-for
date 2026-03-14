@@ -80,10 +80,10 @@ export default {
         },
       },
       fontFamily: {
-        display: ["'Libre Baskerville'", "Georgia", "serif"],
-        serif: ["'Libre Baskerville'", "Georgia", "serif"],
+        display: ["'Syne'", "system-ui", "sans-serif"],
+        serif: ["'Syne'", "system-ui", "sans-serif"],
         sans: ["'IBM Plex Sans'", "system-ui", "sans-serif"],
-        mono: ["'IBM Plex Mono'", "monospace"],
+        mono: ["'JetBrains Mono'", "monospace"],
       },
       fontSize: {
         "hero": ["3.6rem", { lineHeight: "1.1", fontWeight: "700" }],
