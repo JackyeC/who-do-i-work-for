@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { GovernanceSignalsCard } from "@/components/GovernanceSignalsCard";
 
 interface BoardGovernanceTabProps {
   companyId: string;
@@ -92,6 +93,9 @@ export function BoardGovernanceTab({ companyId, companyName, ticker, secCik }: B
 
   return (
     <div className="space-y-6">
+      {/* Ownership & Control Structure */}
+      <GovernanceSignalsCard companyId={companyId} companyName={companyName} />
+
       {/* Overview Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Card>
