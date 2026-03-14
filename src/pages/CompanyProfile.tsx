@@ -64,6 +64,12 @@ import { CareerRiskReport } from "@/components/CareerRiskReport";
 import { BoardGovernanceTab } from "@/components/BoardGovernanceTab";
 import { CorporateBehaviorIndexCard } from "@/components/CorporateBehaviorIndexCard";
 import { calculateCBI, type CBIInput } from "@/lib/corporateBehaviorIndex";
+import { RecruiterRealityScoreCard } from "@/components/RecruiterRealityScoreCard";
+import { calculateRRS, type RRSInput } from "@/lib/recruiterRealityScore";
+import { GTMScoreCard } from "@/components/GTMScoreCard";
+import { calculateGTM, type GTMInput } from "@/lib/gtmScore";
+import { PersonaSelector } from "@/components/PersonaSelector";
+import { type PersonaId, isSectionVisible } from "@/lib/personaConfig";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
