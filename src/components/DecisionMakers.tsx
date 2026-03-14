@@ -307,32 +307,37 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
           </TabsContent>
 
           <TabsContent value="board" className="space-y-3">
-            {boardMembers && boardMembers.length > 0 ? (
-              boardMembers.map((member) => (
-                <LeaderCard
-                  key={member.id}
-                  name={member.name}
-                  title={member.title}
-                  photoUrl={member.photo_url}
-                  startYear={member.start_year}
-                  previousCompany={member.previous_company}
-                  committees={member.committees}
-                  badges={member.is_independent ? ["Independent"] : []}
-                  leaderId={member.id}
-                  leaderType="board_member"
-                  companyId={companyId}
-                  onViewProfile={() => {
-                    // For now, opens as executive-like profile
-                    onExecutiveClick({
-                      id: member.id,
-                      name: member.name,
-                      title: member.title,
-                      total_donations: 0,
-                      photo_url: member.photo_url,
-                    });
-                  }}
-                />
-              ))
+            {activeBoard.length > 0 ? (
+              <>
+                {activeBoard.map((member) => (
+                  <LeaderCard
+                    key={member.id}
+                    name={member.name}
+                    title={member.title}
+                    photoUrl={member.photo_url}
+                    startYear={member.start_year}
+                    previousCompany={member.previous_company}
+                    committees={member.committees}
+                    badges={member.is_independent ? ["Independent"] : []}
+                    leaderId={member.id}
+                    leaderType="board_member"
+                    companyId={companyId}
+                    verificationStatus={member.verification_status}
+                    onViewProfile={() => {
+                      onExecutiveClick({
+                        id: member.id,
+                        name: member.name,
+                        title: member.title,
+                        total_donations: 0,
+                        photo_url: member.photo_url,
+                      });
+                    }}
+                  />
+                ))}
+                {formerBoard.length > 0 && (
+                  <p className="text-xs text-muted-foreground text-center pt-2">{formerBoard.length} former board member(s) not shown</p>
+                )}
+              </>
             ) : (
               <div className="text-center py-8">
                 <Shield className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
