@@ -672,9 +672,9 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               4. WORKFORCE INTELLIGENCE
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-workforce" className="mb-8 scroll-mt-28">
+          <section id="section-workforce" className="mb-10 scroll-mt-28">
             <SectionHeader icon={TrendingUp} title="Workforce Intelligence" subtitle="Worker sentiment, hiring technology, and benefits signals" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <WorkerSentimentCard companyName={name} dbCompanyId={dbCompanyId} />
               <AIHiringCard companyName={name} dbCompanyId={dbCompanyId} />
               <WorkerBenefitsCard companyName={name} dbCompanyId={dbCompanyId} />
