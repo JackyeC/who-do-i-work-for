@@ -595,9 +595,9 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               2. QUICK INTELLIGENCE SUMMARY
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-intelligence" className="mb-8 scroll-mt-28">
+          <section id="section-intelligence" className="mb-10 scroll-mt-28">
             <SectionHeader icon={BarChart3} title="Quick Intelligence Summary" subtitle="Key signals at a glance" />
-            <div className="grid sm:grid-cols-2 gap-2 pl-12">
+            <div className="grid sm:grid-cols-2 gap-3">
               <IntelStat
                 label="Political Influence"
                 value={totalPac > 0 || lobbyingSpend > 0 ? formatCurrency(totalPac + lobbyingSpend) + " total" : "Not detected"}
