@@ -102,6 +102,7 @@ export function StickyScoreHeader({ companyName, score, ticker, industry }: Stic
                 <div className={cn(
                   "flex items-center gap-1.5 px-2.5 py-1 rounded border text-[10px] font-semibold font-mono uppercase tracking-wider",
                   risk.bg, risk.color, risk.border,
+                  isElevated && "animate-caution"
                 )}>
                   {isElevated ? (
                     <Activity className="w-3 h-3 animate-pulse" />

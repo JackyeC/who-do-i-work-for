@@ -49,10 +49,10 @@ export function TransparencyGhosting(props: TransparencyGhostingProps) {
       <div className="flex items-center gap-2">
         <Eye className="w-4 h-4 text-muted-foreground" />
         <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-muted-foreground font-semibold">
-          Transparency Gaps
+          Transparency Gaps — They're Not Showing You This
         </span>
         <span className="font-mono text-[10px] text-destructive/80 ml-auto">
-          {gaps.length} signal{gaps.length !== 1 ? "s" : ""} missing
+          {gaps.length} signal{gaps.length !== 1 ? "s" : ""} ghosted
         </span>
       </div>
 
