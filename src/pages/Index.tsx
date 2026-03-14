@@ -213,7 +213,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             <div>
               <img src={jackyeHeadshot} alt="Jackye Clayton" className="w-24 h-24 object-cover mb-4" />
               <div className="font-serif text-xl text-primary mb-1">Jackye Clayton</div>
-              <div className="font-mono text-[9px] tracking-wider uppercase text-muted-foreground">
+              <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground">
                 Founder · Career Strategist · HR Intelligence Expert
               </div>
             </div>
