@@ -62,7 +62,7 @@ export function LiveActivityTicker() {
         <span className="font-mono text-xs tracking-wider uppercase text-muted-foreground">Live</span>
       </div>
       <span className="w-px h-4 bg-border" />
-      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
         <Eye className="w-3 h-3" />
         <span className="font-data font-semibold text-foreground">{totalToday}</span>
         <span>scans today</span>
