@@ -1798,6 +1798,71 @@ export type Database = {
           },
         ]
       }
+      company_ownership_structures: {
+        Row: {
+          company_id: string
+          confidence: string
+          created_at: string
+          description: string | null
+          detected_at: string
+          economic_ownership_pct: number | null
+          governance_signal: string | null
+          holder_name: string | null
+          holder_role: string | null
+          id: string
+          share_class: string | null
+          signal_severity: string
+          source: string | null
+          source_url: string | null
+          structure_type: string
+          voting_power_pct: number | null
+        }
+        Insert: {
+          company_id: string
+          confidence?: string
+          created_at?: string
+          description?: string | null
+          detected_at?: string
+          economic_ownership_pct?: number | null
+          governance_signal?: string | null
+          holder_name?: string | null
+          holder_role?: string | null
+          id?: string
+          share_class?: string | null
+          signal_severity?: string
+          source?: string | null
+          source_url?: string | null
+          structure_type?: string
+          voting_power_pct?: number | null
+        }
+        Update: {
+          company_id?: string
+          confidence?: string
+          created_at?: string
+          description?: string | null
+          detected_at?: string
+          economic_ownership_pct?: number | null
+          governance_signal?: string | null
+          holder_name?: string | null
+          holder_role?: string | null
+          id?: string
+          share_class?: string | null
+          signal_severity?: string
+          source?: string | null
+          source_url?: string | null
+          structure_type?: string
+          voting_power_pct?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_ownership_structures_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_party_breakdown: {
         Row: {
           amount: number
