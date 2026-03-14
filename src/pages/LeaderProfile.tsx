@@ -194,8 +194,8 @@ export default function LeaderProfile() {
                 {executive?.total_donations > 0 && <Badge variant="outline" className="gap-1 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/30"><DollarSign className="w-3 h-3" /> {formatCurrency(executive.total_donations)} donated</Badge>}
               </div>
 
-              {(boardMember as any)?.bio && (
-                <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{(boardMember as any).bio}</p>
+              {(enrichment?.bio || (boardMember as any)?.bio) && (
+                <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{enrichment?.bio || (boardMember as any).bio}</p>
               )}
             </div>
           </div>
