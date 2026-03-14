@@ -77,6 +77,42 @@ export function TopBar() {
   const { user, signOut } = useAuth();
   const { isDemoSafe, toggleDemoSafe, canToggle } = useDemoSafeMode();
 
+  // Live ticker data
+  const { data: tickerStats } = useQuery({
+    queryKey: ["ticker-stats"],
+    queryFn: async () => {
+      const [companiesRes, signalsRes, scansRes] = await Promise.all([
+        supabase.from("companies").select("id", { count: "exact", head: true }),
+        supabase.from("company_signals").select("id", { count: "exact", head: true }),
+        supabase.from("company_scan_events").select("id, company_name", { count: "exact" }).order("scanned_at", { ascending: false }).limit(3),
+      ]);
+      return {
+        totalCompanies: companiesRes.count ?? 0,
+        totalSignals: signalsRes.count ?? 0,
+        recentScans: scansRes.data ?? [],
+        totalScans: scansRes.count ?? 0,
+      };
+    },
+    staleTime: 60_000,
+    refetchInterval: 120_000,
+  });
+
+  const tickerItems = useMemo(() => {
+    const items: string[] = [];
+    const s = tickerStats;
+    if (s) {
+      items.push(`PLATFORM: ${s.totalCompanies.toLocaleString()} companies tracked`);
+      items.push(`SIGNALS: ${s.totalSignals.toLocaleString()} employer signals indexed`);
+      if (s.recentScans.length > 0) {
+        items.push(`LATEST SCAN: ${s.recentScans[0]?.company_name ?? "—"}`);
+      }
+      items.push(`SCANS: ${s.totalScans.toLocaleString()} total intelligence scans`);
+    }
+    items.push(`UPDATED: ${new Date().toLocaleDateString()} — connection chains refreshed`);
+    items.push('JACKYE INSIGHT: "Don\'t accept an offer without running the chain first"');
+    return items;
+  }, [tickerStats]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
