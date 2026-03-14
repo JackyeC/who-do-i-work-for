@@ -693,14 +693,14 @@ export default function CompanyProfile() {
             </div>
           </section>
 
-          <Separator className="mb-8" />
+          <Separator className="mb-10" />
 
           {/* ═══════════════════════════════════════════════════════════
               6. WORKFORCE MOBILITY & PROMOTION EQUITY
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section className="mb-10">
             <SectionHeader icon={Award} title="Workforce Mobility & Promotion Equity" subtitle="Internal promotion, leadership diversity, HBCU partnerships, skills-first hiring" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <PromotionEquityCard companyName={name} dbCompanyId={dbCompanyId} />
             </div>
           </section>
