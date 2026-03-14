@@ -73,6 +73,7 @@ import InvestigativeExplorer from "./pages/InvestigativeExplorer";
 import SiteMap from "./pages/SiteMap";
 import Rivalries from "./pages/Rivalries";
 import BrandMadness from "./pages/BrandMadness";
+import SignalFeed from "./pages/SignalFeed";
 import { CookieNotice } from "@/components/CookieNotice";
 
 const queryClient = new QueryClient();
@@ -124,6 +125,7 @@ const App = () => (
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/disclaimers" element={<Disclaimers />} />
                 <Route path="/examples" element={<Examples />} />
+                <Route path="/signals" element={<SignalFeed />} />
                 <Route path="/search-your-employer" element={<SearchYourEmployer />} />
                 <Route path="/values-search" element={<ValuesSearch />} />
                 <Route path="/who-do-i-work-for" element={
