@@ -500,6 +500,29 @@ export default function CompanyProfile() {
             />
           </div>
 
+          {/* CAREER RISK REPORT — Shareable viral scorecard */}
+          <div className="mb-6">
+            <CareerRiskReport
+              companyName={name}
+              slug={id || ""}
+              ticker={dbCompany?.ticker}
+              industry={industry}
+              hasLayoffSignals={false}
+              hasWarnNotices={false}
+              totalPacSpending={totalPac}
+              lobbyingSpend={lobbyingSpend}
+              hasDarkMoney={(dbDarkMoney?.length || 0) > 0}
+              hasPayTransparency={!!tiPayEquity}
+              hasSentimentData={!!tiSentiment}
+              hasBenefitsData={!!tiBenefits}
+              hasPromotionData={false}
+              executiveCount={dbExecutives?.length || 0}
+              executiveTurnover={false}
+              transparencyScore={transparencyScore}
+              characterScore={characterScore.totalScore}
+            />
+          </div>
+
           {/* TRANSPARENCY GHOSTING — Missing Data as Risk Signal */}
           <Card className="mb-6">
             <CardContent className="p-5">
