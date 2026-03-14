@@ -681,14 +681,14 @@ export default function CompanyProfile() {
             </div>
           </section>
 
-          <Separator className="mb-8" />
+          <Separator className="mb-10" />
 
           {/* ═══════════════════════════════════════════════════════════
               5. COMPENSATION TRANSPARENCY
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-compensation" className="mb-8 scroll-mt-28">
+          <section id="section-compensation" className="mb-10 scroll-mt-28">
             <SectionHeader icon={DollarSign} title="Compensation Transparency" subtitle="Pay equity signals and national benchmarks" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <CompensationTransparencyCard companyName={name} dbCompanyId={dbCompanyId} />
             </div>
           </section>
