@@ -59,10 +59,10 @@ export function LiveActivityTicker() {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-civic-green opacity-75" />
           <span className="relative inline-flex rounded-full h-2 w-2 bg-civic-green" />
         </span>
-        <span className="font-mono text-[10px] tracking-wider uppercase text-muted-foreground">Live</span>
+        <span className="font-mono text-xs tracking-wider uppercase text-muted-foreground">Live</span>
       </div>
       <span className="w-px h-4 bg-border" />
-      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
         <Eye className="w-3 h-3" />
         <span className="font-data font-semibold text-foreground">{totalToday}</span>
         <span>scans today</span>
@@ -78,7 +78,7 @@ export function LiveActivityTicker() {
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
-                  className="font-mono text-[9px] tracking-wider uppercase text-primary px-2 py-0.5 bg-primary/10 border border-primary/20"
+                  className="font-mono text-xs tracking-wider uppercase text-primary px-2 py-0.5 bg-primary/10 border border-primary/20"
                 >
                   {e.company_name}
                 </motion.span>
