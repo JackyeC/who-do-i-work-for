@@ -86,6 +86,9 @@ export function CareerChecklist() {
         }
         setLoading(false);
       }
+    };
+    load();
+  }, [user]);
 
   const completedCount = items.filter(i => i.completed).length;
   const progress = items.length > 0 ? Math.round((completedCount / items.length) * 100) : 0;
