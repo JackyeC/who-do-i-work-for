@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { ContentProtector } from "@/components/ContentProtector";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
