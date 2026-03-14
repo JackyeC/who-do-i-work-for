@@ -717,14 +717,14 @@ export default function CompanyProfile() {
             </div>
           </section>
 
-          <Separator className="mb-8" />
+          <Separator className="mb-10" />
 
           {/* ═══════════════════════════════════════════════════════════
               8. POLICY & INFLUENCE SIGNALS
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-influence" className="mb-8 scroll-mt-28">
+          <section id="section-influence" className="mb-10 scroll-mt-28">
             <SectionHeader icon={Landmark} title="Policy & Influence Signals" subtitle="Political donations, lobbying, trade associations, federal contracts" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               {/* Sankey Influence Diagram */}
               <SankeyInfluenceDiagram
                 pacSpending={totalPac}
