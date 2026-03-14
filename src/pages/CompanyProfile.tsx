@@ -76,13 +76,13 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 /* ─── Report Section Header ─── */
 function SectionHeader({ icon: Icon, title, subtitle }: { icon: any; title: string; subtitle?: string }) {
   return (
-    <div className="flex items-start gap-3 mb-4">
-      <div className="w-9 h-9 rounded-xl bg-primary/8 flex items-center justify-center shrink-0 border border-primary/10 mt-0.5">
-        <Icon className="w-4.5 h-4.5 text-primary" />
+    <div className="flex items-start gap-3 mb-5">
+      <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center shrink-0 border border-primary/10 mt-0.5">
+        <Icon className="w-5 h-5 text-primary" />
       </div>
       <div>
-        <h2 className="text-lg font-bold text-foreground tracking-tight">{title}</h2>
-        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+        <h2 className="text-xl font-bold text-foreground tracking-tight">{title}</h2>
+        {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
       </div>
     </div>
   );
