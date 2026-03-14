@@ -332,6 +332,6 @@ export default function CompanyDossier() {
         </div>
       </main>
       <Footer />
-    </div>
+    </ContentProtector>
   );
 }
