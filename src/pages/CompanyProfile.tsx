@@ -834,6 +834,7 @@ export default function CompanyProfile() {
             <div className="space-y-4">
               <WarnTrackerCard companyName={name} dbCompanyId={dbCompanyId} />
               {dbCompanyId && <CourtRecordsCard companyId={dbCompanyId} companyName={name} />}
+              {dbCompanyId && <NewsIntelligenceCard companyId={dbCompanyId} companyName={name} />}
             </div>
           </section>
 
