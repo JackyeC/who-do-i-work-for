@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDemoSafeMode } from "@/contexts/DemoSafeModeContext";
 import { cn } from "@/lib/utils";
 import { Search, LogIn, LogOut, Menu, X, Shield, Map, ChevronDown } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 export const MAIN_SECTIONS = [
   {
@@ -75,6 +77,40 @@ export function TopBar() {
   const { user, signOut } = useAuth();
   const { isDemoSafe, toggleDemoSafe, canToggle } = useDemoSafeMode();
 
+  // Live ticker data
+  const { data: tickerStats } = useQuery({
+    queryKey: ["ticker-stats"],
+    queryFn: async () => {
+      const [companiesRes, scansRes] = await Promise.all([
+        supabase.from("companies").select("id", { count: "exact", head: true }),
+        supabase.from("company_scan_events").select("id, company_name", { count: "exact" }).order("scanned_at", { ascending: false }).limit(3),
+      ]);
+      return {
+        totalCompanies: companiesRes.count ?? 0,
+        recentScans: scansRes.data ?? [],
+        totalScans: scansRes.count ?? 0,
+      };
+    },
+    staleTime: 60_000,
+    refetchInterval: 120_000,
+  });
+
+  const tickerItems = useMemo(() => {
+    const items: string[] = [];
+    const s = tickerStats;
+    if (s) {
+      items.push(`PLATFORM: ${s.totalCompanies.toLocaleString()} companies tracked`);
+      items.push(`SCANS: ${s.totalScans.toLocaleString()} total intelligence scans`);
+      if (s.recentScans.length > 0) {
+        items.push(`LATEST SCAN: ${s.recentScans[0]?.company_name ?? "—"}`);
+      }
+      items.push(`SCANS: ${s.totalScans.toLocaleString()} total intelligence scans`);
+    }
+    items.push(`UPDATED: ${new Date().toLocaleDateString()} — connection chains refreshed`);
+    items.push('JACKYE INSIGHT: "Don\'t accept an offer without running the chain first"');
+    return items;
+  }, [tickerStats]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -95,23 +131,14 @@ export function TopBar() {
       {/* Ticker Bar */}
       <div className="bg-primary text-primary-foreground overflow-hidden whitespace-nowrap h-[26px] flex items-center">
         <div className="inline-block animate-ticker">
-          {[
-            "INTEL UPDATE: Koch Industries lobbying spend +12% QoQ",
-            "OFFER ALERT: 3 new red flags identified",
-            "EVP SCORE: Amazon drops to 61 — culture risk elevated",
-            'JACKYE INSIGHT: "Don\'t accept an offer without running the chain first"',
-            `NEW DATA: ${new Date().toLocaleDateString()} connection chains updated`,
-          ].map((t, i) => (
+          {tickerItems.map((t, i) => (
             <span key={i} className="px-8">
               <span className="font-mono text-[10px] font-medium tracking-wider">{t}</span>
               <span className="opacity-50 px-4">|</span>
             </span>
           ))}
           {/* Duplicate for seamless loop */}
-          {[
-            "INTEL UPDATE: Koch Industries lobbying spend +12% QoQ",
-            "OFFER ALERT: 3 new red flags identified",
-          ].map((t, i) => (
+          {tickerItems.slice(0, 2).map((t, i) => (
             <span key={`dup-${i}`} className="px-8">
               <span className="font-mono text-[10px] font-medium tracking-wider">{t}</span>
               <span className="opacity-50 px-4">|</span>
