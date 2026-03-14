@@ -555,9 +555,62 @@ export default function CompanyProfile() {
               aiHiringToolCount: tiAiHr ? 1 : 0,
             };
             const cbiResult = calculateCBI(cbiInput);
+
+            // Recruiter Reality Score
+            const rrsInput: RRSInput = {
+              hasApplicationAcknowledgment: false,
+              hasTimelineDisclosure: false,
+              hasRejectionNotification: false,
+              candidateGhostingSignals: 0,
+              interviewRoundCount: 0,
+              hasStructuredInterviewProcess: false,
+              hasInterviewFeedback: false,
+              hasSalaryInPostings: !!tiPayEquity,
+              hasCompensationBands: false,
+              hasBenefitsInPostings: !!tiBenefits,
+              salaryDisclosureRate: tiPayEquity ? 0.3 : 0,
+              hasGlassdoorInterviewReviews: !!tiSentiment,
+              glassdoorInterviewRating: tiSentiment ? 3.2 : 0,
+              hasCandidateExperienceSurvey: false,
+              hasEEODisclosure: false,
+              hasAIDisclosure: !!tiAiHr,
+              hasAccommodationsPolicy: false,
+            };
+            const rrsResult = calculateRRS(rrsInput);
+
+            // GTM Score
+            const gtmInput: GTMInput = {
+              recentSalesHires: 0,
+              totalRecentHires: 0,
+              hasSalesLeadershipHires: false,
+              recentMarketingHires: 0,
+              hasMarketingLeadership: false,
+              hasBrandInvestmentSignals: false,
+              isPubliclyTraded: !!dbCompany?.is_publicly_traded,
+              hasRevenueGrowth: false,
+              hasFundingAnnouncement: false,
+              revenue: (dbCompany as any)?.revenue || null,
+              executiveTurnoverCount: 0,
+              executiveCount: dbExecutives?.length || 0,
+              hasCEOChange: false,
+              hasRecentLayoffs: false,
+              hasRecentHiringFreeze: false,
+              warnNoticeCount: 0,
+              isHiring: false,
+            };
+            const gtmResult = calculateGTM(gtmInput);
+
             return (
-              <div className="mb-6">
-                <CorporateBehaviorIndexCard result={cbiResult} companyName={name} />
+              <div className="space-y-4 mb-6">
+                {isSectionVisible(activePersona, "cbi") && (
+                  <CorporateBehaviorIndexCard result={cbiResult} companyName={name} />
+                )}
+                {isSectionVisible(activePersona, "recruiter_reality") && (
+                  <RecruiterRealityScoreCard result={rrsResult} companyName={name} />
+                )}
+                {isSectionVisible(activePersona, "gtm") && (
+                  <GTMScoreCard result={gtmResult} companyName={name} />
+                )}
               </div>
             );
           })()}
