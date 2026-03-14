@@ -60,6 +60,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ContentProtector } from "@/components/ContentProtector";
 import { ReportTeaserGate } from "@/components/ReportTeaserGate";
 import { SankeyInfluenceDiagram } from "@/components/SankeyInfluenceDiagram";
+import { CareerRiskReport } from "@/components/CareerRiskReport";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -496,6 +497,29 @@ export default function CompanyProfile() {
               updatedAt={dbCompany?.updated_at}
               recordStatus={recordStatus}
               scanCompletion={(dbCompany as any)?.scan_completion}
+            />
+          </div>
+
+          {/* CAREER RISK REPORT — Shareable viral scorecard */}
+          <div className="mb-6">
+            <CareerRiskReport
+              companyName={name}
+              slug={id || ""}
+              ticker={dbCompany?.ticker}
+              industry={industry}
+              hasLayoffSignals={false}
+              hasWarnNotices={false}
+              totalPacSpending={totalPac}
+              lobbyingSpend={lobbyingSpend}
+              hasDarkMoney={(dbDarkMoney?.length || 0) > 0}
+              hasPayTransparency={!!tiPayEquity}
+              hasSentimentData={!!tiSentiment}
+              hasBenefitsData={!!tiBenefits}
+              hasPromotionData={false}
+              executiveCount={dbExecutives?.length || 0}
+              executiveTurnover={false}
+              transparencyScore={transparencyScore}
+              characterScore={characterScore.totalScore}
             />
           </div>
 
