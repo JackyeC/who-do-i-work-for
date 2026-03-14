@@ -58,18 +58,34 @@ export function CareerChecklist() {
         .eq("user_id", user.id)
         .order("sort_order", { ascending: true });
 
-      if (data) {
+      if (data && data.length > 0) {
         setItems(data.map(g => ({
           id: g.id,
           text: g.title,
           type: (g.specific as ChecklistItem["type"]) || "skill",
           completed: g.status === "done",
         })));
+        setLoading(false);
+      } else {
+        // Seed default checklist items
+        const rows = DEFAULT_CHECKLIST.map((item, i) => ({
+          user_id: user.id,
+          title: item.text,
+          specific: item.type,
+          status: "active" as const,
+          sort_order: i,
+        }));
+        const { data: inserted } = await supabase.from("career_smart_goals").insert(rows).select();
+        if (inserted) {
+          setItems(inserted.map(g => ({
+            id: g.id,
+            text: g.title,
+            type: (g.specific as ChecklistItem["type"]) || "skill",
+            completed: false,
+          })));
+        }
+        setLoading(false);
       }
-      setLoading(false);
-    };
-    load();
-  }, [user]);
 
   const completedCount = items.filter(i => i.completed).length;
   const progress = items.length > 0 ? Math.round((completedCount / items.length) * 100) : 0;
