@@ -262,3 +262,17 @@
     -webkit-user-drag: none;
   }
 }
+
+/* Block printing of protected content */
+@media print {
+  .protected-content {
+    display: none !important;
+  }
+  body::after {
+    content: "This content is protected. Visit wdiwf.jackyeclayton.com to view reports.";
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    padding: 40px;
+  }
+}
