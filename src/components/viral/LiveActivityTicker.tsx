@@ -59,7 +59,7 @@ export function LiveActivityTicker() {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-civic-green opacity-75" />
           <span className="relative inline-flex rounded-full h-2 w-2 bg-civic-green" />
         </span>
-        <span className="font-mono text-[10px] tracking-wider uppercase text-muted-foreground">Live</span>
+        <span className="font-mono text-xs tracking-wider uppercase text-muted-foreground">Live</span>
       </div>
       <span className="w-px h-4 bg-border" />
       <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
