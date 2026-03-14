@@ -236,7 +236,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* Audiences */}
       <section className="px-6 lg:px-16 py-20 lg:py-24 max-w-[1100px] mx-auto w-full">
         <SectionReveal>
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-primary mb-3">Who It's For</div>
+          <div className="font-mono text-xs tracking-[0.2em] uppercase text-primary mb-3">Who It's For</div>
           <h2 className="text-2xl lg:text-[clamp(1.8rem,3.5vw,2.6rem)] mb-12 text-foreground">
             One engine. Five lenses. Every answer.
           </h2>
