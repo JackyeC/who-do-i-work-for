@@ -227,7 +227,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               <blockquote className="border-l-2 border-primary pl-4 text-lg italic text-foreground leading-relaxed mb-2 font-serif" style={{ fontWeight: 400 }}>
                 "The question isn't whether you want the job. It's whether you know exactly who you're going to work for. Run the chain first. Always."
               </blockquote>
-              <div className="font-mono text-[9px] tracking-wider uppercase text-muted-foreground pl-4">— Jackye Clayton</div>
+              <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground pl-4">— Jackye Clayton</div>
             </div>
           </div>
         </section>
