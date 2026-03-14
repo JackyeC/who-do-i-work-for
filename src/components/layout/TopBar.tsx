@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDemoSafeMode } from "@/contexts/DemoSafeModeContext";
 import { cn } from "@/lib/utils";
 import { Search, LogIn, LogOut, Menu, X, Shield, Map, ChevronDown } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 export const MAIN_SECTIONS = [
   {
