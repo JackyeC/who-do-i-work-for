@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { AlignedJobsList } from "@/components/jobs/AlignedJobsList";
@@ -17,6 +17,7 @@ import { OutreachIntelligence } from "@/components/career/OutreachIntelligence";
 import { RelationshipDashboard } from "@/components/career/RelationshipDashboard";
 import { FirstLoginOnboarding } from "@/components/FirstLoginOnboarding";
 import { DataWipeButton } from "@/components/career/DataWipeButton";
+import { PostPurchaseUpsell } from "@/components/PostPurchaseUpsell";
 import { supabase } from "@/integrations/supabase/client";
 import { ClipboardCheck } from "lucide-react";
 
