@@ -142,9 +142,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               ))}
             </div>
             <div className="flex flex-col gap-1.5">
-              <div className="text-[11px] p-2 border-l-2 border-l-civic-red bg-destructive/[0.07] text-foreground">Non-compete clause — unusually broad scope</div>
-              <div className="text-[11px] p-2 border-l-2 border-l-civic-yellow bg-civic-yellow/[0.07] text-foreground">Salary offer 8.2% below market median</div>
-              <div className="text-[11px] p-2 border-l-2 border-l-civic-green bg-civic-green/[0.07] text-foreground">Federal contractor — strong job security signal</div>
+              <div className="text-sm p-2 border-l-2 border-l-civic-red bg-destructive/[0.07] text-foreground">Non-compete clause — unusually broad scope</div>
+              <div className="text-sm p-2 border-l-2 border-l-civic-yellow bg-civic-yellow/[0.07] text-foreground">Salary offer 8.2% below market median</div>
+              <div className="text-sm p-2 border-l-2 border-l-civic-green bg-civic-green/[0.07] text-foreground">Federal contractor — strong job security signal</div>
             </div>
           </div>
         </motion.div>
