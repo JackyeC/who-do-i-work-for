@@ -644,6 +644,28 @@ export default function CompanyProfile() {
             />
           </div>
 
+          {/* SHAREABLE INTELLIGENCE SNAPSHOT */}
+          <div className="mb-6">
+            <IntelligenceSnapshotCard
+              companyName={name}
+              overallScore={characterScore.totalScore}
+              scoreLabel={characterScore.totalScore >= 65 ? "Responsible" : characterScore.totalScore >= 45 ? "Mixed" : "Concerning"}
+              slug={id || ""}
+              signals={[
+                { label: "Workforce Stability", score: Math.min(100, Math.max(0, 100 - (totalPac > 100000 ? 30 : 0))), status: "neutral" as const },
+                { label: "Pay Transparency", score: tiPayEquity ? 72 : 25, status: tiPayEquity ? "positive" as const : "negative" as const },
+                { label: "Governance", score: (dbExecutives?.length || 0) > 3 ? 68 : 40, status: "neutral" as const },
+                { label: "HR Tech Ethics", score: tiAiHr ? 55 : 50, status: "neutral" as const },
+                { label: "Career Mobility", score: 45, status: "neutral" as const },
+              ]}
+              metrics={[
+                { label: "Transparency", value: `${transparencyScore}%` },
+                { label: "Character", value: `${characterScore.totalScore}/100` },
+                { label: "Confidence", value: dbCompany?.confidence_rating || "Low" },
+              ]}
+            />
+          </div>
+
           {/* TRANSPARENCY GHOSTING — Missing Data as Risk Signal */}
           <Card className="mb-6">
             <CardContent className="p-5">
