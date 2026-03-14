@@ -1,7 +1,7 @@
 import { useState, useEffect, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight } from "lucide-react";
+import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap } from "lucide-react";
 import { AnimatedDemo } from "@/components/landing/AnimatedDemo";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { EmailCapture } from "@/components/landing/EmailCapture";
