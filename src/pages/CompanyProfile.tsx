@@ -131,6 +131,9 @@ export default function CompanyProfile() {
   const [lobbyingDrawerOpen, setLobbyingDrawerOpen] = useState(false);
   const [pacDrawerOpen, setPacDrawerOpen] = useState(false);
   const [contractsDrawerOpen, setContractsDrawerOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activePersona, setActivePersona] = useState<PersonaId>((searchParams.get("persona") as PersonaId) || "job_seeker");
+  const handlePersonaChange = (p: PersonaId) => { setActivePersona(p); setSearchParams({ persona: p }); };
 
   const handleCandidateClick = useCallback((candidate: any) => {
     setSelectedCandidate(candidate);
