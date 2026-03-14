@@ -70,6 +70,7 @@ import { GTMScoreCard } from "@/components/GTMScoreCard";
 import { calculateGTM, type GTMInput } from "@/lib/gtmScore";
 import { PersonaSelector } from "@/components/PersonaSelector";
 import { type PersonaId, isSectionVisible } from "@/lib/personaConfig";
+import { CourtRecordsCard } from "@/components/CourtRecordsCard";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -827,6 +828,7 @@ export default function CompanyProfile() {
             <SectionHeader icon={AlertTriangle} title="Workforce Stability" subtitle="Layoffs, WARN notices, and workforce reduction signals" />
             <div className="space-y-4">
               <WarnTrackerCard companyName={name} dbCompanyId={dbCompanyId} />
+              {dbCompanyId && <CourtRecordsCard companyId={dbCompanyId} companyName={name} />}
             </div>
           </section>
 
