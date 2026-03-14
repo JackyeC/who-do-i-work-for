@@ -76,6 +76,7 @@ import { InsiderTradingCard } from "@/components/InsiderTradingCard";
 import { PromotionVelocityCard } from "@/components/PromotionVelocityCard";
 import { IntelligenceSnapshotCard } from "@/components/viral/IntelligenceSnapshotCard";
 import { calculatePVS, deriveSubScores, computeConfidence } from "@/lib/promotionVelocityScore";
+import { PublicRecordsExposure } from "@/components/public-records/PublicRecordsExposure";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
