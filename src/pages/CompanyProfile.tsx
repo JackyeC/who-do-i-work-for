@@ -927,6 +927,7 @@ export default function CompanyProfile() {
               Executive donations reflect personal giving. This platform provides publicly available data for informational purposes only.
             </p>
           </div>
+          </ReportTeaserGate>
         </motion.div>
       </div>
 
