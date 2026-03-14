@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, User, ChevronDown, ChevronUp, ExternalLink,
-  Network, Shield, Briefcase
+  Network, Shield, Briefcase, UserX, ShieldCheck, AlertTriangle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
