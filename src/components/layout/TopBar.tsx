@@ -148,17 +148,18 @@ export function TopBar() {
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card border-b border-border h-[52px] flex items-center px-4 lg:px-6 gap-4 lg:gap-8">
-        {/* Logo */}
-        <Link to="/" className="flex flex-col shrink-0">
-          <span className="font-serif text-[13px] text-primary leading-none flex items-center gap-1.5">Who Do I Work For <span className="font-mono text-[8px] tracking-wider uppercase px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-sm leading-none">Beta</span></span>
-          <span className="font-mono text-micro uppercase text-muted-foreground tracking-[0.2em]">Career Intelligence by Jackye Clayton</span>
+      <header className="sticky top-0 z-50 bg-card border-b border-border h-[52px] flex items-center px-4 lg:px-6">
+        {/* Brand — left */}
+        <Link to="/" className="flex flex-col shrink-0 mr-4">
+          <span className="font-serif text-[13px] text-primary leading-none whitespace-nowrap flex items-center gap-1.5">
+            Who Do I Work For?
+            <span className="font-mono text-[8px] tracking-wider uppercase px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-sm leading-none">Beta</span>
+          </span>
+          <span className="font-mono text-micro uppercase text-muted-foreground tracking-[0.2em] whitespace-nowrap">Career Intelligence Platform</span>
         </Link>
 
-        <div className="w-px h-6 bg-border hidden lg:block" />
-
-        {/* Main Nav */}
-        <nav className="hidden md:flex items-center gap-0 h-full flex-1">
+        {/* Center Nav */}
+        <nav className="hidden md:flex items-center justify-center gap-0 h-full flex-1 min-w-0">
           {MAIN_SECTIONS.map(section => {
             if ((section as any).auth && !user) return null;
             const active = isSectionActive(section, location.pathname);
@@ -168,7 +169,7 @@ export function TopBar() {
                 <Link
                   to={section.path}
                   className={cn(
-                    "font-mono text-[10px] tracking-wider uppercase px-4 h-full flex items-center border-b-2 transition-colors gap-1",
+                    "font-mono text-[10px] tracking-wider uppercase px-3 h-full flex items-center border-b-2 transition-colors gap-1 whitespace-nowrap",
                     active
                       ? "text-primary border-primary"
                       : "text-muted-foreground border-transparent hover:text-foreground"
@@ -183,7 +184,7 @@ export function TopBar() {
                       <Link
                         key={sub.path}
                         to={sub.path}
-                        className="block px-4 py-2.5 font-mono text-[10px] tracking-wider text-muted-foreground hover:text-primary hover:bg-primary/[0.04] transition-colors"
+                        className="block px-4 py-2.5 font-mono text-[10px] tracking-wider text-muted-foreground hover:text-primary hover:bg-primary/[0.04] transition-colors whitespace-nowrap"
                       >
                         {sub.label}
                       </Link>
@@ -195,40 +196,40 @@ export function TopBar() {
           })}
         </nav>
 
-        {/* Right */}
-        <div className="flex items-center gap-3 ml-auto">
-          {isDemoSafe && (
-            <button
-              onClick={canToggle ? toggleDemoSafe : undefined}
-              className="hidden lg:flex items-center gap-1.5 font-mono text-[9px] tracking-wider uppercase px-2 py-1 border border-civic-green/60 text-civic-green bg-civic-green/10 cursor-pointer hover:bg-civic-green/20 transition-colors"
-              title="Demo Safe Mode — all paywalls bypassed"
-            >
-              <Shield className="w-3 h-3" />
-              Demo Mode
-            </button>
-          )}
-          {user && !isDemoSafe && (
-            <div className="hidden lg:flex font-mono text-[9px] tracking-wider uppercase px-2 py-1 border border-primary/40 text-primary">
-              Pro
-            </div>
-          )}
-
-          <form onSubmit={handleSearch} className="hidden sm:flex items-center bg-surface-2 border border-border px-3 py-1.5 w-[200px]">
+        {/* Right controls */}
+        <div className="flex items-center gap-3 shrink-0">
+          <form onSubmit={handleSearch} className="hidden lg:flex items-center bg-surface-2 border border-border px-3 py-1.5 w-[160px]">
             <Search className="w-3 h-3 text-muted-foreground mr-2 shrink-0" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search company, person..."
+              placeholder="Search..."
               className="bg-transparent border-none outline-none text-foreground font-mono text-[10px] w-full placeholder:text-muted-foreground"
             />
           </form>
+
+          {isDemoSafe && (
+            <button
+              onClick={canToggle ? toggleDemoSafe : undefined}
+              className="hidden lg:flex items-center gap-1.5 font-mono text-[9px] tracking-wider uppercase px-2 py-1 border border-civic-green/60 text-civic-green bg-civic-green/10 cursor-pointer hover:bg-civic-green/20 transition-colors whitespace-nowrap"
+              title="Demo Safe Mode"
+            >
+              <Shield className="w-3 h-3" />
+              Demo
+            </button>
+          )}
+          {user && !isDemoSafe && (
+            <div className="hidden lg:flex font-mono text-[9px] tracking-wider uppercase px-2 py-1 border border-primary/40 text-primary whitespace-nowrap">
+              Pro
+            </div>
+          )}
 
           <ThemeToggle />
 
           {user ? (
             <button
               onClick={signOut}
-              className="font-mono text-[10px] tracking-wider text-muted-foreground hover:text-foreground flex items-center gap-1.5"
+              className="font-mono text-[10px] tracking-wider text-muted-foreground hover:text-foreground flex items-center gap-1.5 whitespace-nowrap"
             >
               <LogOut className="w-3 h-3" />
               <span className="hidden lg:inline">Sign Out</span>
@@ -236,7 +237,7 @@ export function TopBar() {
           ) : (
             <Link
               to="/login"
-              className="bg-primary text-primary-foreground px-4 py-1.5 font-mono text-[10px] font-semibold tracking-wider uppercase hover:brightness-110 transition-all flex items-center gap-1.5"
+              className="bg-primary text-primary-foreground px-4 py-1.5 font-mono text-[10px] font-semibold tracking-wider uppercase hover:brightness-110 transition-all flex items-center gap-1.5 whitespace-nowrap"
             >
               <LogIn className="w-3 h-3" />
               Sign In
