@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   DollarSign, TrendingUp, Users, Shield, BarChart3,
   Brain, Award, Briefcase, Eye,
