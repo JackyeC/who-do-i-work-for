@@ -398,8 +398,8 @@ export default function LeaderProfile() {
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 {executive
-                  ? `${displayName} holds a ${leader.title} position${company ? ` at ${company.name}` : ""}. ${executive.total_donations > 0 ? `They have ${formatCurrency(executive.total_donations)} in tracked political donations. Understand where this money goes to see what policies this leader financially supports.` : "No tracked political donations were found, but that doesn't mean no influence exists — check trade association and lobbying connections."}`
-                  : `${displayName} serves on the board${company ? ` of ${company.name}` : ""}. Board members shape company strategy through governance oversight, committee assignments, and executive compensation decisions. ${(boardMember as any)?.is_independent ? "This director is classified as independent." : "Check whether this director has ties that could compromise independence."}`
+                  ? `${displayName} holds a ${leader.title} position${displayCompanyName ? ` at ${displayCompanyName}` : ""}. ${executive.total_donations > 0 ? `They have ${formatCurrency(executive.total_donations)} in tracked political donations. Understand where this money goes to see what policies this leader financially supports.` : "No tracked political donations were found, but that doesn't mean no influence exists — check trade association and lobbying connections."}`
+                  : `${displayName} serves on the board${displayCompanyName ? ` of ${displayCompanyName}` : ""}. Board members shape company strategy through governance oversight, committee assignments, and executive compensation decisions. ${(boardMember as any)?.is_independent ? "This director is classified as independent." : "Check whether this director has ties that could compromise independence."}`
                 }
               </p>
             </CardContent>
