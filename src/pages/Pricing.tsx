@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { CreditPurchaseCard } from "@/components/CreditPurchaseCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Shield, Loader2, X } from "lucide-react";
