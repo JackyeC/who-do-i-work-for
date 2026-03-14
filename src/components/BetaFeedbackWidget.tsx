@@ -24,7 +24,7 @@ export function BetaFeedbackWidget() {
   const [feedbackType, setFeedbackType] = useState("general");
   const [rating, setRating] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
-
+  const [wantReal, setWantReal] = useState(false);
   if (!user) return null;
 
   const handleSubmit = async () => {
