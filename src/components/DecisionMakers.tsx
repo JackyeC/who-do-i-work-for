@@ -76,11 +76,14 @@ function LeaderCard({
   leaderId: string;
   leaderType: "executive" | "board_member";
   companyId?: string;
+  verificationStatus?: string | null;
   onViewProfile: () => void;
   onTraceInfluence?: () => void;
 }) {
+  const isFormer = verificationStatus === "former";
+  
   return (
-    <Card className="hover:border-primary/30 transition-all group">
+    <Card className={cn("hover:border-primary/30 transition-all group", isFormer && "opacity-60")}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           {photoUrl ? (
@@ -113,6 +116,21 @@ function LeaderCard({
 
             {/* Meta info */}
             <div className="flex flex-wrap items-center gap-1.5 mt-2">
+              {isFormer && (
+                <Badge variant="outline" className="text-[10px] gap-1 text-destructive border-destructive/30">
+                  <UserX className="w-2.5 h-2.5" /> Former
+                </Badge>
+              )}
+              {verificationStatus === "verified" && (
+                <Badge variant="outline" className="text-[10px] gap-1 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30">
+                  <ShieldCheck className="w-2.5 h-2.5" /> Verified
+                </Badge>
+              )}
+              {verificationStatus === "ai_verified" && (
+                <Badge variant="outline" className="text-[10px] gap-1 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/30">
+                  <AlertTriangle className="w-2.5 h-2.5" /> AI Verified
+                </Badge>
+              )}
               {startYear && (
                 <Badge variant="outline" className="text-[10px]">Since {startYear}</Badge>
               )}
