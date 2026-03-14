@@ -202,6 +202,70 @@ export default function LeaderProfile() {
         </CardContent>
       </Card>
 
+      {/* AI Intelligence Brief */}
+      {enrichment?.ai_narrative ? (
+        <Card className="border-primary/20 bg-primary/[0.02]">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary" /> Intelligence Brief
+              <Badge variant="outline" className="text-[10px] ml-auto font-mono">
+                {enrichment.enrichment_source === "firecrawl+ai" ? "WEB + AI" : "AI GENERATED"}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {enrichment.education && enrichment.education !== "Not publicly available" && (
+              <div className="flex items-start gap-2">
+                <Badge variant="secondary" className="text-[10px] shrink-0 mt-0.5">EDUCATION</Badge>
+                <span className="text-sm text-muted-foreground">{enrichment.education}</span>
+              </div>
+            )}
+            {enrichment.career_highlights && enrichment.career_highlights.length > 0 && (
+              <div className="space-y-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Key Milestones</span>
+                <ul className="space-y-1">
+                  {enrichment.career_highlights.map((h, i) => (
+                    <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-primary mt-1">•</span> {h}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <Separator />
+            <div className="text-sm text-foreground leading-relaxed whitespace-pre-line">{enrichment.ai_narrative}</div>
+            <p className="text-[10px] text-muted-foreground/60 italic">
+              Generated {new Date(enrichment.enriched_at).toLocaleDateString()} · Source: {enrichment.enrichment_source}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="border-dashed border-primary/30">
+          <CardContent className="p-6 text-center">
+            <Sparkles className="w-8 h-8 text-primary/40 mx-auto mb-3" />
+            <h3 className="text-sm font-semibold text-foreground mb-1">AI Intelligence Brief Available</h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              Generate a complete dossier with normalized company data, bio, career highlights, and narrative analysis.
+            </p>
+            <Button
+              onClick={() => enrich({
+                leader_name: leader.name,
+                leader_title: leader.title,
+                company_id: companyId,
+                company_name: company?.name,
+                company_industry: company?.industry,
+              })}
+              disabled={isEnriching}
+              size="sm"
+              className="gap-2"
+            >
+              {isEnriching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              {isEnriching ? "Generating Dossier..." : "Generate Intelligence Brief"}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-6">
