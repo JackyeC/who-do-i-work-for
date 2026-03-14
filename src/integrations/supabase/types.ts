@@ -3114,6 +3114,80 @@ export type Database = {
         }
         Relationships: []
       }
+      epstein_entity_links: {
+        Row: {
+          company_id: string | null
+          confidence_level: Database["public"]["Enums"]["documentation_strength"]
+          created_at: string
+          disclaimer_required: boolean
+          document_date: string | null
+          entity_name: string
+          entity_type: string
+          id: string
+          last_reviewed_at: string | null
+          parent_company: string | null
+          person_linked: string | null
+          relationship_type: Database["public"]["Enums"]["network_relationship_type"]
+          risk_tier: string
+          source_title: string
+          source_type: string
+          source_url: string | null
+          summary: string
+          updated_at: string
+          verbatim_excerpt: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          confidence_level?: Database["public"]["Enums"]["documentation_strength"]
+          created_at?: string
+          disclaimer_required?: boolean
+          document_date?: string | null
+          entity_name: string
+          entity_type?: string
+          id?: string
+          last_reviewed_at?: string | null
+          parent_company?: string | null
+          person_linked?: string | null
+          relationship_type: Database["public"]["Enums"]["network_relationship_type"]
+          risk_tier?: string
+          source_title: string
+          source_type: string
+          source_url?: string | null
+          summary: string
+          updated_at?: string
+          verbatim_excerpt?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          confidence_level?: Database["public"]["Enums"]["documentation_strength"]
+          created_at?: string
+          disclaimer_required?: boolean
+          document_date?: string | null
+          entity_name?: string
+          entity_type?: string
+          id?: string
+          last_reviewed_at?: string | null
+          parent_company?: string | null
+          person_linked?: string | null
+          relationship_type?: Database["public"]["Enums"]["network_relationship_type"]
+          risk_tier?: string
+          source_title?: string
+          source_type?: string
+          source_url?: string | null
+          summary?: string
+          updated_at?: string
+          verbatim_excerpt?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "epstein_entity_links_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       epstein_flights: {
         Row: {
           destination: string | null
@@ -6674,6 +6748,7 @@ export type Database = {
         | "beta_tester"
       document_status: "pending" | "parsing" | "parsed" | "error" | "deleted"
       document_type: "offer_letter" | "resume" | "job_description"
+      documentation_strength: "high" | "medium" | "low"
       link_type:
         | "donation_to_member"
         | "member_on_committee"
@@ -6687,6 +6762,17 @@ export type Database = {
         | "interlocking_directorate"
         | "state_lobbying_contract"
         | "international_influence"
+      network_relationship_type:
+        | "banking_relationship"
+        | "executive_or_founder_mention"
+        | "legal_settlement"
+        | "regulator_action"
+        | "account_holder_report"
+        | "donation_or_funding_link"
+        | "institutional_association"
+        | "testimony_or_deposition"
+        | "media_report_with_document_basis"
+        | "no_confirmed_company_level_evidence"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -6825,6 +6911,7 @@ export const Constants = {
       ],
       document_status: ["pending", "parsing", "parsed", "error", "deleted"],
       document_type: ["offer_letter", "resume", "job_description"],
+      documentation_strength: ["high", "medium", "low"],
       link_type: [
         "donation_to_member",
         "member_on_committee",
@@ -6838,6 +6925,18 @@ export const Constants = {
         "interlocking_directorate",
         "state_lobbying_contract",
         "international_influence",
+      ],
+      network_relationship_type: [
+        "banking_relationship",
+        "executive_or_founder_mention",
+        "legal_settlement",
+        "regulator_action",
+        "account_holder_report",
+        "donation_or_funding_link",
+        "institutional_association",
+        "testimony_or_deposition",
+        "media_report_with_document_basis",
+        "no_confirmed_company_level_evidence",
       ],
     },
   },
