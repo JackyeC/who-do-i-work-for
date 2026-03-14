@@ -27,8 +27,7 @@ import { WorkerBenefitsCard } from "@/components/WorkerBenefitsCard";
 import { CompensationTransparencyCard } from "@/components/CompensationTransparencyCard";
 import { PromotionEquityCard } from "@/components/PromotionEquityCard";
 import { WarnTrackerCard } from "@/components/WarnTrackerCard";
-import { SurvivorAlertCard } from "@/components/SurvivorAlertCard";
-import { IdeologyFlagsCard } from "@/components/IdeologyFlagsCard";
+
 
 import { AgencyContractsCard } from "@/components/AgencyContractsCard";
 import { ROIPipelineCard } from "@/components/ROIPipelineCard";
@@ -42,9 +41,7 @@ import { TransparencyGhosting } from "@/components/TransparencyGhosting";
 import { DataFreshnessCard } from "@/components/DataFreshnessCard";
 import { useScanTracker } from "@/hooks/use-scan-tracker";
 import { DecisionMakers } from "@/components/DecisionMakers";
-import { PowerMap } from "@/components/PowerMap";
 import { AdminCompanyActions } from "@/components/AdminCompanyActions";
-import { BoardGovernanceTab } from "@/components/BoardGovernanceTab";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -624,38 +621,8 @@ export default function CompanyProfile() {
             </section>
           )}
 
-          {/* ═══════════════════════════════════════════════════════════
-              3b. BOARD GOVERNANCE
-             ═══════════════════════════════════════════════════════════ */}
-          {dbCompanyId && (
-            <section className="mb-8">
-              <SectionHeader icon={Shield} title="Board Governance" subtitle="Committee structure, independence, and governance documents" />
-              <div className="pl-12">
-                <BoardGovernanceTab
-                  companyId={dbCompanyId}
-                  companyName={name}
-                  ticker={dbCompany?.ticker}
-                  secCik={dbCompany?.sec_cik}
-                />
-              </div>
-            </section>
-          )}
 
-          {/* ═══════════════════════════════════════════════════════════
-              3c. POWER MAP
-             ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
-            <SectionHeader icon={Network} title="Power Map" subtitle="Interactive leadership influence network" />
-            <div className="pl-12">
-              <PowerMap
-                companyId={dbCompanyId}
-                companyName={name}
-                executives={dbExecutives || []}
-              />
-            </div>
-          </section>
 
-          <Separator className="mb-8" />
 
           {/* ═══════════════════════════════════════════════════════════
               4. WORKFORCE INTELLIGENCE
@@ -698,11 +665,10 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               7. WORKFORCE STABILITY
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-stability" className="mb-8 scroll-mt-28">
+           <section id="section-stability" className="mb-8 scroll-mt-28">
             <SectionHeader icon={AlertTriangle} title="Workforce Stability" subtitle="Layoffs, WARN notices, and workforce reduction signals" />
             <div className="space-y-4 pl-12">
               <WarnTrackerCard companyName={name} dbCompanyId={dbCompanyId} />
-              <SurvivorAlertCard companyName={name} dbCompanyId={dbCompanyId} />
             </div>
           </section>
 
@@ -850,17 +816,8 @@ export default function CompanyProfile() {
 
           <Separator className="mb-8" />
 
-          {/* ═══════════════════════════════════════════════════════════
-              9. ORGANIZATIONAL AFFILIATIONS
-             ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
-            <SectionHeader icon={Network} title="Organizational Affiliations" subtitle="Watchlist signals and ideological connections" />
-            <div className="space-y-4 pl-12">
-              <IdeologyFlagsCard companyName={name} dbCompanyId={dbCompanyId} />
-            </div>
-          </section>
 
-          <Separator className="mb-8" />
+
 
           {/* ═══════════════════════════════════════════════════════════
               10. VALUES CHECK
