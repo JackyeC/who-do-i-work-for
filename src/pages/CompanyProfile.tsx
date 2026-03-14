@@ -60,6 +60,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCompanySEO } from "@/hooks/use-company-seo";
 import { useToast } from "@/hooks/use-toast";
+import { ContentProtector } from "@/components/ContentProtector";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -363,7 +364,7 @@ export default function CompanyProfile() {
   });
 
   return (
-    <div className="flex flex-col min-h-0">
+    <ContentProtector className="flex flex-col min-h-0">
       {/* Sticky Score Header */}
       <StickyScoreHeader
         companyName={name}
@@ -930,6 +931,6 @@ export default function CompanyProfile() {
       <LobbyingDetailDrawer open={lobbyingDrawerOpen} onOpenChange={setLobbyingDrawerOpen} companyId={dbCompany?.id} companyName={name} totalLobbyingSpend={dbCompany?.lobbying_spend} />
       <PACDetailDrawer open={pacDrawerOpen} onOpenChange={setPacDrawerOpen} companyId={dbCompany?.id} companyName={name} totalPACSpending={totalPac} corporatePACExists={dbCompany?.corporate_pac_exists || false} />
       <ContractsDetailDrawer open={contractsDrawerOpen} onOpenChange={setContractsDrawerOpen} companyId={dbCompany?.id} companyName={name} totalContracts={govContracts || undefined} totalSubsidies={subsidies || undefined} />
-    </div>
+    </ContentProtector>
   );
 }
