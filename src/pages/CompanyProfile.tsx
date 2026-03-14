@@ -499,6 +499,22 @@ export default function CompanyProfile() {
             />
           </div>
 
+          {/* TRANSPARENCY GHOSTING — Missing Data as Risk Signal */}
+          <Card className="mb-6">
+            <CardContent className="p-5">
+              <TransparencyGhosting
+                hasPayEquity={!!tiPayEquity}
+                hasPromotionData={false}
+                hasSentimentData={!!tiSentiment}
+                hasBenefitsData={!!tiBenefits}
+                hasAiHrSignals={!!tiAiHr}
+                hasDeiReports={false}
+                hasCompensationData={!!tiBenefits}
+                hasWorkforceDemographics={false}
+              />
+            </CardContent>
+          </Card>
+
           {/* ═══════════════════════════════════════════════════════════
               SCAN PROGRESS (when actively scanning)
              ═══════════════════════════════════════════════════════════ */}
