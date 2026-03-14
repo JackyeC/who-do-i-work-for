@@ -73,7 +73,7 @@ export function CourtRecordsCard({ companyId, companyName }: Props) {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Shield className="h-4 w-4 text-green-500" />
+            <Shield className="h-4 w-4 text-[hsl(var(--civic-green))]" />
             No federal court cases found in RECAP archive for {companyName}.
           </div>
         </CardContent>
