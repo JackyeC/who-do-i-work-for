@@ -133,23 +133,14 @@ export function TopBar() {
       {/* Ticker Bar */}
       <div className="bg-primary text-primary-foreground overflow-hidden whitespace-nowrap h-[26px] flex items-center">
         <div className="inline-block animate-ticker">
-          {[
-            "INTEL UPDATE: Koch Industries lobbying spend +12% QoQ",
-            "OFFER ALERT: 3 new red flags identified",
-            "EVP SCORE: Amazon drops to 61 — culture risk elevated",
-            'JACKYE INSIGHT: "Don\'t accept an offer without running the chain first"',
-            `NEW DATA: ${new Date().toLocaleDateString()} connection chains updated`,
-          ].map((t, i) => (
+          {tickerItems.map((t, i) => (
             <span key={i} className="px-8">
               <span className="font-mono text-[10px] font-medium tracking-wider">{t}</span>
               <span className="opacity-50 px-4">|</span>
             </span>
           ))}
           {/* Duplicate for seamless loop */}
-          {[
-            "INTEL UPDATE: Koch Industries lobbying spend +12% QoQ",
-            "OFFER ALERT: 3 new red flags identified",
-          ].map((t, i) => (
+          {tickerItems.slice(0, 2).map((t, i) => (
             <span key={`dup-${i}`} className="px-8">
               <span className="font-mono text-[10px] font-medium tracking-wider">{t}</span>
               <span className="opacity-50 px-4">|</span>
