@@ -36,7 +36,7 @@ export function BetaFeedbackWidget() {
         user_email: user.email,
         page_url: location.pathname,
         feedback_type: feedbackType,
-        message: message.trim(),
+        message: message.trim() + (wantReal ? " [WANTS TO SUBSCRIBE]" : ""),
         rating,
       });
       if (error) throw error;
