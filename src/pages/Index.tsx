@@ -125,7 +125,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               Live Intelligence Preview
             </div>
             <div className="font-serif text-lg mb-1">Koch Industries</div>
-            <div className="font-mono text-[9px] tracking-wider uppercase text-muted-foreground mb-4">
+            <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-4">
               Employer Clarity Score: 6.2 / 10 · High Scrutiny
             </div>
             <div className="grid grid-cols-2 gap-px bg-border border border-border mb-4">
