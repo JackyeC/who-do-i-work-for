@@ -542,6 +542,7 @@ export type Database = {
           committees: string[] | null
           company_id: string
           created_at: string
+          departed_at: string | null
           id: string
           is_independent: boolean | null
           last_verified_at: string | null
@@ -552,12 +553,14 @@ export type Database = {
           start_year: number | null
           title: string
           updated_at: string
+          verification_status: string
         }
         Insert: {
           bio?: string | null
           committees?: string[] | null
           company_id: string
           created_at?: string
+          departed_at?: string | null
           id?: string
           is_independent?: boolean | null
           last_verified_at?: string | null
@@ -568,12 +571,14 @@ export type Database = {
           start_year?: number | null
           title?: string
           updated_at?: string
+          verification_status?: string
         }
         Update: {
           bio?: string | null
           committees?: string[] | null
           company_id?: string
           created_at?: string
+          departed_at?: string | null
           id?: string
           is_independent?: boolean | null
           last_verified_at?: string | null
@@ -584,6 +589,7 @@ export type Database = {
           start_year?: number | null
           title?: string
           updated_at?: string
+          verification_status?: string
         }
         Relationships: [
           {
@@ -1377,6 +1383,7 @@ export type Database = {
         Row: {
           company_id: string
           created_at: string | null
+          departed_at: string | null
           id: string
           last_verified_at: string | null
           name: string
@@ -1385,10 +1392,12 @@ export type Database = {
           title: string
           total_donations: number
           updated_at: string | null
+          verification_status: string
         }
         Insert: {
           company_id: string
           created_at?: string | null
+          departed_at?: string | null
           id?: string
           last_verified_at?: string | null
           name: string
@@ -1397,10 +1406,12 @@ export type Database = {
           title: string
           total_donations?: number
           updated_at?: string | null
+          verification_status?: string
         }
         Update: {
           company_id?: string
           created_at?: string | null
+          departed_at?: string | null
           id?: string
           last_verified_at?: string | null
           name?: string
@@ -1409,6 +1420,7 @@ export type Database = {
           title?: string
           total_donations?: number
           updated_at?: string | null
+          verification_status?: string
         }
         Relationships: [
           {

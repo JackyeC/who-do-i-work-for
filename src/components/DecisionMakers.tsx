@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users, User, ChevronDown, ChevronUp, ExternalLink,
-  Network, Shield, Briefcase
+  Network, Shield, Briefcase, UserX, ShieldCheck, AlertTriangle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
@@ -26,6 +26,7 @@ interface Executive {
   photo_url?: string | null;
   source?: string | null;
   last_verified_at?: string | null;
+  verification_status?: string | null;
 }
 
 interface BoardMember {
@@ -39,6 +40,7 @@ interface BoardMember {
   is_independent?: boolean;
   source?: string | null;
   last_verified_at?: string | null;
+  verification_status?: string | null;
 }
 
 interface DecisionMakersProps {
@@ -60,6 +62,7 @@ function LeaderCard({
   leaderId,
   leaderType,
   companyId,
+  verificationStatus,
   onViewProfile,
   onTraceInfluence,
 }: {
@@ -74,11 +77,14 @@ function LeaderCard({
   leaderId: string;
   leaderType: "executive" | "board_member";
   companyId?: string;
+  verificationStatus?: string | null;
   onViewProfile: () => void;
   onTraceInfluence?: () => void;
 }) {
+  const isFormer = verificationStatus === "former";
+  
   return (
-    <Card className="hover:border-primary/30 transition-all group">
+    <Card className={cn("hover:border-primary/30 transition-all group", isFormer && "opacity-60")}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           {photoUrl ? (
@@ -111,6 +117,21 @@ function LeaderCard({
 
             {/* Meta info */}
             <div className="flex flex-wrap items-center gap-1.5 mt-2">
+              {isFormer && (
+                <Badge variant="outline" className="text-[10px] gap-1 text-destructive border-destructive/30">
+                  <UserX className="w-2.5 h-2.5" /> Former
+                </Badge>
+              )}
+              {verificationStatus === "verified" && (
+                <Badge variant="outline" className="text-[10px] gap-1 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30">
+                  <ShieldCheck className="w-2.5 h-2.5" /> Verified
+                </Badge>
+              )}
+              {verificationStatus === "ai_verified" && (
+                <Badge variant="outline" className="text-[10px] gap-1 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/30">
+                  <AlertTriangle className="w-2.5 h-2.5" /> AI Verified
+                </Badge>
+              )}
               {startYear && (
                 <Badge variant="outline" className="text-[10px]">Since {startYear}</Badge>
               )}
@@ -173,13 +194,19 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
     enabled: !!companyId,
   });
 
+  // Filter out former leaders by default, show current ones
+  const activeExecs = executives.filter(e => e.verification_status !== "former");
+  const formerExecs = executives.filter(e => e.verification_status === "former");
+  const activeBoard = boardMembers?.filter(b => b.verification_status !== "former") || [];
+  const formerBoard = boardMembers?.filter(b => b.verification_status === "former") || [];
+  
   // Split executives into C-suite and others
-  const cSuite = executives.filter((e) => CSUITE_TITLES.test(e.title || ""));
-  const others = executives.filter((e) => !CSUITE_TITLES.test(e.title || ""));
+  const cSuite = activeExecs.filter((e) => CSUITE_TITLES.test(e.title || ""));
+  const others = activeExecs.filter((e) => !CSUITE_TITLES.test(e.title || ""));
   const displayedCSuite = cSuite;
-  const displayedOthers = showAll ? others : [];
+  const displayedOthers = showAll ? [...others, ...formerExecs] : [];
 
-  const totalLeaders = cSuite.length + others.length + (boardMembers?.length || 0);
+  const totalLeaders = activeExecs.length + activeBoard.length;
 
   return (
     <Card>
@@ -232,6 +259,7 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
                     leaderId={exec.id}
                     leaderType="executive"
                     companyId={companyId}
+                    verificationStatus={exec.verification_status}
                     onViewProfile={() => onExecutiveClick(exec)}
                     onTraceInfluence={() => onExecutiveClick(exec)}
                   />
@@ -248,12 +276,13 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
                     leaderId={exec.id}
                     leaderType="executive"
                     companyId={companyId}
+                    verificationStatus={exec.verification_status}
                     onViewProfile={() => onExecutiveClick(exec)}
                     onTraceInfluence={() => onExecutiveClick(exec)}
                   />
                 ))}
 
-                {others.length > 0 && (
+                {(others.length + formerExecs.length) > 0 && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -263,7 +292,7 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
                     {showAll ? (
                       <><ChevronUp className="w-3.5 h-3.5" /> Hide Additional Leadership</>
                     ) : (
-                      <><ChevronDown className="w-3.5 h-3.5" /> View Full Leadership ({others.length} more)</>
+                      <><ChevronDown className="w-3.5 h-3.5" /> View Full Leadership ({others.length + formerExecs.length} more{formerExecs.length > 0 ? `, ${formerExecs.length} former` : ''})</>
                     )}
                   </Button>
                 )}
@@ -278,32 +307,37 @@ export function DecisionMakers({ executives, companyId, companyName, onExecutive
           </TabsContent>
 
           <TabsContent value="board" className="space-y-3">
-            {boardMembers && boardMembers.length > 0 ? (
-              boardMembers.map((member) => (
-                <LeaderCard
-                  key={member.id}
-                  name={member.name}
-                  title={member.title}
-                  photoUrl={member.photo_url}
-                  startYear={member.start_year}
-                  previousCompany={member.previous_company}
-                  committees={member.committees}
-                  badges={member.is_independent ? ["Independent"] : []}
-                  leaderId={member.id}
-                  leaderType="board_member"
-                  companyId={companyId}
-                  onViewProfile={() => {
-                    // For now, opens as executive-like profile
-                    onExecutiveClick({
-                      id: member.id,
-                      name: member.name,
-                      title: member.title,
-                      total_donations: 0,
-                      photo_url: member.photo_url,
-                    });
-                  }}
-                />
-              ))
+            {activeBoard.length > 0 ? (
+              <>
+                {activeBoard.map((member) => (
+                  <LeaderCard
+                    key={member.id}
+                    name={member.name}
+                    title={member.title}
+                    photoUrl={member.photo_url}
+                    startYear={member.start_year}
+                    previousCompany={member.previous_company}
+                    committees={member.committees}
+                    badges={member.is_independent ? ["Independent"] : []}
+                    leaderId={member.id}
+                    leaderType="board_member"
+                    companyId={companyId}
+                    verificationStatus={member.verification_status}
+                    onViewProfile={() => {
+                      onExecutiveClick({
+                        id: member.id,
+                        name: member.name,
+                        title: member.title,
+                        total_donations: 0,
+                        photo_url: member.photo_url,
+                      });
+                    }}
+                  />
+                ))}
+                {formerBoard.length > 0 && (
+                  <p className="text-xs text-muted-foreground text-center pt-2">{formerBoard.length} former board member(s) not shown</p>
+                )}
+              </>
             ) : (
               <div className="text-center py-8">
                 <Shield className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
