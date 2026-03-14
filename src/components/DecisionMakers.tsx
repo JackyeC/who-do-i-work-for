@@ -40,6 +40,7 @@ interface BoardMember {
   is_independent?: boolean;
   source?: string | null;
   last_verified_at?: string | null;
+  verification_status?: string | null;
 }
 
 interface DecisionMakersProps {
