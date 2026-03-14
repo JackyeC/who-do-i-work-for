@@ -18,8 +18,22 @@ export const MAIN_SECTIONS = [
     id: "offer",
     label: "Offer Intelligence",
     path: "/check",
-    matchPaths: ["/check", "/offer-check", "/offer-review", "/strategic-offer-review"],
+    matchPaths: ["/check", "/offer-check", "/offer-review", "/strategic-offer-review", "/offer-clarity"],
     subItems: [],
+  },
+  {
+    id: "tools",
+    label: "Tools",
+    path: "/site-map",
+    matchPaths: ["/would-you-work-here", "/employer-receipt", "/evp-reality-check", "/what-am-i-supporting", "/follow-the-money", "/compare", "/site-map"],
+    subItems: [
+      { label: "Would You Work Here?", path: "/would-you-work-here" },
+      { label: "Employer Receipt", path: "/employer-receipt" },
+      { label: "EVP Reality Check", path: "/evp-reality-check" },
+      { label: "Follow the Money", path: "/follow-the-money" },
+      { label: "Compare Companies", path: "/compare" },
+      { label: "All Tools →", path: "/site-map" },
+    ],
   },
   {
     id: "coach",
