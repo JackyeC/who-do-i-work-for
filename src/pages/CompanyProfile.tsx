@@ -586,9 +586,9 @@ export default function CompanyProfile() {
               1. COMPANY OVERVIEW
              ═══════════════════════════════════════════════════════════ */}
           {description && (
-            <section id="section-overview" className="mb-8 scroll-mt-28">
+            <section id="section-overview" className="mb-10 scroll-mt-28">
               <SectionHeader icon={Building2} title="Company Overview" />
-              <p className="text-sm text-foreground/80 leading-relaxed pl-12">{description}</p>
+              <p className="text-base text-foreground/80 leading-relaxed">{description}</p>
             </section>
           )}
 
