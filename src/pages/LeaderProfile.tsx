@@ -173,7 +173,7 @@ export default function LeaderProfile() {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
-                  <p className="text-base text-muted-foreground">{leader.title}{company ? ` at ${company.name}` : ""}</p>
+                  <p className="text-base text-muted-foreground">{leader.title}{displayCompanyName ? ` at ${displayCompanyName}` : ""}</p>
                 </div>
                 <FollowLeaderButton leaderType={leaderType} leaderId={leader.id} leaderName={displayName} companyId={companyId} />
               </div>
