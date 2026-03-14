@@ -410,7 +410,8 @@ export default function CompanyProfile() {
                         <p className="text-xs text-muted-foreground mt-0.5">Parent: {(dbCompany as any).parent_company}</p>
                       )}
                     </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                      <AdminCompanyActions companyId={dbCompany?.id || company?.id || ""} companyName={name} companySlug={id || ""} />
                       <Button
                         variant="outline"
                         size="sm"
