@@ -714,6 +714,14 @@ export default function CompanyProfile() {
           <section id="section-influence" className="mb-8 scroll-mt-28">
             <SectionHeader icon={Landmark} title="Policy & Influence Signals" subtitle="Political donations, lobbying, trade associations, federal contracts" />
             <div className="space-y-4 pl-12">
+              {/* Sankey Influence Diagram */}
+              <SankeyInfluenceDiagram
+                pacSpending={totalPac}
+                lobbyingSpend={lobbyingSpend}
+                federalContracts={govContracts}
+                subsidies={subsidies}
+                companyName={name}
+              />
               {/* Inline summary stats */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2">
                 {totalPac > 0 && (
