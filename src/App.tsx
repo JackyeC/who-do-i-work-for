@@ -210,6 +210,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <AskJackyeWidget />
+              <BetaFeedbackWidget />
               <CookieNotice />
             </AppShell>
           </BrowserRouter>
