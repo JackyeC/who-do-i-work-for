@@ -6234,6 +6234,7 @@ export type Database = {
       }
       user_values_profile: {
         Row: {
+          ai_ethics_importance: number | null
           ai_transparency_importance: number
           animal_welfare_importance: number
           anti_corruption_importance: number
@@ -6256,13 +6257,16 @@ export type Database = {
           healthcare_importance: number
           id: string
           immigration_importance: number
+          international_trade_importance: number | null
           israel_middle_east_importance: number
           labor_rights_importance: number
           lgbtq_rights_importance: number
+          lobbying_activity_importance: number | null
           mission_alignment_importance: number
           notes: string | null
           pay_equity_importance: number
           pay_transparency_importance: number
+          political_donations_importance: number | null
           political_influence_sensitivity: number
           political_transparency_importance: number
           pollution_waste_importance: number
@@ -6279,6 +6283,7 @@ export type Database = {
           workplace_safety_importance: number
         }
         Insert: {
+          ai_ethics_importance?: number | null
           ai_transparency_importance?: number
           animal_welfare_importance?: number
           anti_corruption_importance?: number
@@ -6301,13 +6306,16 @@ export type Database = {
           healthcare_importance?: number
           id?: string
           immigration_importance?: number
+          international_trade_importance?: number | null
           israel_middle_east_importance?: number
           labor_rights_importance?: number
           lgbtq_rights_importance?: number
+          lobbying_activity_importance?: number | null
           mission_alignment_importance?: number
           notes?: string | null
           pay_equity_importance?: number
           pay_transparency_importance?: number
+          political_donations_importance?: number | null
           political_influence_sensitivity?: number
           political_transparency_importance?: number
           pollution_waste_importance?: number
@@ -6324,6 +6332,7 @@ export type Database = {
           workplace_safety_importance?: number
         }
         Update: {
+          ai_ethics_importance?: number | null
           ai_transparency_importance?: number
           animal_welfare_importance?: number
           anti_corruption_importance?: number
@@ -6346,13 +6355,16 @@ export type Database = {
           healthcare_importance?: number
           id?: string
           immigration_importance?: number
+          international_trade_importance?: number | null
           israel_middle_east_importance?: number
           labor_rights_importance?: number
           lgbtq_rights_importance?: number
+          lobbying_activity_importance?: number | null
           mission_alignment_importance?: number
           notes?: string | null
           pay_equity_importance?: number
           pay_transparency_importance?: number
+          political_donations_importance?: number | null
           political_influence_sensitivity?: number
           political_transparency_importance?: number
           pollution_waste_importance?: number
