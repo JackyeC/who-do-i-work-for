@@ -285,11 +285,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 </span>
               </div>
               <h2 className="text-xl font-bold text-foreground">Rivalry Super Tracker</h2>
-              <p className="text-[13px] text-muted-foreground mt-1">The biggest corporate matchups, analyzed through career intelligence.</p>
+              <p className="text-sm text-muted-foreground mt-1">The biggest corporate matchups, analyzed through career intelligence.</p>
             </div>
             <button
               onClick={() => navigate("/rivalries")}
-              className="font-mono text-[10px] tracking-wider uppercase text-primary hover:underline flex items-center gap-1 whitespace-nowrap"
+              className="font-mono text-xs tracking-wider uppercase text-primary hover:underline flex items-center gap-1 whitespace-nowrap"
             >
               View all <ArrowRight className="w-3 h-3" />
             </button>
