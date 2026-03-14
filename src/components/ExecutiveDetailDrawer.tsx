@@ -395,6 +395,63 @@ export function ExecutiveDetailDrawer({ open, onOpenChange, executive, companyNa
           )}
         </div>
 
+        {/* Investigative Document Mentions */}
+        {investigativeMentions && investigativeMentions.length > 0 && (
+          <Card className="mb-4 border-destructive/40 bg-destructive/5">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <AlertTriangle className="w-4 h-4 text-destructive" />
+                <p className="text-sm font-semibold text-destructive">Investigative Document Mentions</p>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                This person's name appears in {investigativeMentions.length} mention{investigativeMentions.length !== 1 ? "s" : ""} across archived investigative documents. 
+                Inclusion does not imply wrongdoing — verify context carefully.
+              </p>
+              <div className="space-y-2">
+                {investigativeMentions.slice(0, 5).map((mention: any, idx: number) => (
+                  <div key={mention.id || idx} className="rounded-lg border border-destructive/20 bg-card p-3">
+                    <div className="flex items-start gap-2">
+                      <FileText className="w-3.5 h-3.5 text-destructive/70 mt-0.5 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        {mention.document && (
+                          <p className="text-xs font-medium text-foreground truncate">
+                            {mention.document.title}
+                          </p>
+                        )}
+                        {mention.context_snippet && (
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-3 italic">
+                            "{mention.context_snippet}"
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                          {mention.page_number && (
+                            <span className="text-[10px] text-muted-foreground">p. {mention.page_number}</span>
+                          )}
+                          {mention.confidence && (
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                              {mention.confidence >= 0.8 ? "High match" : mention.confidence >= 0.5 ? "Likely match" : "Possible match"}
+                            </Badge>
+                          )}
+                          {mention.document?.source_url && (
+                            <a href={mention.document.source_url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-primary hover:underline flex items-center gap-0.5">
+                              <ExternalLink className="w-2.5 h-2.5" /> Source
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {investigativeMentions.length > 5 && (
+                  <p className="text-[10px] text-muted-foreground text-center pt-1">
+                    + {investigativeMentions.length - 5} more mentions in the archive
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Social & Research links */}
         <div className="space-y-2">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Find this person</p>
