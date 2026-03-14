@@ -176,6 +176,15 @@ export default function LeaderProfile() {
 
               <div className="flex flex-wrap gap-2 mt-3">
                 <Badge variant="outline" className="gap-1"><Briefcase className="w-3 h-3" /> {leaderType === "executive" ? "Executive" : "Board Member"}</Badge>
+                {leader.verification_status === "former" && (
+                  <Badge variant="outline" className="gap-1 text-destructive border-destructive/30"><UserX className="w-3 h-3" /> Former</Badge>
+                )}
+                {leader.verification_status === "verified" && (
+                  <Badge variant="outline" className="gap-1 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30"><ShieldCheck className="w-3 h-3" /> Verified Current</Badge>
+                )}
+                {leader.verification_status === "ai_verified" && (
+                  <Badge variant="outline" className="gap-1 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/30"><AlertTriangle className="w-3 h-3" /> AI Verified</Badge>
+                )}
                 {(boardMember as any)?.is_independent && <Badge variant="secondary" className="gap-1"><Shield className="w-3 h-3" /> Independent</Badge>}
                 {(boardMember as any)?.start_year && <Badge variant="outline" className="gap-1"><Calendar className="w-3 h-3" /> Since {(boardMember as any).start_year}</Badge>}
                 {executive?.total_donations > 0 && <Badge variant="outline" className="gap-1 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/30"><DollarSign className="w-3 h-3" /> {formatCurrency(executive.total_donations)} donated</Badge>}
