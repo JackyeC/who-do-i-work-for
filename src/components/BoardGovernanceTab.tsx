@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import {
   Shield, DollarSign, Scale, AlertTriangle, Users,
   Sparkles, ExternalLink, FileText, BookOpen, ChevronDown
@@ -99,41 +98,41 @@ export function BoardGovernanceTab({ companyId, companyName, ticker, secCik }: B
       {/* Overview Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Card>
-          <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-foreground">{totalCount}</p>
-            <p className="text-xs text-muted-foreground">Board Members</p>
+          <CardContent className="p-5 text-center">
+            <p className="text-3xl font-bold text-foreground">{totalCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">Board Members</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-foreground">{independentCount}</p>
-            <p className="text-xs text-muted-foreground">Independent</p>
+          <CardContent className="p-5 text-center">
+            <p className="text-3xl font-bold text-foreground">{independentCount}</p>
+            <p className="text-sm text-muted-foreground mt-1">Independent</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4 text-center">
-            <p className={cn("text-2xl font-bold", independenceRatio >= 67 ? "text-[hsl(var(--civic-green))]" : independenceRatio >= 50 ? "text-[hsl(var(--civic-yellow))]" : "text-destructive")}>
+          <CardContent className="p-5 text-center">
+            <p className={cn("text-3xl font-bold", independenceRatio >= 67 ? "text-[hsl(var(--civic-green))]" : independenceRatio >= 50 ? "text-[hsl(var(--civic-yellow))]" : "text-destructive")}>
               {independenceRatio}%
             </p>
-            <p className="text-xs text-muted-foreground">Independence</p>
+            <p className="text-sm text-muted-foreground mt-1">Independence</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold text-foreground">{committeeMap.size}</p>
-            <p className="text-xs text-muted-foreground">Committees</p>
+          <CardContent className="p-5 text-center">
+            <p className="text-3xl font-bold text-foreground">{committeeMap.size}</p>
+            <p className="text-sm text-muted-foreground mt-1">Committees</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Jackye's Take on Board */}
       <Card className="bg-primary/[0.03] border-primary/15">
-        <CardContent className="p-4">
+        <CardContent className="p-5">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-xs font-bold text-foreground uppercase tracking-wide">Jackye's Take</span>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-base text-muted-foreground leading-relaxed">
             {totalCount === 0
               ? `No board data available yet for ${companyName}. Board governance information is typically sourced from SEC proxy statements (DEF 14A).`
               : independenceRatio >= 67
@@ -150,12 +149,12 @@ export function BoardGovernanceTab({ companyId, companyName, ticker, secCik }: B
       {committeeMap.size > 0 && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" /> Committee Structure
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Shield className="w-5 h-5 text-primary" /> Committee Structure
             </CardTitle>
-            <p className="text-xs text-muted-foreground">How oversight is organized across {companyName}'s board.</p>
+            <p className="text-sm text-muted-foreground">How oversight is organized across {companyName}'s board.</p>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-3">
             {Array.from(committeeMap.entries()).map(([name, members]) => {
               const info = COMMITTEE_INFO[name];
               const Icon = info?.icon || Shield;
@@ -164,36 +163,36 @@ export function BoardGovernanceTab({ companyId, companyName, ticker, secCik }: B
                 <div key={name} className="rounded-lg border border-border overflow-hidden">
                   <button
                     onClick={() => setExpandedCommittee(isExpanded ? null : name)}
-                    className="w-full flex items-center justify-between p-3 hover:bg-muted/50 transition-colors text-left"
+                    className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors text-left"
                   >
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-3">
                       <Icon className="w-4 h-4 text-primary/70" />
-                      <span className="text-sm font-semibold text-foreground">{name} Committee</span>
-                      <Badge variant="secondary" className="text-[10px]">{members.length} members</Badge>
+                      <span className="text-base font-semibold text-foreground">{name} Committee</span>
+                      <Badge variant="secondary" className="text-xs">{members.length} members</Badge>
                     </div>
                     <ChevronDown className={cn("w-4 h-4 text-muted-foreground transition-transform", isExpanded && "rotate-180")} />
                   </button>
                   {isExpanded && (
-                    <div className="p-3 border-t border-border bg-muted/20 space-y-3">
-                      {info?.description && <p className="text-xs text-muted-foreground">{info.description}</p>}
-                      <div className="space-y-1.5">
+                    <div className="p-4 border-t border-border bg-muted/20 space-y-4">
+                      {info?.description && <p className="text-sm text-muted-foreground">{info.description}</p>}
+                      <div className="space-y-2">
                         {members.map((m: any) => (
-                          <Link key={m.id} to={`/leader/${m.id}`} className="flex items-center justify-between p-2 rounded-md hover:bg-muted/60 transition-colors">
-                            <div className="flex items-center gap-2">
-                              <Users className="w-3.5 h-3.5 text-muted-foreground" />
-                              <span className="text-sm text-foreground">{m.name}</span>
-                              {m.is_independent && <Badge variant="outline" className="text-[10px]">Independent</Badge>}
+                          <Link key={m.id} to={`/leader/${m.id}`} className="flex items-center justify-between p-3 rounded-md hover:bg-muted/60 transition-colors">
+                            <div className="flex items-center gap-2.5">
+                              <Users className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-base text-foreground">{m.name}</span>
+                              {m.is_independent && <Badge variant="outline" className="text-xs">Independent</Badge>}
                             </div>
                           </Link>
                         ))}
                       </div>
                       {info?.jackye && (
-                        <div className="bg-primary/[0.04] rounded-md p-2.5 border border-primary/10">
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <Sparkles className="w-3 h-3 text-primary" />
-                            <span className="text-[10px] font-bold text-foreground uppercase tracking-wide">Jackye Explains</span>
+                        <div className="bg-primary/[0.04] rounded-md p-4 border border-primary/10">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-primary" />
+                            <span className="text-xs font-bold text-foreground uppercase tracking-wide">Jackye Explains</span>
                           </div>
-                          <p className="text-xs text-muted-foreground leading-relaxed">{info.jackye}</p>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{info.jackye}</p>
                         </div>
                       )}
                     </div>
@@ -208,34 +207,34 @@ export function BoardGovernanceTab({ companyId, companyName, ticker, secCik }: B
       {/* Board Documents */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <FileText className="w-4 h-4 text-primary" /> Board Documents
+          <CardTitle className="text-lg flex items-center gap-2">
+            <FileText className="w-5 h-5 text-primary" /> Board Documents
           </CardTitle>
-          <p className="text-xs text-muted-foreground">Key governance filings for {companyName}.</p>
+          <p className="text-sm text-muted-foreground">Key governance filings for {companyName}.</p>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-4">
           {[
             { title: "Proxy Statement (DEF 14A)", desc: "Executive compensation, board composition, shareholder proposals.", jackye: "The single most important document for understanding who runs the company and how they're incentivized.", url: secEdgarUrl },
             { title: "Annual Report (10-K)", desc: "Business operations, financials, risk factors, legal proceedings.", jackye: "The Risk Factors section is gold — companies must disclose what could hurt them.", url: ticker ? `https://www.sec.gov/cgi-bin/browse-edgar?company=${encodeURIComponent(companyName)}&type=10-K&action=getcompany` : null },
           ].map((doc) => (
-            <div key={doc.title} className="rounded-lg border border-border p-3 space-y-2">
+            <div key={doc.title} className="rounded-lg border border-border p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-sm font-semibold text-foreground">{doc.title}</h4>
-                  <p className="text-xs text-muted-foreground">{doc.desc}</p>
+                  <h4 className="text-base font-semibold text-foreground">{doc.title}</h4>
+                  <p className="text-sm text-muted-foreground mt-0.5">{doc.desc}</p>
                 </div>
                 {doc.url && (
-                  <Button variant="outline" size="sm" className="h-7 text-xs gap-1 shrink-0" asChild>
-                    <a href={doc.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-3 h-3" /> SEC</a>
+                  <Button variant="outline" size="sm" className="text-xs gap-1.5 shrink-0" asChild>
+                    <a href={doc.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-3.5 h-3.5" /> SEC</a>
                   </Button>
                 )}
               </div>
-              <div className="bg-primary/[0.04] rounded-md p-2.5 border border-primary/10">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Sparkles className="w-3 h-3 text-primary" />
-                  <span className="text-[10px] font-bold text-foreground uppercase tracking-wide">Jackye Explains</span>
+              <div className="bg-primary/[0.04] rounded-md p-4 border border-primary/10">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-xs font-bold text-foreground uppercase tracking-wide">Jackye Explains</span>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">{doc.jackye}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{doc.jackye}</p>
               </div>
             </div>
           ))}
