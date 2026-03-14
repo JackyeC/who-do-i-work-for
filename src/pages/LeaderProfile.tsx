@@ -139,7 +139,8 @@ export default function LeaderProfile() {
   }
 
   const displayName = leader.name;
-  const cleanCompany = (company?.name || "").replace(/,?\s*(LP|LLC|Inc\.?|Corp\.?|Co\.?)$/i, "").trim();
+  const displayCompanyName = enrichment?.normalized_company_name || company?.name || "";
+  const cleanCompany = displayCompanyName.replace(/,?\s*(LP|LLC|Inc\.?|Corp\.?|Co\.?)$/i, "").trim();
   const linkedInUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(displayName + " " + cleanCompany)}`;
   const fecUrl = `https://www.fec.gov/data/receipts/individual-contributions/?contributor_name=${encodeURIComponent(displayName)}&contributor_employer=${encodeURIComponent(company?.name || "")}`;
   const openSecretsUrl = `https://www.opensecrets.org/search?q=${encodeURIComponent(displayName)}&type=donors`;
