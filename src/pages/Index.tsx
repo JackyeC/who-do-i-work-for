@@ -1,7 +1,7 @@
 import { useState, useEffect, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight } from "lucide-react";
+import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap } from "lucide-react";
 import { AnimatedDemo } from "@/components/landing/AnimatedDemo";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { EmailCapture } from "@/components/landing/EmailCapture";
@@ -11,6 +11,8 @@ import { HeroSearch } from "@/components/landing/HeroSearch";
 import { AnimatedCounter } from "@/components/landing/AnimatedCounter";
 import { SectionReveal } from "@/components/landing/SectionReveal";
 import { motion } from "framer-motion";
+import { rivalries2026 } from "@/data/rivalries2026";
+import { RivalryBattleCard } from "@/components/RivalryBattleCard";
 
 const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const [companyCount, setCompanyCount] = useState(0);
@@ -268,6 +270,35 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             >
               Read our methodology →
             </button>
+          </div>
+        </section>
+      </SectionReveal>
+
+      {/* 2026 Rivalries Teaser */}
+      <SectionReveal>
+        <section className="px-6 lg:px-16 py-12 max-w-[1100px] mx-auto w-full">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Zap className="w-4 h-4 text-primary" />
+                <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-primary font-semibold">
+                  2026 Intelligence
+                </span>
+              </div>
+              <h2 className="text-xl font-bold text-foreground">Rivalry Super Tracker</h2>
+              <p className="text-[13px] text-muted-foreground mt-1">The biggest corporate matchups, analyzed through career intelligence.</p>
+            </div>
+            <button
+              onClick={() => navigate("/rivalries")}
+              className="font-mono text-[10px] tracking-wider uppercase text-primary hover:underline flex items-center gap-1 whitespace-nowrap"
+            >
+              View all <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {rivalries2026.slice(0, 2).map(r => (
+              <RivalryBattleCard key={r.id} rivalry={r} compact />
+            ))}
           </div>
         </section>
       </SectionReveal>
