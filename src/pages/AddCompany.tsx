@@ -18,21 +18,52 @@ export default function AddCompany() {
   const [isResearching, setIsResearching] = useState(false);
   const [result, setResult] = useState<any>(null);
 
-  // Search existing companies as user types
+  // Search existing companies as user types (with fuzzy matching)
   const { data: searchResults, isLoading: isSearching } = useQuery({
     queryKey: ["company-search", searchTerm],
     queryFn: async () => {
       if (searchTerm.length < 2) return [];
+      const normalized = searchTerm.trim().toLowerCase();
       const { data, error } = await supabase
         .from("companies")
         .select("id, name, slug, industry, state")
         .or(`name.ilike.%${searchTerm}%,slug.ilike.%${searchTerm.toLowerCase().replace(/\s+/g, '-')}%`)
-        .limit(5);
+        .limit(20);
       if (error) throw error;
-      return data || [];
+      
+      // Score results by similarity — surface near-matches
+      const results = (data || []).map(c => {
+        const cName = c.name.toLowerCase();
+        const score = cName === normalized ? 100 
+          : cName.includes(normalized) || normalized.includes(cName) ? 80
+          : levenshtein(cName, normalized) <= 2 ? 70
+          : 50;
+        return { ...c, matchScore: score };
+      });
+      
+      return results.sort((a, b) => b.matchScore - a.matchScore).slice(0, 5);
     },
     enabled: searchTerm.length >= 2 && !isResearching,
   });
+
+  // Simple Levenshtein distance for typo detection
+  function levenshtein(a: string, b: string): number {
+    const m = a.length, n = b.length;
+    const dp = Array.from({ length: m + 1 }, (_, i) => {
+      const row = new Array(n + 1).fill(0);
+      row[0] = i;
+      return row;
+    });
+    for (let j = 1; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++)
+      for (let j = 1; j <= n; j++)
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,
+          dp[i][j - 1] + 1,
+          dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+        );
+    return dp[m][n];
+  }
 
   const handleResearch = async () => {
     if (searchTerm.trim().length < 2) {
@@ -106,6 +137,14 @@ export default function AddCompany() {
             {/* Existing matches */}
             {searchResults && searchResults.length > 0 && !result && (
               <div className="space-y-2">
+                {searchResults.some((co: any) => co.matchScore >= 70) && (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[hsl(var(--civic-yellow))]/10 border border-[hsl(var(--civic-yellow))]/20">
+                    <AlertTriangle className="w-4 h-4 text-[hsl(var(--civic-yellow))] shrink-0" />
+                    <p className="text-xs text-foreground">
+                      <strong>Did you mean one of these?</strong> Similar companies already exist. Click one to view it instead of creating a duplicate.
+                    </p>
+                  </div>
+                )}
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Existing companies</p>
                 {searchResults.map((co) => (
                   <button

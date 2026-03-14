@@ -42,6 +42,7 @@ import { DataFreshnessCard } from "@/components/DataFreshnessCard";
 import { useScanTracker } from "@/hooks/use-scan-tracker";
 import { DecisionMakers } from "@/components/DecisionMakers";
 import { PowerMap } from "@/components/PowerMap";
+import { AdminCompanyActions } from "@/components/AdminCompanyActions";
 import { BoardGovernanceTab } from "@/components/BoardGovernanceTab";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -409,7 +410,8 @@ export default function CompanyProfile() {
                         <p className="text-xs text-muted-foreground mt-0.5">Parent: {(dbCompany as any).parent_company}</p>
                       )}
                     </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+                      <AdminCompanyActions companyId={dbCompany?.id || company?.id || ""} companyName={name} companySlug={id || ""} />
                       <Button
                         variant="outline"
                         size="sm"
