@@ -8,11 +8,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/EmptyState";
-import { Wand2, Target, CheckCircle, XCircle, MessageSquare, ArrowRight, Loader2, Sparkles } from "lucide-react";
+import { Wand2, Target, CheckCircle, XCircle, MessageSquare, ArrowRight, Loader2, Sparkles, AlertCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useNavigate } from "react-router-dom";
 
 export function ResumeTailor() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [selectedResume, setSelectedResume] = useState<string>("");
   const [selectedJD, setSelectedJD] = useState<string>("");
   const [analysis, setAnalysis] = useState<any>(null);
@@ -33,6 +35,20 @@ export function ResumeTailor() {
 
   const resumes = docs?.filter((d: any) => d.document_type === "resume") || [];
   const jobDescs = docs?.filter((d: any) => d.document_type === "job_description") || [];
+
+  // Auto-select resume if only one exists
+  useEffect(() => {
+    if (resumes.length === 1 && !selectedResume) {
+      setSelectedResume(resumes[0].id);
+    }
+  }, [resumes.length]);
+
+  // Auto-select JD if only one exists
+  useEffect(() => {
+    if (jobDescs.length === 1 && !selectedJD) {
+      setSelectedJD(jobDescs[0].id);
+    }
+  }, [jobDescs.length]);
 
   const handleTailor = async () => {
     if (!selectedResume || !selectedJD) return;
@@ -55,12 +71,15 @@ export function ResumeTailor() {
     }
   };
 
-  if (!resumes.length || !jobDescs.length) {
+  const missingResume = !resumes.length;
+  const missingJD = !jobDescs.length;
+
+  if (missingResume && missingJD) {
     return (
       <EmptyState
         icon={Wand2}
-        title="Upload both a resume and a job description"
-        description="To tailor your resume, we need at least one parsed resume and one parsed job description. Upload them in the Upload tab."
+        title="Upload a resume and a job description"
+        description="To tailor your resume, upload both documents in the Upload tab — or start with Career Discovery which uploads your resume automatically."
       />
     );
   }
@@ -80,27 +99,45 @@ export function ResumeTailor() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-muted-foreground mb-1 block">Your Resume</label>
-              <Select value={selectedResume} onValueChange={setSelectedResume}>
-                <SelectTrigger><SelectValue placeholder="Select resume" /></SelectTrigger>
-                <SelectContent>
-                  {resumes.map((r: any) => (
-                    <SelectItem key={r.id} value={r.id}>{r.original_filename || "Resume"}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {resumes.length > 0 ? (
+                <Select value={selectedResume} onValueChange={setSelectedResume}>
+                  <SelectTrigger><SelectValue placeholder="Select resume" /></SelectTrigger>
+                  <SelectContent>
+                    {resumes.map((r: any) => (
+                      <SelectItem key={r.id} value={r.id}>{r.original_filename || "Resume"}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="rounded-md border border-dashed border-border p-3 text-center">
+                  <p className="text-xs text-muted-foreground mb-2">No resume found</p>
+                  <Button variant="outline" size="sm" onClick={() => navigate("/career-intelligence?tab=upload")} className="text-xs gap-1">
+                    <AlertCircle className="w-3 h-3" /> Upload Resume
+                  </Button>
+                </div>
+              )}
             </div>
             <div>
               <label className="text-xs text-muted-foreground mb-1 block">Target Job Description</label>
-              <Select value={selectedJD} onValueChange={setSelectedJD}>
-                <SelectTrigger><SelectValue placeholder="Select job description" /></SelectTrigger>
-                <SelectContent>
-                  {jobDescs.map((j: any) => (
-                    <SelectItem key={j.id} value={j.id}>
-                      {j.parsed_signals?.role_title || j.original_filename || "Job Description"}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {jobDescs.length > 0 ? (
+                <Select value={selectedJD} onValueChange={setSelectedJD}>
+                  <SelectTrigger><SelectValue placeholder="Select job description" /></SelectTrigger>
+                  <SelectContent>
+                    {jobDescs.map((j: any) => (
+                      <SelectItem key={j.id} value={j.id}>
+                        {j.parsed_signals?.role_title || j.original_filename || "Job Description"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <div className="rounded-md border border-dashed border-border p-3 text-center">
+                  <p className="text-xs text-muted-foreground mb-2">No job description found</p>
+                  <Button variant="outline" size="sm" onClick={() => navigate("/career-intelligence?tab=upload")} className="text-xs gap-1">
+                    <AlertCircle className="w-3 h-3" /> Upload Job Description
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
 
