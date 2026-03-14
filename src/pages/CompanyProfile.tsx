@@ -60,6 +60,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCompanySEO } from "@/hooks/use-company-seo";
 import { useToast } from "@/hooks/use-toast";
+import { ContentProtector } from "@/components/ContentProtector";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
