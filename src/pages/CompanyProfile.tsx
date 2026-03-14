@@ -76,13 +76,13 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 /* ─── Report Section Header ─── */
 function SectionHeader({ icon: Icon, title, subtitle }: { icon: any; title: string; subtitle?: string }) {
   return (
-    <div className="flex items-start gap-3 mb-4">
-      <div className="w-9 h-9 rounded-xl bg-primary/8 flex items-center justify-center shrink-0 border border-primary/10 mt-0.5">
-        <Icon className="w-4.5 h-4.5 text-primary" />
+    <div className="flex items-start gap-3 mb-5">
+      <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center shrink-0 border border-primary/10 mt-0.5">
+        <Icon className="w-5 h-5 text-primary" />
       </div>
       <div>
-        <h2 className="text-lg font-bold text-foreground tracking-tight">{title}</h2>
-        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+        <h2 className="text-xl font-bold text-foreground tracking-tight">{title}</h2>
+        {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
       </div>
     </div>
   );
@@ -95,15 +95,15 @@ function IntelStat({ label, value, status, onClick }: { label: string; value: st
     <Wrapper
       onClick={onClick}
       className={cn(
-        "flex items-center justify-between p-3 rounded-lg border transition-colors",
+        "flex items-center justify-between p-4 rounded-lg border transition-colors",
         status === "detected" ? "bg-primary/[0.04] border-primary/15" : "bg-muted/30 border-border/40",
         onClick && "cursor-pointer hover:border-primary/30 hover:bg-primary/[0.06]"
       )}
     >
-      <span className="text-sm text-foreground font-medium">{label}</span>
+      <span className="text-base text-foreground font-medium">{label}</span>
       <div className="flex items-center gap-2">
-        <span className={cn("text-sm font-semibold", status === "detected" ? "text-foreground" : "text-muted-foreground")}>{value}</span>
-        {onClick && <ExternalLink className="w-3 h-3 text-muted-foreground" />}
+        <span className={cn("text-base font-semibold", status === "detected" ? "text-foreground" : "text-muted-foreground")}>{value}</span>
+        {onClick && <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />}
       </div>
     </Wrapper>
   );
@@ -408,7 +408,7 @@ export default function CompanyProfile() {
                       <div className="flex items-center gap-2.5 flex-wrap">
                         <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">{name}</h1>
                         {recordStatus !== "verified" && (
-                          <span className={`text-[11px] px-2 py-0.5 rounded-md border font-medium whitespace-nowrap ${statusInfo.color}`}>
+                          <span className={`text-xs px-2 py-0.5 rounded-md border font-medium whitespace-nowrap ${statusInfo.color}`}>
                             {isDiscovering && <Loader2 className="w-3 h-3 animate-spin inline mr-1" />}
                             {statusInfo.label}
                           </span>
@@ -586,18 +586,18 @@ export default function CompanyProfile() {
               1. COMPANY OVERVIEW
              ═══════════════════════════════════════════════════════════ */}
           {description && (
-            <section id="section-overview" className="mb-8 scroll-mt-28">
+            <section id="section-overview" className="mb-10 scroll-mt-28">
               <SectionHeader icon={Building2} title="Company Overview" />
-              <p className="text-sm text-foreground/80 leading-relaxed pl-12">{description}</p>
+              <p className="text-base text-foreground/80 leading-relaxed">{description}</p>
             </section>
           )}
 
           {/* ═══════════════════════════════════════════════════════════
               2. QUICK INTELLIGENCE SUMMARY
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-intelligence" className="mb-8 scroll-mt-28">
+          <section id="section-intelligence" className="mb-10 scroll-mt-28">
             <SectionHeader icon={BarChart3} title="Quick Intelligence Summary" subtitle="Key signals at a glance" />
-            <div className="grid sm:grid-cols-2 gap-2 pl-12">
+            <div className="grid sm:grid-cols-2 gap-3">
               <IntelStat
                 label="Political Influence"
                 value={totalPac > 0 || lobbyingSpend > 0 ? formatCurrency(totalPac + lobbyingSpend) + " total" : "Not detected"}
@@ -657,76 +657,74 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               3b. GOVERNANCE & BOARD STRUCTURE
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-governance" className="mb-8 scroll-mt-28">
+          <section id="section-governance" className="mb-10 scroll-mt-28">
             <SectionHeader icon={Shield} title="Governance & Board Structure" subtitle="Board composition, committee oversight, and ownership signals" />
-            <div className="pl-12">
-              <BoardGovernanceTab
-                companyId={dbCompanyId || ""}
-                companyName={name}
-                ticker={dbCompany?.ticker}
-                secCik={dbCompany?.sec_cik}
-              />
-            </div>
+            <BoardGovernanceTab
+              companyId={dbCompanyId || ""}
+              companyName={name}
+              ticker={dbCompany?.ticker}
+              secCik={dbCompany?.sec_cik}
+            />
           </section>
 
-          <Separator className="mb-8" />
+          <Separator className="mb-10" />
 
           {/* ═══════════════════════════════════════════════════════════
               4. WORKFORCE INTELLIGENCE
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-workforce" className="mb-8 scroll-mt-28">
+          <section id="section-workforce" className="mb-10 scroll-mt-28">
             <SectionHeader icon={TrendingUp} title="Workforce Intelligence" subtitle="Worker sentiment, hiring technology, and benefits signals" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <WorkerSentimentCard companyName={name} dbCompanyId={dbCompanyId} />
               <AIHiringCard companyName={name} dbCompanyId={dbCompanyId} />
               <WorkerBenefitsCard companyName={name} dbCompanyId={dbCompanyId} />
             </div>
           </section>
 
-          <Separator className="mb-8" />
+          <Separator className="mb-10" />
 
           {/* ═══════════════════════════════════════════════════════════
               5. COMPENSATION TRANSPARENCY
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-compensation" className="mb-8 scroll-mt-28">
+          <section id="section-compensation" className="mb-10 scroll-mt-28">
             <SectionHeader icon={DollarSign} title="Compensation Transparency" subtitle="Pay equity signals and national benchmarks" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <CompensationTransparencyCard companyName={name} dbCompanyId={dbCompanyId} />
             </div>
           </section>
 
-          <Separator className="mb-8" />
+          <Separator className="mb-10" />
 
           {/* ═══════════════════════════════════════════════════════════
               6. WORKFORCE MOBILITY & PROMOTION EQUITY
              ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
+          <section className="mb-10">
             <SectionHeader icon={Award} title="Workforce Mobility & Promotion Equity" subtitle="Internal promotion, leadership diversity, HBCU partnerships, skills-first hiring" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <PromotionEquityCard companyName={name} dbCompanyId={dbCompanyId} />
             </div>
           </section>
 
-          <Separator className="mb-8" />
+          <Separator className="mb-10" />
 
           {/* ═══════════════════════════════════════════════════════════
               7. WORKFORCE STABILITY
              ═══════════════════════════════════════════════════════════ */}
-           <section id="section-stability" className="mb-8 scroll-mt-28">
+           <section id="section-stability" className="mb-10 scroll-mt-28">
             <SectionHeader icon={AlertTriangle} title="Workforce Stability" subtitle="Layoffs, WARN notices, and workforce reduction signals" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <WarnTrackerCard companyName={name} dbCompanyId={dbCompanyId} />
             </div>
           </section>
 
-          <Separator className="mb-8" />
+          <Separator className="mb-10" />
 
           {/* ═══════════════════════════════════════════════════════════
               8. POLICY & INFLUENCE SIGNALS
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-influence" className="mb-8 scroll-mt-28">
+          <section id="section-influence" className="mb-10 scroll-mt-28">
             <SectionHeader icon={Landmark} title="Policy & Influence Signals" subtitle="Political donations, lobbying, trade associations, federal contracts" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               {/* Sankey Influence Diagram */}
               <SankeyInfluenceDiagram
                 pacSpending={totalPac}
@@ -737,31 +735,31 @@ export default function CompanyProfile() {
               />
               {/* Inline summary stats */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2">
-                {totalPac > 0 && (
-                  <button onClick={() => setPacDrawerOpen(true)} className="p-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">PAC Spending</p>
-                    <p className="text-lg font-bold text-foreground">{formatCurrency(totalPac)}</p>
-                    <span className="text-[10px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
+               {totalPac > 0 && (
+                  <button onClick={() => setPacDrawerOpen(true)} className="p-4 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">PAC Spending</p>
+                    <p className="text-xl font-bold text-foreground">{formatCurrency(totalPac)}</p>
+                    <span className="text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
                   </button>
                 )}
                 {lobbyingSpend > 0 && (
-                  <button onClick={() => setLobbyingDrawerOpen(true)} className="p-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Federal Lobbying</p>
-                    <p className="text-lg font-bold text-foreground">{formatCurrency(lobbyingSpend)}</p>
-                    <span className="text-[10px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
+                  <button onClick={() => setLobbyingDrawerOpen(true)} className="p-4 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Federal Lobbying</p>
+                    <p className="text-xl font-bold text-foreground">{formatCurrency(lobbyingSpend)}</p>
+                    <span className="text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
                   </button>
                 )}
                 {govContracts > 0 && (
-                  <button onClick={() => setContractsDrawerOpen(true)} className="p-3 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Gov Contracts</p>
-                    <p className="text-lg font-bold text-foreground">{formatCurrency(govContracts)}</p>
-                    <span className="text-[10px] text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
+                  <button onClick={() => setContractsDrawerOpen(true)} className="p-4 rounded-lg bg-card border border-border/50 hover:border-primary/30 transition-colors text-left group">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Gov Contracts</p>
+                    <p className="text-xl font-bold text-foreground">{formatCurrency(govContracts)}</p>
+                    <span className="text-xs text-primary opacity-0 group-hover:opacity-100 transition-opacity">View details →</span>
                   </button>
                 )}
                 {(dbTradeAssociations?.length || 0) > 0 && (
-                  <div className="p-3 rounded-lg bg-card border border-border/50 text-left">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Trade Associations</p>
-                    <p className="text-lg font-bold text-foreground">{dbTradeAssociations?.length}</p>
+                  <div className="p-4 rounded-lg bg-card border border-border/50 text-left">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1.5">Trade Associations</p>
+                    <p className="text-xl font-bold text-foreground">{dbTradeAssociations?.length}</p>
                   </div>
                 )}
               </div>
@@ -869,9 +867,9 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               10. VALUES CHECK
              ═══════════════════════════════════════════════════════════ */}
-          <section id="section-values" className="mb-8 scroll-mt-28">
+          <section id="section-values" className="mb-10 scroll-mt-28">
             <SectionHeader icon={Heart} title="Values Check" subtitle="How this company's actions align with your values" />
-            <div className="space-y-4 pl-12">
+            <div className="space-y-4">
               <ValuesCheckSection
                 companyName={name}
                 companyId={dbCompany?.id || ""}
@@ -935,7 +933,7 @@ export default function CompanyProfile() {
 
           {/* Sources footer */}
           <div className="mt-8 mb-4">
-            <p className="text-[11px] text-muted-foreground text-center leading-relaxed">
+            <p className="text-xs text-muted-foreground text-center leading-relaxed">
               Data from FEC.gov, Senate LDA, USASpending.gov, OpenCorporates, and public filings.
               Executive donations reflect personal giving. This platform provides publicly available data for informational purposes only.
             </p>
