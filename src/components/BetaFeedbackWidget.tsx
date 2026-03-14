@@ -40,10 +40,20 @@ export function BetaFeedbackWidget() {
         rating,
       });
       if (error) throw error;
+
+      // If they want to subscribe, also capture in email_signups
+      if (wantReal && user.email) {
+        await (supabase as any).from("email_signups").upsert(
+          { email: user.email, source: "beta_interest" },
+          { onConflict: "email" }
+        );
+      }
+
       toast({ title: "Thanks for your feedback! 🙏", description: "Jackye will review it personally." });
       setMessage("");
       setRating(null);
       setFeedbackType("general");
+      setWantReal(false);
       setOpen(false);
     } catch {
       toast({ title: "Couldn't send feedback", description: "Please try again.", variant: "destructive" });
