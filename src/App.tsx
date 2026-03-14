@@ -203,6 +203,7 @@ const App = () => (
                 <Route path="/outreach" element={<Navigate to="/dashboard?tab=outreach" replace />} />
                 <Route path="/offer-clarity" element={<OfferClarity />} />
                 <Route path="/site-map" element={<SiteMap />} />
+                <Route path="/rivalries" element={<Rivalries />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <AskJackyeWidget />

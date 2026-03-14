@@ -42,6 +42,7 @@ const NAV_GROUPS = [
       { id: "browse", label: "Employer Directory", icon: Building2, path: "/browse" },
       { id: "add-company", label: "Add Company", icon: PlusCircle, path: "/add-company" },
       { id: "examples", label: "Top Searched", icon: TrendingUp, path: "/examples" },
+      { id: "rivalries", label: "2026 Rivalries", icon: Flame, path: "/rivalries" },
       { id: "recent-scans", label: "Recent Scans", icon: ScanSearch, path: "/search-your-employer" },
       { id: "values-search", label: "Signal Search", icon: Heart, path: "/values-search" },
     ],
