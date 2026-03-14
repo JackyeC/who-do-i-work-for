@@ -280,7 +280,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Zap className="w-4 h-4 text-primary" />
-                <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-primary font-semibold">
+                <span className="font-mono text-xs tracking-[0.2em] uppercase text-primary font-semibold">
                   2026 Intelligence
                 </span>
               </div>
