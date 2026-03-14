@@ -7,7 +7,7 @@ import {
   AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark,
   Loader2, Sparkles, Search, ClipboardCheck,
   Heart, Brain, Briefcase, ChevronDown, MessageSquareWarning,
-  Scan, BarChart3, Award, GraduationCap, Hammer, Network
+  Scan, BarChart3, Award, GraduationCap, Hammer, Network, FileText
 } from "lucide-react";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { StickyScoreHeader } from "@/components/StickyScoreHeader";
@@ -76,6 +76,7 @@ import { InsiderTradingCard } from "@/components/InsiderTradingCard";
 import { PromotionVelocityCard } from "@/components/PromotionVelocityCard";
 import { IntelligenceSnapshotCard } from "@/components/viral/IntelligenceSnapshotCard";
 import { calculatePVS, deriveSubScores, computeConfidence } from "@/lib/promotionVelocityScore";
+import { PublicRecordsExposure } from "@/components/public-records/PublicRecordsExposure";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -1043,6 +1044,23 @@ export default function CompanyProfile() {
                 onCandidateClick={handleCandidateClick}
               />
             </div>
+          </section>
+
+          <Separator className="mb-8" />
+
+          {/* ═══════════════════════════════════════════════════════════
+              11. PUBLIC RECORDS & NETWORK EXPOSURE
+             ═══════════════════════════════════════════════════════════ */}
+          <section id="section-public-records" className="mb-10 scroll-mt-28">
+            <SectionHeader
+              icon={FileText}
+              title="Public Records & Network Exposure"
+              subtitle="Public records, legal filings, government disclosures, and documented network ties that may matter for reputation, trust, and decision-making"
+            />
+            <PublicRecordsExposure
+              companyName={name}
+              companyId={dbCompany?.id}
+            />
           </section>
 
           <Separator className="mb-8" />
