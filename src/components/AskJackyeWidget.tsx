@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import jackyeHeadshot from "@/assets/jackye-headshot.png";
 import { MessageCircle, X, Send } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
