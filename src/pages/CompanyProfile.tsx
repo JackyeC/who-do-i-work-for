@@ -819,17 +819,8 @@ export default function CompanyProfile() {
 
           <Separator className="mb-8" />
 
-          {/* ═══════════════════════════════════════════════════════════
-              9. ORGANIZATIONAL AFFILIATIONS
-             ═══════════════════════════════════════════════════════════ */}
-          <section className="mb-8">
-            <SectionHeader icon={Network} title="Organizational Affiliations" subtitle="Watchlist signals and ideological connections" />
-            <div className="space-y-4 pl-12">
-              <IdeologyFlagsCard companyName={name} dbCompanyId={dbCompanyId} />
-            </div>
-          </section>
 
-          <Separator className="mb-8" />
+
 
           {/* ═══════════════════════════════════════════════════════════
               10. VALUES CHECK
