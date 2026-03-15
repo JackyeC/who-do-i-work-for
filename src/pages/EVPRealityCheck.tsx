@@ -360,9 +360,9 @@ export default function EVPRealityCheck() {
 
             {/* CTA */}
             <div className="bg-card border border-border p-6 text-center">
-              <h3 className="text-lg font-bold text-foreground mb-2">Need help redesigning your EVP?</h3>
+              <h3 className="text-lg font-bold text-foreground mb-2">Need help fixing the promise?</h3>
               <p className="text-sm text-muted-foreground mb-5 max-w-[460px] mx-auto leading-relaxed">
-                Work with Jackye to redesign your EVP and recruiting narrative based on what the data actually shows.
+                Work with Jackye to redesign your employer brand narrative based on what the data actually shows.
               </p>
               <button
                 onClick={() => navigate("/work-with-jackye")}
