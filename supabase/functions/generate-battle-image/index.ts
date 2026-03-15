@@ -39,7 +39,7 @@ serve(async (req) => {
     }
 
     // Generate a fun battle image with Gemini
-    const prompt = `Create a fun, colorful, cartoon-style corporate battle illustration. On the left side, show a warrior representing "${companyA}" (${industryA || "corporation"}). On the right side, show a warrior representing "${companyB}" (${industryB || "corporation"}). They face each other in an epic showdown arena with dramatic lightning between them. Style: bold colors, exaggerated expressions, humorous corporate satire. Include "VS" text in the center with electric effects. Make it fun and shareable, not mean-spirited. Clean white background behind the arena.`;
+    const prompt = `Create a fun, colorful, cartoon-style corporate battle illustration. On the left side, show a powerful Black woman warrior queen representing "${companyA}" (${industryA || "corporation"}) — she's fierce, confident, regal, dripping in corporate armor and gold accessories. On the right side, show another powerful Black woman warrior queen representing "${companyB}" (${industryB || "corporation"}) — equally fierce and iconic. They face each other in an epic showdown arena with dramatic lightning between them. Style: bold colors, Afrofuturistic vibes, exaggerated expressions, humorous corporate satire. Include "VS" text in the center with electric effects. Make it fun, empowering, and shareable. Clean white background behind the arena.`;
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
