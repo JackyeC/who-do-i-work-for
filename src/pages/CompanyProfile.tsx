@@ -857,13 +857,20 @@ export default function CompanyProfile() {
             const SECTION_RENDERERS: Record<string, () => React.ReactNode> = {
               governance: () => (
                 <section id="section-governance" className="mb-10 scroll-mt-28">
-                  <SectionHeader icon={Shield} title="Governance & Board Structure" subtitle="Board composition, committee oversight, and ownership signals" />
-                  <BoardGovernanceTab companyId={dbCompanyId || ""} companyName={name} ticker={dbCompany?.ticker} secCik={dbCompany?.sec_cik} />
-                  {dbCompanyId && dbCompany?.is_publicly_traded && (
-                    <div className="mt-4">
-                      <InsiderTradingCard companyId={dbCompanyId} companyName={name} ticker={dbCompany?.ticker} cik={dbCompany?.sec_cik} />
-                    </div>
-                  )}
+                  <SectionHeader icon={Shield} title="Governance & Board Structure" subtitle="Board composition, committee oversight, ownership signals, and corporate family" />
+                  <div className="space-y-4">
+                    <CorporateOwnershipCard
+                      companyId={dbCompanyId || ""}
+                      companyName={name}
+                      parentCompany={(dbCompany as any)?.parent_company}
+                    />
+                    <BoardGovernanceTab companyId={dbCompanyId || ""} companyName={name} ticker={dbCompany?.ticker} secCik={dbCompany?.sec_cik} />
+                    {dbCompanyId && dbCompany?.is_publicly_traded && (
+                      <div className="mt-4">
+                        <InsiderTradingCard companyId={dbCompanyId} companyName={name} ticker={dbCompany?.ticker} cik={dbCompany?.sec_cik} />
+                      </div>
+                    )}
+                  </div>
                 </section>
               ),
               workforce_intel: () => (
