@@ -170,6 +170,26 @@ function extractCompensation(facts: Record<string, Record<string, CompanyFact>>)
   return results;
 }
 
+// Keywords for detecting board diversity disclosures in proxy filings (2026-updated)
+const DIVERSITY_KEYWORDS = [
+  'board diversity matrix',
+  'diversity matrix',
+  'skills matrix',
+  'board composition',
+  'director diversity',
+  'board demographics',
+  'self-identified diversity',
+  'gender identity',
+  'african american or black',
+  'hispanic or latinx',
+  'lgbtq',
+  'director qualifications matrix',
+  'board refreshment',
+  'demographic background',
+  'underrepresented',
+  'board nominee diversity',
+];
+
 // Extract insider trading signals from recent filings
 function extractInsiderFilings(submissions: EdgarSubmission): any[] {
   const results: any[] = [];
