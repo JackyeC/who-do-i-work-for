@@ -1,11 +1,13 @@
 import { useMemo } from "react";
 import { ContentProtector } from "@/components/ContentProtector";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { usePageSEO } from "@/hooks/use-page-seo";
+import { getOGImageUrl } from "@/lib/social-share";
 import {
   Building2, Lightbulb, Network, Landmark,
   Sparkles, Users, Heart, Loader2, ShoppingCart,
-  BarChart3, TrendingUp, User, Megaphone, Target,
+  BarChart3, TrendingUp, User, Megaphone, Target, AlertTriangle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -155,6 +157,13 @@ export default function CompanyDossier() {
   const hasFullAccess = isTracked;
   const LensMeta = LENS_META[lens];
   const LensIcon = LensMeta.icon;
+
+  usePageSEO({
+    title: `Should I Work at ${company.name}? Career Risk Report`,
+    description: `Should you work at ${company.name}? See the Career Risk Score: leadership stability, layoff history, pay vs. industry benchmarks, and political activity.`,
+    path: `/company/${id}`,
+    image: getOGImageUrl({ type: "company", companyA: company.name }),
+  });
 
   /* ─── Shared overview (always visible) ─── */
   const overviewContent = (
@@ -337,6 +346,34 @@ export default function CompanyDossier() {
             fullContent={fullContent}
           />
           <TransparencyDisclaimer />
+
+          {/* Cross-links to other intelligence tools */}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Link
+              to="/reality-check"
+              className="flex items-center gap-3 p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-4 h-4 text-destructive" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">Got an offer from {company.name}?</p>
+                <p className="text-[11px] text-muted-foreground">Check for red flags with the Reality Check →</p>
+              </div>
+            </Link>
+            <Link
+              to="/ask-jackye"
+              className="flex items-center gap-3 p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Sparkles className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">Ask the Intelligence Advisor</p>
+                <p className="text-[11px] text-muted-foreground">Get a deep analysis of {company.name} →</p>
+              </div>
+            </Link>
+          </div>
         </div>
       </main>
       <Footer />
