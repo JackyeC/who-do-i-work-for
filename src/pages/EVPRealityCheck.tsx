@@ -138,7 +138,7 @@ function analyzeEvp(text: string): EvpResult {
   // Jackye recommendation
   let jackyeRec: string;
   if (score >= 80) {
-    jackyeRec = "Your EVP messaging largely holds up against the public signals. That's rare. Keep it honest — and back your claims with data where you can. The candidates checking are the ones you actually want.";
+    jackyeRec = "Your employer messaging largely holds up against the public signals. That's rare. Keep it honest — and back your claims with data where you can. The candidates checking are the ones you actually want.";
   } else if (score >= 60) {
     jackyeRec = `Your messaging is mostly on track, but there are ${gaps} area${gaps !== 1 ? "s" : ""} where the public data doesn't fully support what you're saying. That's not a crisis — it's an opportunity. Close the gaps before a candidate or journalist does it for you. Start with the contradictions first.`;
   } else if (score >= 40) {
