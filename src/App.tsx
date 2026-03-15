@@ -115,6 +115,7 @@ const App = () => (
                 <Route path="/board-intelligence" element={<BoardIntelligence />} />
                 <Route path="/leader/:id" element={<LeaderProfile />} />
                 <Route path="/one-pager" element={<OnePager />} />
+                <Route path="/demo" element={<Demo />} />
                 <Route path="/check" element={<Check />} />
                 <Route path="/policy" element={<PolicyHub />} />
                 <Route path="/policy/:id" element={<PolicyDetail />} />
