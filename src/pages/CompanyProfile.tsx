@@ -511,6 +511,8 @@ export default function CompanyProfile() {
             transparencyScore={transparencyScore}
             civicFootprintScore={civicScore}
           />
+
+          {/* ═══════════════════════════════════════════════════════════
               CORPORATE CHARACTER SCORE™
              ═══════════════════════════════════════════════════════════ */}
           <div className="mb-6 grid lg:grid-cols-3 gap-4">
