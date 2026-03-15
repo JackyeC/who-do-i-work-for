@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Activity } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   Building2, ArrowLeft, DollarSign, Users, Flag,
