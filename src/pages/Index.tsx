@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap } from "lucide-react";
 import { AnimatedDemo } from "@/components/landing/AnimatedDemo";
+import { MiniReportTeaser } from "@/components/landing/MiniReportTeaser";
+import { ExitIntentCapture } from "@/components/ExitIntentCapture";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { EmailCapture } from "@/components/landing/EmailCapture";
 import { usePageSEO } from "@/hooks/use-page-seo";
