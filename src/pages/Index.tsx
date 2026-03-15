@@ -78,23 +78,15 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl lg:text-[clamp(2.4rem,5vw,3.6rem)] leading-tight mb-6 text-foreground"
           >
-            Who Do I Work For? <span className="font-mono text-xs tracking-wider uppercase px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded-sm align-middle">Beta</span>
+            You vetted the candidate. Who vetted the employer? <span className="font-mono text-xs tracking-wider uppercase px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded-sm align-middle">Beta</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-body-lg text-foreground/80 mb-3 max-w-[480px]"
+            className="text-body-lg text-foreground/80 mb-8 max-w-[480px]"
           >
-            Career intelligence before you accept the offer.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.25 }}
-            className="text-body text-muted-foreground mb-8 max-w-[480px]"
-          >
-            Research the company behind the job offer. Understand leadership, lobbying, labor signals, and accountability data before you decide where to work.
+            Before your candidate signs, surface the compensation reality, non-compete traps, and accountability gaps behind the offer — sourced from FEC, SEC, and BLS data.
           </motion.p>
           <HeroSearch />
           <motion.div
