@@ -882,8 +882,12 @@ import { DiversityDisclosureTracker } from "@/components/intelligence/DiversityD
               ),
               workforce_intel: () => (
                 <section id="section-workforce" className="mb-10 scroll-mt-28">
-                  <SectionHeader icon={TrendingUp} title="Workforce Intelligence" subtitle="Worker sentiment, hiring technology, and benefits signals" />
+                  <SectionHeader icon={TrendingUp} title="Workforce Intelligence" subtitle="Worker demographics, sentiment, hiring technology, and benefits signals" />
                   <div className="space-y-4">
+                    <EarlyWarningSignals companyId={dbCompanyId} companyName={name} />
+                    <EEO1WorkforceCard companyId={dbCompanyId} companyName={name} />
+                    <ExecutiveInclusionSnapshot companyId={dbCompanyId} companyName={name} />
+                    <DiversityDisclosureTracker companyId={dbCompanyId} companyName={name} />
                     <WorkerSentimentCard companyName={name} dbCompanyId={dbCompanyId} />
                     <AIHiringCard companyName={name} dbCompanyId={dbCompanyId} />
                     <WorkerBenefitsCard companyName={name} dbCompanyId={dbCompanyId} />
