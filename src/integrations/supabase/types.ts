@@ -7204,6 +7204,77 @@ export type Database = {
           },
         ]
       }
+      vibe_match_responses: {
+        Row: {
+          additional_notes: string | null
+          advisor_analysis: string | null
+          boundary_reaction: number
+          challenge_consistency: number
+          company_id: string
+          company_name: string
+          created_at: string
+          id: string
+          interview_date: string | null
+          job_title: string | null
+          overall_vibe_score: number | null
+          panel_diversity: number
+          predecessor_respect: number
+          process_organization: number
+          reality_gap_score: number | null
+          success_clarity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          advisor_analysis?: string | null
+          boundary_reaction?: number
+          challenge_consistency?: number
+          company_id: string
+          company_name: string
+          created_at?: string
+          id?: string
+          interview_date?: string | null
+          job_title?: string | null
+          overall_vibe_score?: number | null
+          panel_diversity?: number
+          predecessor_respect?: number
+          process_organization?: number
+          reality_gap_score?: number | null
+          success_clarity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          additional_notes?: string | null
+          advisor_analysis?: string | null
+          boundary_reaction?: number
+          challenge_consistency?: number
+          company_id?: string
+          company_name?: string
+          created_at?: string
+          id?: string
+          interview_date?: string | null
+          job_title?: string | null
+          overall_vibe_score?: number | null
+          panel_diversity?: number
+          predecessor_respect?: number
+          process_organization?: number
+          reality_gap_score?: number | null
+          success_clarity?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vibe_match_responses_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       warn_sync_log: {
         Row: {
           created_at: string
