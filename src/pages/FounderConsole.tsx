@@ -314,8 +314,13 @@ export default function FounderConsole() {
           </div>
         </div>
 
-        {/* Search Intelligence */}
+        {/* WARN / Layoff Heatmap */}
         <div className="mt-8">
+          <WarnHeatmapPanel />
+        </div>
+
+        {/* Search Intelligence */}
+        <div className="mt-6">
           <SearchIntelligencePanel />
         </div>
 
