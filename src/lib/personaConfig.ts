@@ -290,6 +290,56 @@ export const PERSONAS: PersonaConfig[] = [
       },
     ],
   },
+  {
+    id: "employer",
+    label: "Employer",
+    shortLabel: "Employer",
+    icon: "Building2",
+    description: "What does the talent market see about your company? Claim your profile and manage your employer brand.",
+    question: "What do candidates see?",
+    accessTier: "freemium",
+    primarySections: ["cbi", "workforce_intel", "narrative_power", "compensation", "recruiter_reality", "workforce_stability"],
+    secondarySections: ["governance", "values"],
+    hiddenSections: ["influence", "public_records", "gtm"],
+    primaryScores: ["cbi", "recruiter_reality"],
+    buckets: [
+      {
+        id: "employer_snapshot",
+        title: "Employer Brand Snapshot",
+        subtitle: "What candidates and employees see when they research your company — scores, sentiment, and transparency signals.",
+        iconName: "Eye",
+        sections: ["cbi", "narrative_power"],
+      },
+      {
+        id: "talent_perception",
+        title: "Talent Market Perception",
+        subtitle: "How your workforce data, compensation positioning, and hiring signals appear to the outside world.",
+        iconName: "Users",
+        sections: ["workforce_intel", "compensation"],
+      },
+      {
+        id: "recruiting_readiness",
+        title: "Recruiting Readiness",
+        subtitle: "Your hiring funnel health, recruiter signals, and candidate experience indicators.",
+        iconName: "Activity",
+        sections: ["recruiter_reality"],
+      },
+      {
+        id: "stability_reputation",
+        title: "Stability & Reputation Signals",
+        subtitle: "Layoff history, leadership stability, and governance signals that shape candidate confidence.",
+        iconName: "Shield",
+        sections: ["workforce_stability", "governance"],
+      },
+      {
+        id: "values_alignment",
+        title: "Values & Culture Alignment",
+        subtitle: "How your public commitments, DEI signals, and ethical footprint are perceived by the talent market.",
+        iconName: "Heart",
+        sections: ["values"],
+      },
+    ],
+  },
 ];
 
 export function getPersonaConfig(id: PersonaId): PersonaConfig {
