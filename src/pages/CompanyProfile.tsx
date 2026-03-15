@@ -29,7 +29,7 @@ import { CompensationTransparencyCard } from "@/components/CompensationTranspare
 import { PromotionEquityCard } from "@/components/PromotionEquityCard";
 import { WarnTrackerCard } from "@/components/WarnTrackerCard";
 
-
+import { ValuesNudgeBanner } from "@/components/onboarding/ValuesNudgeBanner";
 import { AgencyContractsCard } from "@/components/AgencyContractsCard";
 import { ROIPipelineCard } from "@/components/ROIPipelineCard";
 import { OpenSecretsEnrichmentCard } from "@/components/OpenSecretsEnrichmentCard";
