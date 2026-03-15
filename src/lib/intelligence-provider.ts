@@ -63,6 +63,15 @@ export const SECTION_PROVIDERS: Record<IntelligenceSection, ProviderName[]> = {
   ai_hiring: ['firecrawl', 'scrapingbee'],
   ideology: ['government_api', 'firecrawl'],
   benefits: ['government_api', 'firecrawl'],
+  sanctions_screening: ['government_api'],
+  wikidata_enrichment: ['government_api'],
+  corporate_structure: ['government_api'],
+  political_influence: ['government_api'],
+  legal_risk: ['government_api'],
+  lobbying: ['government_api'],
+  government_contracts: ['government_api'],
+  insider_trading: ['government_api'],
+  sec_filings: ['government_api'],
 };
 
 /** Human-readable section labels */
