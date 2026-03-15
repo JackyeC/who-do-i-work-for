@@ -186,6 +186,7 @@ const App = () => (
                   <Route path="/founder-console" element={<AdminRoute><FounderConsole /></AdminRoute>} />
                   <Route path="/recruiting" element={<RecruitingIntelligence />} />
                   <Route path="/employer/verification-pending" element={<ProtectedRoute><EmployerVerificationPending /></ProtectedRoute>} />
+                  <Route path="/for-employers" element={<ForEmployers />} />
                   <Route path="/relationship-intelligence" element={<ProtectedRoute><RelationshipIntelligence /></ProtectedRoute>} />
                   <Route path="/compare" element={<CompareCompanies />} />
                   <Route path="/investigative" element={<InvestigativeExplorer />} />
