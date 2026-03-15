@@ -7,7 +7,7 @@ import { getOGImageUrl } from "@/lib/social-share";
 import {
   Building2, Lightbulb, Network, Landmark,
   Sparkles, Users, Heart, Loader2, ShoppingCart,
-  BarChart3, TrendingUp, User, Megaphone, Target,
+  BarChart3, TrendingUp, User, Megaphone, Target, AlertTriangle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
