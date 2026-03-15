@@ -6,6 +6,7 @@ import { CompensationHealthPanel } from "@/components/admin/CompensationHealthPa
 import { FounderNotesPanel } from "@/components/admin/FounderNotesPanel";
 import { SearchIntelligencePanel } from "@/components/admin/SearchIntelligencePanel";
 import { WarnHeatmapPanel } from "@/components/admin/WarnHeatmapPanel";
+import { ConversionFunnelPanel } from "@/components/admin/ConversionFunnelPanel";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
