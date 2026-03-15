@@ -49,7 +49,7 @@ function analyzeEvp(text: string): EvpResult {
   } else {
     comparisons.push({
       category: "Workforce Stability", icon: Users,
-      claimExcerpt: "No stability claims detected in EVP copy",
+      claimExcerpt: "No stability claims detected in employer brand copy",
       signalReality: "Workforce appears stable. No WARN filings detected. Missing an opportunity to highlight this.",
       alignment: "aligned",
     });
