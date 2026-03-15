@@ -94,6 +94,8 @@ import { NarrativePowerSection } from "@/components/narrative-power";
 import { JackyeNote } from "@/components/JackyeNote";
 import { CorporateOwnershipCard } from "@/components/CorporateOwnershipCard";
 import { ReceiptsTimeline } from "@/components/ReceiptsTimeline";
+import { LevelsFyiEmbed } from "@/components/company/LevelsFyiEmbed";
+import { TransparencyResearchTab } from "@/components/company/TransparencyResearchTab";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
