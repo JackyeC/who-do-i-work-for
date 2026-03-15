@@ -41,7 +41,7 @@ export const PERSONAS: PersonaConfig[] = [
     question: "Should I work here?",
     accessTier: "free",
     primarySections: ["revenue_model", "leadership", "workforce_reality", "career_mobility", "ethical_footprint", "stability"],
-    secondarySections: ["governance", "influence", "narrative_power", "public_records"],
+    secondarySections: ["governance", "influence", "narrative_power", "public_records", "receipts_timeline"],
     hiddenSections: ["gtm"],
     primaryScores: ["cbi", "career_risk", "recruiter_reality", "promotion_velocity", "layoff_probability"],
     buckets: [
