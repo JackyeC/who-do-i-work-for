@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   Shield, Loader2, ExternalLink, RefreshCw, Clock, AlertTriangle,
   CheckCircle2, XCircle, Bot, Video, Search, Brain, FileCheck,
-  AlertOctagon, Eye
+  AlertOctagon, Eye, CloudOff
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
+import { SavedIntelligenceBadge } from "@/components/scan/ScanUnavailableBanner";
 
 interface AIAccountabilityCardProps {
   companyName: string;
