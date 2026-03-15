@@ -368,7 +368,7 @@ export default function EVPRealityCheck() {
                 onClick={() => navigate("/work-with-jackye")}
                 className="bg-primary text-primary-foreground px-6 py-3 font-mono text-[0.7rem] font-semibold tracking-wider uppercase hover:brightness-110 transition-all inline-flex items-center gap-2"
               >
-                Request EVP Advisory <ChevronRight className="w-4 h-4" />
+                Request Advisory <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
