@@ -8,6 +8,7 @@ import { CompanySelector } from "@/components/compare/CompanySelector";
 import { ScoreShowdown } from "@/components/compare/ScoreShowdown";
 import { MetricBattle } from "@/components/compare/MetricBattle";
 import { CompareShareBar } from "@/components/compare/CompareShareBar";
+import { BattleImage } from "@/components/compare/BattleImage";
 
 interface CompanyData {
   id: string;
@@ -115,6 +116,12 @@ export default function CompareCompanies() {
         {/* Results */}
         {companyA && companyB && (
           <>
+            <BattleImage
+              companyA={companyA.name}
+              companyB={companyB.name}
+              industryA={companyA.industry}
+              industryB={companyB.industry}
+            />
             <ScoreShowdown companyA={companyA} companyB={companyB} />
             <MetricBattle companyA={companyA} companyB={companyB} />
             <CompareShareBar

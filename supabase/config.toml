@@ -27,5 +27,8 @@ verify_jwt = false
 [functions.leader-enrich]
 verify_jwt = false
 
+[functions.generate-battle-image]
+verify_jwt = false
+
 [functions.eeoc-case-scanner]
 verify_jwt = false
