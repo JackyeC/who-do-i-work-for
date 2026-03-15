@@ -39,6 +39,7 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "Briefcase",
     description: "Should I work here? What a company really is — not what their careers page says.",
     question: "Should I work here?",
+    accessTier: "free",
     primarySections: ["revenue_model", "leadership", "workforce_reality", "career_mobility", "ethical_footprint", "stability"],
     secondarySections: ["governance", "influence", "narrative_power", "public_records"],
     hiddenSections: ["gtm"],
