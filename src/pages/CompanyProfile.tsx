@@ -61,6 +61,7 @@ import { useCompanySEO } from "@/hooks/use-company-seo";
 import { useToast } from "@/hooks/use-toast";
 import { ContentProtector } from "@/components/ContentProtector";
 import { ReportTeaserGate } from "@/components/ReportTeaserGate";
+import { PostReportNudge } from "@/components/PostReportNudge";
 import { SankeyInfluenceDiagram } from "@/components/SankeyInfluenceDiagram";
 import { CareerRiskReport } from "@/components/CareerRiskReport";
 import { BoardGovernanceTab } from "@/components/BoardGovernanceTab";
