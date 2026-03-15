@@ -170,9 +170,39 @@ export function getOGImageUrl(ctx: ShareContext): string {
       const key = ctx.companyA.toLowerCase().replace(/[^a-z0-9]/g, '');
       return `${bucketBase}/og-scorecard-${key}.png`;
     }
+    case "receipt": {
+      const key = ctx.companyA.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return `${bucketBase}/og-receipt-${key}-${ctx.scoreA || 0}.png`;
+    }
+    case "career-risk": {
+      const key = ctx.companyA.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return `${bucketBase}/og-career-risk-${key}-${ctx.scoreA || 0}.png`;
+    }
     case "rivalry":
       return `${BASE_URL}/og-image.png`;
     default:
       return `${BASE_URL}/og-image.png`;
   }
+}
+
+/** Pre-generate OG card via edge function (best-effort, fire-and-forget) */
+export async function preGenerateOGCard(ctx: ShareContext): Promise<void> {
+  const { supabase } = await import("@/integrations/supabase/client");
+  
+  const body: Record<string, unknown> = { type: ctx.type, companyA: ctx.companyA, scoreA: ctx.scoreA };
+  
+  if (ctx.type === "battle") {
+    body.companyB = ctx.companyB;
+    body.scoreB = ctx.scoreB;
+    body.industryA = ctx.industry;
+    body.industryB = ctx.industry;
+  } else if (ctx.type === "company" || ctx.type === "scorecard") {
+    body.industryA = ctx.industry;
+  } else if (ctx.type === "receipt") {
+    body.signals = ctx.signals;
+  } else if (ctx.type === "career-risk") {
+    body.dimensions = ctx.dimensions;
+  }
+
+  supabase.functions.invoke("generate-og-card", { body }).catch(() => {});
 }
