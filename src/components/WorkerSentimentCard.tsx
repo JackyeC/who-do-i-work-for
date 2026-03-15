@@ -99,33 +99,25 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
     enabled: !!dbCompanyId,
   });
 
-  const runScan = async () => {
-    if (!dbCompanyId) {
-      toast({ title: "No database ID", description: "This company isn't linked to live data yet.", variant: "destructive" });
-      return;
-    }
-    setIsScanning(true);
-    setScanStartTime(Date.now());
-    setElapsed(0);
-    try {
-      const { data, error } = await supabase.functions.invoke("worker-sentiment-scan", {
-        body: { companyId: dbCompanyId, companyName },
-      });
-      if (error) throw error;
-      if (data?.success) {
-        setLiveResult(data.data);
-        refetch();
-        toast({ title: "Scan complete", description: `Analyzed ${data.data.resultCount} sources for worker sentiment.` });
-      } else {
-        throw new Error(data?.error || "Scan failed");
-      }
-    } catch (e: any) {
-      toast({ title: "Scan failed", description: e.message || "Could not complete worker sentiment scan.", variant: "destructive" });
-    } finally {
-      setIsScanning(false);
-      setScanStartTime(null);
-    }
-  };
+  const [firecrawlDown, setFirecrawlDown] = useState(false);
+
+  const { runScan, isFirecrawlDown, cooldownMinutes } = useScanWithFallback({
+    functionName: "worker-sentiment-scan",
+    companyId: dbCompanyId,
+    companyName,
+    setLoading: (v) => {
+      setIsScanning(v);
+      if (v) { setScanStartTime(Date.now()); setElapsed(0); }
+      else { setScanStartTime(null); }
+    },
+    onSuccess: (data) => {
+      setLiveResult(data.data);
+      refetch();
+    },
+    onError: (reason) => {
+      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+    },
+  });
 
   const result: SentimentResult | null = liveResult || (cachedScan ? {
     overallRating: cachedScan.overall_rating,
