@@ -59,6 +59,7 @@ import EconomyDashboard from "./pages/EconomyDashboard";
 import FollowTheMoney from "./pages/FollowTheMoney";
 import AskJackye from "./pages/AskJackye";
 import OnePager from "./pages/OnePager";
+import Demo from "./pages/Demo";
 import WouldYouWorkHere from "./pages/WouldYouWorkHere";
 import WorkWithJackye from "./pages/WorkWithJackye";
 import EmployerReceipt from "./pages/EmployerReceipt";
@@ -114,6 +115,7 @@ const App = () => (
                 <Route path="/board-intelligence" element={<BoardIntelligence />} />
                 <Route path="/leader/:id" element={<LeaderProfile />} />
                 <Route path="/one-pager" element={<OnePager />} />
+                <Route path="/demo" element={<Demo />} />
                 <Route path="/check" element={<Check />} />
                 <Route path="/policy" element={<PolicyHub />} />
                 <Route path="/policy/:id" element={<PolicyDetail />} />
