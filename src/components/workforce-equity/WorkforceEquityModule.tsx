@@ -9,7 +9,12 @@ import {
   calculatePVS, deriveSubScores, computeConfidence,
   type PVSInput,
 } from "@/lib/promotionVelocityScore";
+import {
+  calculateVibeScore, deriveLeadershipEquity, deriveEmployeeExperience,
+  deriveSocialCommitment, computeVibeConfidence,
+} from "@/lib/vibeScore";
 import { PromotionVelocityGauge } from "./PromotionVelocityGauge";
+import { VibeScoreGauge } from "./VibeScoreGauge";
 import { ScoreBreakdownTable } from "./ScoreBreakdownTable";
 import { RepresentationSnapshot } from "./RepresentationSnapshot";
 import { SignalSection } from "./SignalSection";
