@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { Search, Loader2, Sparkles } from "lucide-react";
+import { Search, Loader2, Sparkles, AlertTriangle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
@@ -189,15 +190,26 @@ export default function SearchResults() {
               </>
             ) : (
               <>
-                <Sparkles className="w-8 h-8 text-primary mx-auto mb-4" />
-                <h2 className="text-lg font-semibold text-foreground mb-2">"{initialQuery}" isn't in our database yet</h2>
-                <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
-                  We can automatically discover, verify, and research this company from public sources.
+                <Search className="w-8 h-8 text-muted-foreground mx-auto mb-4" />
+                <h2 className="text-lg font-semibold text-foreground mb-2">
+                  🔍 Company not vetted yet.
+                </h2>
+                <p className="text-sm text-muted-foreground mb-2 max-w-md mx-auto">
+                  <span className="font-medium text-foreground">"{initialQuery}"</span> isn't in our vetted database.
+                  Start a Global Intelligence Scan to pull leadership, political spending, and workplace policy signals.
                 </p>
+                <Badge variant="outline" className="text-[10px] mb-4">
+                  <AlertTriangle className="w-2.5 h-2.5 mr-1" />
+                  AI Draft — Jackye's Vetting Pending
+                </Badge>
+                <br />
                 <Button onClick={handleManualDiscover} disabled={isDiscovering} className="gap-2">
-                  {isDiscovering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                  Discover & Research
+                  {isDiscovering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                  Start Global Intelligence Scan
                 </Button>
+                <p className="text-[11px] text-muted-foreground mt-3">
+                  Results are AI-generated previews. Full vetting requires Jackye's review.
+                </p>
               </>
             )}
           </div>

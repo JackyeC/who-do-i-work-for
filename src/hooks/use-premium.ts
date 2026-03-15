@@ -44,6 +44,18 @@ export const STRIPE_TIERS = {
     label: "Employer Certification",
     price: "$499/yr",
   },
+  single_job_credit: {
+    price_id: "price_1TBO3F7Qj0W6UtN9oEHb8dHf",
+    product_id: "prod_U9hSYR4gJNJj8i",
+    label: "Single Job Credit",
+    price: "$199",
+  },
+  founding_partner: {
+    price_id: "price_1TBO3H7Qj0W6UtN93hPQ1gPb",
+    product_id: "prod_U9hSPGFXjc7Yyk",
+    label: "Founding Partner Certification",
+    price: "$599/yr",
+  },
 } as const;
 
 export interface PremiumFeatures {
