@@ -9,7 +9,7 @@ import {
   AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark,
   Loader2, Sparkles, Search, ClipboardCheck,
   Heart, Brain, Briefcase, ChevronDown, MessageSquareWarning,
-  Scan, BarChart3, Award, GraduationCap, Hammer, Network, FileText, Radio, Eye
+  Scan, BarChart3, Award, GraduationCap, Hammer, Network, FileText, Radio, Eye, Clock
 } from "lucide-react";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { StickyScoreHeader } from "@/components/StickyScoreHeader";
@@ -83,6 +83,7 @@ import { PublicRecordsExposure } from "@/components/public-records/PublicRecords
 import { NarrativePowerSection } from "@/components/narrative-power";
 import { JackyeNote } from "@/components/JackyeNote";
 import { CorporateOwnershipCard } from "@/components/CorporateOwnershipCard";
+import { ReceiptsTimeline } from "@/components/ReceiptsTimeline";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -1071,6 +1072,12 @@ export default function CompanyProfile() {
                 <section id="section-narrative-power" className="mb-10 scroll-mt-28">
                   <SectionHeader icon={Radio} title="Who Shapes the Narrative" subtitle="PR firms, influencers, advocacy groups, think tanks, and coordinated messaging networks" />
                   <NarrativePowerSection companyName={name} companyId={dbCompany?.id} />
+                </section>
+              ),
+              receipts_timeline: () => (
+                <section id="section-receipts-timeline" className="mb-10 scroll-mt-28">
+                  <SectionHeader icon={Clock} title="Receipts Timeline" subtitle="Chronological evidence trail — what happened, when, and according to whom" />
+                  {dbCompanyId && <ReceiptsTimeline companyId={dbCompanyId} companyName={name} />}
                 </section>
               ),
             };

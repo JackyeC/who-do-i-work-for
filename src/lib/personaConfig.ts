@@ -41,7 +41,7 @@ export const PERSONAS: PersonaConfig[] = [
     question: "Should I work here?",
     accessTier: "free",
     primarySections: ["revenue_model", "leadership", "workforce_reality", "career_mobility", "ethical_footprint", "stability"],
-    secondarySections: ["governance", "influence", "narrative_power", "public_records"],
+    secondarySections: ["governance", "influence", "narrative_power", "public_records", "receipts_timeline"],
     hiddenSections: ["gtm"],
     primaryScores: ["cbi", "career_risk", "recruiter_reality", "promotion_velocity", "layoff_probability"],
     buckets: [
@@ -98,7 +98,7 @@ export const PERSONAS: PersonaConfig[] = [
     question: "Should I stay?",
     accessTier: "free",
     primarySections: ["promotion_velocity", "workforce_stability", "governance", "compensation", "workforce_intel", "values", "narrative_power", "public_records"],
-    secondarySections: ["career_risk", "influence"],
+    secondarySections: ["career_risk", "influence", "receipts_timeline"],
     hiddenSections: ["recruiter_reality", "gtm"],
     primaryScores: ["cbi", "promotion_velocity", "career_risk", "layoff_probability"],
     buckets: [
@@ -234,7 +234,7 @@ export const PERSONAS: PersonaConfig[] = [
     question: "What is really happening here?",
     accessTier: "paid",
     requiredPlan: "professional",
-    primarySections: ["cbi", "influence", "narrative_power", "public_records", "governance", "workforce_stability", "compensation", "workforce_intel", "promotion_velocity", "gtm", "values"],
+    primarySections: ["cbi", "influence", "narrative_power", "public_records", "receipts_timeline", "governance", "workforce_stability", "compensation", "workforce_intel", "promotion_velocity", "gtm", "values"],
     secondarySections: ["recruiter_reality", "career_risk"],
     hiddenSections: [],
     primaryScores: ["cbi", "career_risk", "gtm", "promotion_velocity", "layoff_probability", "recruiter_reality"],
