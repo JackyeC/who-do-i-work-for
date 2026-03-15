@@ -86,6 +86,15 @@ export const SECTION_LABELS: Record<IntelligenceSection, string> = {
   ai_hiring: 'AI in Hiring',
   ideology: 'Political & Ideology',
   benefits: 'Benefits & Perks',
+  sanctions_screening: 'Sanctions & Watchlists',
+  wikidata_enrichment: 'Entity Intelligence',
+  corporate_structure: 'Corporate Structure',
+  political_influence: 'Political Influence',
+  legal_risk: 'Legal Risk',
+  lobbying: 'Lobbying Activity',
+  government_contracts: 'Government Contracts',
+  insider_trading: 'Insider Trading',
+  sec_filings: 'SEC Filings',
 };
 
 /** Check if a section is stale based on its TTL */
