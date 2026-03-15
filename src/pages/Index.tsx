@@ -107,7 +107,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               onClick={() => navigate("/login")}
               className="bg-primary text-primary-foreground px-7 py-3 font-mono text-xs font-semibold tracking-wider uppercase hover:brightness-110 transition-all"
             >
-              Get Full Access
+              Scan the Employer
             </button>
             <button
               onClick={() => navigate("/would-you-work-here")}
