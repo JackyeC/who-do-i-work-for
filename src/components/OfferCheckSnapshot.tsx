@@ -39,6 +39,7 @@ interface OfferCheckSnapshotProps {
   verdict: SnapshotVerdict;
   sections: SnapshotSection[];
   jackyeTake?: string;
+  loading?: boolean;
 }
 
 /* ── Signal level styling ── */
