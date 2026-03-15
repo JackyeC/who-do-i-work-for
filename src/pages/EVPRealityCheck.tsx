@@ -76,7 +76,7 @@ function analyzeEvp(text: string): EvpResult {
   } else {
     comparisons.push({
       category: "Compensation Transparency", icon: DollarSign,
-      claimExcerpt: "No compensation claims in EVP copy",
+      claimExcerpt: "No compensation claims in employer brand copy",
       signalReality: "Compensation data shows partial transparency. Not addressing it may raise candidate suspicion.",
       alignment: "gap",
     });
