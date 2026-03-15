@@ -12,7 +12,7 @@ const SERVICES = [
   },
   {
     title: "Recruiting & Talent Acquisition Advisory",
-    desc: "Jackye works with your recruiting team to audit your EVP, anticipate candidate objections, and build intelligence-backed talk tracks that close.",
+    desc: "Jackye works with your recruiting team to audit your employer promises, anticipate candidate objections, and build intelligence-backed talk tracks that close.",
     for: "Recruiters · TA Leaders",
     format: "Engagement-based",
   },
@@ -23,8 +23,8 @@ const SERVICES = [
     format: "Advisory retainer or project",
   },
   {
-    title: "Employer Brand & EVP Strategy",
-    desc: "Your EVP is only as strong as the data behind it. Jackye audits your employer brand against real signals and helps you close the gap between what you say and what employees experience.",
+    title: "Employer Brand & Promise Strategy",
+    desc: "Your Employee Value Proposition is only as strong as the data behind it. Jackye audits your employer brand against real signals and helps you close the gap between what you say and what employees experience.",
     for: "CHROs · People Leaders",
     format: "Workshop + deliverable",
   },

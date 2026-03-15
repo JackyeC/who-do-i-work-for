@@ -27,7 +27,7 @@ const OnePager = () => {
           <div className="font-mono text-micro tracking-[0.2em] uppercase text-civic-red mb-2">The Problem</div>
           <div className="font-serif text-body-lg leading-relaxed text-foreground">
             Candidates spend months interviewing for a job, then accept an offer without knowing{" "}
-            <em className="text-primary italic">who they're really working for</em> — or what the company's data actually says about culture, compensation, and values. HR teams build EVP decks disconnected from reality. Recruiters lose candidates at the offer stage because they don't have the intelligence to get ahead of objections.{" "}
+            <em className="text-primary italic">who they're really working for</em> — or what the company's data actually says about culture, compensation, and values. HR teams build employer promises disconnected from reality. Recruiters lose candidates at the offer stage because they don't have the intelligence to get ahead of objections.{" "}
             <em className="text-primary italic">We fix all three.</em>
           </div>
         </div>
@@ -38,7 +38,7 @@ const OnePager = () => {
             { num: "01 — Intelligence", title: "Connection Chain", body: "Every verified link between a company and its political donors, lobbying firms, PAC contributions, federal contracts, and regulatory relationships. Bloomberg-grade transparency for hiring decisions.", tag: "FEC · USASpending · OpenSecrets · SEC EDGAR" },
             { num: "02 — Protection", title: "Offer Letter Analyzer", body: "Benchmarks salary, flags non-compete language, identifies benefits gaps, and provides a negotiation guide — before you sign. Know your number. Know your rights. Know what to push back on.", tag: "Real-time salary data · Contract language detection" },
             { num: "03 — Coaching", title: "Ask Jackye — AI Coach", body: "Jackye Clayton's 20+ years of HR expertise as your personal career strategist. Available 24/7. She'll tell you what HR won't say and what most coaches are afraid to say out loud.", tag: "Jackye's methodology · Your situation · Your decisions" },
-            { num: "04 — HR Intelligence", title: "EVP Intelligence", body: "HR professionals: audit your Employee Value Proposition against what the data actually shows. Close the gap between what you promise and what employees experience — before candidates surface it first.", tag: "For CHROs · Recruiters · HR Business Partners" },
+            { num: "04 — HR Intelligence", title: "Employer Promise Check", body: "HR professionals: audit your Employee Value Proposition against what the data actually shows. Close the gap between what you promise and what employees experience — before candidates surface it first.", tag: "For CHROs · Recruiters · HR Business Partners" },
           ].map(m => (
             <div key={m.num} className="bg-background p-5">
               <div className="font-mono text-[9px] text-muted-foreground tracking-wider mb-2">{m.num}</div>
@@ -53,7 +53,7 @@ const OnePager = () => {
         <div className="grid grid-cols-3 gap-px bg-border border border-border mb-8">
           {[
             { label: "For Candidates", title: "No more blind offers", items: ["Run intelligence before accepting", "Benchmark your compensation", "Know who you actually work for", "Negotiate from data, not hope"] },
-            { label: "For HR Professionals", title: "EVP that holds up to scrutiny", items: ["Audit EVP against real data", "Identify culture gaps early", "Strengthen offer narratives", "Build with Jackye's frameworks"] },
+            { label: "For HR Professionals", title: "Promises that hold up to scrutiny", items: ["Audit employer promises against real data", "Identify culture gaps early", "Strengthen offer narratives", "Build with Jackye's frameworks"] },
             { label: "For Recruiters", title: "Close more. Lose fewer.", items: ["Get ahead of candidate objections", "Use intelligence in your pitch", "Position as a career advisor", "Build lasting candidate trust"] },
           ].map(a => (
             <div key={a.label} className="bg-card p-4">
@@ -86,8 +86,8 @@ const OnePager = () => {
         <div className="grid grid-cols-3 gap-px bg-border border border-border mb-8">
           {[
             { tier: "Candidate", price: "$29", per: "per month", featured: false, items: ["5 company reports", "Offer letter analysis", "Ask Jackye — 20/mo", "Red flag alerts"] },
-            { tier: "Professional", price: "$99", per: "per month", featured: true, items: ["Unlimited company reports", "Full Connection Chain", "Unlimited Ask Jackye", "EVP audit tools"] },
-            { tier: "Enterprise / HR Teams", price: "Custom", per: "team pricing", featured: false, items: ["Team seats + admin", "White-label EVP reports", "API access", "Jackye Clayton training"] },
+            { tier: "Professional", price: "$99", per: "per month", featured: true, items: ["Unlimited company reports", "Full Connection Chain", "Unlimited Ask Jackye", "Employer Promise audit"] },
+            { tier: "Enterprise / HR Teams", price: "Custom", per: "team pricing", featured: false, items: ["Team seats + admin", "White-label reports", "API access", "Jackye Clayton training"] },
           ].map(p => (
             <div key={p.tier} className={`p-4 relative ${p.featured ? "bg-card" : "bg-background"}`}>
               {p.featured && (

@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { OfferClarityWizard } from "@/components/offer-clarity/OfferClarityWizard";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck } from "lucide-react";
+import { PremiumGate } from "@/components/PremiumGate";
 
 export default function OfferClarity() {
   return (
@@ -20,7 +21,9 @@ export default function OfferClarity() {
             Answer a few quick questions. The system evaluates five areas that determine whether an offer is strong, risky, or misaligned — and produces an <span className="font-semibold text-foreground">Offer Clarity Score (0–100)</span>.
           </p>
         </div>
-        <OfferClarityWizard />
+        <PremiumGate feature="Offer Clarity" description="Upload and analyze offer letters with AI-powered intelligence. See exactly where an offer is strong, risky, or misaligned." requiredTier="candidate">
+          <OfferClarityWizard />
+        </PremiumGate>
       </main>
       <Footer />
     </div>

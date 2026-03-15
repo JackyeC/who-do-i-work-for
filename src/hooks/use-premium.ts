@@ -50,7 +50,7 @@ export interface PremiumFeatures {
   canExport: boolean;
   canTrackAlerts: boolean;
   hasInfluenceChain: boolean;
-  hasEVPAudit: boolean;
+  hasEmployerPromiseAudit: boolean;
 }
 
 const FREE_FEATURES: PremiumFeatures = {
@@ -63,7 +63,7 @@ const FREE_FEATURES: PremiumFeatures = {
   canExport: false,
   canTrackAlerts: false,
   hasInfluenceChain: false,
-  hasEVPAudit: false,
+  hasEmployerPromiseAudit: false,
 };
 
 const CANDIDATE_FEATURES: PremiumFeatures = {
@@ -76,7 +76,7 @@ const CANDIDATE_FEATURES: PremiumFeatures = {
   canExport: false,
   canTrackAlerts: true,
   hasInfluenceChain: false,
-  hasEVPAudit: false,
+  hasEmployerPromiseAudit: false,
 };
 
 const PROFESSIONAL_FEATURES: PremiumFeatures = {
@@ -89,7 +89,7 @@ const PROFESSIONAL_FEATURES: PremiumFeatures = {
   canExport: true,
   canTrackAlerts: true,
   hasInfluenceChain: true,
-  hasEVPAudit: true,
+  hasEmployerPromiseAudit: true,
 };
 
 function getTierFromProductId(productId: string | null): PremiumTier {

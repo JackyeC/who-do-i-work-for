@@ -6,6 +6,7 @@ import {
   Clipboard, X
 } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { PremiumGate } from "@/components/PremiumGate";
 
 /* ── Types ── */
 interface SignalComparison {
@@ -49,7 +50,7 @@ function analyzeEvp(text: string): EvpResult {
   } else {
     comparisons.push({
       category: "Workforce Stability", icon: Users,
-      claimExcerpt: "No stability claims detected in EVP copy",
+      claimExcerpt: "No stability claims detected in employer brand copy",
       signalReality: "Workforce appears stable. No WARN filings detected. Missing an opportunity to highlight this.",
       alignment: "aligned",
     });
@@ -76,7 +77,7 @@ function analyzeEvp(text: string): EvpResult {
   } else {
     comparisons.push({
       category: "Compensation Transparency", icon: DollarSign,
-      claimExcerpt: "No compensation claims in EVP copy",
+      claimExcerpt: "No compensation claims in employer brand copy",
       signalReality: "Compensation data shows partial transparency. Not addressing it may raise candidate suspicion.",
       alignment: "gap",
     });
@@ -138,11 +139,11 @@ function analyzeEvp(text: string): EvpResult {
   // Jackye recommendation
   let jackyeRec: string;
   if (score >= 80) {
-    jackyeRec = "Your EVP messaging largely holds up against the public signals. That's rare. Keep it honest — and back your claims with data where you can. The candidates checking are the ones you actually want.";
+    jackyeRec = "Your employer messaging largely holds up against the public signals. That's rare. Keep it honest — and back your claims with data where you can. The candidates checking are the ones you actually want.";
   } else if (score >= 60) {
-    jackyeRec = `Your messaging is mostly on track, but there are ${gaps} area${gaps !== 1 ? "s" : ""} where the public data doesn't fully support what you're saying. That's not a crisis — it's an opportunity. Close the gaps before a candidate or journalist does it for you. Start with the contradictions first.`;
+    jackyeRec = `Your messaging is mostly on track, but there are ${gaps} area${gaps !== 1 ? "s" : ""} where the public data doesn't fully support what you're saying. That's not a crisis — it's an opportunity. Close the gaps before a candidate or journalist does it for you.`;
   } else if (score >= 40) {
-    jackyeRec = `There are significant disconnects between what your EVP promises and what the data shows. ${contradictions} signal${contradictions !== 1 ? "s" : ""} directly contradict your messaging. This is the kind of gap that erodes candidate trust during the interview process. You need to either change the messaging or change the reality. I'd start with a full EVP audit.`;
+    jackyeRec = `There are significant disconnects between what you promise and what the data shows. ${contradictions} signal${contradictions !== 1 ? "s" : ""} directly contradict your messaging. This erodes candidate trust during the interview process. You need to either change the messaging or change the reality.`;
   } else {
     jackyeRec = "I'm going to be direct: your employer brand messaging is telling a story that the data doesn't support. Candidates who do their homework — and the best ones always do — will see through this. This isn't about better copywriting. It's about fixing the underlying signals first, then rebuilding your narrative on solid ground.";
   }
@@ -168,7 +169,7 @@ function ScoreRing({ score }: { score: number }) {
         </div>
       </div>
       <div>
-        <div className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground mb-1">EVP Alignment Score</div>
+        <div className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground mb-1">Promise Alignment Score</div>
         <span className={`inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider ${band.color} ${band.bg} border ${band.border}`}>
           {band.label}
         </span>
@@ -219,9 +220,9 @@ export default function EVPRealityCheck() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   usePageSEO({
-    title: "EVP Reality Check — Does Your Employer Brand Match the Data?",
-    description: "Compare your Employee Value Proposition against real employer intelligence signals. Find where your EVP holds up and where it breaks.",
-    path: "/evp-reality-check",
+    title: "Employer Promise vs. Reality — Does the Brand Match the Data?",
+    description: "Compare what employers promise in their Employee Value Proposition against real intelligence signals. See where the brand holds up and where it breaks.",
+    path: "/employer-promise-check",
   });
 
   const handleAnalyze = () => {
@@ -251,19 +252,19 @@ export default function EVPRealityCheck() {
         <div className="mb-10">
           <div className="font-mono text-[0.7rem] uppercase text-primary tracking-[0.2em] mb-3">Recruiting Intelligence</div>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground leading-[1.15] tracking-tight mb-3">
-            EVP Reality Check
+            Employer Promise vs. Reality
           </h1>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[600px]">
-            Paste your employer brand messaging — career page copy, EVP statements, recruiting promises — and see how it holds up against real employer intelligence signals.
+            Paste your employer brand messaging — career page copy, Employee Value Proposition statements, recruiting promises — and see how it holds up against real employer intelligence signals.
           </p>
         </div>
 
-        {/* ── Input Section ── */}
+        <PremiumGate feature="Employer Promise vs. Reality" description="Audit your employer brand messaging against real intelligence signals. See where your promises hold up — and where they break." requiredTier="professional">
         <div className="bg-card border border-border p-6 mb-8">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <FileText className="w-4 h-4 text-primary" strokeWidth={1.5} />
-              <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">EVP / Employer Brand Copy</span>
+              <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">Employer Promise / Brand Copy</span>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -286,7 +287,7 @@ export default function EVPRealityCheck() {
           <textarea
             value={evpText}
             onChange={(e) => setEvpText(e.target.value)}
-            placeholder={"Paste your EVP statements, career page messaging, recruiting promises, or employer brand copy here...\n\nExample:\n\"We offer competitive compensation, inclusive hiring practices, and long-term career growth in a stable, values-driven environment.\""}
+            placeholder={"Paste your employer promises, career page messaging, recruiting claims, or brand copy here...\n\nExample:\n\"We offer competitive compensation, inclusive hiring practices, and long-term career growth in a stable, values-driven environment.\""}
             className="w-full h-40 bg-background border border-border p-4 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none outline-none focus:border-primary transition-colors"
           />
 
@@ -325,7 +326,7 @@ export default function EVPRealityCheck() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <CheckCircle2 className="w-4 h-4 text-civic-green" strokeWidth={1.5} />
-                  <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">Where the EVP Holds Up</span>
+                  <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">Where the Promise Holds Up</span>
                 </div>
                 <div className="space-y-3">
                   {result.holdsUp.map((item, i) => <ComparisonRow key={i} item={item} type="holds" />)}
@@ -338,7 +339,7 @@ export default function EVPRealityCheck() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <AlertTriangle className="w-4 h-4 text-civic-red" strokeWidth={1.5} />
-                  <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">Where the EVP Breaks</span>
+                  <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">Where the Promise Breaks</span>
                 </div>
                 <div className="space-y-3">
                   {result.breaks.map((item, i) => <ComparisonRow key={i} item={item} type="breaks" />)}
@@ -360,19 +361,20 @@ export default function EVPRealityCheck() {
 
             {/* CTA */}
             <div className="bg-card border border-border p-6 text-center">
-              <h3 className="text-lg font-bold text-foreground mb-2">Need help redesigning your EVP?</h3>
+              <h3 className="text-lg font-bold text-foreground mb-2">Need help fixing the promise?</h3>
               <p className="text-sm text-muted-foreground mb-5 max-w-[460px] mx-auto leading-relaxed">
-                Work with Jackye to redesign your EVP and recruiting narrative based on what the data actually shows.
+                Work with Jackye to redesign your employer brand narrative based on what the data actually shows.
               </p>
               <button
                 onClick={() => navigate("/work-with-jackye")}
                 className="bg-primary text-primary-foreground px-6 py-3 font-mono text-[0.7rem] font-semibold tracking-wider uppercase hover:brightness-110 transition-all inline-flex items-center gap-2"
               >
-                Request EVP Advisory <ChevronRight className="w-4 h-4" />
+                Request Advisory <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         )}
+        </PremiumGate>
       </div>
     </div>
   );

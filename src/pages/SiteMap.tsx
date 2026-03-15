@@ -7,10 +7,19 @@ import {
   ClipboardCheck, Zap, Network, BookOpen, FileText, Lock, Eye, Receipt
 } from "lucide-react";
 
+interface SiteLink {
+  label: string;
+  path: string;
+  icon: React.ElementType;
+  auth?: boolean;
+  description: string;
+  premium?: "candidate" | "professional";
+}
+
 interface SiteSection {
   title: string;
   description: string;
-  links: { label: string; path: string; icon: React.ElementType; auth?: boolean; description: string }[];
+  links: SiteLink[];
 }
 
 const sections: SiteSection[] = [
@@ -21,8 +30,8 @@ const sections: SiteSection[] = [
       { label: "Employer Directory", path: "/browse", icon: Building2, description: "Browse companies by industry and civic footprint" },
       { label: "Search", path: "/search", icon: Search, description: "Search any company, executive, or organization" },
       { label: "Values-Based Search", path: "/values-search", icon: Eye, description: "Find employers aligned with your values" },
-      { label: "Intelligence Reports", path: "/intelligence", icon: FileText, description: "Published investigative intelligence briefs" },
-      { label: "Power Networks", path: "/investigative", icon: Network, description: "Explore entity relationships and influence chains" },
+      { label: "Intelligence Reports", path: "/intelligence", icon: FileText, premium: "candidate", description: "Published investigative intelligence briefs" },
+      { label: "Power Networks", path: "/investigative", icon: Network, premium: "candidate", description: "Explore entity relationships and influence chains" },
       { label: "Compare Companies", path: "/compare", icon: Scale, description: "Side-by-side employer comparison" },
     ],
   },
@@ -31,11 +40,11 @@ const sections: SiteSection[] = [
     description: "Evaluate employers and offers before you commit",
     links: [
       { label: "Quick Check", path: "/check", icon: ClipboardCheck, description: "Instant employer scan, offer check, or policy map" },
-      { label: "Strategic Offer Review", path: "/strategic-offer-review", icon: FileCheck, description: "Deep-dive analysis of a job offer" },
-      { label: "Offer Clarity", path: "/offer-clarity", icon: Zap, description: "Upload an offer letter for AI-powered review" },
+      { label: "Strategic Offer Review", path: "/strategic-offer-review", icon: FileCheck, premium: "candidate", description: "Deep-dive analysis of a job offer" },
+      { label: "Offer Clarity", path: "/offer-clarity", icon: Zap, premium: "candidate", description: "Upload an offer letter for AI-powered review" },
       { label: "Would You Work Here?", path: "/would-you-work-here", icon: Eye, description: "Shareable employer reality check" },
-      { label: "Employer Receipt", path: "/employer-receipt", icon: Receipt, description: "See what your labor really funds" },
-      { label: "EVP Reality Check", path: "/evp-reality-check", icon: Shield, description: "Does the employer brand match reality?" },
+      { label: "Employer Receipt", path: "/employer-receipt", icon: Receipt, premium: "candidate", description: "See what your labor really funds" },
+      { label: "Employer Promise vs. Reality", path: "/employer-promise-check", icon: Shield, premium: "professional", description: "Does the employer brand match reality?" },
       { label: "What Am I Supporting?", path: "/what-am-i-supporting", icon: Globe, description: "Trace your paycheck to political influence" },
     ],
   },
@@ -56,7 +65,7 @@ const sections: SiteSection[] = [
     links: [
       { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard, auth: true, description: "Overview, tracked companies, and settings" },
       { label: "My Offer Checks", path: "/my-offer-checks", icon: ClipboardCheck, auth: true, description: "Saved offer analysis reports" },
-      { label: "Signal Alerts", path: "/signal-alerts", icon: Bell, auth: true, description: "Real-time employer change notifications" },
+      { label: "Signal Alerts", path: "/signal-alerts", icon: Bell, auth: true, premium: "candidate", description: "Real-time employer change notifications" },
     ],
   },
   {
@@ -65,8 +74,8 @@ const sections: SiteSection[] = [
     links: [
       { label: "Policy Hub", path: "/policy", icon: Landmark, description: "Track legislation affecting workers" },
       { label: "Economy Dashboard", path: "/economy", icon: DollarSign, description: "Labor market and economic indicators" },
-      { label: "Follow the Money", path: "/follow-the-money", icon: DollarSign, description: "Trace corporate political spending" },
-      { label: "Board Intelligence", path: "/board-intelligence", icon: Users, description: "Corporate board member analysis" },
+      { label: "Follow the Money", path: "/follow-the-money", icon: DollarSign, premium: "candidate", description: "Trace corporate political spending" },
+      { label: "Board Intelligence", path: "/board-intelligence", icon: Users, premium: "candidate", description: "Corporate board member analysis" },
       { label: "Intelligence Chain", path: "/intelligence-chain", icon: Network, description: "Evidence chain methodology" },
     ],
   },
@@ -130,6 +139,11 @@ export default function SiteMap() {
                           <span className="font-mono text-[11px] text-foreground group-hover:text-primary transition-colors tracking-wide">
                             {link.label}
                           </span>
+                          {link.premium && (
+                            <span className="font-mono text-[8px] uppercase tracking-wider px-1.5 py-0.5 bg-accent text-accent-foreground border border-accent/40">
+                              {link.premium === "professional" ? "Pro" : "Paid"}
+                            </span>
+                          )}
                           {link.auth && (
                             <span className="font-mono text-[8px] uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20">
                               Login
