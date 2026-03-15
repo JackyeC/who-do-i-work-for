@@ -259,7 +259,7 @@ export default function EVPRealityCheck() {
           </p>
         </div>
 
-        {/* ── Input Section ── */}
+        <PremiumGate feature="Employer Promise vs. Reality" description="Audit your employer brand messaging against real intelligence signals. See where your promises hold up — and where they break." requiredTier="professional">
         <div className="bg-card border border-border p-6 mb-8">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
