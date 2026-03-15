@@ -2,8 +2,8 @@ import { useState, useEffect, forwardRef } from "react";
 import jackyeHeadshot from "@/assets/jackye-headshot.png";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap } from "lucide-react";
-import { AnimatedDemo } from "@/components/landing/AnimatedDemo";
+import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap, Briefcase } from "lucide-react";
+// AnimatedDemo removed — Mini Report Teaser covers the interactive demo role
 import { MiniReportTeaser } from "@/components/landing/MiniReportTeaser";
 import { ExitIntentCapture } from "@/components/ExitIntentCapture";
 import { FAQSection } from "@/components/landing/FAQSection";
