@@ -407,7 +407,7 @@ Deno.serve(async (req) => {
         .from('company_signal_scans')
         .delete()
         .eq('company_id', companyId)
-        .in('signal_category', ['sec_insider_trading', 'sec_executive_compensation']);
+        .in('signal_category', ['sec_insider_trading', 'sec_executive_compensation', 'sec_board_diversity']);
 
       const { error: sigErr } = await supabase.from('company_signal_scans').insert(signalRows);
       if (sigErr) console.error('[sync-sec-edgar] Signal insert error:', sigErr);
