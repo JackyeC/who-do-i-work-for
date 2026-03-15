@@ -79,6 +79,7 @@ import SignalFeed from "./pages/SignalFeed";
 import EEOCTracker from "./pages/EEOCTracker";
 import WorkIndex from "./pages/WorkIndex";
 import Rankings from "./pages/Rankings";
+import RealityCheck from "./pages/RealityCheck";
 import { CookieNotice } from "@/components/CookieNotice";
 
 const queryClient = new QueryClient();
@@ -105,6 +106,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/ask-jackye" element={<AskJackye />} />
+                <Route path="/reality-check" element={<ProtectedRoute><RealityCheck /></ProtectedRoute>} />
                 <Route path="/would-you-work-here" element={<WouldYouWorkHere />} />
                 <Route path="/work-with-jackye" element={<WorkWithJackye />} />
                 <Route path="/employer-receipt" element={<EmployerReceipt />} />
