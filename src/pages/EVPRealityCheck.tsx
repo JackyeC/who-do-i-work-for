@@ -251,7 +251,7 @@ export default function EVPRealityCheck() {
         <div className="mb-10">
           <div className="font-mono text-[0.7rem] uppercase text-primary tracking-[0.2em] mb-3">Recruiting Intelligence</div>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground leading-[1.15] tracking-tight mb-3">
-            EVP Reality Check
+            Employer Promise vs. Reality
           </h1>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[600px]">
             Paste your employer brand messaging — career page copy, EVP statements, recruiting promises — and see how it holds up against real employer intelligence signals.
