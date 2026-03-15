@@ -65,7 +65,7 @@ const sections: SiteSection[] = [
     links: [
       { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard, auth: true, description: "Overview, tracked companies, and settings" },
       { label: "My Offer Checks", path: "/my-offer-checks", icon: ClipboardCheck, auth: true, description: "Saved offer analysis reports" },
-      { label: "Signal Alerts", path: "/signal-alerts", icon: Bell, auth: true, description: "Real-time employer change notifications" },
+      { label: "Signal Alerts", path: "/signal-alerts", icon: Bell, auth: true, premium: "candidate", description: "Real-time employer change notifications" },
     ],
   },
   {
