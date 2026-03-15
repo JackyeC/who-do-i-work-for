@@ -106,6 +106,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/ask-jackye" element={<AskJackye />} />
+                <Route path="/reality-check" element={<ProtectedRoute><RealityCheck /></ProtectedRoute>} />
                 <Route path="/would-you-work-here" element={<WouldYouWorkHere />} />
                 <Route path="/work-with-jackye" element={<WorkWithJackye />} />
                 <Route path="/employer-receipt" element={<EmployerReceipt />} />
