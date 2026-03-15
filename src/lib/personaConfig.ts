@@ -3,7 +3,9 @@
  * Defines which sections each audience sees and in what order
  */
 
-export type PersonaId = "job_seeker" | "employee" | "recruiter" | "hr_tech_buyer" | "journalist";
+export type PersonaId = "job_seeker" | "employee" | "recruiter" | "hr_tech_buyer" | "journalist" | "employer";
+
+export type PersonaAccessTier = "free" | "paid" | "freemium";
 
 export interface PersonaBucket {
   id: string;
@@ -20,6 +22,8 @@ export interface PersonaConfig {
   icon: string; // lucide icon name
   description: string;
   question: string; // What question does this persona answer?
+  accessTier: PersonaAccessTier;
+  requiredPlan?: "candidate" | "professional"; // minimum plan for paid personas
   primarySections: string[];
   secondarySections: string[];
   hiddenSections: string[];
