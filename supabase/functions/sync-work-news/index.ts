@@ -30,12 +30,8 @@ const SEARCH_QUERIES = [
 const QUERY_CATEGORIES: Record<number, string> = {
   0: "regulation",
   1: "future_of_work",
-  2: "worker_rights",
-  3: "ai_workplace",
-  4: "legislation",
-  5: "layoffs",
-  6: "pay_equity",
-  7: "labor_organizing",
+  2: "layoffs",
+  3: "labor_organizing",
 };
 
 function toneLabel(tone: number): string {
