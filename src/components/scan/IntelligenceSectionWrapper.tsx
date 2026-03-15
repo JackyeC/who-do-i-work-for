@@ -83,10 +83,10 @@ export function IntelligenceSectionWrapper({
             </Badge>
           )}
           {report.last_successful_update && (
-            <Badge variant="outline" className="text-[10px] font-mono gap-1 border-border text-muted-foreground">
-              <Database className="w-2.5 h-2.5" />
-              {report.freshnessLabel}
-            </Badge>
+          <Badge variant="secondary" className="text-[10px] font-mono gap-1">
+            <Database className="w-2.5 h-2.5" />
+            {report.freshnessLabel}
+          </Badge>
           )}
           {report.last_error && (
             <Badge variant="outline" className="text-[10px] font-mono gap-1 border-destructive/30 text-destructive">
