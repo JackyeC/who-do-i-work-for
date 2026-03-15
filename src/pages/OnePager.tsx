@@ -86,8 +86,8 @@ const OnePager = () => {
         <div className="grid grid-cols-3 gap-px bg-border border border-border mb-8">
           {[
             { tier: "Candidate", price: "$29", per: "per month", featured: false, items: ["5 company reports", "Offer letter analysis", "Ask Jackye — 20/mo", "Red flag alerts"] },
-            { tier: "Professional", price: "$99", per: "per month", featured: true, items: ["Unlimited company reports", "Full Connection Chain", "Unlimited Ask Jackye", "EVP audit tools"] },
-            { tier: "Enterprise / HR Teams", price: "Custom", per: "team pricing", featured: false, items: ["Team seats + admin", "White-label EVP reports", "API access", "Jackye Clayton training"] },
+            { tier: "Professional", price: "$99", per: "per month", featured: true, items: ["Unlimited company reports", "Full Connection Chain", "Unlimited Ask Jackye", "Employer Promise audit"] },
+            { tier: "Enterprise / HR Teams", price: "Custom", per: "team pricing", featured: false, items: ["Team seats + admin", "White-label reports", "API access", "Jackye Clayton training"] },
           ].map(p => (
             <div key={p.tier} className={`p-4 relative ${p.featured ? "bg-card" : "bg-background"}`}>
               {p.featured && (
