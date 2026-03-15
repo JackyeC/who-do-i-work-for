@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 import { ContentProtector } from "@/components/ContentProtector";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { usePageSEO } from "@/hooks/use-page-seo";
+import { getOGImageUrl } from "@/lib/social-share";
 import {
   Building2, Lightbulb, Network, Landmark,
   Sparkles, Users, Heart, Loader2, ShoppingCart,
