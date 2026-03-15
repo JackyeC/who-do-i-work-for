@@ -36,6 +36,10 @@ function getShareUrl(ctx: ShareContext): string {
       return `${BASE_URL}/rivalries`;
     case "scorecard":
       return ctx.slugA ? `${BASE_URL}/company/${ctx.slugA}` : BASE_URL;
+    case "receipt":
+      return `${BASE_URL}/employer-receipt`;
+    case "career-risk":
+      return ctx.slugA ? `${BASE_URL}/company/${ctx.slugA}` : BASE_URL;
     default:
       return BASE_URL;
   }
