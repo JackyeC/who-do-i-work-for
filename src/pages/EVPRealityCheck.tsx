@@ -325,7 +325,7 @@ export default function EVPRealityCheck() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <CheckCircle2 className="w-4 h-4 text-civic-green" strokeWidth={1.5} />
-                  <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">Where the EVP Holds Up</span>
+                  <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">Where the Promise Holds Up</span>
                 </div>
                 <div className="space-y-3">
                   {result.holdsUp.map((item, i) => <ComparisonRow key={i} item={item} type="holds" />)}
