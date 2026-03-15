@@ -158,6 +158,13 @@ export default function CompanyDossier() {
   const LensMeta = LENS_META[lens];
   const LensIcon = LensMeta.icon;
 
+  usePageSEO({
+    title: `Should I Work at ${company.name}? Career Risk Report`,
+    description: `Should you work at ${company.name}? See the Career Risk Score: leadership stability, layoff history, pay vs. industry benchmarks, and political activity.`,
+    path: `/company/${id}`,
+    image: getOGImageUrl?.(company.name, company.industry, influenceScore) || undefined,
+  });
+
   /* ─── Shared overview (always visible) ─── */
   const overviewContent = (
     <>
