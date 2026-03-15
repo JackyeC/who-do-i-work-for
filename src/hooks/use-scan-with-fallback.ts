@@ -48,7 +48,8 @@ export function useScanWithFallback({
 
   const firecrawlState = isFirecrawlUnavailable();
 
-  const runScan = useCallback(async (forceRefresh = false) => {
+  const runScan = useCallback(async (_eventOrForce?: React.MouseEvent | boolean) => {
+    const forceRefresh = typeof _eventOrForce === 'boolean' ? _eventOrForce : false;
     // Freshness check — skip scan if data is still fresh (unless forced)
     if (!forceRefresh && section && lastUpdated && !isSectionStale(lastUpdated, section)) {
       toast({
