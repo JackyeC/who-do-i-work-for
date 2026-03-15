@@ -7,6 +7,9 @@ import { FounderNotesPanel } from "@/components/admin/FounderNotesPanel";
 import { SearchIntelligencePanel } from "@/components/admin/SearchIntelligencePanel";
 import { WarnHeatmapPanel } from "@/components/admin/WarnHeatmapPanel";
 import { ConversionFunnelPanel } from "@/components/admin/ConversionFunnelPanel";
+import { ResearchPublishQueue } from "@/components/admin/ResearchPublishQueue";
+import { JobApprovalQueue } from "@/components/admin/JobApprovalQueue";
+import { CertificationQueue } from "@/components/admin/CertificationQueue";
 import { useUserRole } from "@/hooks/use-user-role";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -332,7 +335,14 @@ export default function FounderConsole() {
           <FounderNotesPanel />
         </div>
 
-        {/* Pending Reviews Section */}
+        {/* Admin Review Queues */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <ResearchPublishQueue />
+          <JobApprovalQueue />
+          <CertificationQueue />
+        </div>
+
+        {/* Legacy Pending Reviews */}
         <div className="mt-8">
           <PendingReviewsDashboard />
         </div>

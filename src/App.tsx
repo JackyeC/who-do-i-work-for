@@ -25,6 +25,7 @@ import VoterLookup from "./pages/VoterLookup";
 import RepresentativeProfile from "./pages/RepresentativeProfile";
 import AddCompany from "./pages/AddCompany";
 import Jobs from "./pages/Jobs";
+import JobIntegrityBoard from "./pages/JobIntegrityBoard";
 import NotFound from "./pages/NotFound";
 import RequestCorrection from "./pages/RequestCorrection";
 import OfferCheck from "./pages/OfferCheck";
@@ -158,6 +159,7 @@ const App = () => (
                 } />
                 <Route path="/add-company" element={<AddCompany />} />
                 <Route path="/jobs" element={<Jobs />} />
+                <Route path="/job-board" element={<JobIntegrityBoard />} />
                 <Route path="/request-correction" element={<RequestCorrection />} />
                 <Route path="/offer-check/:companyId" element={<OfferCheck />} />
                 <Route path="/strategic-offer-review" element={<StrategicOfferReview />} />

@@ -94,6 +94,8 @@ import { NarrativePowerSection } from "@/components/narrative-power";
 import { JackyeNote } from "@/components/JackyeNote";
 import { CorporateOwnershipCard } from "@/components/CorporateOwnershipCard";
 import { ReceiptsTimeline } from "@/components/ReceiptsTimeline";
+import { LevelsFyiEmbed } from "@/components/company/LevelsFyiEmbed";
+import { TransparencyResearchTab } from "@/components/company/TransparencyResearchTab";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -913,8 +915,9 @@ export default function CompanyProfile() {
               ),
               compensation: () => (
                 <section id="section-compensation" className="mb-10 scroll-mt-28">
-                  <SectionHeader icon={DollarSign} title="Compensation Transparency" subtitle="Pay equity signals and national benchmarks" />
+                  <SectionHeader icon={DollarSign} title="Compensation Transparency" subtitle="Pay equity signals, national benchmarks, and market positioning" />
                   <div className="space-y-4">
+                    <LevelsFyiEmbed companyName={name} />
                     <CompensationMarketCard companyName={name} dbCompanyId={dbCompanyId} />
                     <CompensationTransparencyCard companyName={name} dbCompanyId={dbCompanyId} />
                   </div>
@@ -1086,6 +1089,10 @@ export default function CompanyProfile() {
                       }}
                       onCandidateClick={handleCandidateClick}
                     />
+                    {/* Vetted Transparency Research */}
+                    {dbCompanyId && (
+                      <TransparencyResearchTab companyId={dbCompanyId} companyName={name} />
+                    )}
                   </div>
                 </section>
               ),
