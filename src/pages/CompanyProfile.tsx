@@ -78,6 +78,7 @@ import { IntelligenceSnapshotCard } from "@/components/viral/IntelligenceSnapsho
 import { calculatePVS, deriveSubScores, computeConfidence } from "@/lib/promotionVelocityScore";
 import { PublicRecordsExposure } from "@/components/public-records/PublicRecordsExposure";
 import { NarrativePowerSection } from "@/components/narrative-power";
+import { JackyeNote } from "@/components/JackyeNote";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -487,6 +488,29 @@ export default function CompanyProfile() {
               PERSONA SELECTOR
              ═══════════════════════════════════════════════════════════ */}
           <PersonaSelector activePersona={activePersona} onPersonaChange={handlePersonaChange} />
+
+          {/* ═══════════════════════════════════════════════════════════
+              JACKYE'S NOTE — Signal Summary
+             ═══════════════════════════════════════════════════════════ */}
+          <JackyeNote
+            companyName={name}
+            industry={industry}
+            totalPacSpending={totalPac}
+            lobbyingSpend={lobbyingSpend}
+            governmentContracts={govContracts}
+            darkMoneyCount={dbDarkMoney?.length || 0}
+            revolvingDoorCount={dbRevolvingDoor?.length || 0}
+            executiveCount={dbExecutives?.length || 0}
+            boardMemberCount={dbBoardMembers?.length || 0}
+            hasLayoffSignals={false}
+            hasSentimentData={!!tiSentiment}
+            hasPayEquity={!!tiPayEquity}
+            hasBenefitsData={!!tiBenefits}
+            hasAiHrSignals={!!tiAiHr}
+            isPubliclyTraded={!!dbCompany?.is_publicly_traded}
+            transparencyScore={transparencyScore}
+            civicFootprintScore={civicScore}
+          />
 
           {/* ═══════════════════════════════════════════════════════════
               CORPORATE CHARACTER SCORE™
