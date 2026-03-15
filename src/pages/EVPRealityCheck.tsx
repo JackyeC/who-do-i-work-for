@@ -219,9 +219,9 @@ export default function EVPRealityCheck() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   usePageSEO({
-    title: "EVP Reality Check — Does Your Employer Brand Match the Data?",
-    description: "Compare your Employee Value Proposition against real employer intelligence signals. Find where your EVP holds up and where it breaks.",
-    path: "/evp-reality-check",
+    title: "Employer Promise vs. Reality — Does the Brand Match the Data?",
+    description: "Compare what employers promise in their Employee Value Proposition against real intelligence signals. See where the brand holds up and where it breaks.",
+    path: "/employer-promise-check",
   });
 
   const handleAnalyze = () => {
