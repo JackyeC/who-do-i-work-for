@@ -7,6 +7,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Employer tier prices that route to verification-pending
+const EMPLOYER_PRICES = new Set([
+  "price_1TBNzW7Qj0W6UtN9gLhA1aZG", // Employer Certification $499
+  "price_1TBO3H7Qj0W6UtN93hPQ1gPb", // Founding Partner $599
+]);
+
+// One-time purchase prices (not subscriptions)
+const ONE_TIME_PRICES = new Set([
+  "price_1TBO3F7Qj0W6UtN9oEHb8dHf", // Single Job Credit $199
+]);
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -36,10 +47,10 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    // Employer certification tier routes to verification-pending
-    const EMPLOYER_CERT_PRICE = "price_1TBNzW7Qj0W6UtN9gLhA1aZG";
     const origin = req.headers.get("origin") || "";
-    const successUrl = priceId === EMPLOYER_CERT_PRICE
+    const isEmployer = EMPLOYER_PRICES.has(priceId);
+    const isOneTime = ONE_TIME_PRICES.has(priceId);
+    const successUrl = isEmployer
       ? `${origin}/employer/verification-pending`
       : `${origin}/dashboard?checkout=success`;
 
@@ -47,7 +58,7 @@ serve(async (req) => {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [{ price: priceId, quantity: 1 }],
-      mode: "subscription",
+      mode: isOneTime ? "payment" : "subscription",
       success_url: successUrl,
       cancel_url: `${origin}/dashboard?checkout=canceled`,
     });
