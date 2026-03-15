@@ -396,6 +396,8 @@ export default function CompanyProfile() {
   const industry = dbCompany?.industry || company?.industry || "";
   const state = dbCompany?.state || company?.state || "";
   const description = (dbCompany as any)?.description || company?.description || "";
+  const consumerRelevance = (dbCompany as any)?.consumer_relevance || "";
+  const workerRelevance = (dbCompany as any)?.worker_relevance || "";
   const civicScore = dbCompany?.civic_footprint_score ?? company?.civicFootprintScore ?? 0;
   const totalPac = dbCompany?.total_pac_spending ?? company?.totalPacSpending ?? 0;
   const lobbyingSpend = dbCompany?.lobbying_spend ?? company?.lobbyingSpend ?? 0;
@@ -800,10 +802,36 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════════
               1. COMPANY OVERVIEW
              ═══════════════════════════════════════════════════════════ */}
-          {description && (
+           {(description || consumerRelevance || workerRelevance) && (
             <section id="section-overview" className="mb-10 scroll-mt-28">
               <SectionHeader icon={Building2} title="Company Overview" />
-              <p className="text-base text-foreground/80 leading-relaxed">{description}</p>
+              {description && (
+                <p className="text-base text-foreground/80 leading-relaxed">{description}</p>
+              )}
+
+              {/* What They Actually Do — plain-language consumer + worker context */}
+              {(consumerRelevance || workerRelevance) && (
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {consumerRelevance && (
+                    <div className="p-4 rounded-xl border border-border/50 bg-muted/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Heart className="w-4 h-4 text-primary" />
+                        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">What They Sell</span>
+                      </div>
+                      <p className="text-sm text-foreground/85 leading-relaxed">{consumerRelevance}</p>
+                    </div>
+                  )}
+                  {workerRelevance && (
+                    <div className="p-4 rounded-xl border border-border/50 bg-muted/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Users className="w-4 h-4 text-primary" />
+                        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Who Works There</span>
+                      </div>
+                      <p className="text-sm text-foreground/85 leading-relaxed">{workerRelevance}</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </section>
           )}
 
