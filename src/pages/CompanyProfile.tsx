@@ -886,7 +886,10 @@ export default function CompanyProfile() {
                 <section id="section-workforce" className="mb-10 scroll-mt-28">
                   <SectionHeader icon={TrendingUp} title="Workforce Intelligence" subtitle="Worker demographics, sentiment, hiring technology, and benefits signals" />
                   <div className="space-y-4">
+                    <RealityCheckCard companyId={dbCompanyId} companyName={name} />
                     <EarlyWarningSignals companyId={dbCompanyId} companyName={name} />
+                    <GhostJobDetector companyId={dbCompanyId} companyName={name} />
+                    <RecruitingHealthCard companyId={dbCompanyId} companyName={name} />
                     <EEO1WorkforceCard companyId={dbCompanyId} companyName={name} />
                     <ExecutiveInclusionSnapshot companyId={dbCompanyId} companyName={name} />
                     <DiversityDisclosureTracker companyId={dbCompanyId} companyName={name} />
