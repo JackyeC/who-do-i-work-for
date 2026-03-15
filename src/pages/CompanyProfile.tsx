@@ -31,6 +31,10 @@ import { PromotionEquityCard } from "@/components/PromotionEquityCard";
 import { WarnTrackerCard } from "@/components/WarnTrackerCard";
 import { BLSDemographicsCard } from "@/components/bls/BLSDemographicsCard";
 import { WorkforceDemographicsLayer } from "@/components/dossier/WorkforceDemographicsLayer";
+import { ExecutiveInclusionSnapshot } from "@/components/intelligence/ExecutiveInclusionSnapshot";
+import { EarlyWarningSignals } from "@/components/intelligence/EarlyWarningSignals";
+import { EEO1WorkforceCard } from "@/components/intelligence/EEO1WorkforceCard";
+import { DiversityDisclosureTracker } from "@/components/intelligence/DiversityDisclosureTracker";
 
 import { ValuesNudgeBanner } from "@/components/onboarding/ValuesNudgeBanner";
 import { AgencyContractsCard } from "@/components/AgencyContractsCard";
