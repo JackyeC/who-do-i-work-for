@@ -3,7 +3,9 @@
  * Defines which sections each audience sees and in what order
  */
 
-export type PersonaId = "job_seeker" | "employee" | "recruiter" | "hr_tech_buyer" | "journalist";
+export type PersonaId = "job_seeker" | "employee" | "recruiter" | "hr_tech_buyer" | "journalist" | "employer";
+
+export type PersonaAccessTier = "free" | "paid" | "freemium";
 
 export interface PersonaBucket {
   id: string;
@@ -20,6 +22,8 @@ export interface PersonaConfig {
   icon: string; // lucide icon name
   description: string;
   question: string; // What question does this persona answer?
+  accessTier: PersonaAccessTier;
+  requiredPlan?: "candidate" | "professional"; // minimum plan for paid personas
   primarySections: string[];
   secondarySections: string[];
   hiddenSections: string[];
@@ -35,6 +39,7 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "Briefcase",
     description: "Should I work here? What a company really is — not what their careers page says.",
     question: "Should I work here?",
+    accessTier: "free",
     primarySections: ["revenue_model", "leadership", "workforce_reality", "career_mobility", "ethical_footprint", "stability"],
     secondarySections: ["governance", "influence", "narrative_power", "public_records"],
     hiddenSections: ["gtm"],
@@ -91,6 +96,7 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "User",
     description: "Should I stay, move internally, or start looking? Power dynamics and future trajectory signals.",
     question: "Should I stay?",
+    accessTier: "free",
     primarySections: ["promotion_velocity", "workforce_stability", "governance", "compensation", "workforce_intel", "values", "narrative_power", "public_records"],
     secondarySections: ["career_risk", "influence"],
     hiddenSections: ["recruiter_reality", "gtm"],
@@ -154,6 +160,8 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "Users",
     description: "Can I successfully hire for this company? Hiring reality, talent brand, and search difficulty signals.",
     question: "Can I hire here?",
+    accessTier: "paid",
+    requiredPlan: "candidate",
     primarySections: ["recruiter_reality", "cbi", "gtm", "workforce_intel", "compensation", "promotion_velocity", "workforce_stability", "narrative_power"],
     secondarySections: [],
     hiddenSections: ["influence", "values", "public_records"],
@@ -210,6 +218,8 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "Brain",
     description: "Can this tool be trusted? AI bias transparency, audit disclosure, and compliance signals.",
     question: "Can this tool be trusted?",
+    accessTier: "paid",
+    requiredPlan: "candidate",
     primarySections: ["workforce_intel", "cbi", "compensation", "promotion_velocity"],
     secondarySections: ["workforce_stability", "governance"],
     hiddenSections: ["recruiter_reality", "gtm", "influence", "values", "narrative_power", "public_records"],
@@ -222,6 +232,8 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "FileText",
     description: "What is really happening inside and around this company? Power dynamics, controversies, and influence patterns.",
     question: "What is really happening here?",
+    accessTier: "paid",
+    requiredPlan: "professional",
     primarySections: ["cbi", "influence", "narrative_power", "public_records", "governance", "workforce_stability", "compensation", "workforce_intel", "promotion_velocity", "gtm", "values"],
     secondarySections: ["recruiter_reality", "career_risk"],
     hiddenSections: [],
@@ -275,6 +287,56 @@ export const PERSONAS: PersonaConfig[] = [
         subtitle: "Market position, compensation competitiveness, workforce intelligence, and promotion patterns — the company's standing in its market.",
         iconName: "BarChart3",
         sections: ["compensation", "workforce_intel", "promotion_velocity"],
+      },
+    ],
+  },
+  {
+    id: "employer",
+    label: "Employer",
+    shortLabel: "Employer",
+    icon: "Building2",
+    description: "What does the talent market see about your company? Claim your profile and manage your employer brand.",
+    question: "What do candidates see?",
+    accessTier: "freemium",
+    primarySections: ["cbi", "workforce_intel", "narrative_power", "compensation", "recruiter_reality", "workforce_stability"],
+    secondarySections: ["governance", "values"],
+    hiddenSections: ["influence", "public_records", "gtm"],
+    primaryScores: ["cbi", "recruiter_reality"],
+    buckets: [
+      {
+        id: "employer_snapshot",
+        title: "Employer Brand Snapshot",
+        subtitle: "What candidates and employees see when they research your company — scores, sentiment, and transparency signals.",
+        iconName: "Eye",
+        sections: ["cbi", "narrative_power"],
+      },
+      {
+        id: "talent_perception",
+        title: "Talent Market Perception",
+        subtitle: "How your workforce data, compensation positioning, and hiring signals appear to the outside world.",
+        iconName: "Users",
+        sections: ["workforce_intel", "compensation"],
+      },
+      {
+        id: "recruiting_readiness",
+        title: "Recruiting Readiness",
+        subtitle: "Your hiring funnel health, recruiter signals, and candidate experience indicators.",
+        iconName: "Activity",
+        sections: ["recruiter_reality"],
+      },
+      {
+        id: "stability_reputation",
+        title: "Stability & Reputation Signals",
+        subtitle: "Layoff history, leadership stability, and governance signals that shape candidate confidence.",
+        iconName: "Shield",
+        sections: ["workforce_stability", "governance"],
+      },
+      {
+        id: "values_alignment",
+        title: "Values & Culture Alignment",
+        subtitle: "How your public commitments, DEI signals, and ethical footprint are perceived by the talent market.",
+        iconName: "Heart",
+        sections: ["values"],
       },
     ],
   },
