@@ -116,12 +116,15 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
     setIsScanning(true);
     setShowOverlay(true);
     try {
-      const [orchestrated, unified] = await Promise.allSettled([
+      const [orchestrated, unified, osint] = await Promise.allSettled([
         supabase.functions.invoke("company-intelligence-scan", {
           body: { companyId, companyName, forceRescan },
         }),
         supabase.functions.invoke("civiclens-intelligence-scan", {
           body: { companyId, companyName, scanParts: ['benefits', 'ai_hiring', 'audit_hunt'] },
+        }),
+        supabase.functions.invoke("osint-parallel-scan", {
+          body: { companyId, companyName },
         }),
       ]);
 
