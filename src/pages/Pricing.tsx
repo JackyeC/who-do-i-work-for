@@ -244,6 +244,37 @@ export default function Pricing() {
           })}
         </div>
 
+        {/* Employer Certification */}
+        <div className="rounded-2xl border border-amber-500/30 bg-card p-8 flex flex-col md:flex-row items-center justify-between gap-6 mb-6 ring-1 ring-amber-500/10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+              <ShieldCheck className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground text-lg flex items-center gap-2">
+                Employer Certification
+                <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-600 border-amber-500/20">Gold Shield</Badge>
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Claim your profile, respond to insights, and earn Certified status with a 3-point transparency audit by Jackye.
+              </p>
+              <div className="flex items-baseline gap-1.5 mt-1">
+                <span className="text-2xl font-bold font-mono text-foreground">$499</span>
+                <span className="text-muted-foreground">/yr</span>
+              </div>
+            </div>
+          </div>
+          <Button
+            size="lg"
+            className="shrink-0 gap-2 bg-amber-600 hover:bg-amber-700 text-white"
+            onClick={() => handleCheckout(STRIPE_TIERS.employer_certification.price_id, null, "Employer Certification")}
+            disabled={loadingTier === "Employer Certification"}
+          >
+            {loadingTier === "Employer Certification" ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+            Get Certified
+          </Button>
+        </div>
+
         {/* Enterprise CTA */}
         <div className="rounded-2xl border border-border/40 bg-card p-8 flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
           <div className="flex items-center gap-4">
