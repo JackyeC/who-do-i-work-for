@@ -167,7 +167,8 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       }
 
       const totalSignals = (orchResult?.data?.totalSignalsFound || 0) +
-        (uniResult?.data?.results?.benefits || 0) + (uniResult?.data?.results?.aiHiring || 0);
+        (uniResult?.data?.results?.benefits || 0) + (uniResult?.data?.results?.aiHiring || 0) +
+        (osintResult?.data?.succeeded || 0);
 
       toast({
         title: "Intelligence scan complete",
