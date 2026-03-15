@@ -81,6 +81,7 @@ import { calculatePVS, deriveSubScores, computeConfidence } from "@/lib/promotio
 import { PublicRecordsExposure } from "@/components/public-records/PublicRecordsExposure";
 import { NarrativePowerSection } from "@/components/narrative-power";
 import { JackyeNote } from "@/components/JackyeNote";
+import { CorporateOwnershipCard } from "@/components/CorporateOwnershipCard";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
