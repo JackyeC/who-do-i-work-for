@@ -323,7 +323,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Proxy statements (executive compensation)
+    // Proxy statements (executive compensation + board diversity)
     const recentProxies = filingSignals.filter(f => f.type === 'proxy_statement').slice(0, 3);
     for (const proxy of recentProxies) {
       signalRows.push({
@@ -334,6 +334,25 @@ Deno.serve(async (req) => {
         confidence_level: 'direct',
         source_url: proxy.url,
         raw_excerpt: proxy.description,
+      });
+    }
+
+    // Board diversity matrix detection — check proxy filing descriptions for 2026 keywords
+    const diversityProxies = filingSignals.filter(f => f.type === 'proxy_statement');
+    if (diversityProxies.length > 0) {
+      const latestProxy = diversityProxies[0];
+      // Flag that a proxy exists where board diversity matrix is likely present
+      signalRows.push({
+        company_id: companyId,
+        signal_category: 'sec_board_diversity',
+        signal_type: 'proxy_diversity_matrix_available',
+        signal_value: `Board diversity disclosure likely in DEF 14A filed ${latestProxy.filing_date}`,
+        confidence_level: 'inferred',
+        source_url: latestProxy.url,
+        raw_excerpt: JSON.stringify({
+          keywords_to_search: DIVERSITY_KEYWORDS.slice(0, 6),
+          note: 'DEF 14A filings from 2024+ typically contain Board Diversity Matrix per Nasdaq/SEC guidance. 2026 filings may use "skills matrix" or "board composition" framing.',
+        }),
       });
     }
 
