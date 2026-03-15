@@ -320,9 +320,10 @@ export default function FounderConsole() {
           <WarnHeatmapPanel />
         </div>
 
-        {/* Search Intelligence */}
-        <div className="mt-6">
+        {/* Search Intelligence + Conversion Funnel */}
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <SearchIntelligencePanel />
+          <ConversionFunnelPanel />
         </div>
 
         {/* Compensation Health + Founder Notes */}
