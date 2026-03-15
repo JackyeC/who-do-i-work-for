@@ -86,6 +86,7 @@ const WorkforceBrief = lazy(() => import("./pages/WorkforceBrief"));
 const Rankings = lazy(() => import("./pages/Rankings"));
 const RealityCheck = lazy(() => import("./pages/RealityCheck"));
 const FounderConsole = lazy(() => import("./pages/FounderConsole"));
+const EmployerVerificationPending = lazy(() => import("./pages/EmployerVerificationPending"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -183,6 +184,7 @@ const App = () => (
                   <Route path="/admin/reports/:id" element={<AdminRoute><ReportEditor /></AdminRoute>} />
                   <Route path="/founder-console" element={<AdminRoute><FounderConsole /></AdminRoute>} />
                   <Route path="/recruiting" element={<RecruitingIntelligence />} />
+                  <Route path="/employer/verification-pending" element={<ProtectedRoute><EmployerVerificationPending /></ProtectedRoute>} />
                   <Route path="/relationship-intelligence" element={<ProtectedRoute><RelationshipIntelligence /></ProtectedRoute>} />
                   <Route path="/compare" element={<CompareCompanies />} />
                   <Route path="/investigative" element={<InvestigativeExplorer />} />
