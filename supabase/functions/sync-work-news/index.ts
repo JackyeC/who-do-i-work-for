@@ -115,8 +115,8 @@ Deno.serve(async (req) => {
           });
         }
 
-        // Throttle between GDELT queries (free API, be respectful)
-        await new Promise(r => setTimeout(r, 1500));
+        // Throttle — GDELT rate limits aggressively
+        await new Promise(r => setTimeout(r, 6000));
       } catch (e) {
         console.warn(`GDELT query ${i} error:`, e);
       }
