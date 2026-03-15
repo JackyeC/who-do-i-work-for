@@ -313,6 +313,17 @@ export default function FounderConsole() {
           </div>
         </div>
 
+        {/* Search Intelligence */}
+        <div className="mt-8">
+          <SearchIntelligencePanel />
+        </div>
+
+        {/* Compensation Health + Founder Notes */}
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <CompensationHealthPanel />
+          <FounderNotesPanel />
+        </div>
+
         {/* Pending Reviews Section */}
         <div className="mt-8">
           <PendingReviewsDashboard />
