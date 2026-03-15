@@ -78,6 +78,7 @@ import { IntelligenceSnapshotCard } from "@/components/viral/IntelligenceSnapsho
 import { calculatePVS, deriveSubScores, computeConfidence } from "@/lib/promotionVelocityScore";
 import { PublicRecordsExposure } from "@/components/public-records/PublicRecordsExposure";
 import { NarrativePowerSection } from "@/components/narrative-power";
+import { JackyeNote } from "@/components/JackyeNote";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
