@@ -396,6 +396,8 @@ export default function CompanyProfile() {
   const industry = dbCompany?.industry || company?.industry || "";
   const state = dbCompany?.state || company?.state || "";
   const description = (dbCompany as any)?.description || company?.description || "";
+  const consumerRelevance = (dbCompany as any)?.consumer_relevance || "";
+  const workerRelevance = (dbCompany as any)?.worker_relevance || "";
   const civicScore = dbCompany?.civic_footprint_score ?? company?.civicFootprintScore ?? 0;
   const totalPac = dbCompany?.total_pac_spending ?? company?.totalPacSpending ?? 0;
   const lobbyingSpend = dbCompany?.lobbying_spend ?? company?.lobbyingSpend ?? 0;
