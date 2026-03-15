@@ -38,6 +38,12 @@ export const STRIPE_TIERS = {
     label: "Auto-Apply Add-on",
     price: "$9/mo",
   },
+  employer_certification: {
+    price_id: "price_1TBNzW7Qj0W6UtN9gLhA1aZG",
+    product_id: "prod_U9hOi2iERyaL2D",
+    label: "Employer Certification",
+    price: "$499/yr",
+  },
 } as const;
 
 export interface PremiumFeatures {
