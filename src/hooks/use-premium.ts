@@ -63,7 +63,7 @@ const FREE_FEATURES: PremiumFeatures = {
   canExport: false,
   canTrackAlerts: false,
   hasInfluenceChain: false,
-  hasEVPAudit: false,
+  hasEmployerPromiseAudit: false,
 };
 
 const CANDIDATE_FEATURES: PremiumFeatures = {
