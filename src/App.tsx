@@ -79,6 +79,7 @@ import SignalFeed from "./pages/SignalFeed";
 import EEOCTracker from "./pages/EEOCTracker";
 import WorkIndex from "./pages/WorkIndex";
 import Rankings from "./pages/Rankings";
+import RealityCheck from "./pages/RealityCheck";
 import { CookieNotice } from "@/components/CookieNotice";
 
 const queryClient = new QueryClient();
