@@ -160,6 +160,8 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "Users",
     description: "Can I successfully hire for this company? Hiring reality, talent brand, and search difficulty signals.",
     question: "Can I hire here?",
+    accessTier: "paid",
+    requiredPlan: "candidate",
     primarySections: ["recruiter_reality", "cbi", "gtm", "workforce_intel", "compensation", "promotion_velocity", "workforce_stability", "narrative_power"],
     secondarySections: [],
     hiddenSections: ["influence", "values", "public_records"],
