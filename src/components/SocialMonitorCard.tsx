@@ -104,7 +104,7 @@ export function SocialMonitorCard({ companyId, companyName, executiveNames, dbCo
         </CardTitle>
         <div className="flex items-center gap-2">
           {(isFirecrawlDown || firecrawlDown) && cachedScan && (
-            <SavedIntelligenceBadge lastUpdated={cachedScan?.scanned_at} />
+            <SavedIntelligenceBadge lastUpdated={cachedScan?.created_at} />
           )}
           <Button
             onClick={runScan}
