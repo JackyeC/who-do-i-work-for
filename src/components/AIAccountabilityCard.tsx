@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   Shield, Loader2, ExternalLink, RefreshCw, Clock, AlertTriangle,
   CheckCircle2, XCircle, Bot, Video, Search, Brain, FileCheck,
-  AlertOctagon, Eye
+  AlertOctagon, Eye, CloudOff
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
+import { SavedIntelligenceBadge } from "@/components/scan/ScanUnavailableBanner";
 
 interface AIAccountabilityCardProps {
   companyName: string;
@@ -82,30 +84,20 @@ export function AIAccountabilityCard({ companyName, dbCompanyId }: AIAccountabil
     enabled: !!dbCompanyId,
   });
 
-  const handleScan = async () => {
-    setIsScanning(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("ai-accountability-scan", {
-        body: { companyId: dbCompanyId, companyName },
-      });
-      if (error) throw error;
-      if (data?.success) {
-        toast({
-          title: "AI Accountability scan complete",
-          description: data.vendorsDetected > 0
-            ? `Found ${data.vendorsDetected} AI vendors, ${data.auditsFound} audits`
-            : "No AI hiring vendors detected",
-        });
-        queryClient.invalidateQueries({ queryKey: ["ai-hiring-signals", dbCompanyId] });
-      } else {
-        throw new Error(data?.error || "Scan failed");
-      }
-    } catch (e: any) {
-      toast({ title: "Scan failed", description: e.message, variant: "destructive" });
-    } finally {
-      setIsScanning(false);
-    }
-  };
+  const [firecrawlDown, setFirecrawlDown] = useState(false);
+
+  const { runScan: handleScan, isFirecrawlDown, cooldownMinutes } = useScanWithFallback({
+    functionName: "ai-accountability-scan",
+    companyId: dbCompanyId,
+    companyName,
+    setLoading: setIsScanning,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["ai-hiring-signals", dbCompanyId] });
+    },
+    onError: (reason) => {
+      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+    },
+  });
 
   const hasSignals = (signals?.length || 0) > 0;
   const vendors = signals?.filter((s: any) => s.signal_type !== 'Regulatory Disclosure') || [];
@@ -147,13 +139,13 @@ export function AIAccountabilityCard({ companyName, dbCompanyId }: AIAccountabil
             )}
             <Button
               onClick={handleScan}
-              disabled={isScanning}
+              disabled={isScanning || isFirecrawlDown}
               variant="outline"
               size="sm"
               className="gap-1.5"
             >
-              {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-              {isScanning ? "Scanning…" : "Deep Scan"}
+              {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isFirecrawlDown ? <CloudOff className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
+              {isScanning ? "Scanning…" : isFirecrawlDown ? `Paused (~${cooldownMinutes}m)` : "Deep Scan"}
             </Button>
           </div>
         </div>

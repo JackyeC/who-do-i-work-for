@@ -4,12 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   MessageSquareWarning, TrendingUp, UserMinus, AlertTriangle, 
-  ExternalLink, Loader2, Radio, RefreshCw 
+  ExternalLink, Loader2, Radio, RefreshCw, CloudOff 
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { SignalDensity } from "@/components/SignalMeta";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
+import { SavedIntelligenceBadge } from "@/components/scan/ScanUnavailableBanner";
 
 interface SocialMonitorCardProps {
   companyId: string;
@@ -65,31 +67,22 @@ export function SocialMonitorCard({ companyId, companyName, executiveNames, dbCo
     enabled: !!dbCompanyId,
   });
 
-  const runScan = async () => {
-    if (!dbCompanyId) {
-      toast({ title: "No database ID", description: "This company isn't linked to live data yet.", variant: "destructive" });
-      return;
-    }
-    setIsScanning(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("social-scan", {
-        body: { companyId: dbCompanyId, companyName, executiveNames },
-      });
-      if (error) throw error;
-      if (data?.success) {
-        setLiveResult(data.data);
-        refetch();
-        toast({ title: "Scan complete", description: `Found ${data.data.resultCount} results across web and social media.` });
-      } else {
-        throw new Error(data?.error || "Scan failed");
-      }
-    } catch (e: any) {
-      console.error("Scan error:", e);
-      toast({ title: "Scan failed", description: e.message || "Could not complete social media scan.", variant: "destructive" });
-    } finally {
-      setIsScanning(false);
-    }
-  };
+  const [firecrawlDown, setFirecrawlDown] = useState(false);
+
+  const { runScan, isFirecrawlDown, cooldownMinutes } = useScanWithFallback({
+    functionName: "social-scan",
+    companyId: dbCompanyId,
+    companyName,
+    extraBody: { executiveNames },
+    setLoading: setIsScanning,
+    onSuccess: (data) => {
+      setLiveResult(data.data);
+      refetch();
+    },
+    onError: (reason) => {
+      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+    },
+  });
 
   const result = liveResult || (cachedScan ? {
     summary: cachedScan.ai_summary || "",
@@ -109,16 +102,21 @@ export function SocialMonitorCard({ companyId, companyName, executiveNames, dbCo
           <Radio className="w-5 h-5 text-primary" />
           Social & Media Monitor
         </CardTitle>
-        <Button
-          onClick={runScan}
-          disabled={isScanning || !dbCompanyId}
-          size="sm"
-          variant="outline"
-          className="gap-1.5"
-        >
-          {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-          {isScanning ? "Scanning..." : "Run Scan"}
-        </Button>
+        <div className="flex items-center gap-2">
+          {(isFirecrawlDown || firecrawlDown) && cachedScan && (
+            <SavedIntelligenceBadge lastUpdated={cachedScan?.created_at} />
+          )}
+          <Button
+            onClick={runScan}
+            disabled={isScanning || !dbCompanyId || isFirecrawlDown}
+            size="sm"
+            variant="outline"
+            className="gap-1.5"
+          >
+            {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isFirecrawlDown ? <CloudOff className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
+            {isScanning ? "Scanning..." : isFirecrawlDown ? `Paused (~${cooldownMinutes}m)` : "Run Scan"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {!result ? (

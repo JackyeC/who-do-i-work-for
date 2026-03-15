@@ -4,12 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   AlertTriangle, Loader2, ChevronDown, ChevronUp, Eye, BookOpen,
-  Scale, HeartOff, Factory, Vote, Thermometer, Baby, Building
+  Scale, HeartOff, Factory, Vote, Thermometer, Baby, Building, CloudOff
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
 import { ExplainableMetric } from "@/components/ExplainableMetric";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
 
 interface IdeologyFlag {
   orgName: string;
@@ -100,21 +101,20 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
     return () => { supabase.removeChannel(channel); };
   }, [dbCompanyId]);
 
-  const runScan = async () => {
-    if (!dbCompanyId) return;
-    setScanning(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("ideology-scan", {
-        body: { companyId: dbCompanyId, companyName },
-      });
-      if (error) throw error;
-      if (data?.success) setResult(data.data);
-    } catch (e) {
-      console.error("Ideology scan error:", e);
-    } finally {
-      setScanning(false);
-    }
-  };
+  const [firecrawlDown, setFirecrawlDown] = useState(false);
+
+  const { runScan, isFirecrawlDown, cooldownMinutes } = useScanWithFallback({
+    functionName: "ideology-scan",
+    companyId: dbCompanyId,
+    companyName,
+    setLoading: setScanning,
+    onSuccess: (data) => {
+      if (data?.data) setResult(data.data);
+    },
+    onError: (reason) => {
+      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+    },
+  });
 
   // Group flags by category
   const flagsByCategory = (result?.flags || []).reduce<Record<string, IdeologyFlag[]>>((acc, flag) => {
@@ -159,9 +159,11 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
 
         {!result ? (
           <div className="text-center py-6">
-            <Button onClick={runScan} disabled={scanning || !dbCompanyId} variant="outline">
+            <Button onClick={runScan} disabled={scanning || !dbCompanyId || isFirecrawlDown} variant="outline">
               {scanning ? (
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Scanning ideological ties...</>
+              ) : isFirecrawlDown ? (
+                <><CloudOff className="w-4 h-4 mr-2" /> Paused (~{cooldownMinutes}m)</>
               ) : (
                 "Run Ideology Scan"
               )}

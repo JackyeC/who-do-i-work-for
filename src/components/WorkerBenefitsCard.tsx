@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Loader2, ExternalLink, RefreshCw, Clock, Baby, Brain, GraduationCap, Home, Shield, Briefcase, Users, Wallet, HeartPulse, FileCheck } from "lucide-react";
+import { Heart, Loader2, ExternalLink, RefreshCw, Clock, Baby, Brain, GraduationCap, Home, Shield, Briefcase, Users, Wallet, HeartPulse, FileCheck, CloudOff } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { SignalMeta } from "@/components/SignalMeta";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
+import { SavedIntelligenceBadge } from "@/components/scan/ScanUnavailableBanner";
 
 interface WorkerBenefitsCardProps {
   companyName: string;
@@ -65,30 +67,20 @@ export function WorkerBenefitsCard({ companyName, dbCompanyId }: WorkerBenefitsC
     enabled: !!dbCompanyId,
   });
 
-  const handleScan = async () => {
-    setIsScanning(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("worker-benefits-scan", {
-        body: { companyId: dbCompanyId, companyName },
-      });
-      if (error) throw error;
-      if (data?.success) {
-        toast({
-          title: "Benefits scan complete",
-          description: data.signalsFound > 0
-            ? `Found ${data.signalsFound} worker benefit signals`
-            : "No worker benefit signals detected",
-        });
-        queryClient.invalidateQueries({ queryKey: ["worker-benefit-signals", dbCompanyId] });
-      } else {
-        throw new Error(data?.error || "Scan failed");
-      }
-    } catch (e: any) {
-      toast({ title: "Scan failed", description: e.message, variant: "destructive" });
-    } finally {
-      setIsScanning(false);
-    }
-  };
+  const [firecrawlDown, setFirecrawlDown] = useState(false);
+
+  const { runScan: handleScan, isFirecrawlDown, cooldownMinutes } = useScanWithFallback({
+    functionName: "worker-benefits-scan",
+    companyId: dbCompanyId,
+    companyName,
+    setLoading: setIsScanning,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["worker-benefit-signals", dbCompanyId] });
+    },
+    onError: (reason) => {
+      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+    },
+  });
 
   const grouped = (signals || []).reduce((acc: Record<string, any[]>, s: any) => {
     const cat = s.benefit_category || "Other";
@@ -122,13 +114,13 @@ export function WorkerBenefitsCard({ companyName, dbCompanyId }: WorkerBenefitsC
             )}
             <Button
               onClick={handleScan}
-              disabled={isScanning}
+              disabled={isScanning || isFirecrawlDown}
               variant="outline"
               size="sm"
               className="gap-1.5"
             >
-              {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-              {isScanning ? "Scanning…" : "Scan"}
+              {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isFirecrawlDown ? <CloudOff className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
+              {isScanning ? "Scanning…" : isFirecrawlDown ? `Paused (~${cooldownMinutes}m)` : "Scan"}
             </Button>
           </div>
         </div>

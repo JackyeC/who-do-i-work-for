@@ -4,13 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   HardHat, Loader2, RefreshCw, Star, ThumbsUp, ThumbsDown,
-  AlertTriangle, ExternalLink, TrendingDown, TrendingUp
+  AlertTriangle, ExternalLink, TrendingDown, TrendingUp, CloudOff
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { SignalDensity } from "@/components/SignalMeta";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
+import { ScanUnavailableBanner, SavedIntelligenceBadge } from "@/components/scan/ScanUnavailableBanner";
 
 interface WorkerSentimentCardProps {
   companyName: string;
@@ -97,33 +99,25 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
     enabled: !!dbCompanyId,
   });
 
-  const runScan = async () => {
-    if (!dbCompanyId) {
-      toast({ title: "No database ID", description: "This company isn't linked to live data yet.", variant: "destructive" });
-      return;
-    }
-    setIsScanning(true);
-    setScanStartTime(Date.now());
-    setElapsed(0);
-    try {
-      const { data, error } = await supabase.functions.invoke("worker-sentiment-scan", {
-        body: { companyId: dbCompanyId, companyName },
-      });
-      if (error) throw error;
-      if (data?.success) {
-        setLiveResult(data.data);
-        refetch();
-        toast({ title: "Scan complete", description: `Analyzed ${data.data.resultCount} sources for worker sentiment.` });
-      } else {
-        throw new Error(data?.error || "Scan failed");
-      }
-    } catch (e: any) {
-      toast({ title: "Scan failed", description: e.message || "Could not complete worker sentiment scan.", variant: "destructive" });
-    } finally {
-      setIsScanning(false);
-      setScanStartTime(null);
-    }
-  };
+  const [firecrawlDown, setFirecrawlDown] = useState(false);
+
+  const { runScan, isFirecrawlDown, cooldownMinutes } = useScanWithFallback({
+    functionName: "worker-sentiment-scan",
+    companyId: dbCompanyId,
+    companyName,
+    setLoading: (v) => {
+      setIsScanning(v);
+      if (v) { setScanStartTime(Date.now()); setElapsed(0); }
+      else { setScanStartTime(null); }
+    },
+    onSuccess: (data) => {
+      setLiveResult(data.data);
+      refetch();
+    },
+    onError: (reason) => {
+      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+    },
+  });
 
   const result: SentimentResult | null = liveResult || (cachedScan ? {
     overallRating: cachedScan.overall_rating,
@@ -150,10 +144,15 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
           <HardHat className="w-5 h-5 text-primary" />
           Worker Sentiment Scanner
         </CardTitle>
-        <Button onClick={runScan} disabled={isScanning || !dbCompanyId} size="sm" variant="outline" className="gap-1.5">
-          {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-          {isScanning ? "Scanning..." : "Run Scan"}
-        </Button>
+        <div className="flex items-center gap-2">
+          {(isFirecrawlDown || firecrawlDown) && cachedScan && (
+            <SavedIntelligenceBadge lastUpdated={cachedScan?.scanned_at} />
+          )}
+          <Button onClick={runScan} disabled={isScanning || !dbCompanyId || isFirecrawlDown} size="sm" variant="outline" className="gap-1.5">
+            {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isFirecrawlDown ? <CloudOff className="w-3.5 h-3.5" /> : <RefreshCw className="w-3.5 h-3.5" />}
+            {isScanning ? "Scanning..." : isFirecrawlDown ? `Paused (~${cooldownMinutes}m)` : "Run Scan"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {isScanning && (

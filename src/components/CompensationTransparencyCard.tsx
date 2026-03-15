@@ -7,12 +7,14 @@ import { Progress } from "@/components/ui/progress";
 import {
   DollarSign, Search, ExternalLink, Loader2, ShieldCheck,
   AlertTriangle, FileText, Scale, BarChart3, Briefcase, TrendingDown,
-  Users, Bot, Calendar, Info
+  Users, Bot, Calendar, Info, CloudOff
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
+import { SavedIntelligenceBadge } from "@/components/scan/ScanUnavailableBanner";
 import { SignalMeta } from "@/components/SignalMeta";
 
 interface Props {
@@ -90,33 +92,26 @@ export function CompensationTransparencyCard({ companyName, dbCompanyId }: Props
     enabled: !!dbCompanyId,
   });
 
-  const handleScan = async () => {
-    if (!dbCompanyId) return;
-    setIsScanning(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("pay-equity-scan", {
-        body: { companyId: dbCompanyId, companyName },
-      });
-      if (error) throw error;
+  const [firecrawlDown, setFirecrawlDown] = useState(false);
 
+  const { runScan: handleScan, isFirecrawlDown, cooldownMinutes } = useScanWithFallback({
+    functionName: "pay-equity-scan",
+    companyId: dbCompanyId,
+    companyName,
+    setLoading: setIsScanning,
+    onSuccess: (data) => {
       setScanExtras({
         gapMetrics: data?.gapMetrics,
         vendorsDetected: data?.vendorsDetected,
         hasPayAudit: data?.hasPayAudit,
         salaryRangesInPostings: data?.salaryRangesInPostings,
       });
-
-      toast({
-        title: "Pay equity scan complete",
-        description: `Found ${data?.signalsFound || 0} signals from ${data?.sourcesScanned || 0} sources.`,
-      });
       queryClient.invalidateQueries({ queryKey: ["pay-equity-signals", dbCompanyId] });
-    } catch (e: any) {
-      toast({ title: "Scan failed", description: e.message, variant: "destructive" });
-    } finally {
-      setIsScanning(false);
-    }
-  };
+    },
+    onError: (reason) => {
+      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+    },
+  });
 
   const grouped = (signals || []).reduce<Record<string, any[]>>((acc, s) => {
     const cat = s.signal_category || "pay_reporting";
@@ -146,10 +141,10 @@ export function CompensationTransparencyCard({ companyName, dbCompanyId }: Props
             size="sm"
             className="ml-auto gap-1.5"
             onClick={handleScan}
-            disabled={isScanning || !dbCompanyId}
+            disabled={isScanning || !dbCompanyId || isFirecrawlDown}
           >
-            {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
-            {isScanning ? "Scanning..." : "Scan"}
+            {isScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isFirecrawlDown ? <CloudOff className="w-3.5 h-3.5" /> : <Search className="w-3.5 h-3.5" />}
+            {isScanning ? "Scanning..." : isFirecrawlDown ? `Paused (~${cooldownMinutes}m)` : "Scan"}
           </Button>
         </CardTitle>
         <p className="text-xs text-muted-foreground">
