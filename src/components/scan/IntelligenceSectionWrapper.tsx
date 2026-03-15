@@ -2,16 +2,16 @@
  * Wrapper for intelligence sections that handles:
  * - Loading state
  * - Stale data indicators
- * - Section-level failures
- * - Refresh buttons
+ * - Section-level failures with polished messaging
+ * - Refresh buttons with status
  */
 
 import { ReactNode } from 'react';
-import { RefreshCw, Clock, Database, AlertTriangle } from 'lucide-react';
+import { RefreshCw, Clock, Database, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { SectionReport } from '@/hooks/use-company-intelligence';
+import type { SectionReport, RefreshStatus } from '@/hooks/use-company-intelligence';
 import type { IntelligenceSection } from '@/lib/intelligence-provider';
 import { SECTION_LABELS } from '@/lib/intelligence-provider';
 
@@ -19,10 +19,9 @@ interface IntelligenceSectionWrapperProps {
   section: IntelligenceSection;
   report: SectionReport | null;
   loading?: boolean;
-  refreshing?: boolean;
+  refreshStatus?: RefreshStatus;
   onRefresh?: () => void;
   children: ReactNode;
-  /** Show refresh button */
   showRefresh?: boolean;
 }
 
@@ -30,11 +29,13 @@ export function IntelligenceSectionWrapper({
   section,
   report,
   loading,
-  refreshing,
+  refreshStatus = 'idle',
   onRefresh,
   children,
   showRefresh = true,
 }: IntelligenceSectionWrapperProps) {
+  const isRefreshing = refreshStatus === 'refreshing';
+
   if (loading) {
     return (
       <div className="space-y-3">
@@ -44,7 +45,7 @@ export function IntelligenceSectionWrapper({
     );
   }
 
-  const hasData = report && report.content && 
+  const hasData = report && report.content &&
     (typeof report.content !== 'object' || Object.keys(report.content).length > 0);
 
   // No data at all
@@ -55,16 +56,21 @@ export function IntelligenceSectionWrapper({
         <p className="text-sm text-muted-foreground">
           No {SECTION_LABELS[section]?.toLowerCase() || section} data available yet
         </p>
+        {report?.last_error && (
+          <p className="text-xs text-muted-foreground/60">
+            Some live data sources are temporarily unavailable
+          </p>
+        )}
         {showRefresh && onRefresh && (
           <Button
             variant="outline"
             size="sm"
             onClick={onRefresh}
-            disabled={refreshing}
+            disabled={isRefreshing}
             className="text-xs"
           >
-            <RefreshCw className={`w-3 h-3 mr-1.5 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Scanning…' : 'Scan Now'}
+            <RefreshCw className={`w-3 h-3 mr-1.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+            {isRefreshing ? 'Scanning…' : 'Scan Now'}
           </Button>
         )}
       </div>
@@ -75,20 +81,32 @@ export function IntelligenceSectionWrapper({
     <div className="space-y-2">
       {/* Freshness / status bar */}
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          {report.isStale && (
-            <Badge variant="outline" className="text-[10px] font-mono gap-1 border-amber-500/30 text-amber-600 dark:text-amber-400">
-              <Clock className="w-2.5 h-2.5" />
-              Stale data
+        <div className="flex items-center gap-2 flex-wrap">
+          {isRefreshing && (
+            <Badge variant="secondary" className="text-[10px] font-mono gap-1">
+              <RefreshCw className="w-2.5 h-2.5 animate-spin" />
+              Refresh in progress
             </Badge>
           )}
-          {report.last_successful_update && (
-          <Badge variant="secondary" className="text-[10px] font-mono gap-1">
-            <Database className="w-2.5 h-2.5" />
-            {report.freshnessLabel}
-          </Badge>
+          {refreshStatus === 'success' && (
+            <Badge variant="secondary" className="text-[10px] font-mono gap-1 border-primary/30 text-primary">
+              <CheckCircle2 className="w-2.5 h-2.5" />
+              Just updated
+            </Badge>
           )}
-          {report.last_error && (
+          {report.isStale && refreshStatus !== 'refreshing' && (
+            <Badge variant="outline" className="text-[10px] font-mono gap-1 border-amber-500/30 text-amber-600 dark:text-amber-400">
+              <Clock className="w-2.5 h-2.5" />
+              Using saved intelligence
+            </Badge>
+          )}
+          {report.last_successful_update && !report.isStale && (
+            <Badge variant="secondary" className="text-[10px] font-mono gap-1">
+              <Database className="w-2.5 h-2.5" />
+              {report.freshnessLabel}
+            </Badge>
+          )}
+          {report.last_error && refreshStatus !== 'refreshing' && (
             <Badge variant="outline" className="text-[10px] font-mono gap-1 border-destructive/30 text-destructive">
               Live refresh unavailable
             </Badge>
@@ -100,11 +118,11 @@ export function IntelligenceSectionWrapper({
             variant="ghost"
             size="sm"
             onClick={onRefresh}
-            disabled={refreshing}
-            className="h-6 px-2 text-[10px] text-muted-foreground hover:text-foreground"
+            disabled={isRefreshing}
+            className="h-6 px-2 text-[10px] text-muted-foreground hover:text-foreground shrink-0"
           >
-            <RefreshCw className={`w-3 h-3 mr-1 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Refreshing…' : 'Refresh'}
+            <RefreshCw className={`w-3 h-3 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+            {isRefreshing ? 'Refreshing…' : 'Refresh'}
           </Button>
         )}
       </div>

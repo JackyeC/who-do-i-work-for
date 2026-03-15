@@ -1,3 +1,11 @@
+/**
+ * Refresh Intelligence Edge Function
+ * 
+ * Refreshes a specific section of company intelligence using the provider fallback chain.
+ * Records results in company_report_sections and scan_jobs.
+ * NEVER overwrites existing good content on failure — preserves the last successful report.
+ */
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
@@ -16,9 +24,23 @@ interface ScrapeResult {
   errorType?: string;
 }
 
+// ─── Freshness TTLs (hours) ───
+const FRESHNESS_TTL: Record<string, number> = {
+  careers: 48,
+  news: 24,
+  worker_sentiment: 72,
+  compensation: 168,
+  leadership: 336,
+  reputation: 168,
+  recruiter_intelligence: 72,
+  ai_hiring: 168,
+  ideology: 336,
+  benefits: 168,
+};
+
 // ─── Provider implementations ───
 
-async function scrapeWithFirecrawl(url: string, query: string): Promise<ScrapeResult> {
+async function scrapeWithFirecrawl(url: string, _query: string): Promise<ScrapeResult> {
   const apiKey = Deno.env.get('FIRECRAWL_API_KEY');
   if (!apiKey) return { success: false, content: null, error: 'FIRECRAWL_API_KEY not configured', errorType: 'invalid_api_key' };
 
@@ -29,15 +51,10 @@ async function scrapeWithFirecrawl(url: string, query: string): Promise<ScrapeRe
       body: JSON.stringify({ url, formats: ['markdown'], onlyMainContent: true, waitFor: 5000 }),
     });
 
-    if (resp.status === 402) {
-      return { success: false, content: null, error: 'Insufficient credits', errorType: 'credits_exhausted' };
-    }
-    if (resp.status === 401 || resp.status === 403) {
-      return { success: false, content: null, error: 'Invalid API key', errorType: 'invalid_api_key' };
-    }
-    if (resp.status >= 500) {
-      return { success: false, content: null, error: `Provider outage (${resp.status})`, errorType: 'provider_outage' };
-    }
+    if (resp.status === 402) return { success: false, content: null, error: 'Insufficient credits', errorType: 'credits_exhausted' };
+    if (resp.status === 401 || resp.status === 403) return { success: false, content: null, error: 'Invalid API key', errorType: 'invalid_api_key' };
+    if (resp.status === 429) return { success: false, content: null, error: 'Rate limited', errorType: 'credits_exhausted' };
+    if (resp.status >= 500) return { success: false, content: null, error: `Provider outage (${resp.status})`, errorType: 'provider_outage' };
 
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
@@ -46,7 +63,7 @@ async function scrapeWithFirecrawl(url: string, query: string): Promise<ScrapeRe
 
     const data = await resp.json();
     const markdown = data.data?.markdown || data.markdown || '';
-    
+
     return {
       success: markdown.length > 50,
       content: { markdown, metadata: data.data?.metadata || data.metadata },
@@ -62,7 +79,7 @@ async function scrapeWithFirecrawl(url: string, query: string): Promise<ScrapeRe
   }
 }
 
-async function scrapeWithScrapingBee(url: string): Promise<ScrapeResult> {
+async function scrapeWithScrapingBee(url: string, _query: string): Promise<ScrapeResult> {
   const apiKey = Deno.env.get('SCRAPINGBEE_API_KEY');
   if (!apiKey) return { success: false, content: null, error: 'SCRAPINGBEE_API_KEY not configured', errorType: 'invalid_api_key' };
 
@@ -76,12 +93,8 @@ async function scrapeWithScrapingBee(url: string): Promise<ScrapeResult> {
 
     const resp = await fetch(`https://app.scrapingbee.com/api/v1/?${params}`);
 
-    if (resp.status === 402 || resp.status === 429) {
-      return { success: false, content: null, error: 'Credits exhausted', errorType: 'credits_exhausted' };
-    }
-    if (!resp.ok) {
-      return { success: false, content: null, error: `HTTP ${resp.status}`, errorType: resp.status >= 500 ? 'provider_outage' : 'unknown' };
-    }
+    if (resp.status === 402 || resp.status === 429) return { success: false, content: null, error: 'Credits exhausted', errorType: 'credits_exhausted' };
+    if (!resp.ok) return { success: false, content: null, error: `HTTP ${resp.status}`, errorType: resp.status >= 500 ? 'provider_outage' : 'unknown' };
 
     const text = await resp.text();
     return {
@@ -94,24 +107,13 @@ async function scrapeWithScrapingBee(url: string): Promise<ScrapeResult> {
   }
 }
 
-// Provider registry
+// Provider registry — extensible
 const PROVIDERS: Record<string, (url: string, query: string) => Promise<ScrapeResult>> = {
   firecrawl: scrapeWithFirecrawl,
   scrapingbee: scrapeWithScrapingBee,
 };
 
-const SECTION_PROVIDER_CHAIN: Record<string, ProviderName[]> = {
-  leadership: ['firecrawl', 'scrapingbee'],
-  careers: ['firecrawl', 'scrapingbee'],
-  news: ['firecrawl', 'scrapingbee'],
-  reputation: ['firecrawl', 'scrapingbee'],
-  recruiter_intelligence: ['firecrawl', 'scrapingbee'],
-  worker_sentiment: ['firecrawl', 'scrapingbee'],
-  compensation: ['firecrawl', 'scrapingbee'],
-  ai_hiring: ['firecrawl', 'scrapingbee'],
-  ideology: ['firecrawl', 'scrapingbee'],
-  benefits: ['firecrawl', 'scrapingbee'],
-};
+const DEFAULT_CHAIN: ProviderName[] = ['firecrawl', 'scrapingbee'];
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -132,14 +134,36 @@ Deno.serve(async (req) => {
       );
     }
 
+    // ─── Freshness gate: skip if data is still fresh (unless user-triggered) ───
+    if (triggeredBy !== 'user_refresh' && triggeredBy !== 'admin_rescan') {
+      const { data: existing } = await supabase
+        .from('company_report_sections')
+        .select('last_successful_update')
+        .eq('company_id', companyId)
+        .eq('section_type', section)
+        .maybeSingle();
+
+      if (existing?.last_successful_update) {
+        const ttlHours = FRESHNESS_TTL[section] || 168;
+        const age = Date.now() - new Date(existing.last_successful_update).getTime();
+        if (age < ttlHours * 3600000) {
+          return new Response(
+            JSON.stringify({ success: true, skipped: true, reason: 'Data is still fresh', section }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      }
+    }
+
     // Create scan job record
+    const chain = DEFAULT_CHAIN;
     const { data: scanJob } = await supabase.from('scan_jobs').insert({
       company_id: companyId,
       section_type: section,
       status: 'running',
       triggered_by: triggeredBy,
       started_at: new Date().toISOString(),
-      provider_fallback_chain: SECTION_PROVIDER_CHAIN[section] || ['firecrawl'],
+      provider_fallback_chain: chain,
     }).select('id').single();
 
     const scanJobId = scanJob?.id;
@@ -157,13 +181,15 @@ Deno.serve(async (req) => {
     }
 
     if (!targetUrl) {
-      await supabase.from('scan_jobs').update({
-        status: 'failed',
-        error_type: 'unknown',
-        error_message: 'No URL available for this company',
-        completed_at: new Date().toISOString(),
-        duration_ms: Date.now() - startTime,
-      }).eq('id', scanJobId);
+      if (scanJobId) {
+        await supabase.from('scan_jobs').update({
+          status: 'failed',
+          error_type: 'unknown',
+          error_message: 'No URL available for this company',
+          completed_at: new Date().toISOString(),
+          duration_ms: Date.now() - startTime,
+        }).eq('id', scanJobId);
+      }
 
       return new Response(
         JSON.stringify({ success: false, error: 'No URL available' }),
@@ -171,31 +197,32 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Try providers in fallback chain
-    const chain = SECTION_PROVIDER_CHAIN[section] || ['firecrawl'];
+    // ─── Try providers in fallback chain ───
     let result: ScrapeResult | null = null;
     let usedProvider: string | null = null;
+    const failedProviders: { provider: string; error: string; errorType: string }[] = [];
 
     for (const provider of chain) {
       const scraper = PROVIDERS[provider];
       if (!scraper) continue;
 
-      console.log(`[${section}] Trying provider: ${provider} for ${companyName || companyId}`);
+      console.log(`[${section}] Trying ${provider} for ${companyName || companyId}: ${targetUrl}`);
       result = await scraper(targetUrl, `${companyName} ${section}`);
 
       if (result.success) {
         usedProvider = provider;
-        console.log(`[${section}] Success with ${provider}`);
+        console.log(`[${section}] ✓ Success with ${provider}`);
         break;
       }
 
-      console.warn(`[${section}] ${provider} failed: ${result.error} (${result.errorType})`);
+      failedProviders.push({ provider, error: result.error || 'Unknown', errorType: result.errorType || 'unknown' });
+      console.warn(`[${section}] ✗ ${provider} failed: ${result.error} (${result.errorType})`);
     }
 
     const duration = Date.now() - startTime;
 
     if (result?.success && usedProvider) {
-      // Upsert report section
+      // Upsert report section with new content
       await supabase.from('company_report_sections').upsert({
         company_id: companyId,
         section_type: section,
@@ -206,10 +233,10 @@ Deno.serve(async (req) => {
         last_successful_update: new Date().toISOString(),
         last_attempted_update: new Date().toISOString(),
         last_error: null,
+        freshness_ttl_hours: FRESHNESS_TTL[section] || 168,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'company_id,section_type' });
 
-      // Update scan job
       if (scanJobId) {
         await supabase.from('scan_jobs').update({
           status: 'completed',
@@ -220,45 +247,61 @@ Deno.serve(async (req) => {
       }
 
       return new Response(
-        JSON.stringify({ success: true, provider: usedProvider, section, duration }),
+        JSON.stringify({ success: true, provider: usedProvider, section, duration, failedProviders }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // All providers failed — update section with error, keep existing content
-    await supabase.from('company_report_sections').upsert({
-      company_id: companyId,
-      section_type: section,
-      content: {},
-      last_attempted_update: new Date().toISOString(),
-      last_error: result?.error || 'All providers failed',
-      updated_at: new Date().toISOString(),
-    }, { onConflict: 'company_id,section_type', ignoreDuplicates: false });
+    // ─── All providers failed — PRESERVE existing content, only update error metadata ───
+    const errorMsg = result?.error || 'All providers failed';
+    const errorType = result?.errorType || 'unknown';
+
+    // Check if existing content exists — if so, only update error fields, NOT content
+    const { data: existingReport } = await supabase
+      .from('company_report_sections')
+      .select('id, content')
+      .eq('company_id', companyId)
+      .eq('section_type', section)
+      .maybeSingle();
+
+    if (existingReport) {
+      // Preserve existing content, just mark the error
+      await supabase.from('company_report_sections').update({
+        last_attempted_update: new Date().toISOString(),
+        last_error: errorMsg,
+        updated_at: new Date().toISOString(),
+      }).eq('id', existingReport.id);
+    } else {
+      // No existing report — create a placeholder
+      await supabase.from('company_report_sections').insert({
+        company_id: companyId,
+        section_type: section,
+        content: {},
+        last_attempted_update: new Date().toISOString(),
+        last_error: errorMsg,
+        freshness_ttl_hours: FRESHNESS_TTL[section] || 168,
+      });
+    }
 
     if (scanJobId) {
       await supabase.from('scan_jobs').update({
         status: 'failed',
-        error_type: result?.errorType || 'unknown',
-        error_message: result?.error || 'All providers failed',
+        error_type: errorType,
+        error_message: errorMsg,
         completed_at: new Date().toISOString(),
         duration_ms: duration,
       }).eq('id', scanJobId);
     }
 
     return new Response(
-      JSON.stringify({
-        success: false,
-        error: 'All providers exhausted',
-        lastError: result?.error,
-        section,
-      }),
+      JSON.stringify({ success: false, error: 'Live data sources temporarily unavailable', section, failedProviders }),
       { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('refresh-intelligence error:', error);
     return new Response(
-      JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify({ success: false, error: 'An internal error occurred' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
