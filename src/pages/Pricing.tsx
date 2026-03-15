@@ -56,7 +56,7 @@ const tiers = [
       { label: "30 Ask Jackye questions/mo", included: true },
       { label: "Track & alert on companies", included: true },
       { label: "Dossier export", included: false },
-      { label: "Influence chain & EVP audit", included: false },
+      { label: "Employer Promise audit & influence chain", included: false },
     ],
     popular: true,
     cta: "Start 7-Day Free Trial",
