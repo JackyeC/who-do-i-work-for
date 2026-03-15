@@ -114,8 +114,8 @@ export default function FounderConsole() {
   const { data: recentSignups = [] } = useQuery({
     queryKey: ["admin-recent-signups"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles" as any)
+      const { data } = await (supabase as any)
+        .from("profiles")
         .select("email, created_at")
         .order("created_at", { ascending: false })
         .limit(8);
