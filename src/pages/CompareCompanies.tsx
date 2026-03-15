@@ -116,6 +116,12 @@ export default function CompareCompanies() {
         {/* Results */}
         {companyA && companyB && (
           <>
+            <BattleImage
+              companyA={companyA.name}
+              companyB={companyB.name}
+              industryA={companyA.industry}
+              industryB={companyB.industry}
+            />
             <ScoreShowdown companyA={companyA} companyB={companyB} />
             <MetricBattle companyA={companyA} companyB={companyB} />
             <CompareShareBar
