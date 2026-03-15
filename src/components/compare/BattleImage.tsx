@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Zap, Sparkles, RefreshCw, Share2, Linkedin, Link2, Check, Twitter } from "lucide-react";
+import { Zap, Sparkles, RefreshCw, Share2, Linkedin, Link2, Check, Twitter, Facebook } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { openShareWindow, getShareText, type ShareContext } from "@/lib/social-share";
 
 interface BattleImageProps {
   companyA: string;
@@ -47,39 +48,33 @@ export function BattleImage({ companyA, companyB, industryA, industryB, scoreA, 
   };
 
   useEffect(() => {
-    if (companyA && companyB) generate();
+    if (companyA && companyB) {
+      generate();
+      // Pre-generate OG card for social sharing
+      supabase.functions.invoke("generate-og-card", {
+        body: { type: "battle", companyA, companyB, scoreA, scoreB, industryA, industryB },
+      }).catch(() => {}); // silent — OG card is best-effort
+    }
   }, [companyA, companyB]);
 
-  const shareUrl = slugA && slugB
-    ? `${window.location.origin}/compare?a=${slugA}&b=${slugB}`
-    : window.location.href;
+  const shareCtx = useMemo<ShareContext>(() => ({
+    type: "battle",
+    companyA,
+    companyB,
+    scoreA,
+    scoreB,
+    slugA,
+    slugB,
+  }), [companyA, companyB, scoreA, scoreB, slugA, slugB]);
 
-  const winner = scoreA != null && scoreB != null
-    ? scoreA > scoreB ? companyA : scoreB > scoreA ? companyB : null
-    : null;
+  const shareText = getShareText("copy", shareCtx);
 
-  const shareText = winner
-    ? `⚔️ ${companyA} (${scoreA}/100) vs ${companyB} (${scoreB}/100) — ${winner} wins the transparency battle! Who does YOUR employer work for?`
-    : `⚔️ ${companyA} vs ${companyB} — Who's more transparent? Compare employer intelligence scores.`;
-
-  const shareLinkedIn = () => {
-    window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
-      "_blank",
-      "width=600,height=500"
-    );
-  };
-
-  const shareTwitter = () => {
-    window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
-      "_blank",
-      "width=600,height=500"
-    );
-  };
+  const shareLinkedIn = () => openShareWindow("linkedin", shareCtx);
+  const shareTwitter = () => openShareWindow("twitter", shareCtx);
+  const shareFacebook = () => openShareWindow("facebook", shareCtx);
 
   const copyLink = () => {
-    navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+    navigator.clipboard.writeText(getShareText("copy", shareCtx));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     toast({ title: "Battle link copied! 🔥" });
@@ -185,6 +180,12 @@ export function BattleImage({ companyA, companyB, industryA, industryB, scoreA, 
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[hsl(210,80%,40%)] hover:bg-[hsl(210,80%,30%)] text-white font-mono text-[9px] tracking-wider uppercase transition-colors"
             >
               <Linkedin className="w-3.5 h-3.5" /> LinkedIn
+            </button>
+            <button
+              onClick={shareFacebook}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[hsl(220,46%,48%)] hover:bg-[hsl(220,46%,38%)] text-white font-mono text-[9px] tracking-wider uppercase transition-colors"
+            >
+              <Facebook className="w-3.5 h-3.5" /> Facebook
             </button>
             <button
               onClick={shareTwitter}

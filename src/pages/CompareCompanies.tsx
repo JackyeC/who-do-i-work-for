@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { getOGImageUrl } from "@/lib/social-share";
 import { ArrowRight, ArrowLeftRight } from "lucide-react";
 import { CompareHeader } from "@/components/compare/CompareHeader";
 import { CompanySelector } from "@/components/compare/CompanySelector";
@@ -38,6 +39,21 @@ export default function CompareCompanies() {
   const slugA = searchParams.get("a");
   const slugB = searchParams.get("b");
 
+  const ogImage = useMemo(() => {
+    if (companyA && companyB) {
+      return getOGImageUrl({
+        type: "battle",
+        companyA: companyA.name,
+        companyB: companyB.name,
+        scoreA: companyA.civic_footprint_score,
+        scoreB: companyB.civic_footprint_score,
+        slugA: companyA.slug,
+        slugB: companyB.slug,
+      });
+    }
+    return undefined;
+  }, [companyA, companyB]);
+
   usePageSEO({
     title: companyA && companyB
       ? `${companyA.name} vs ${companyB.name} — Employer Intelligence Comparison`
@@ -46,6 +62,7 @@ export default function CompareCompanies() {
       ? `Side-by-side employer transparency comparison: ${companyA.name} (${companyA.civic_footprint_score}/100) vs ${companyB.name} (${companyB.civic_footprint_score}/100).`
       : "Compare two employers side-by-side on transparency, political spending, and workforce signals.",
     path: `/compare${slugA && slugB ? `?a=${slugA}&b=${slugB}` : ""}`,
+    image: ogImage,
   });
 
   useEffect(() => {
