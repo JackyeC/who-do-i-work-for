@@ -130,6 +130,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
 
       const orchResult = orchestrated.status === 'fulfilled' ? orchestrated.value : null;
       const uniResult = unified.status === 'fulfilled' ? unified.value : null;
+      const osintResult = osint.status === 'fulfilled' ? osint.value : null;
 
       // ─── Handle 429 scan limit as a product state, not an error ───
       const is429 = orchResult?.error && (
