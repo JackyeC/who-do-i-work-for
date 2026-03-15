@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Users, DollarSign, Eye, Landmark, AlertTriangle, MessageCircle,
@@ -6,6 +6,7 @@ import {
   TrendingDown, FileText
 } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { getOGImageUrl, preGenerateOGCard } from "@/lib/social-share";
 import {
   computeVerdict,
   getVerdictColors,
