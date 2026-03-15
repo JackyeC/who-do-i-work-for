@@ -7,10 +7,19 @@ import {
   ClipboardCheck, Zap, Network, BookOpen, FileText, Lock, Eye, Receipt
 } from "lucide-react";
 
+interface SiteLink {
+  label: string;
+  path: string;
+  icon: React.ElementType;
+  auth?: boolean;
+  description: string;
+  premium?: "candidate" | "professional";
+}
+
 interface SiteSection {
   title: string;
   description: string;
-  links: { label: string; path: string; icon: React.ElementType; auth?: boolean; description: string }[];
+  links: SiteLink[];
 }
 
 const sections: SiteSection[] = [
