@@ -25,6 +25,7 @@ import VoterLookup from "./pages/VoterLookup";
 import RepresentativeProfile from "./pages/RepresentativeProfile";
 import AddCompany from "./pages/AddCompany";
 import Jobs from "./pages/Jobs";
+import JobIntegrityBoard from "./pages/JobIntegrityBoard";
 import NotFound from "./pages/NotFound";
 import RequestCorrection from "./pages/RequestCorrection";
 import OfferCheck from "./pages/OfferCheck";
