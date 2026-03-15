@@ -4,13 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   HardHat, Loader2, RefreshCw, Star, ThumbsUp, ThumbsDown,
-  AlertTriangle, ExternalLink, TrendingDown, TrendingUp
+  AlertTriangle, ExternalLink, TrendingDown, TrendingUp, CloudOff
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { SignalDensity } from "@/components/SignalMeta";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
+import { ScanUnavailableBanner, SavedIntelligenceBadge } from "@/components/scan/ScanUnavailableBanner";
 
 interface WorkerSentimentCardProps {
   companyName: string;
