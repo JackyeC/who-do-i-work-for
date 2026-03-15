@@ -74,6 +74,7 @@ import SiteMap from "./pages/SiteMap";
 import Rivalries from "./pages/Rivalries";
 import BrandMadness from "./pages/BrandMadness";
 import SignalFeed from "./pages/SignalFeed";
+import EEOCTracker from "./pages/EEOCTracker";
 import WorkIndex from "./pages/WorkIndex";
 import Rankings from "./pages/Rankings";
 import { CookieNotice } from "@/components/CookieNotice";
