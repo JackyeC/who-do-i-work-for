@@ -1089,6 +1089,10 @@ export default function CompanyProfile() {
                       }}
                       onCandidateClick={handleCandidateClick}
                     />
+                    {/* Vetted Transparency Research */}
+                    {dbCompanyId && (
+                      <TransparencyResearchTab companyId={dbCompanyId} companyName={name} />
+                    )}
                   </div>
                 </section>
               ),
