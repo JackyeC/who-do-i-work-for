@@ -78,6 +78,7 @@ import BrandMadness from "./pages/BrandMadness";
 import SignalFeed from "./pages/SignalFeed";
 import EEOCTracker from "./pages/EEOCTracker";
 import WorkIndex from "./pages/WorkIndex";
+import WorkforceBrief from "./pages/WorkforceBrief";
 import Rankings from "./pages/Rankings";
 import RealityCheck from "./pages/RealityCheck";
 import FounderConsole from "./pages/FounderConsole";
