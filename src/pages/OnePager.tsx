@@ -53,7 +53,7 @@ const OnePager = () => {
         <div className="grid grid-cols-3 gap-px bg-border border border-border mb-8">
           {[
             { label: "For Candidates", title: "No more blind offers", items: ["Run intelligence before accepting", "Benchmark your compensation", "Know who you actually work for", "Negotiate from data, not hope"] },
-            { label: "For HR Professionals", title: "EVP that holds up to scrutiny", items: ["Audit EVP against real data", "Identify culture gaps early", "Strengthen offer narratives", "Build with Jackye's frameworks"] },
+            { label: "For HR Professionals", title: "Promises that hold up to scrutiny", items: ["Audit employer promises against real data", "Identify culture gaps early", "Strengthen offer narratives", "Build with Jackye's frameworks"] },
             { label: "For Recruiters", title: "Close more. Lose fewer.", items: ["Get ahead of candidate objections", "Use intelligence in your pitch", "Position as a career advisor", "Build lasting candidate trust"] },
           ].map(a => (
             <div key={a.label} className="bg-card p-4">
