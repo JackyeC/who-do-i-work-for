@@ -24,18 +24,27 @@ interface ScrapeResult {
   errorType?: string;
 }
 
-// ─── Freshness TTLs (hours) ───
+// ─── Freshness TTLs (hours) — optimized for currency ───
 const FRESHNESS_TTL: Record<string, number> = {
-  careers: 48,
-  news: 24,
-  worker_sentiment: 72,
+  careers: 24,
+  news: 12,
+  worker_sentiment: 48,
   compensation: 168,
-  leadership: 336,
-  reputation: 168,
-  recruiter_intelligence: 72,
+  leadership: 168,
+  reputation: 72,
+  recruiter_intelligence: 48,
   ai_hiring: 168,
-  ideology: 336,
+  ideology: 168,
   benefits: 168,
+  sanctions_screening: 168,
+  wikidata_enrichment: 336,
+  corporate_structure: 168,
+  political_influence: 72,
+  legal_risk: 72,
+  lobbying: 168,
+  government_contracts: 168,
+  insider_trading: 48,
+  sec_filings: 72,
 };
 
 // ─── Provider implementations ───
