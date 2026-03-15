@@ -4,12 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   MessageSquareWarning, TrendingUp, UserMinus, AlertTriangle, 
-  ExternalLink, Loader2, Radio, RefreshCw 
+  ExternalLink, Loader2, Radio, RefreshCw, CloudOff 
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { SignalDensity } from "@/components/SignalMeta";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
+import { SavedIntelligenceBadge } from "@/components/scan/ScanUnavailableBanner";
 
 interface SocialMonitorCardProps {
   companyId: string;
