@@ -96,6 +96,7 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "User",
     description: "Should I stay, move internally, or start looking? Power dynamics and future trajectory signals.",
     question: "Should I stay?",
+    accessTier: "free",
     primarySections: ["promotion_velocity", "workforce_stability", "governance", "compensation", "workforce_intel", "values", "narrative_power", "public_records"],
     secondarySections: ["career_risk", "influence"],
     hiddenSections: ["recruiter_reality", "gtm"],
