@@ -35,6 +35,9 @@ import { ExecutiveInclusionSnapshot } from "@/components/intelligence/ExecutiveI
 import { EarlyWarningSignals } from "@/components/intelligence/EarlyWarningSignals";
 import { EEO1WorkforceCard } from "@/components/intelligence/EEO1WorkforceCard";
 import { DiversityDisclosureTracker } from "@/components/intelligence/DiversityDisclosureTracker";
+import { GhostJobDetector } from "@/components/intelligence/GhostJobDetector";
+import { RecruitingHealthCard } from "@/components/intelligence/RecruitingHealthCard";
+import { RealityCheckCard } from "@/components/intelligence/RealityCheckCard";
 
 import { ValuesNudgeBanner } from "@/components/onboarding/ValuesNudgeBanner";
 import { AgencyContractsCard } from "@/components/AgencyContractsCard";
@@ -883,7 +886,10 @@ export default function CompanyProfile() {
                 <section id="section-workforce" className="mb-10 scroll-mt-28">
                   <SectionHeader icon={TrendingUp} title="Workforce Intelligence" subtitle="Worker demographics, sentiment, hiring technology, and benefits signals" />
                   <div className="space-y-4">
+                    <RealityCheckCard companyId={dbCompanyId} companyName={name} />
                     <EarlyWarningSignals companyId={dbCompanyId} companyName={name} />
+                    <GhostJobDetector companyId={dbCompanyId} companyName={name} />
+                    <RecruitingHealthCard companyId={dbCompanyId} companyName={name} />
                     <EEO1WorkforceCard companyId={dbCompanyId} companyName={name} />
                     <ExecutiveInclusionSnapshot companyId={dbCompanyId} companyName={name} />
                     <DiversityDisclosureTracker companyId={dbCompanyId} companyName={name} />
