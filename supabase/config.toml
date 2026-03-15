@@ -36,6 +36,9 @@ verify_jwt = false
 [functions.sync-opensanctions]
 verify_jwt = false
 
+[functions.daily-gov-data-refresh]
+verify_jwt = false
+
 [functions.sync-wikidata]
 verify_jwt = false
 
