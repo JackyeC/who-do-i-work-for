@@ -232,6 +232,8 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "FileText",
     description: "What is really happening inside and around this company? Power dynamics, controversies, and influence patterns.",
     question: "What is really happening here?",
+    accessTier: "paid",
+    requiredPlan: "professional",
     primarySections: ["cbi", "influence", "narrative_power", "public_records", "governance", "workforce_stability", "compensation", "workforce_intel", "promotion_velocity", "gtm", "values"],
     secondarySections: ["recruiter_reality", "career_risk"],
     hiddenSections: [],
