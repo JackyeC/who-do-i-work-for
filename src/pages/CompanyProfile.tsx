@@ -8,7 +8,7 @@ import {
   AlertTriangle, EyeOff, RotateCcw, TrendingUp, Landmark,
   Loader2, Sparkles, Search, ClipboardCheck,
   Heart, Brain, Briefcase, ChevronDown, MessageSquareWarning,
-  Scan, BarChart3, Award, GraduationCap, Hammer, Network, FileText, Radio
+  Scan, BarChart3, Award, GraduationCap, Hammer, Network, FileText, Radio, Eye
 } from "lucide-react";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { StickyScoreHeader } from "@/components/StickyScoreHeader";
