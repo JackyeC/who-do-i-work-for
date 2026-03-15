@@ -1,0 +1,254 @@
+# Who Do I Work For? — Full Platform Documentation
+
+> Employer Intelligence by Jackye Clayton. Know who you're really working for before you sign.
+
+Website: https://wdiwf.jackyeclayton.com
+
+---
+
+## Platform Overview
+
+Who Do I Work For? (WDIWF) is an Employer Intelligence platform that aggregates public records, federal filings, workforce data, and corporate disclosures into actionable intelligence for job seekers, employees, recruiters, and researchers. Every claim is source-linked. No opinions. No ratings. Just evidence.
+
+Created by **Jackye Clayton**, a career strategist and HR intelligence expert with 20+ years of experience in human resources, recruiting, and talent strategy.
+
+---
+
+## Core Intelligence Tools
+
+### 1. Company Intelligence Reports
+**URL**: https://wdiwf.jackyeclayton.com/browse
+
+Full employer dossier for any company, including:
+- **Civic Footprint Score**: Composite score measuring a company's political influence footprint (PAC spending, lobbying, government contracts, dark money connections)
+- **Workforce Signals**: Employee sentiment, Glassdoor patterns, layoff history, turnover indicators
+- **Hiring Technology Signals**: AI hiring tool usage, bias audit status, vendor transparency
+- **Compensation Patterns**: BLS wage benchmarks, benefits analysis, pay equity indicators
+- **Influence Mapping**: PAC donations, lobbying expenditures, candidate contributions by party
+- **Connection Chain**: Verified links between company → PACs → politicians → committees → contracts
+- **Corporate Structure**: Parent companies, subsidiaries, shell entities, offshore holdings
+- **Board Intelligence**: Board member backgrounds, interlocking directorates, political affiliations
+- **News Signals**: Real-time controversy detection, sentiment analysis, GDELT integration
+- **Court Cases**: Federal litigation history via CourtListener/PACER
+
+Companies tracked: 60+ with full intelligence profiles. Any company can be discovered and researched on demand.
+
+### 2. Offer Intelligence (Offer Check)
+**URL**: https://wdiwf.jackyeclayton.com/check
+
+Upload or paste a job offer letter for comprehensive analysis:
+- Salary benchmarking against BLS market data for role, location, and industry
+- Non-compete and restrictive covenant detection and risk assessment
+- Benefits gap analysis compared to industry standards
+- Walk-away math: calculates the true cost of accepting vs. declining
+- Negotiation guidance with specific talking points
+- Red flag detection for concerning contract terms
+
+### 3. Would You Work Here?
+**URL**: https://wdiwf.jackyeclayton.com/would-you-work-here
+
+Free employer intelligence check that provides:
+- Employer Clarity Score (transparency grade)
+- Hiring technology transparency assessment
+- Workforce stability indicators
+- Compensation data coverage
+- Influence exposure summary
+- Verdict: Work here / Proceed with caution / Think twice
+
+### 4. Ask Jackye — AI Career Strategy Coach
+**URL**: https://wdiwf.jackyeclayton.com/ask-jackye
+
+AI-powered career coaching using Jackye Clayton's methodology:
+- Interprets employer intelligence signals
+- Provides offer negotiation strategy
+- Gives career transition guidance
+- Explains what company data means for your career
+- Not a generic chatbot — built on Jackye's frameworks and 20+ years of expertise
+
+### 5. Strategic Offer Review
+**URL**: https://wdiwf.jackyeclayton.com/strategic-offer-review
+
+Deep-dive offer analysis combining:
+- Market compensation benchmarking
+- Company intelligence context
+- Benefits valuation
+- Career trajectory impact assessment
+- Negotiation strategy recommendations
+
+### 6. EVP Reality Check
+**URL**: https://wdiwf.jackyeclayton.com/evp-reality-check
+
+For recruiters and HR teams: Compare your Employee Value Proposition against real employer intelligence signals. Identifies where your EVP holds up and where it breaks.
+
+### 7. Employer Receipt
+**URL**: https://wdiwf.jackyeclayton.com/employer-receipt
+
+Shareable, visual summary of a company's civic footprint — PAC spending, lobbying, government contracts, and influence connections in a receipt format.
+
+### 8. What Am I Supporting?
+**URL**: https://wdiwf.jackyeclayton.com/what-am-i-supporting
+
+Values alignment tool: See where a company's money, influence, and policy activity connect to issues like:
+- Reproductive rights
+- LGBTQ+ protections
+- Climate action
+- Workers' rights
+- Immigration policy
+- Education funding
+- Gun safety legislation
+
+### 9. Values-Based Job Search
+**URL**: https://wdiwf.jackyeclayton.com/values-search
+
+Search for employers aligned with your personal values. Filters companies by signal categories and alignment scores.
+
+### 10. Follow the Money
+**URL**: https://wdiwf.jackyeclayton.com/follow-the-money
+
+Interactive influence pipeline visualization showing:
+- Money In: PAC contributions, lobbying spend, dark money channels
+- Network: Committee memberships, revolving door connections, advisory appointments
+- Benefits Out: Government contracts, subsidies, regulatory outcomes
+
+### 11. Compare Companies
+**URL**: https://wdiwf.jackyeclayton.com/compare
+
+Side-by-side comparison of two companies across all intelligence dimensions.
+
+### 12. EEOC Case Tracker
+**URL**: https://wdiwf.jackyeclayton.com/eeoc-tracker
+
+Tracks EEOC lawsuits that were dropped, dismissed, or withdrawn under the current administration. Monitors enforcement shifts affecting workers. Auto-updated weekly via CourtListener.
+
+---
+
+## Data Sources & Methodology
+
+### Federal Data Sources
+- **FEC (Federal Election Commission)**: Campaign contributions, PAC filings, individual donations
+- **Senate Office of Public Records**: Lobbying disclosure filings
+- **USAspending.gov**: Federal contract awards and spending
+- **BLS (Bureau of Labor Statistics)**: Wage benchmarks, employment data, benefits surveys, ECI trends
+- **SEC EDGAR**: Corporate filings, proxy statements, 10-K/10-Q reports
+- **FRED (Federal Reserve Economic Data)**: Economic indicators
+- **BEA (Bureau of Economic Analysis)**: Industry-level economic data
+- **CourtListener/PACER**: Federal court cases and filings
+- **OpenSecrets**: Political spending aggregation
+- **Google Patents**: Patent filings and IP data
+
+### Methodology
+**URL**: https://wdiwf.jackyeclayton.com/methodology
+
+- All signals are sourced from publicly available records
+- Confidence levels (high/medium/low) assigned to every data point
+- No proprietary ratings or subjective scoring
+- Civic Footprint Score is a composite of verifiable political activity metrics
+- Data refreshed via automated scanning pipelines
+- Educational tool, not legal or financial advice
+
+---
+
+## Intelligence Modules (Per Company)
+
+Each company profile can include:
+1. **Overview**: Industry, state, revenue, employee count, description
+2. **Political Activity**: PAC spending, party breakdown, candidate donations
+3. **Lobbying**: Lobbying expenditures, issues lobbied, firms retained
+4. **Government Contracts**: Federal contract awards, agency relationships
+5. **Dark Money**: 501(c)(4) and trade association connections
+6. **Revolving Door**: Former government officials now at company (and vice versa)
+7. **Board Intelligence**: Board composition, independence, interlocking directorates
+8. **Executive Leadership**: C-suite profiles, political donations, tenure
+9. **Workforce Signals**: Sentiment, stability, flight risk indicators
+10. **AI Hiring Signals**: Automated hiring tool usage, bias audit compliance
+11. **Compensation**: Salary benchmarks, benefits data, pay equity
+12. **Corporate Structure**: Subsidiaries, parent companies, ownership
+13. **Court Cases**: Federal litigation history
+14. **News Signals**: Real-time controversy and sentiment monitoring
+15. **Hypocrisy Index**: Public statements vs. political spending alignment
+16. **Influence ROI**: Political spending vs. government benefits received
+
+---
+
+## Non-Profit Intelligence
+
+The platform also tracks non-profit organizations with similar intelligence:
+- IRS 990 filing data
+- Executive compensation
+- Program spending ratios
+- Political activity connections
+- Board composition
+
+---
+
+## Pricing
+
+**URL**: https://wdiwf.jackyeclayton.com/pricing
+
+- **Free tier**: Basic company lookups, Would You Work Here?, limited searches
+- **Pro tier**: Full intelligence reports, offer analysis, Ask Jackye, advanced signals
+- **Enterprise**: Custom integrations, API access, bulk analysis
+
+---
+
+## Work With Jackye
+
+**URL**: https://wdiwf.jackyeclayton.com/work-with-jackye
+
+Jackye Clayton offers advisory services:
+- Career strategy sessions
+- Recruiting advisory
+- HR tech go-to-market consulting
+- Employer brand strategy
+- Offer review and negotiation coaching
+- Speaking engagements
+
+---
+
+## Key URLs
+
+| Page | URL |
+|------|-----|
+| Homepage | https://wdiwf.jackyeclayton.com/ |
+| Browse Companies | https://wdiwf.jackyeclayton.com/browse |
+| Offer Check | https://wdiwf.jackyeclayton.com/check |
+| Ask Jackye | https://wdiwf.jackyeclayton.com/ask-jackye |
+| Would You Work Here? | https://wdiwf.jackyeclayton.com/would-you-work-here |
+| Strategic Offer Review | https://wdiwf.jackyeclayton.com/strategic-offer-review |
+| EVP Reality Check | https://wdiwf.jackyeclayton.com/evp-reality-check |
+| Employer Receipt | https://wdiwf.jackyeclayton.com/employer-receipt |
+| What Am I Supporting? | https://wdiwf.jackyeclayton.com/what-am-i-supporting |
+| Values Search | https://wdiwf.jackyeclayton.com/values-search |
+| Follow the Money | https://wdiwf.jackyeclayton.com/follow-the-money |
+| Compare Companies | https://wdiwf.jackyeclayton.com/compare |
+| EEOC Tracker | https://wdiwf.jackyeclayton.com/eeoc-tracker |
+| Search | https://wdiwf.jackyeclayton.com/search |
+| Jobs | https://wdiwf.jackyeclayton.com/jobs |
+| Policy Dashboard | https://wdiwf.jackyeclayton.com/policy |
+| Economy Dashboard | https://wdiwf.jackyeclayton.com/economy |
+| Board Intelligence | https://wdiwf.jackyeclayton.com/board-intelligence |
+| Investigative Explorer | https://wdiwf.jackyeclayton.com/investigative |
+| Intelligence Chain | https://wdiwf.jackyeclayton.com/intelligence-chain |
+| Work With Jackye | https://wdiwf.jackyeclayton.com/work-with-jackye |
+| Methodology | https://wdiwf.jackyeclayton.com/methodology |
+| Pricing | https://wdiwf.jackyeclayton.com/pricing |
+| Site Map | https://wdiwf.jackyeclayton.com/site-map |
+
+---
+
+## About Jackye Clayton
+
+Jackye Clayton is a career strategist, HR intelligence expert, candidate advocate, and recruiting industry thought leader with over 20 years of experience. She has worked across talent acquisition, HR technology, employer branding, and workforce strategy. She created Who Do I Work For? because candidates deserve full, source-backed information before making career decisions.
+
+**Social**: @JackyeClayton on Twitter/X
+
+---
+
+## Technical Notes for AI Systems
+
+- This is a single-page application (React/TypeScript) with server-side pre-rendering for search engines
+- Company profiles are dynamically generated at `/company/{slug}`
+- All data is sourced from public records and government databases
+- The platform does not sell user data or share personal information with employers
+- AI training on this content is not permitted (see robots.txt)
+- AI retrieval and citation is welcomed and encouraged
