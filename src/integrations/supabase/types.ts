@@ -2216,6 +2216,68 @@ export type Database = {
           },
         ]
       }
+      company_sanctions_screening: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          dataset: string | null
+          entity_name: string
+          first_seen: string | null
+          id: string
+          last_seen: string | null
+          match_score: number | null
+          match_type: string
+          properties: Json | null
+          sanctions_list: string | null
+          schema_type: string | null
+          screened_at: string | null
+          source_url: string | null
+          topics: string[] | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          dataset?: string | null
+          entity_name: string
+          first_seen?: string | null
+          id?: string
+          last_seen?: string | null
+          match_score?: number | null
+          match_type?: string
+          properties?: Json | null
+          sanctions_list?: string | null
+          schema_type?: string | null
+          screened_at?: string | null
+          source_url?: string | null
+          topics?: string[] | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          dataset?: string | null
+          entity_name?: string
+          first_seen?: string | null
+          id?: string
+          last_seen?: string | null
+          match_score?: number | null
+          match_type?: string
+          properties?: Json | null
+          sanctions_list?: string | null
+          schema_type?: string | null
+          screened_at?: string | null
+          source_url?: string | null
+          topics?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_sanctions_screening_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_scan_events: {
         Row: {
           company_id: string
@@ -2765,6 +2827,77 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "company_warn_notices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_wikidata: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          description: string | null
+          employee_count_wikidata: string | null
+          entity_name: string
+          entity_type: string
+          fetched_at: string | null
+          founded_year: number | null
+          headquarters: string | null
+          id: string
+          industry_wikidata: string | null
+          official_website: string | null
+          parent_org: string | null
+          properties: Json | null
+          revenue_wikidata: string | null
+          stock_exchange: string | null
+          subsidiary_count: number | null
+          wikidata_id: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          description?: string | null
+          employee_count_wikidata?: string | null
+          entity_name: string
+          entity_type?: string
+          fetched_at?: string | null
+          founded_year?: number | null
+          headquarters?: string | null
+          id?: string
+          industry_wikidata?: string | null
+          official_website?: string | null
+          parent_org?: string | null
+          properties?: Json | null
+          revenue_wikidata?: string | null
+          stock_exchange?: string | null
+          subsidiary_count?: number | null
+          wikidata_id?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          description?: string | null
+          employee_count_wikidata?: string | null
+          entity_name?: string
+          entity_type?: string
+          fetched_at?: string | null
+          founded_year?: number | null
+          headquarters?: string | null
+          id?: string
+          industry_wikidata?: string | null
+          official_website?: string | null
+          parent_org?: string | null
+          properties?: Json | null
+          revenue_wikidata?: string | null
+          stock_exchange?: string | null
+          subsidiary_count?: number | null
+          wikidata_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_wikidata_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
