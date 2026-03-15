@@ -3,7 +3,7 @@ import { Footer } from "@/components/Footer";
 import { CreditPurchaseCard } from "@/components/CreditPurchaseCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Shield, Loader2, X, Building2, Mail, Users, TrendingUp, Search, Briefcase } from "lucide-react";
+import { Check, Shield, Loader2, X, Building2, Mail, Users, TrendingUp, Search, Briefcase, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
