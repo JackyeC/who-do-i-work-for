@@ -146,26 +146,26 @@ export function openShareWindow(platform: SharePlatform, ctx: ShareContext): voi
   }
 }
 
-/** Generate OG image URL for dynamic pages */
+/** Generate OG image URL for dynamic pages (PNG format for LinkedIn/social) */
 export function getOGImageUrl(ctx: ShareContext): string {
-  // For now, construct a URL that points to our cached OG images
-  // The generate-og-card function caches these in the battle-images bucket
   const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID || 'tdetybqdxadmowjivtjy';
   const bucketBase = `https://${projectId}.supabase.co/storage/v1/object/public/battle-images`;
   
   switch (ctx.type) {
     case "battle": {
       const pair = [ctx.companyA, ctx.companyB || ''].sort().join('-vs-').toLowerCase().replace(/[^a-z0-9-]/g, '');
-      return `${bucketBase}/og-battle-${pair}.svg`;
+      return `${bucketBase}/og-battle-${pair}.png`;
     }
     case "company": {
       const key = ctx.companyA.toLowerCase().replace(/[^a-z0-9]/g, '');
-      return `${bucketBase}/og-company-${key}.svg`;
+      return `${bucketBase}/og-company-${key}.png`;
     }
     case "scorecard": {
       const key = ctx.companyA.toLowerCase().replace(/[^a-z0-9]/g, '');
-      return `${bucketBase}/og-scorecard-${key}.svg`;
+      return `${bucketBase}/og-scorecard-${key}.png`;
     }
+    case "rivalry":
+      return `${BASE_URL}/og-image.png`;
     default:
       return `${BASE_URL}/og-image.png`;
   }
