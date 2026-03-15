@@ -101,21 +101,20 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
     return () => { supabase.removeChannel(channel); };
   }, [dbCompanyId]);
 
-  const runScan = async () => {
-    if (!dbCompanyId) return;
-    setScanning(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("ideology-scan", {
-        body: { companyId: dbCompanyId, companyName },
-      });
-      if (error) throw error;
-      if (data?.success) setResult(data.data);
-    } catch (e) {
-      console.error("Ideology scan error:", e);
-    } finally {
-      setScanning(false);
-    }
-  };
+  const [firecrawlDown, setFirecrawlDown] = useState(false);
+
+  const { runScan, isFirecrawlDown, cooldownMinutes } = useScanWithFallback({
+    functionName: "ideology-scan",
+    companyId: dbCompanyId,
+    companyName,
+    setLoading: setScanning,
+    onSuccess: (data) => {
+      if (data?.data) setResult(data.data);
+    },
+    onError: (reason) => {
+      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+    },
+  });
 
   // Group flags by category
   const flagsByCategory = (result?.flags || []).reduce<Record<string, IdeologyFlag[]>>((acc, flag) => {
