@@ -460,7 +460,12 @@ export default function CompanyProfile() {
                         )}
                       </div>
                       {(dbCompany as any)?.parent_company && (
-                        <p className="text-xs text-muted-foreground mt-0.5">Parent: {(dbCompany as any).parent_company}</p>
+                        <Link to={`/browse?q=${encodeURIComponent((dbCompany as any).parent_company)}`} className="inline-flex items-center gap-1.5 mt-1 group">
+                          <Badge variant="outline" className="text-xs gap-1 border-[hsl(var(--civic-yellow))]/30 bg-[hsl(var(--civic-yellow))]/5 text-[hsl(var(--civic-yellow))] group-hover:bg-[hsl(var(--civic-yellow))]/10 transition-colors">
+                            <Building2 className="w-3 h-3" />
+                            Owned by {(dbCompany as any).parent_company}
+                          </Badge>
+                        </Link>
                       )}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
