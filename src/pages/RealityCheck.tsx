@@ -23,9 +23,20 @@ export default function RealityCheckPage() {
   const [submitting, setSubmitting] = useState(false);
 
   usePageSEO({
-    title: "The Reality Check — Post-Interview Vibe Match",
-    description: "Compare your interview experience against public intelligence data. Detect 'Diversity Wash' signals and Say-Do disconnects.",
+    title: "Employer Red Flags Before Accepting a Job Offer — Reality Check",
+    description: "Caught something off in your interview? Compare your experience against SEC data, board diversity scores, and retention signals. Free post-interview audit.",
     path: "/reality-check",
+    jsonLd: {
+      "@type": "HowTo",
+      name: "How to Check for Employer Red Flags Before Accepting a Job Offer",
+      description: "Use the Reality Check questionnaire to compare your interview experience against public intelligence data and detect Say-Do disconnects.",
+      step: [
+        { "@type": "HowToStep", name: "Search for the company", text: "Search for the company you interviewed with using the company search." },
+        { "@type": "HowToStep", name: "Rate your interview experience", text: "Rate your interview experience across 6 dimensions: leadership transparency, message consistency, panel diversity, boundary culture, professional respect, and process quality." },
+        { "@type": "HowToStep", name: "Compare against public data", text: "The system cross-references your ratings against public SEC, FEC, and BLS data to identify gaps." },
+        { "@type": "HowToStep", name: "Review your Reality Gap Score", text: "Review your Reality Gap Score, Vibe Variance chart, and Jackye's AI Twin analysis to make an informed decision." },
+      ],
+    },
   });
 
   const handleSubmit = async (input: VibeMatchInput) => {

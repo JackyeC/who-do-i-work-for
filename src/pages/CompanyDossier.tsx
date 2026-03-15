@@ -346,6 +346,34 @@ export default function CompanyDossier() {
             fullContent={fullContent}
           />
           <TransparencyDisclaimer />
+
+          {/* Cross-links to other intelligence tools */}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Link
+              to="/reality-check"
+              className="flex items-center gap-3 p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-4 h-4 text-destructive" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">Got an offer from {company.name}?</p>
+                <p className="text-[11px] text-muted-foreground">Check for red flags with the Reality Check →</p>
+              </div>
+            </Link>
+            <Link
+              to="/ask-jackye"
+              className="flex items-center gap-3 p-4 rounded-xl border border-border/40 bg-card hover:bg-muted/50 transition-colors group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Sparkles className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">Ask the Intelligence Advisor</p>
+                <p className="text-[11px] text-muted-foreground">Get a deep analysis of {company.name} →</p>
+              </div>
+            </Link>
+          </div>
         </div>
       </main>
       <Footer />

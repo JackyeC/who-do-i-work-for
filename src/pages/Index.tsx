@@ -22,8 +22,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const navigate = useNavigate();
 
   usePageSEO({
-    title: "Who Do I Work For? — Career Intelligence Before You Accept",
-    description: "Career Intelligence platform. Company intelligence, offer analysis, connection chains, and career strategy by Jackye Clayton. Know before you sign.",
+    title: "Employer Background Check for Recruiters — Career Intelligence",
+    description: "Vet employers before your candidates do. SEC filings, PAC spending, layoff history, and pay equity data — in one scan. Employer intelligence by Jackye Clayton.",
     path: "/",
     jsonLd: {
       "@type": "WebApplication",
