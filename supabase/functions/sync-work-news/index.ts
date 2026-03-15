@@ -82,10 +82,18 @@ Deno.serve(async (req) => {
         const res = await fetch(url);
         if (!res.ok) {
           console.warn(`GDELT query ${i} failed: ${res.status}`);
+          await new Promise(r => setTimeout(r, 6000));
           continue;
         }
 
-        const data = await res.json();
+        const text = await res.text();
+        if (!text.startsWith("{") && !text.startsWith("[")) {
+          console.warn(`GDELT query ${i} returned non-JSON: ${text.slice(0, 80)}`);
+          await new Promise(r => setTimeout(r, 6000));
+          continue;
+        }
+
+        const data = JSON.parse(text);
         const articles = data?.articles || [];
 
         for (const a of articles) {
