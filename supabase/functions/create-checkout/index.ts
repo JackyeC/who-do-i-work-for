@@ -36,13 +36,20 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
+    // Employer certification tier routes to verification-pending
+    const EMPLOYER_CERT_PRICE = "price_1TBNzW7Qj0W6UtN9gLhA1aZG";
+    const origin = req.headers.get("origin") || "";
+    const successUrl = priceId === EMPLOYER_CERT_PRICE
+      ? `${origin}/employer/verification-pending`
+      : `${origin}/dashboard?checkout=success`;
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/dashboard?checkout=success`,
-      cancel_url: `${req.headers.get("origin")}/dashboard?checkout=canceled`,
+      success_url: successUrl,
+      cancel_url: `${origin}/dashboard?checkout=canceled`,
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
