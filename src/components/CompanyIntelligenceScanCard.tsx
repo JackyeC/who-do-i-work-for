@@ -35,6 +35,11 @@ const MODULE_LABELS: Record<string, string> = {
   social: "Social & Media Monitoring",
   agency_contracts: "Government Contracts",
   ai_accountability: "AI Accountability",
+  opensanctions: "Sanctions & Watchlists (OpenSanctions)",
+  wikidata: "Entity Intelligence (Wikidata)",
+  court_records: "Court Records (CourtListener)",
+  gdelt_news: "News Signals (GDELT)",
+  insider_trades: "Insider Trading (SEC Form 4)",
 };
 
 const statusIcon = (status: string) => {
@@ -111,17 +116,21 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
     setIsScanning(true);
     setShowOverlay(true);
     try {
-      const [orchestrated, unified] = await Promise.allSettled([
+      const [orchestrated, unified, osint] = await Promise.allSettled([
         supabase.functions.invoke("company-intelligence-scan", {
           body: { companyId, companyName, forceRescan },
         }),
         supabase.functions.invoke("civiclens-intelligence-scan", {
           body: { companyId, companyName, scanParts: ['benefits', 'ai_hiring', 'audit_hunt'] },
         }),
+        supabase.functions.invoke("osint-parallel-scan", {
+          body: { companyId, companyName },
+        }),
       ]);
 
       const orchResult = orchestrated.status === 'fulfilled' ? orchestrated.value : null;
       const uniResult = unified.status === 'fulfilled' ? unified.value : null;
+      const osintResult = osint.status === 'fulfilled' ? osint.value : null;
 
       // ─── Handle 429 scan limit as a product state, not an error ───
       const is429 = orchResult?.error && (
@@ -158,7 +167,8 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       }
 
       const totalSignals = (orchResult?.data?.totalSignalsFound || 0) +
-        (uniResult?.data?.results?.benefits || 0) + (uniResult?.data?.results?.aiHiring || 0);
+        (uniResult?.data?.results?.benefits || 0) + (uniResult?.data?.results?.aiHiring || 0) +
+        (osintResult?.data?.succeeded || 0);
 
       toast({
         title: "Intelligence scan complete",

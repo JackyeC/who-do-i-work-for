@@ -17,20 +17,38 @@ export type IntelligenceSection =
   | 'compensation'
   | 'ai_hiring'
   | 'ideology'
-  | 'benefits';
+  | 'benefits'
+  | 'sanctions_screening'
+  | 'wikidata_enrichment'
+  | 'corporate_structure'
+  | 'political_influence'
+  | 'legal_risk'
+  | 'lobbying'
+  | 'government_contracts'
+  | 'insider_trading'
+  | 'sec_filings';
 
 /** Freshness TTL in hours per section */
 export const SECTION_FRESHNESS: Record<IntelligenceSection, number> = {
-  careers: 48,              // 2 days — jobs change fast
-  news: 24,                 // 1 day — news is time-sensitive
-  worker_sentiment: 72,     // 3 days
+  careers: 24,              // 1 day — jobs change fast
+  news: 12,                 // 12 hours — news is time-sensitive
+  worker_sentiment: 48,     // 2 days
   compensation: 168,        // 7 days
-  leadership: 336,          // 14 days — changes rarely
-  reputation: 168,          // 7 days
-  recruiter_intelligence: 72, // 3 days
+  leadership: 168,          // 7 days — was 14, now faster
+  reputation: 72,           // 3 days
+  recruiter_intelligence: 48, // 2 days
   ai_hiring: 168,           // 7 days
-  ideology: 336,            // 14 days
+  ideology: 168,            // 7 days — was 14
   benefits: 168,            // 7 days
+  sanctions_screening: 168, // 7 days — sanctions lists update weekly
+  wikidata_enrichment: 336, // 14 days — changes rarely
+  corporate_structure: 168, // 7 days
+  political_influence: 72,  // 3 days — FEC data updates frequently
+  legal_risk: 72,           // 3 days — court records
+  lobbying: 168,            // 7 days
+  government_contracts: 168,// 7 days
+  insider_trading: 48,      // 2 days — SEC Form 4
+  sec_filings: 72,          // 3 days
 };
 
 /** Provider fallback chain per section */
@@ -45,6 +63,15 @@ export const SECTION_PROVIDERS: Record<IntelligenceSection, ProviderName[]> = {
   ai_hiring: ['firecrawl', 'scrapingbee'],
   ideology: ['government_api', 'firecrawl'],
   benefits: ['government_api', 'firecrawl'],
+  sanctions_screening: ['government_api'],
+  wikidata_enrichment: ['government_api'],
+  corporate_structure: ['government_api'],
+  political_influence: ['government_api'],
+  legal_risk: ['government_api'],
+  lobbying: ['government_api'],
+  government_contracts: ['government_api'],
+  insider_trading: ['government_api'],
+  sec_filings: ['government_api'],
 };
 
 /** Human-readable section labels */
@@ -59,6 +86,15 @@ export const SECTION_LABELS: Record<IntelligenceSection, string> = {
   ai_hiring: 'AI in Hiring',
   ideology: 'Political & Ideology',
   benefits: 'Benefits & Perks',
+  sanctions_screening: 'Sanctions & Watchlists',
+  wikidata_enrichment: 'Entity Intelligence',
+  corporate_structure: 'Corporate Structure',
+  political_influence: 'Political Influence',
+  legal_risk: 'Legal Risk',
+  lobbying: 'Lobbying Activity',
+  government_contracts: 'Government Contracts',
+  insider_trading: 'Insider Trading',
+  sec_filings: 'SEC Filings',
 };
 
 /** Check if a section is stale based on its TTL */

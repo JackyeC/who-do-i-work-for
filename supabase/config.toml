@@ -32,3 +32,12 @@ verify_jwt = false
 
 [functions.eeoc-case-scanner]
 verify_jwt = false
+
+[functions.sync-opensanctions]
+verify_jwt = false
+
+[functions.sync-wikidata]
+verify_jwt = false
+
+[functions.osint-parallel-scan]
+verify_jwt = false
