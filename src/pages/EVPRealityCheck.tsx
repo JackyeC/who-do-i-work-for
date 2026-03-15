@@ -263,7 +263,7 @@ export default function EVPRealityCheck() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <FileText className="w-4 h-4 text-primary" strokeWidth={1.5} />
-              <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">EVP / Employer Brand Copy</span>
+              <span className="font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">Employer Promise / Brand Copy</span>
             </div>
             <div className="flex items-center gap-2">
               <button
