@@ -4,12 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   AlertTriangle, Loader2, ChevronDown, ChevronUp, Eye, BookOpen,
-  Scale, HeartOff, Factory, Vote, Thermometer, Baby, Building
+  Scale, HeartOff, Factory, Vote, Thermometer, Baby, Building, CloudOff
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
 import { ExplainableMetric } from "@/components/ExplainableMetric";
+import { useScanWithFallback } from "@/hooks/use-scan-with-fallback";
 
 interface IdeologyFlag {
   orgName: string;
