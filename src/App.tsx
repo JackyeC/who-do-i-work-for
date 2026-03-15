@@ -78,6 +78,7 @@ import BrandMadness from "./pages/BrandMadness";
 import SignalFeed from "./pages/SignalFeed";
 import EEOCTracker from "./pages/EEOCTracker";
 import WorkIndex from "./pages/WorkIndex";
+import WorkforceBrief from "./pages/WorkforceBrief";
 import Rankings from "./pages/Rankings";
 import RealityCheck from "./pages/RealityCheck";
 import FounderConsole from "./pages/FounderConsole";
@@ -136,6 +137,7 @@ const App = () => (
                 <Route path="/disclaimers" element={<Disclaimers />} />
                 <Route path="/examples" element={<Examples />} />
                 <Route path="/signals" element={<SignalFeed />} />
+                <Route path="/workforce-brief" element={<WorkforceBrief />} />
                 <Route path="/eeoc-tracker" element={<EEOCTracker />} />
                 <Route path="/search-your-employer" element={<SearchYourEmployer />} />
                 <Route path="/values-search" element={<ValuesSearch />} />

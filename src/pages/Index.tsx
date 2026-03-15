@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import { rivalries2026 } from "@/data/rivalries2026";
 import { RivalryBattleCard } from "@/components/RivalryBattleCard";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { WorkNewsTicker } from "@/components/news/WorkNewsTicker";
 
 const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const [companyCount, setCompanyCount] = useState(0);
@@ -59,6 +60,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
   return (
     <div ref={ref} className="flex flex-col min-h-screen bg-background">
+      <WorkNewsTicker />
       <ExitIntentCapture />
 
       {/* ── Hero ── */}
