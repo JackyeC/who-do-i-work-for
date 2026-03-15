@@ -2,7 +2,8 @@
  * Cache-first intelligence loading hook.
  * 
  * Loads section-level cached reports from the database first,
- * then optionally triggers a refresh if data is stale.
+ * then optionally triggers a background refresh if data is stale.
+ * Never blocks the UI on live scraping.
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -16,11 +17,9 @@ import {
 } from '@/lib/intelligence-provider';
 import {
   isProviderUnavailable,
-  getFirstAvailableProvider,
   classifyProviderError,
   recordProviderFailure,
   logScanError,
-  type ProviderName,
 } from '@/lib/firecrawl-circuit-breaker';
 
 export interface SectionReport {
@@ -36,29 +35,32 @@ export interface SectionReport {
   freshnessLabel: string;
 }
 
+export type RefreshStatus = 'idle' | 'refreshing' | 'success' | 'failed' | 'skipped';
+
 interface UseCompanyIntelligenceOptions {
   companyId?: string;
   companyName?: string;
   sections?: IntelligenceSection[];
-  /** Auto-refresh stale sections on load (default false) */
-  autoRefresh?: boolean;
+  /** Auto-refresh stale sections in background on load (default true) */
+  autoRefreshStale?: boolean;
 }
 
 export function useCompanyIntelligence({
   companyId,
   companyName,
   sections,
-  autoRefresh = false,
+  autoRefreshStale = true,
 }: UseCompanyIntelligenceOptions) {
   const [reports, setReports] = useState<Record<string, SectionReport>>({});
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState<string | null>(null);
+  const [refreshStatus, setRefreshStatus] = useState<Record<string, RefreshStatus>>({});
   const { toast } = useToast();
   const fetchedRef = useRef(false);
+  const autoRefreshTriggeredRef = useRef(false);
 
   // Load cached reports from DB
   const loadCachedReports = useCallback(async () => {
-    if (!companyId) return;
+    if (!companyId) { setLoading(false); return; }
 
     try {
       let query = supabase
@@ -71,11 +73,7 @@ export function useCompanyIntelligence({
       }
 
       const { data, error } = await query;
-
-      if (error) {
-        console.error('Failed to load cached reports:', error);
-        return;
-      }
+      if (error) { console.error('Failed to load cached reports:', error); return; }
 
       const mapped: Record<string, SectionReport> = {};
       for (const row of data || []) {
@@ -93,74 +91,106 @@ export function useCompanyIntelligence({
           freshnessLabel: getFreshnessLabel(row.last_successful_update),
         };
       }
-
       setReports(mapped);
     } finally {
       setLoading(false);
     }
   }, [companyId, sections]);
 
+  // Initial load
   useEffect(() => {
     if (fetchedRef.current) return;
     fetchedRef.current = true;
     loadCachedReports();
   }, [loadCachedReports]);
 
-  // Refresh a specific section
-  const refreshSection = useCallback(async (
-    section: IntelligenceSection,
-    edgeFunctionName: string,
-    extraBody?: Record<string, any>
-  ) => {
+  // Auto-refresh stale sections in background (non-blocking)
+  useEffect(() => {
+    if (!autoRefreshStale || autoRefreshTriggeredRef.current || loading || !companyId) return;
+    autoRefreshTriggeredRef.current = true;
+
+    const staleSections = Object.values(reports).filter(r => r.isStale);
+    if (staleSections.length === 0) return;
+
+    // Only auto-refresh if providers are available
+    if (isProviderUnavailable('firecrawl') && isProviderUnavailable('scrapingbee')) return;
+
+    // Quietly refresh stale sections in background
+    for (const report of staleSections) {
+      backgroundRefresh(report.section_type);
+    }
+  }, [reports, loading, companyId, autoRefreshStale]);
+
+  // Background refresh — no toast, no blocking UI
+  const backgroundRefresh = useCallback(async (section: IntelligenceSection) => {
     if (!companyId) return;
 
-    setRefreshing(section);
+    setRefreshStatus(prev => ({ ...prev, [section]: 'refreshing' }));
 
     try {
-      const { data, error } = await supabase.functions.invoke(edgeFunctionName, {
-        body: { companyId, companyName, section, ...extraBody },
+      const { data, error } = await supabase.functions.invoke('refresh-intelligence', {
+        body: { companyId, companyName, section, triggeredBy: 'system' },
+      });
+
+      if (error || !data?.success) {
+        const classified = classifyProviderError(error || data?.error || '');
+        if (classified.isFirecrawl) {
+          recordProviderFailure('firecrawl', classified.errorType, classified.message);
+          logScanError({
+            provider: 'firecrawl', errorType: classified.errorType,
+            companyId, companyName, scanType: 'refresh-intelligence',
+            section, rawError: classified.message,
+          });
+        }
+        setRefreshStatus(prev => ({ ...prev, [section]: data?.skipped ? 'skipped' : 'failed' }));
+        return;
+      }
+
+      if (data?.skipped) {
+        setRefreshStatus(prev => ({ ...prev, [section]: 'skipped' }));
+        return;
+      }
+
+      setRefreshStatus(prev => ({ ...prev, [section]: 'success' }));
+      // Reload cached data silently
+      await loadCachedReports();
+    } catch {
+      setRefreshStatus(prev => ({ ...prev, [section]: 'failed' }));
+    }
+  }, [companyId, companyName, loadCachedReports]);
+
+  // Manual refresh — shows toast feedback
+  const refreshSection = useCallback(async (section: IntelligenceSection) => {
+    if (!companyId) return;
+
+    setRefreshStatus(prev => ({ ...prev, [section]: 'refreshing' }));
+
+    try {
+      const { data, error } = await supabase.functions.invoke('refresh-intelligence', {
+        body: { companyId, companyName, section, triggeredBy: 'user_refresh' },
       });
 
       if (error) {
         const classified = classifyProviderError(error);
         if (classified.isFirecrawl) {
           recordProviderFailure('firecrawl', classified.errorType, classified.message);
-          logScanError({
-            provider: 'firecrawl',
-            errorType: classified.errorType,
-            companyId,
-            companyName,
-            scanType: edgeFunctionName,
-            section,
-            rawError: classified.message,
-          });
-          toast({
-            title: 'Live refresh unavailable',
-            description: `Showing saved intelligence for ${SECTION_LABELS[section] || section}.`,
-          });
-          return;
         }
-        throw error;
+        toast({ title: 'Live refresh unavailable', description: 'Showing the most recent saved intelligence.' });
+        setRefreshStatus(prev => ({ ...prev, [section]: 'failed' }));
+        return;
       }
 
-      // Reload cached data after successful refresh
-      await loadCachedReports();
-
-      toast({
-        title: 'Intelligence updated',
-        description: `${SECTION_LABELS[section] || section} refreshed successfully.`,
-      });
-    } catch (e: any) {
-      const classified = classifyProviderError(e);
-      if (classified.isFirecrawl) {
-        recordProviderFailure('firecrawl', classified.errorType, classified.message);
+      if (data?.success) {
+        toast({ title: 'Intelligence updated', description: `${SECTION_LABELS[section]} refreshed successfully.` });
+        setRefreshStatus(prev => ({ ...prev, [section]: 'success' }));
+        await loadCachedReports();
+      } else {
+        toast({ title: 'Refresh unavailable', description: 'Some live data sources are temporarily unavailable.' });
+        setRefreshStatus(prev => ({ ...prev, [section]: 'failed' }));
       }
-      toast({
-        title: 'Refresh unavailable',
-        description: 'Showing the most recent saved intelligence.',
-      });
-    } finally {
-      setRefreshing(null);
+    } catch {
+      toast({ title: 'Refresh unavailable', description: 'Showing the most recent saved intelligence.' });
+      setRefreshStatus(prev => ({ ...prev, [section]: 'failed' }));
     }
   }, [companyId, companyName, loadCachedReports, toast]);
 
@@ -179,10 +209,14 @@ export function useCompanyIntelligence({
     return reports[section] || null;
   }, [reports]);
 
+  /** Whether any section is currently refreshing */
+  const isAnyRefreshing = Object.values(refreshStatus).some(s => s === 'refreshing');
+
   return {
     reports,
     loading,
-    refreshing,
+    refreshStatus,
+    isAnyRefreshing,
     refreshSection,
     hasCachedData,
     getSection,
