@@ -12,7 +12,7 @@ const SERVICES = [
   },
   {
     title: "Recruiting & Talent Acquisition Advisory",
-    desc: "Jackye works with your recruiting team to audit your EVP, anticipate candidate objections, and build intelligence-backed talk tracks that close.",
+    desc: "Jackye works with your recruiting team to audit your employer promises, anticipate candidate objections, and build intelligence-backed talk tracks that close.",
     for: "Recruiters · TA Leaders",
     format: "Engagement-based",
   },
