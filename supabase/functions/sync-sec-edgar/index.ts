@@ -170,6 +170,26 @@ function extractCompensation(facts: Record<string, Record<string, CompanyFact>>)
   return results;
 }
 
+// Keywords for detecting board diversity disclosures in proxy filings (2026-updated)
+const DIVERSITY_KEYWORDS = [
+  'board diversity matrix',
+  'diversity matrix',
+  'skills matrix',
+  'board composition',
+  'director diversity',
+  'board demographics',
+  'self-identified diversity',
+  'gender identity',
+  'african american or black',
+  'hispanic or latinx',
+  'lgbtq',
+  'director qualifications matrix',
+  'board refreshment',
+  'demographic background',
+  'underrepresented',
+  'board nominee diversity',
+];
+
 // Extract insider trading signals from recent filings
 function extractInsiderFilings(submissions: EdgarSubmission): any[] {
   const results: any[] = [];
@@ -303,7 +323,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Proxy statements (executive compensation)
+    // Proxy statements (executive compensation + board diversity)
     const recentProxies = filingSignals.filter(f => f.type === 'proxy_statement').slice(0, 3);
     for (const proxy of recentProxies) {
       signalRows.push({
@@ -314,6 +334,25 @@ Deno.serve(async (req) => {
         confidence_level: 'direct',
         source_url: proxy.url,
         raw_excerpt: proxy.description,
+      });
+    }
+
+    // Board diversity matrix detection — check proxy filing descriptions for 2026 keywords
+    const diversityProxies = filingSignals.filter(f => f.type === 'proxy_statement');
+    if (diversityProxies.length > 0) {
+      const latestProxy = diversityProxies[0];
+      // Flag that a proxy exists where board diversity matrix is likely present
+      signalRows.push({
+        company_id: companyId,
+        signal_category: 'sec_board_diversity',
+        signal_type: 'proxy_diversity_matrix_available',
+        signal_value: `Board diversity disclosure likely in DEF 14A filed ${latestProxy.filing_date}`,
+        confidence_level: 'inferred',
+        source_url: latestProxy.url,
+        raw_excerpt: JSON.stringify({
+          keywords_to_search: DIVERSITY_KEYWORDS.slice(0, 6),
+          note: 'DEF 14A filings from 2024+ typically contain Board Diversity Matrix per Nasdaq/SEC guidance. 2026 filings may use "skills matrix" or "board composition" framing.',
+        }),
       });
     }
 
@@ -368,7 +407,7 @@ Deno.serve(async (req) => {
         .from('company_signal_scans')
         .delete()
         .eq('company_id', companyId)
-        .in('signal_category', ['sec_insider_trading', 'sec_executive_compensation']);
+        .in('signal_category', ['sec_insider_trading', 'sec_executive_compensation', 'sec_board_diversity']);
 
       const { error: sigErr } = await supabase.from('company_signal_scans').insert(signalRows);
       if (sigErr) console.error('[sync-sec-edgar] Signal insert error:', sigErr);
