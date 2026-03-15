@@ -2,10 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import jackyeHeadshot from "@/assets/jackye-headshot.png";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Users, TrendingDown, Eye, DollarSign, Landmark,
   Heart, Building2, MapPin, Briefcase,
-  ShieldCheck, AlertTriangle, Search, ArrowRight,
+  ShieldCheck, AlertTriangle, Search, ArrowRight, Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AccountabilityBadge, type AccountabilityStatus } from "@/components/AccountabilityBadge";
