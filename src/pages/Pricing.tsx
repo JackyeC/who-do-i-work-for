@@ -31,7 +31,7 @@ const tiers = [
       { label: "5 Ask Jackye questions/mo", included: true },
       { label: "Full Firecrawl scans", included: false },
       { label: "Dossier export", included: false },
-      { label: "Influence chain & EVP audit", included: false },
+      { label: "Employer Promise audit & influence chain", included: false },
     ],
     popular: false,
     cta: "Get Started Free",
