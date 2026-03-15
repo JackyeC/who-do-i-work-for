@@ -81,6 +81,7 @@ import { calculatePVS, deriveSubScores, computeConfidence } from "@/lib/promotio
 import { PublicRecordsExposure } from "@/components/public-records/PublicRecordsExposure";
 import { NarrativePowerSection } from "@/components/narrative-power";
 import { JackyeNote } from "@/components/JackyeNote";
+import { CorporateOwnershipCard } from "@/components/CorporateOwnershipCard";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -460,7 +461,12 @@ export default function CompanyProfile() {
                         )}
                       </div>
                       {(dbCompany as any)?.parent_company && (
-                        <p className="text-xs text-muted-foreground mt-0.5">Parent: {(dbCompany as any).parent_company}</p>
+                        <Link to={`/browse?q=${encodeURIComponent((dbCompany as any).parent_company)}`} className="inline-flex items-center gap-1.5 mt-1 group">
+                          <Badge variant="outline" className="text-xs gap-1 border-[hsl(var(--civic-yellow))]/30 bg-[hsl(var(--civic-yellow))]/5 text-[hsl(var(--civic-yellow))] group-hover:bg-[hsl(var(--civic-yellow))]/10 transition-colors">
+                            <Building2 className="w-3 h-3" />
+                            Owned by {(dbCompany as any).parent_company}
+                          </Badge>
+                        </Link>
                       )}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
@@ -851,13 +857,20 @@ export default function CompanyProfile() {
             const SECTION_RENDERERS: Record<string, () => React.ReactNode> = {
               governance: () => (
                 <section id="section-governance" className="mb-10 scroll-mt-28">
-                  <SectionHeader icon={Shield} title="Governance & Board Structure" subtitle="Board composition, committee oversight, and ownership signals" />
-                  <BoardGovernanceTab companyId={dbCompanyId || ""} companyName={name} ticker={dbCompany?.ticker} secCik={dbCompany?.sec_cik} />
-                  {dbCompanyId && dbCompany?.is_publicly_traded && (
-                    <div className="mt-4">
-                      <InsiderTradingCard companyId={dbCompanyId} companyName={name} ticker={dbCompany?.ticker} cik={dbCompany?.sec_cik} />
-                    </div>
-                  )}
+                  <SectionHeader icon={Shield} title="Governance & Board Structure" subtitle="Board composition, committee oversight, ownership signals, and corporate family" />
+                  <div className="space-y-4">
+                    <CorporateOwnershipCard
+                      companyId={dbCompanyId || ""}
+                      companyName={name}
+                      parentCompany={(dbCompany as any)?.parent_company}
+                    />
+                    <BoardGovernanceTab companyId={dbCompanyId || ""} companyName={name} ticker={dbCompany?.ticker} secCik={dbCompany?.sec_cik} />
+                    {dbCompanyId && dbCompany?.is_publicly_traded && (
+                      <div className="mt-4">
+                        <InsiderTradingCard companyId={dbCompanyId} companyName={name} ticker={dbCompany?.ticker} cik={dbCompany?.sec_cik} />
+                      </div>
+                    )}
+                  </div>
                 </section>
               ),
               workforce_intel: () => (
