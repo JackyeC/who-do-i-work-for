@@ -218,6 +218,8 @@ export const PERSONAS: PersonaConfig[] = [
     icon: "Brain",
     description: "Can this tool be trusted? AI bias transparency, audit disclosure, and compliance signals.",
     question: "Can this tool be trusted?",
+    accessTier: "paid",
+    requiredPlan: "candidate",
     primarySections: ["workforce_intel", "cbi", "compensation", "promotion_velocity"],
     secondarySections: ["workforce_stability", "governance"],
     hiddenSections: ["recruiter_reality", "gtm", "influence", "values", "narrative_power", "public_records"],
