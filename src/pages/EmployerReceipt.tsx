@@ -187,10 +187,18 @@ export default function EmployerReceipt() {
   const covColor = verdictResult.dataCoverage === "High" ? "text-civic-green" : verdictResult.dataCoverage === "Medium" ? "text-civic-yellow" : "text-civic-red";
   const confColor = verdictResult.verdictConfidence === "High" ? "text-civic-green" : verdictResult.verdictConfidence === "Medium" ? "text-civic-yellow" : "text-civic-red";
 
+  const receiptSignals = DEMO_SIGNALS.map(s => ({ label: s.label, score: s.subscore }));
+  const ogImage = getOGImageUrl({ type: "receipt", companyA: DEMO_COMPANY, scoreA: verdictResult.clarityScore, signals: receiptSignals });
+
+  useEffect(() => {
+    preGenerateOGCard({ type: "receipt", companyA: DEMO_COMPANY, scoreA: verdictResult.clarityScore, signals: receiptSignals });
+  }, []);
+
   usePageSEO({
     title: `Employer Receipt: ${DEMO_COMPANY} — Employer Intelligence Summary`,
     description: `Employer intelligence receipt for ${DEMO_COMPANY}. Clarity score, workforce stability, compensation transparency, influence exposure, and Jackye's verdict.`,
     path: "/employer-receipt",
+    image: ogImage,
     jsonLd: {
       "@type": "WebPage",
       name: `Employer Receipt: ${DEMO_COMPANY}`,
