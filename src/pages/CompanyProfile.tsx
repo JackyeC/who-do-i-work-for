@@ -1152,6 +1152,10 @@ export default function CompanyProfile() {
                       }}
                       onCandidateClick={handleCandidateClick}
                     />
+                    {/* Civil Rights Intelligence Panel */}
+                    {dbCompanyId && (
+                      <CivilRightsIntelligencePanel companyId={dbCompanyId} companyName={name} />
+                    )}
                     {/* Vetted Transparency Research */}
                     {dbCompanyId && (
                       <TransparencyResearchTab companyId={dbCompanyId} companyName={name} />

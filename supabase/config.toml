@@ -105,5 +105,8 @@ verify_jwt = false
 [functions.sync-regulatory-violations]
 verify_jwt = false
 
+[functions.detect-contradictions]
+verify_jwt = false
+
 [functions.detect-board-interlocks]
 verify_jwt = false

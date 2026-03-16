@@ -102,6 +102,7 @@ Deno.serve(async (req) => {
       'sync-labor-rights': 'labor_rights',
       'sync-workplace-enforcement': 'workplace_enforcement',
       'enrich-private-company': 'private_enrichment',
+      'detect-contradictions': 'contradiction_detection',
     };
 
     const freshSources: string[] = [];

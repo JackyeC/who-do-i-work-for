@@ -30,6 +30,7 @@ const GOV_SOURCES = [
   { name: 'sync-civil-rights-signals', label: 'Civil Rights (EEOC/CourtListener/HRC)' },
   { name: 'sync-healthcare-signals', label: 'Healthcare (DOL EBSA/CMS/Benefits)' },
   { name: 'sync-consumer-protection-signals', label: 'Consumer Protection (CFPB/FTC/CPSC/FDA)' },
+  { name: 'detect-contradictions', label: 'Contradiction Detection (Statement vs Spending)' },
 ] as const;
 
 Deno.serve(async (req) => {
