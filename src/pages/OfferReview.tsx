@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OfferLetterUpload } from "@/components/offer-review/OfferLetterUpload";
 import { OfferReviewResults } from "@/components/offer-review/OfferReviewResults";
 import { PremiumGate } from "@/components/PremiumGate";
