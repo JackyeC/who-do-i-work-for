@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { TrendingUp, Rocket, Cpu, AlertTriangle, Landmark, Eye, ShieldCheck, ArrowRight } from "lucide-react";
+import { TrendingUp, Rocket, Cpu, AlertTriangle, Landmark, Eye, ShieldCheck, RadioTower, ArrowRight } from "lucide-react";
 
 interface PanelCompany {
   id: string;

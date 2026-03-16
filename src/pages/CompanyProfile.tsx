@@ -801,6 +801,18 @@ export default function CompanyProfile() {
             );
           })()}
 
+          {/* COMPANY RISK RADAR — At-a-glance risk summary */}
+          <div className="mb-6">
+            <CompanyRiskRadar
+              companyId={dbCompany?.id || ""}
+              companyName={name}
+              slug={id || ""}
+              lobbyingSpend={lobbyingSpend}
+              totalPacSpending={totalPac}
+              hasCompensationData={!!tiPayEquity}
+            />
+          </div>
+
           {/* CAREER RISK REPORT — Shareable viral scorecard */}
           <div className="mb-6">
             <CareerRiskReport
