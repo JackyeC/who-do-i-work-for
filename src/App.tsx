@@ -202,6 +202,7 @@ const App = () => (
                   <Route path="/brand-madness" element={<BrandMadness />} />
                   <Route path="/work-index" element={<WorkIndex />} />
                   <Route path="/rankings" element={<Rankings />} />
+                  <Route path="/corporate-impact" element={<CorporateImpactMap />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
