@@ -206,6 +206,7 @@ const App = () => (
                   <Route path="/work-index" element={<WorkIndex />} />
                   <Route path="/rankings" element={<Rankings />} />
                   <Route path="/corporate-impact" element={<CorporateImpactMap />} />
+                  <Route path="/alignment/:slug" element={<CorporateAlignment />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
