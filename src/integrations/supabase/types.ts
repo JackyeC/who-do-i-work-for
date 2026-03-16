@@ -536,6 +536,90 @@ export type Database = {
         }
         Relationships: []
       }
+      board_interlocks: {
+        Row: {
+          company_a_id: string
+          company_a_name: string
+          company_b_id: string | null
+          company_b_name: string | null
+          confidence: string | null
+          created_at: string | null
+          detected_at: string | null
+          evidence_url: string | null
+          id: string
+          influence_score: number | null
+          interlock_type: string
+          nonprofit_org_name: string | null
+          nonprofit_role: string | null
+          pac_connection: boolean | null
+          person_name: string
+          person_title: string | null
+          political_network: string | null
+          role_at_a: string | null
+          role_at_b: string | null
+          source: string | null
+        }
+        Insert: {
+          company_a_id: string
+          company_a_name: string
+          company_b_id?: string | null
+          company_b_name?: string | null
+          confidence?: string | null
+          created_at?: string | null
+          detected_at?: string | null
+          evidence_url?: string | null
+          id?: string
+          influence_score?: number | null
+          interlock_type?: string
+          nonprofit_org_name?: string | null
+          nonprofit_role?: string | null
+          pac_connection?: boolean | null
+          person_name: string
+          person_title?: string | null
+          political_network?: string | null
+          role_at_a?: string | null
+          role_at_b?: string | null
+          source?: string | null
+        }
+        Update: {
+          company_a_id?: string
+          company_a_name?: string
+          company_b_id?: string | null
+          company_b_name?: string | null
+          confidence?: string | null
+          created_at?: string | null
+          detected_at?: string | null
+          evidence_url?: string | null
+          id?: string
+          influence_score?: number | null
+          interlock_type?: string
+          nonprofit_org_name?: string | null
+          nonprofit_role?: string | null
+          pac_connection?: boolean | null
+          person_name?: string
+          person_title?: string | null
+          political_network?: string | null
+          role_at_a?: string | null
+          role_at_b?: string | null
+          source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "board_interlocks_company_a_id_fkey"
+            columns: ["company_a_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "board_interlocks_company_b_id_fkey"
+            columns: ["company_b_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       board_members: {
         Row: {
           bio: string | null
@@ -4138,6 +4222,71 @@ export type Database = {
         }
         Relationships: []
       }
+      gun_industry_signals: {
+        Row: {
+          company_id: string
+          confidence: string | null
+          created_at: string | null
+          description: string | null
+          evidence_text: string | null
+          expiration_date: string | null
+          id: string
+          license_number: string | null
+          license_type: string | null
+          premise_city: string | null
+          premise_state: string | null
+          premise_street: string | null
+          signal_category: string | null
+          signal_type: string
+          source_name: string | null
+          source_url: string | null
+        }
+        Insert: {
+          company_id: string
+          confidence?: string | null
+          created_at?: string | null
+          description?: string | null
+          evidence_text?: string | null
+          expiration_date?: string | null
+          id?: string
+          license_number?: string | null
+          license_type?: string | null
+          premise_city?: string | null
+          premise_state?: string | null
+          premise_street?: string | null
+          signal_category?: string | null
+          signal_type: string
+          source_name?: string | null
+          source_url?: string | null
+        }
+        Update: {
+          company_id?: string
+          confidence?: string | null
+          created_at?: string | null
+          description?: string | null
+          evidence_text?: string | null
+          expiration_date?: string | null
+          id?: string
+          license_number?: string | null
+          license_type?: string | null
+          premise_city?: string | null
+          premise_state?: string | null
+          premise_street?: string | null
+          signal_category?: string | null
+          signal_type?: string
+          source_name?: string | null
+          source_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gun_industry_signals_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gun_policy_signals: {
         Row: {
           amount: number | null
@@ -6132,6 +6281,83 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "project_gigs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      regulatory_violations: {
+        Row: {
+          agency: string
+          case_number: string | null
+          company_id: string
+          confidence: string | null
+          created_at: string | null
+          description: string | null
+          evidence_text: string | null
+          facility_name: string | null
+          facility_state: string | null
+          id: string
+          penalty_amount: number | null
+          resolution_date: string | null
+          settlement_amount: number | null
+          signal_category: string | null
+          signal_type: string
+          source_name: string | null
+          source_url: string | null
+          status: string | null
+          violation_date: string | null
+          violation_type: string | null
+        }
+        Insert: {
+          agency: string
+          case_number?: string | null
+          company_id: string
+          confidence?: string | null
+          created_at?: string | null
+          description?: string | null
+          evidence_text?: string | null
+          facility_name?: string | null
+          facility_state?: string | null
+          id?: string
+          penalty_amount?: number | null
+          resolution_date?: string | null
+          settlement_amount?: number | null
+          signal_category?: string | null
+          signal_type: string
+          source_name?: string | null
+          source_url?: string | null
+          status?: string | null
+          violation_date?: string | null
+          violation_type?: string | null
+        }
+        Update: {
+          agency?: string
+          case_number?: string | null
+          company_id?: string
+          confidence?: string | null
+          created_at?: string | null
+          description?: string | null
+          evidence_text?: string | null
+          facility_name?: string | null
+          facility_state?: string | null
+          id?: string
+          penalty_amount?: number | null
+          resolution_date?: string | null
+          settlement_amount?: number | null
+          signal_category?: string | null
+          signal_type?: string
+          source_name?: string | null
+          source_url?: string | null
+          status?: string | null
+          violation_date?: string | null
+          violation_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "regulatory_violations_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
