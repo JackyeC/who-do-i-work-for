@@ -21,6 +21,9 @@ const SOURCE_URLS: Record<string, string> = {
   "LDA": "https://lda.senate.gov/filings/public/filing/search/",
   "USASpending": "https://www.usaspending.gov/",
   "Glassdoor": "https://www.glassdoor.com/",
+  "DOL Foreign Labor": "https://www.dol.gov/agencies/eta/foreign-labor/performance",
+  "USCIS": "https://www.uscis.gov/",
+  "ICE": "https://www.ice.gov/",
 };
 
 export function getSourceUrl(source: string): string | undefined {

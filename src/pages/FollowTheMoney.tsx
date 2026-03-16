@@ -505,6 +505,34 @@ const SAMPLE_LINKS: GraphLink[] = [
   { source: "apple-retail", target: "nlrb-agency", label: "Retail union elections", linkType: "committee_oversight_of_contract", confidence: "direct" },
   { source: "apple-retail", target: "labor-industry", label: "IAM/CWA union drives", linkType: "trade_association_lobbying", confidence: "direct" },
 
+  // ── Google links (Immigration — H-1B) ──
+  { source: "google", target: "google-pac", label: "Funds", linkType: "donation_to_member", amount: 1_400_000, confidence: "direct" },
+  { source: "google-pac", target: "sen-padilla", label: "Donated $28K", linkType: "donation_to_member", amount: 28_000, year: 2024, confidence: "direct" },
+  { source: "sen-padilla", target: "immigration-subcommittee", label: "Serves on", linkType: "member_on_committee", confidence: "direct" },
+  { source: "immigration-subcommittee", target: "eagle-act", label: "Oversees", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "eagle-act", target: "fwd-us", label: "Impacts", linkType: "committee_oversight_of_contract", confidence: "likely" },
+  { source: "google", target: "fwd-us", label: "Co-founded coalition", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "google", target: "dol-flc", label: "8,000+ H-1B LCAs/year", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "google", target: "tech-industry", label: "Operates in", linkType: "trade_association_lobbying", confidence: "direct" },
+
+  // ── Infosys links (Immigration — Largest H-1B) ──
+  { source: "infosys", target: "dol-flc", label: "30,000+ H-1B LCAs/year", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "infosys", target: "fwd-us", label: "Industry member", linkType: "trade_association_lobbying", confidence: "likely" },
+  { source: "infosys", target: "uscis", label: "$34M visa fraud settlement (2013)", linkType: "committee_oversight_of_contract", confidence: "direct" },
+
+  // ── Marriott links (Immigration — H-2B) ──
+  { source: "marriott", target: "marriott-pac", label: "Funds", linkType: "donation_to_member", amount: 680_000, confidence: "direct" },
+  { source: "marriott", target: "dol-flc", label: "H-2B seasonal worker visas", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "marriott", target: "hospitality-industry", label: "Operates in", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "marriott-pac", target: "sen-padilla", label: "Donated $12K", linkType: "donation_to_member", amount: 12_000, year: 2024, confidence: "direct" },
+  { source: "immigration-subcommittee", target: "h2b-returning-bill", label: "Oversees", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "h2b-returning-bill", target: "hospitality-industry", label: "Impacts", linkType: "committee_oversight_of_contract", confidence: "likely" },
+
+  // ── Tyson immigration links ──
+  { source: "tyson", target: "dol-flc", label: "H-2A/H-2B agricultural visas", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "tyson", target: "uscis", label: "ICE enforcement history", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "judiciary-committee", target: "eagle-act", label: "Oversees", linkType: "lobbying_on_bill", confidence: "direct" },
+
   // ── ExxonMobil links (Climate, Energy) ──
   { source: "exxon", target: "exxon-pac", label: "Funds", linkType: "donation_to_member", amount: 1_650_000, confidence: "direct" },
   { source: "exxon-pac", target: "sen-manchin", label: "Donated $65K", linkType: "donation_to_member", amount: 65_000, year: 2024, confidence: "direct" },
