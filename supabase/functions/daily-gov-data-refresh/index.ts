@@ -42,28 +42,37 @@ Deno.serve(async (req) => {
   const supabase = createClient(supabaseUrl, serviceKey);
 
   try {
-    // Get the most-tracked companies
+    // Strategy: First get tracked companies, then backfill with unscanned/stale companies
     const { data: tracked } = await supabase
       .from('tracked_companies')
-      .select('company_id, companies!inner(id, name)')
+      .select('company_id, companies!inner(id, name, is_publicly_traded)')
       .eq('is_active', true)
       .limit(500);
 
-    if (!tracked?.length) {
-      return new Response(
-        JSON.stringify({ success: true, message: 'No tracked companies', refreshed: 0 }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Count tracking frequency and pick top N
-    const counts = new Map<string, { count: number; name: string }>();
-    for (const t of tracked) {
+    // Count tracking frequency
+    const counts = new Map<string, { count: number; name: string; isPrivate: boolean }>();
+    for (const t of (tracked || [])) {
       const company = t.companies as any;
       if (!company) continue;
-      const existing = counts.get(company.id) || { count: 0, name: company.name };
+      const existing = counts.get(company.id) || { count: 0, name: company.name, isPrivate: company.is_publicly_traded === false };
       existing.count++;
       counts.set(company.id, existing);
+    }
+
+    // Also pull companies that have NEVER been scanned or are very stale
+    const staleThreshold = new Date(Date.now() - 3 * 86400000).toISOString();
+    const { data: staleCompanies } = await supabase
+      .from('companies')
+      .select('id, name, is_publicly_traded')
+      .or(`last_scan_attempted.is.null,last_scan_attempted.lt.${staleThreshold}`)
+      .order('last_scan_attempted', { ascending: true, nullsFirst: true })
+      .limit(MAX_COMPANIES_PER_RUN);
+
+    // Merge: tracked companies first, then stale ones
+    for (const sc of (staleCompanies || [])) {
+      if (!counts.has(sc.id)) {
+        counts.set(sc.id, { count: 0, name: sc.name, isPrivate: sc.is_publicly_traded === false });
+      }
     }
 
     const topCompanies = [...counts.entries()]
