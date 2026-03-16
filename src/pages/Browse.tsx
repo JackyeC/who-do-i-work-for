@@ -41,7 +41,7 @@ export default function Browse() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("companies")
-        .select("id, name, slug, industry, state, civic_footprint_score, total_pac_spending, lobbying_spend, revenue, employee_count, description")
+        .select("id, name, slug, industry, state, civic_footprint_score, total_pac_spending, lobbying_spend, revenue, employee_count, description, is_startup, category_tags, career_intelligence_score")
         .order("civic_footprint_score", { ascending: false });
       if (error) throw error;
       return data || [];
