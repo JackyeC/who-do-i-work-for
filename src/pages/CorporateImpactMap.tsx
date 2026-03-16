@@ -53,6 +53,7 @@ const FEATURED_COMPANIES = [
   "Google", "Microsoft", "Goldman Sachs", "Tyson Foods",
   "Smith & Wesson Brands", "Dick's Sporting Goods", "Nike",
   "UnitedHealth Group", "CVS Health", "Pfizer", "Apple",
+  "Wells Fargo", "Meta Platforms", "Equifax", "JPMorgan Chase",
 ];
 
 // ─── Main Component ───
