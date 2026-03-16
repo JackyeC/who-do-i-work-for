@@ -73,15 +73,28 @@ export default function Browse() {
 
   const allIndustries = useMemo(() => [...new Set(allCompanies.map((c) => c.industry))].sort(), [allCompanies]);
 
+  const CATEGORY_FILTERS = ["HR Tech", "Big Tech", "Finance", "Defense", "Government Contractors", "Startups", "Healthcare", "Energy", "Retail"];
+
   const filtered = useMemo(() => {
     let list = allCompanies;
     if (selectedIndustry !== "all") list = list.filter((c) => c.industry === selectedIndustry);
+    if (selectedCategory !== "all") {
+      if (selectedCategory === "Startups") {
+        list = list.filter((c) => c.isStartup);
+      } else {
+        list = list.filter((c) => c.categoryTags?.includes(selectedCategory));
+      }
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter((c) => c.name.toLowerCase().includes(q) || c.industry.toLowerCase().includes(q) || c.state.toLowerCase().includes(q) || (c.description || "").toLowerCase().includes(q));
     }
-    return [...list].sort((a, b) => sortBy === "score" ? b.civicFootprintScore - a.civicFootprintScore : a.name.localeCompare(b.name));
-  }, [allCompanies, selectedIndustry, sortBy, searchQuery]);
+    return [...list].sort((a, b) => {
+      if (sortBy === "cis") return (b.careerIntelligenceScore ?? 0) - (a.careerIntelligenceScore ?? 0);
+      if (sortBy === "score") return b.civicFootprintScore - a.civicFootprintScore;
+      return a.name.localeCompare(b.name);
+    });
+  }, [allCompanies, selectedIndustry, selectedCategory, sortBy, searchQuery]);
 
   return (
     <div className="flex-1">
