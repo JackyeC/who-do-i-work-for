@@ -37,6 +37,8 @@ import { BuyingLogicLayer } from "@/components/dossier/BuyingLogicLayer";
 import { StockPatentsLayer } from "@/components/dossier/StockPatentsLayer";
 import { EEOCCaseAlert } from "@/components/EEOCCaseAlert";
 import { useEEOCByCompanyName } from "@/hooks/use-eeoc-cases";
+import { PremiumGate } from "@/components/PremiumGate";
+import { useViewMode } from "@/contexts/ViewModeContext";
 
 /* ─── Lens config ─── */
 const LENS_META = {
