@@ -18,6 +18,8 @@ import {
   Save, Plus, Trash2, FileText, Loader2, Eye, ArrowLeft,
   ChevronDown, ChevronUp, GripVertical
 } from "lucide-react";
+import { ReportTemplatePicker } from "@/components/admin/ReportTemplatePicker";
+import type { ReportTemplate } from "@/lib/report-templates";
 
 const REPORT_TYPES = ["intelligence_report", "weekly_brief", "issue_audit", "company_alignment_report", "legislative_watch", "policy_alert"];
 const STATUSES = ["draft", "published", "archived"];
@@ -60,6 +62,18 @@ export default function ReportEditor() {
   const [followups, setFollowups] = useState<any[]>([]);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("report");
+
+  const applyTemplate = (template: ReportTemplate) => {
+    setReport((prev: any) => ({
+      ...prev,
+      ...template.report,
+      author_name: prev.author_name || "Jackye Clayton",
+      author_slug: prev.author_slug || "jackye-clayton",
+      status: "draft",
+    }));
+    setSections(template.sections);
+    setClaims(template.claims);
+  };
 
   // Load existing report
   const { isLoading: loading } = useQuery({
@@ -171,6 +185,7 @@ export default function ReportEditor() {
             </Button>
             <h1 className="text-xl font-display font-bold">{isNew ? "New Report" : "Edit Report"}</h1>
             <Badge variant={report.status === "published" ? "default" : "secondary"} className="capitalize">{report.status}</Badge>
+            {isNew && <ReportTemplatePicker onSelect={applyTemplate} />}
           </div>
           <div className="flex gap-2">
             {!isNew && report.status === "published" && (
