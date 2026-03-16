@@ -160,10 +160,10 @@ export function CompanyRiskRadar({ companyId, companyName, slug, lobbyingSpend, 
     },
     {
       key: "turnover",
-      label: "Executive Turnover",
+      label: "Leadership Changes",
       icon: UserMinus,
       severity: execs >= 4 ? "alert" : execs >= 2 ? "watch" : "clear",
-      summary: execs > 0 ? `${execs} executive departure${execs > 1 ? "s" : ""} on record` : "Stable leadership team",
+      summary: execs > 0 ? `${execs} executive departure${execs > 1 ? "s" : ""} on record` : "No recent leadership changes detected",
     },
   ];
 
