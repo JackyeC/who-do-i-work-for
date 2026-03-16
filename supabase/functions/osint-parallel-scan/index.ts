@@ -54,6 +54,7 @@ Deno.serve(async (req) => {
       'sync-federal-contracts',
       'sync-insider-trades',
       'sync-sec-edgar',
+      'detect-contradictions',
     ];
 
     // Private company sources (labor/regulatory/enforcement heavy)
@@ -67,6 +68,7 @@ Deno.serve(async (req) => {
       'sync-labor-rights',
       'sync-workplace-enforcement',
       'enrich-private-company',
+      'detect-contradictions',
     ];
 
     // Route to the appropriate source list
@@ -100,6 +102,7 @@ Deno.serve(async (req) => {
       'sync-labor-rights': 'labor_rights',
       'sync-workplace-enforcement': 'workplace_enforcement',
       'enrich-private-company': 'private_enrichment',
+      'detect-contradictions': 'contradiction_detection',
     };
 
     const freshSources: string[] = [];

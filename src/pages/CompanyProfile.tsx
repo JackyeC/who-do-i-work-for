@@ -96,6 +96,7 @@ import { CorporateOwnershipCard } from "@/components/CorporateOwnershipCard";
 import { ReceiptsTimeline } from "@/components/ReceiptsTimeline";
 import { LevelsFyiEmbed } from "@/components/company/LevelsFyiEmbed";
 import { TransparencyResearchTab } from "@/components/company/TransparencyResearchTab";
+import { CivilRightsIntelligencePanel } from "@/components/CivilRightsIntelligencePanel";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -1151,6 +1152,10 @@ export default function CompanyProfile() {
                       }}
                       onCandidateClick={handleCandidateClick}
                     />
+                    {/* Civil Rights Intelligence Panel */}
+                    {dbCompanyId && (
+                      <CivilRightsIntelligencePanel companyId={dbCompanyId} companyName={name} />
+                    )}
                     {/* Vetted Transparency Research */}
                     {dbCompanyId && (
                       <TransparencyResearchTab companyId={dbCompanyId} companyName={name} />
