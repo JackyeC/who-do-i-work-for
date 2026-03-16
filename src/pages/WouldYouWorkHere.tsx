@@ -296,7 +296,7 @@ export default function WouldYouWorkHere() {
       <section className="border-t border-border px-6 lg:px-16 py-16 text-center">
         <h2 className="text-xl font-bold mb-3 text-foreground">Get the full picture.</h2>
         <p className="text-sm text-muted-foreground mb-8 max-w-[440px] mx-auto leading-relaxed">
-          Run a full employer intelligence scan, upload an offer letter, or ask Jackye directly.
+          Run a full employer intelligence scan, upload an offer letter, or ask the Advisor directly.
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
           <button onClick={() => navigate("/browse")} className="bg-primary text-primary-foreground px-7 py-3 font-mono text-[0.7rem] font-semibold tracking-wider uppercase hover:brightness-110 transition-all flex items-center gap-2">
@@ -306,7 +306,7 @@ export default function WouldYouWorkHere() {
             Upload an Offer
           </button>
           <button onClick={() => navigate("/ask-jackye")} className="border border-border text-muted-foreground px-7 py-3 font-mono text-[0.7rem] tracking-wider uppercase hover:border-primary hover:text-primary transition-all flex items-center gap-2">
-            <MessageCircle className="w-3.5 h-3.5" /> Ask Jackye
+            <MessageCircle className="w-3.5 h-3.5" /> Ask the Advisor
           </button>
         </div>
       </section>
