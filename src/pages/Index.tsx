@@ -200,11 +200,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               </div>
               <div>
                 <blockquote className="border-l-2 border-primary pl-4 text-lg italic text-foreground leading-relaxed mb-2 font-serif" style={{ fontWeight: 400 }}>
-                  "The question isn't whether you want the job. It's whether you know exactly who you're going to work for. Run the chain first. Always."
+                  "I've seen firsthand how corporate decisions are made, how talent is vetted, and how power is wielded. Who Do I Work For? is the background check the industry never wanted you to have."
                 </blockquote>
                 <div className="font-mono text-sm tracking-wider uppercase text-muted-foreground pl-4 mb-6">— Jackye Clayton</div>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  15+ years in HR watching candidates accept offers they shouldn't have — because they didn't have the data. Who Do I Work For exists because information is power.
+                  I don't tell you where to work; I give you the truth so you can decide. 20+ years in the rooms where it happens — now that intelligence is yours.
                 </p>
               </div>
             </div>
