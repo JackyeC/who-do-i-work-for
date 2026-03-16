@@ -1009,6 +1009,9 @@ export default function CompanyProfile() {
               <div className="mt-4">
                 <ExecutivePowerNetworkCard companyId={dbCompanyId} companyName={name} />
               </div>
+              <div className="mt-4">
+                <RecruiterDifficultyIndex companyId={dbCompanyId} companyName={name} />
+              </div>
             </section>
           )}
 
