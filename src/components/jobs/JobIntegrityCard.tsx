@@ -10,6 +10,15 @@ import {
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
+function trackApplyClick(jobId: string, companyId: string, url: string) {
+  supabase.from("job_click_events").insert({
+    job_id: jobId,
+    company_id: companyId,
+    click_type: "apply",
+    destination_url: url,
+  }).then(() => {});
+}
+
 interface JobIntegrityCardProps {
   job: {
     id: string;

@@ -330,6 +330,7 @@ Up to 50 jobs. Content:\n${allMarkdown.slice(0, 20000)}`
       work_mode: j.work_mode || null,
       source_url: careersUrl,
       last_verified_at: new Date().toISOString(),
+      admin_approved: true,
     }));
 
     const { error: insertErr } = await supabase.from('company_jobs').insert(jobRecords);
