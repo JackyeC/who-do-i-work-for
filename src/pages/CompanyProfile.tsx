@@ -514,6 +514,12 @@ export default function CompanyProfile() {
                     {(dbCompany as any)?.employee_count && <Badge variant="secondary" className="text-xs">{(dbCompany as any).employee_count} employees</Badge>}
                     {(dbCompany as any)?.revenue && <Badge variant="secondary" className="text-xs">{(dbCompany as any).revenue}</Badge>}
                     {(dbCompany as any)?.ticker && <Badge variant="outline" className="font-mono text-[10px]">{(dbCompany as any).ticker}</Badge>}
+                    {dbCompany?.is_publicly_traded === false && (
+                      <Badge variant="outline" className="text-xs gap-1 border-[hsl(var(--civic-yellow))]/30 bg-[hsl(var(--civic-yellow))]/5 text-[hsl(var(--civic-yellow))]">
+                        <EyeOff className="w-3 h-3" />
+                        Private Company
+                      </Badge>
+                    )}
                   </div>
 
                   {/* Score badges */}
@@ -530,6 +536,34 @@ export default function CompanyProfile() {
               </div>
             </CardContent>
           </Card>
+
+          {/* ═══════════════════════════════════════════════════════════
+              PRIVATE COMPANY INTELLIGENCE NOTICE
+             ═══════════════════════════════════════════════════════════ */}
+          {dbCompany?.is_publicly_traded === false && (
+            <Card className="border-[hsl(var(--civic-yellow))]/20 bg-[hsl(var(--civic-yellow))]/5">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[hsl(var(--civic-yellow))]/15 flex items-center justify-center shrink-0 mt-0.5">
+                    <EyeOff className="w-4 h-4 text-[hsl(var(--civic-yellow))]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-foreground mb-1">Private Company Intelligence Mode</h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {name} is a privately held company{(dbCompany as any)?.parent_company ? ` owned by ${(dbCompany as any).parent_company}` : ''}. 
+                      SEC filings, shareholder data, and PAC disclosures are not available. 
+                      This report prioritizes <span className="text-foreground font-medium">labor disputes, regulatory enforcement, litigation records, workplace safety, and watchdog signals</span> instead.
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {['NLRB', 'OSHA', 'CourtListener', 'EEOC', 'FTC', 'CFPB', 'News'].map(src => (
+                        <span key={src} className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-background/60 border border-border text-muted-foreground">{src}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* ═══════════════════════════════════════════════════════════
               PERSONA SELECTOR

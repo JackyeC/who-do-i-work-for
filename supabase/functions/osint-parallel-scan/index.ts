@@ -33,8 +33,17 @@ Deno.serve(async (req) => {
     console.log(`[osint-parallel-scan] START: ${companyName} (${companyId})`);
     const startTime = Date.now();
 
-    // Define all OSINT source functions to call in parallel
-    const allSources = [
+    // Check if company is private (not publicly traded)
+    const { data: companyRow } = await supabase
+      .from('companies')
+      .select('is_publicly_traded')
+      .eq('id', companyId)
+      .single();
+
+    const isPrivate = companyRow?.is_publicly_traded === false;
+
+    // Public company sources (SEC/FEC heavy)
+    const publicSources = [
       'sync-opensanctions',
       'sync-wikidata',
       'sync-opencorporates',
@@ -46,6 +55,22 @@ Deno.serve(async (req) => {
       'sync-insider-trades',
       'sync-sec-edgar',
     ];
+
+    // Private company sources (labor/regulatory/enforcement heavy)
+    const privateSources = [
+      'sync-opensanctions',
+      'sync-wikidata',
+      'sync-opencorporates',
+      'sync-gdelt',
+      'sync-court-records',
+      'sync-civil-rights-signals',
+      'sync-labor-rights',
+      'sync-workplace-enforcement',
+      'enrich-private-company',
+    ];
+
+    // Route to the appropriate source list
+    const allSources = isPrivate ? privateSources : publicSources;
 
     const sourcesToRun = sources?.length ? sources : allSources;
 
@@ -71,6 +96,10 @@ Deno.serve(async (req) => {
       'sync-federal-contracts': 'government_contracts',
       'sync-insider-trades': 'insider_trading',
       'sync-sec-edgar': 'sec_filings',
+      'sync-civil-rights-signals': 'civil_rights',
+      'sync-labor-rights': 'labor_rights',
+      'sync-workplace-enforcement': 'workplace_enforcement',
+      'enrich-private-company': 'private_enrichment',
     };
 
     const freshSources: string[] = [];
