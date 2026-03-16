@@ -151,7 +151,7 @@ export function CompanyRiskRadar({ companyId, companyName, slug, lobbyingSpend, 
     },
     {
       key: "lobbying",
-      label: "Lobbying Exposure",
+      label: "Political Spending",
       icon: Landmark,
       severity: lobby >= 5_000_000 ? "alert" : lobby >= 500_000 ? "watch" : "clear",
       summary: lobby > 0
