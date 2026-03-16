@@ -18,6 +18,8 @@ import {
   Save, Plus, Trash2, FileText, Loader2, Eye, ArrowLeft,
   ChevronDown, ChevronUp, GripVertical
 } from "lucide-react";
+import { ReportTemplatePicker } from "@/components/admin/ReportTemplatePicker";
+import type { ReportTemplate } from "@/lib/report-templates";
 
 const REPORT_TYPES = ["intelligence_report", "weekly_brief", "issue_audit", "company_alignment_report", "legislative_watch", "policy_alert"];
 const STATUSES = ["draft", "published", "archived"];
