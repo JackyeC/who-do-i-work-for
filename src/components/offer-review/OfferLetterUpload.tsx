@@ -122,7 +122,7 @@ export function OfferLetterUpload({ companyId, companyName, onReviewCreated }: O
         </div>
 
         <p className="text-xs text-muted-foreground">
-          Upload your offer letter from <span className="font-medium text-foreground">{companyName}</span> for a private, structured review. Your document is visible only to you.
+          Got an offer from <span className="font-medium text-foreground">{companyName}</span>? That's your moment — do what you need to do, but keep the receipts. Upload it here and we'll pull the terms apart so you know exactly what you're signing.
         </p>
 
         {/* Mode toggle */}
