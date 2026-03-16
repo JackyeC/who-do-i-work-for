@@ -99,16 +99,16 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: 'What is the "Your Intelligence Advisor" system?',
+    question: 'What is the Intelligence Advisor system?',
     answer: "The Intelligence Advisor is a specialized AI engine built on the People Puzzles proprietary talent framework. Unlike generic chatbots, this system is designed to think like a veteran Head of Talent. It doesn't just 'chat' — it cross-references SEC filings, EEO-1 data, labor market benchmarks, and social signals to provide an objective intelligence briefing.",
   },
   {
-    question: 'Who is the "AI Twin" powering this logic?',
-    answer: "The 'brain' of this advisor is the digital twin of our founder, Jackye Clayton. With over 15 years of experience leading Talent Acquisition for global tech firms (including her tenure as VP of TA at Textio) and her deep roots in the Waco community, Jackye has developed a unique methodology for 'reading between the lines' of company data.",
+    question: 'What methodology powers the intelligence engine?',
+    answer: "The intelligence engine is built on 15+ years of Talent Acquisition expertise across global tech firms. The methodology includes Signal Weighting (knowing which data points actually predict a healthy 'inclusive vibe'), Normalization (standardizing messy corporate reporting into clear insights), and Risk Detection (spotting 'red flag' patterns that standard algorithms miss).",
   },
   {
-    question: "How does Jackye's experience influence the AI?",
-    answer: "We have codified Jackye's professional logic — her 'talent intuition' — into the system's core algorithms. This includes: Signal Weighting (knowing which data points actually predict a healthy 'inclusive vibe'), Normalization (standardizing messy corporate reporting into clear insights), and Risk Detection (spotting 'red flag' patterns that standard algorithms miss).",
+    question: "How is the intelligence generated?",
+    answer: "We have codified decades of professional talent logic into the system's core algorithms. This includes cross-referencing public filings, federal databases, and open records to surface workforce transparency signals — not opinions.",
   },
 ];
 
