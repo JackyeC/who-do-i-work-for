@@ -168,7 +168,16 @@ export default function Browse() {
               }`}
             >
               <TrendingUp className="w-3 h-3" />
-              Score
+              CFS
+            </button>
+            <button
+              onClick={() => setSortBy("cis")}
+              className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-md transition-all ${
+                sortBy === "cis" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <TrendingUp className="w-3 h-3" />
+              CIS
             </button>
             <button
               onClick={() => setSortBy("name")}
@@ -180,6 +189,29 @@ export default function Browse() {
               A–Z
             </button>
           </div>
+        </div>
+
+        {/* Category filter chips */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          <button
+            onClick={() => setSelectedCategory("all")}
+            className={`text-xs font-mono tracking-wider uppercase px-2.5 py-1 transition-all ${
+              selectedCategory === "all" ? "bg-primary text-primary-foreground" : "bg-muted/40 text-muted-foreground hover:text-foreground border border-border/40"
+            }`}
+          >
+            All
+          </button>
+          {CATEGORY_FILTERS.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(selectedCategory === cat ? "all" : cat)}
+              className={`text-xs font-mono tracking-wider uppercase px-2.5 py-1 transition-all ${
+                selectedCategory === cat ? "bg-primary text-primary-foreground" : "bg-muted/40 text-muted-foreground hover:text-foreground border border-border/40"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
         {/* Results count */}
