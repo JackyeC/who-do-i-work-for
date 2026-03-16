@@ -812,6 +812,23 @@ const SAMPLE_LINKS: GraphLink[] = [
   { source: "dol-ebsa", target: "mhpaea", label: "Enforces parity compliance", linkType: "committee_oversight_of_contract", confidence: "direct" },
   { source: "cms-agency", target: "ira-drug-pricing", label: "Implements drug negotiations", linkType: "committee_oversight_of_contract", confidence: "direct" },
   { source: "ira-drug-pricing", target: "healthcare-industry", label: "Impacts pricing", linkType: "committee_oversight_of_contract", confidence: "direct" },
+
+  // ── Consumer Protection links ──
+  { source: "wells-fargo-cp", target: "cfpb-agency", label: "$3.7B penalty — fake accounts", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "wells-fargo-cp", target: "consumer-protection-industry", label: "Massive consumer complaints", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "equifax-cp", target: "ftc-agency", label: "$700M data breach settlement", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "equifax-cp", target: "consumer-privacy-act", label: "Breach prompted legislation", linkType: "lobbying_on_bill", confidence: "likely" },
+  { source: "equifax-cp", target: "consumer-protection-industry", label: "147M records exposed", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "epic-games-cp", target: "coppa", label: "FTC $520M COPPA violation", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "epic-games-cp", target: "consumer-protection-industry", label: "Dark patterns enforcement", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "t-mobile-cp", target: "consumer-protection-industry", label: "76.6M records exposed", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "t-mobile-cp", target: "consumer-privacy-act", label: "Breach prompted advocacy", linkType: "lobbying_on_bill", confidence: "likely" },
+  { source: "capital-one-cp", target: "cfpb-agency", label: "CFPB enforcement", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "capital-one-cp", target: "consumer-protection-industry", label: "106M records exposed", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "cfpb-agency", target: "consumer-protection-industry", label: "Enforces consumer finance laws", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "cpsc-agency", target: "consumer-protection-industry", label: "Enforces product safety", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "fda-agency", target: "consumer-protection-industry", label: "Drug/device safety enforcement", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "coppa", target: "consumer-protection-industry", label: "Protects children's data", linkType: "committee_oversight_of_contract", confidence: "direct" },
 ];
 
 // ─── Main Component ───

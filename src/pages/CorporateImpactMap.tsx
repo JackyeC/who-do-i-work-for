@@ -168,6 +168,10 @@ export default function CorporateImpactMap() {
             count = (healthcareSignals || []).length;
             topSignals = (healthcareSignals || []).slice(0, 3).map(s => ({ type: s.signal_type, description: s.description, source: s.source_name, confidence: s.confidence }));
             (healthcareSignals || []).forEach(s => sources.add(s.source_name || ""));
+          } else if (cat.key === "consumer_protection") {
+            count = (consumerSignals || []).length;
+            topSignals = (consumerSignals || []).slice(0, 3).map(s => ({ type: s.signal_type, description: s.description, source: s.source_name, confidence: s.confidence }));
+            (consumerSignals || []).forEach(s => sources.add(s.source_name || ""));
           }
 
           if (count > 0) {
