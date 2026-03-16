@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { BLSWageBenchmarkCard } from "@/components/bls/BLSWageBenchmarkCard";
 import { BLSECITrendCard } from "@/components/bls/BLSECITrendCard";
-import { BLSDemographicsCard } from "@/components/bls/BLSDemographicsCard";
+
 import { BLSBenefitsCard } from "@/components/bls/BLSBenefitsCard";
 import { useOfferCheck } from "@/hooks/use-offer-check";
 import { OfferCheckReport } from "@/components/OfferCheckReport";
