@@ -749,6 +749,30 @@ const SAMPLE_LINKS: GraphLink[] = [
   { source: "purdue", target: "fda", label: "Regulatory capture attempts", linkType: "revolving_door", confidence: "likely" },
   { source: "purdue", target: "pharma-industry", label: "Operates in", linkType: "trade_association_lobbying", confidence: "direct" },
   { source: "opioid-regulation-bill", target: "pharma-industry", label: "Impacts", linkType: "committee_oversight_of_contract", confidence: "likely" },
+
+  // ── Disney civil rights links ──
+  { source: "disney-cr", target: "hrc-index", label: "CEI Score: 100/100", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "disney-cr", target: "equality-act", label: "Publicly supported", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "disney-cr", target: "civil-rights-industry", label: "LGBTQ advocacy", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "judiciary-committee", target: "equality-act", label: "Oversees", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "equality-act", target: "civil-rights-industry", label: "Impacts", linkType: "committee_oversight_of_contract", confidence: "likely" },
+
+  // ── Nike civil rights links ──
+  { source: "nike-cr", target: "hrc-index", label: "CEI Score: 100/100", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "nike-cr", target: "eeoc-agency", label: "Gender discrimination lawsuits", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "nike-cr", target: "civil-rights-industry", label: "$140M racial equity commitment", linkType: "trade_association_lobbying", confidence: "direct" },
+
+  // ── Target civil rights links ──
+  { source: "target-cr", target: "eeoc-agency", label: "EEOC settlement (pre-employment tests)", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "target-cr", target: "hrc-index", label: "CEI Score: 100/100", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "target-cr", target: "civil-rights-industry", label: "DEI commitments (rollback 2024)", linkType: "trade_association_lobbying", confidence: "direct" },
+
+  // ── Chick-fil-A civil rights links ──
+  { source: "chick-fil-a", target: "civil-rights-industry", label: "Controversial donations to anti-LGBTQ orgs", linkType: "dark_money_channel", confidence: "likely" },
+  { source: "chick-fil-a", target: "hrc-index", label: "Not rated", linkType: "trade_association_lobbying", confidence: "direct" },
+
+  // ── EEOC / DOJ connections ──
+  { source: "eeoc-agency", target: "doj-civil-rights", label: "Enforcement partnership", linkType: "committee_oversight_of_contract", confidence: "direct" },
 ];
 
 // ─── Main Component ───
