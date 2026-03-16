@@ -185,6 +185,7 @@ export default function ReportEditor() {
             </Button>
             <h1 className="text-xl font-display font-bold">{isNew ? "New Report" : "Edit Report"}</h1>
             <Badge variant={report.status === "published" ? "default" : "secondary"} className="capitalize">{report.status}</Badge>
+            {isNew && <ReportTemplatePicker onSelect={applyTemplate} />}
           </div>
           <div className="flex gap-2">
             {!isNew && report.status === "published" && (
