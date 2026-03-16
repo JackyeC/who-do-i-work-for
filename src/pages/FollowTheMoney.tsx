@@ -313,7 +313,7 @@ const SAMPLE_NODES: GraphNode[] = [
   // ── UPS (Labor Rights — Pro-union, Teamsters) ──
   { id: "ups", label: "UPS", group: "Company", val: 17, metadata: { industry: "Logistics", summary: "Largest unionized private employer in the US. 2023 Teamsters contract covering 340,000 workers was the largest private-sector union contract in US history." } },
   { id: "ups-pac", label: "UPS PAC", group: "PAC", val: 13, amount: 1_100_000 },
-  { id: "rep-scott-bobby", label: "Rep. Bobby Scott (D-VA)", group: "Politician", val: 10, party: "Democrat", state: "VA", issueCategories: ["Labor Rights", "Education"] },
+  
 
   // ── Costco (Labor Rights — Pro-worker) ──
   { id: "costco", label: "Costco", group: "Company", val: 16, metadata: { industry: "Retail", summary: "Known for above-average wages ($29.50/hr avg), comprehensive benefits, and relatively positive labor relations. CEO publicly opposed federal minimum wage cuts." } },
