@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -136,7 +137,15 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
           {/* Actions */}
           <div className="flex gap-2">
             {job.url && (
-              <Button className="flex-1 gap-1.5" onClick={() => onApply(job)}>
+              <Button className="flex-1 gap-1.5" onClick={() => {
+                supabase.from("job_click_events").insert({
+                  job_id: job.id,
+                  company_id: job.company_id,
+                  click_type: "apply",
+                  destination_url: job.url,
+                }).then(() => {});
+                onApply(job);
+              }}>
                 Apply <ExternalLink className="w-3.5 h-3.5" />
               </Button>
             )}
