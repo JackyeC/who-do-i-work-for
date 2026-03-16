@@ -28,7 +28,7 @@ const STATIC_COMPANY_COUNT = 850;
 const tools = [
   { icon: Shield, title: "Company Intelligence", desc: "Workforce signals, compensation patterns, political influence — one report.", cta: "Run a scan", href: "/browse" },
   { icon: FileText, title: "Offer Intelligence", desc: "Benchmark salary, flag non-competes, get negotiation language.", cta: "Analyze an offer", href: "/check" },
-  { icon: MessageSquare, title: "Ask Jackye", desc: "20+ years of HR strategy, on demand. Real advice, not platitudes.", cta: "Ask Jackye", href: "/ask-jackye" },
+  { icon: MessageSquare, title: "Intelligence Advisor", desc: "20+ years of HR strategy, on demand. Real advice, not platitudes.", cta: "Ask the Advisor", href: "/ask-jackye" },
   { icon: Compass, title: "Career Intelligence", desc: "Map skills to demand, align values to employers, build a plan.", cta: "Discover paths", href: "/career-intelligence" },
 ];
 
@@ -47,7 +47,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
   usePageSEO({
     title: "Employer Background Check for Recruiters — Career Intelligence",
-    description: "Vet employers before your candidates do. SEC filings, PAC spending, layoff history, and pay equity data — in one scan. Employer intelligence by Jackye Clayton.",
+    description: "Vet employers before your candidates do. SEC filings, PAC spending, layoff history, and pay equity data — in one scan. Workforce Transparency Standard.",
     path: "/",
     jsonLd: {
       "@type": "WebApplication",
@@ -81,7 +81,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             <span className="text-primary">before you say yes.</span>
           </h1>
           <p className="text-base lg:text-lg text-muted-foreground mb-10 max-w-[480px] leading-relaxed">
-            The background check just flipped. I've been blessed to be in the rooms where it happens — now I'm taking everything I've learned and putting it into your hands.
+            Founded by a long-time Talent Acquisition executive who has been in the room where it happens, WDIWF was built to help both sides tell a clearer story through transparency.
           </p>
           <HeroSearch />
           <div className="mt-6">
@@ -287,14 +287,14 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               </div>
               <div>
                 <blockquote className="border-l-2 border-primary pl-4 text-lg italic text-foreground leading-relaxed mb-2 font-serif" style={{ fontWeight: 400 }}>
-                  "I've seen firsthand how corporate decisions are made, how talent is vetted, and how power is wielded. Who Do I Work For? is the background check the industry never wanted you to have."
+                  "I've been in the rooms where corporate decisions are made, where talent strategies are set, and where power is wielded. Who Do I Work For? is the intelligence the industry never wanted you to have."
                 </blockquote>
-                <div className="font-mono text-sm tracking-wider uppercase text-muted-foreground pl-4 mb-6">— Jackye Clayton</div>
+                <div className="font-mono text-sm tracking-wider uppercase text-muted-foreground pl-4 mb-6">— Jackye Clayton, Founder</div>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  I don't tell you where to work; I give you the truth so you can decide. 20+ years in the rooms where it happens — now that intelligence is yours.
+                  WDIWF was built to help both sides tell a clearer story through transparency. 20+ years in the rooms where it happens — now that intelligence is yours.
                 </p>
                 <p className="font-mono text-sm italic text-primary mt-6 tracking-wide">
-                  Unapologetically Transparent. — Jackye Clayton
+                  No judgment, just receipts.
                 </p>
               </div>
             </div>

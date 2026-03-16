@@ -81,7 +81,7 @@ const transparencyAudit = [
   { icon: Home, label: "Remote / hybrid work policy published" },
   { icon: BarChart3, label: "Workforce representation data provided" },
   { icon: Star, label: "Employee NPS or engagement signal disclosed" },
-  { icon: ShieldCheck, label: "Final approval by Jackye" },
+  { icon: ShieldCheck, label: "Final approval by WDIWF" },
 ];
 
 export default function ForEmployers() {
@@ -234,7 +234,7 @@ export default function ForEmployers() {
                 The 10-Point Transparency Audit
               </h2>
               <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                The Gold Shield is earned, not bought. Payment gets you in the door — Jackye's audit gets you certified.
+                The Gold Shield is earned, not bought. Payment gets you in the door — the transparency audit gets you certified.
               </p>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -287,7 +287,7 @@ export default function ForEmployers() {
                 Certified companies acknowledge that independent research may still be published.
                 Payment grants the right to respond — but provides{" "}
                 <span className="font-semibold text-foreground">zero authority</span> to
-                edit, remove, or suppress any data found by AI or Jackye's independent research.
+                edit, remove, or suppress any data found by AI or independent research.
               </p>
             </CardContent>
           </Card>
@@ -305,7 +305,7 @@ export default function ForEmployers() {
                 <h3 className="text-xl font-bold text-foreground mb-2">Single Job Credit — $199</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   One 'Value-Aligned' job post on the Job Integrity Board for 30 days.
-                  Includes standard transparency data overlay, Jackye Insight, and Connection Chain (read-only).
+                  Includes standard transparency data overlay, Strategic Context, and Connection Chain (read-only).
                 </p>
                 <ul className="space-y-1.5 text-sm">
                   {["1 job post for 30 days", "Standard transparency overlay", "No Gold Shield required"].map((f) => (

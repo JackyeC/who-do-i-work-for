@@ -58,7 +58,7 @@ const auditSteps: AuditStep[] = [
   {
     id: "audit-call",
     icon: CalendarCheck,
-    label: "Schedule the Jackye Audit",
+    label: "Schedule the Transparency Audit",
     description:
       "Book a 15-minute intro call to finalize your Certification. This is the last step before your Gold Shield goes live.",
     actionLabel: "Book 15-Min Intro Call",
@@ -140,7 +140,7 @@ export default function EmployerVerificationPending() {
       if (error) throw error;
       setUploaded(true);
       toast.success(
-        "Document uploaded. Jackye will review within 24 hours."
+        "Document uploaded. Our team will review within 24 hours."
       );
     } catch (e: any) {
       toast.error("Upload failed: " + e.message);
@@ -367,7 +367,7 @@ export default function EmployerVerificationPending() {
                 <span className="font-semibold text-foreground">
                   24 hours
                 </span>{" "}
-                of document submission and Jackye's manual review.
+                of document submission and manual review.
               </p>
             </div>
           </CardContent>
@@ -384,12 +384,12 @@ export default function EmployerVerificationPending() {
                 </p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Your $599/yr Founding Partner Certification grants the right
-                  to respond to Jackye Insights, but provides{" "}
+                  to respond to Insider Context findings, but provides{" "}
                   <span className="font-semibold text-foreground">
                     zero authority
                   </span>{" "}
                   to edit, remove, or suppress any data found by AI or
-                  Jackye's independent research. Transparency isn't optional—it's
+                  independent research. Transparency isn't optional—it's
                   the product.
                 </p>
               </div>

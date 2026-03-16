@@ -245,7 +245,7 @@ export default function WhatAmISupporting() {
               { label: "Company Intelligence", path: "/browse", icon: Search },
               { label: "Connection Chain", path: "/follow-the-money", icon: Globe },
               { label: "Intelligence Chain", path: "/intelligence-chain", icon: Landmark },
-              { label: "Ask Jackye", path: "/ask-jackye", icon: MessageCircle },
+              { label: "Ask the Advisor", path: "/ask-jackye", icon: MessageCircle },
             ].map(item => (
               <button key={item.path} onClick={() => navigate(item.path)} className="flex items-center gap-2 p-4 border border-border bg-card text-left hover:border-primary transition-colors group">
                 <item.icon className="w-4 h-4 text-primary shrink-0" strokeWidth={1.5} />
@@ -259,7 +259,7 @@ export default function WhatAmISupporting() {
         {/* Footer */}
         <div className="mt-10 text-center">
           <div className="font-mono text-[0.6rem] uppercase tracking-[0.15em] text-primary font-semibold mb-1">Run the chain first. Always.</div>
-          <div className="text-[0.55rem] font-mono uppercase tracking-widest text-muted-foreground">Who Do I Work For — Employer Intelligence by Jackye Clayton</div>
+          <div className="text-[0.55rem] font-mono uppercase tracking-widest text-muted-foreground">Who Do I Work For — Workforce Transparency Standard</div>
         </div>
       </div>
     </div>

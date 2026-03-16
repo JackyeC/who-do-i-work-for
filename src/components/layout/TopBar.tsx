@@ -51,6 +51,7 @@ export const MAIN_SECTIONS = [
       { label: "Follow the Money", path: "/follow-the-money" },
       { label: "Compare Companies", path: "/compare" },
       { label: "All Tools →", path: "/site-map" },
+      { label: "Methodology", path: "/methodology" },
     ],
   },
   {
@@ -62,7 +63,7 @@ export const MAIN_SECTIONS = [
   },
   {
     id: "coach",
-    label: "Ask Jackye",
+    label: "Advisor",
     path: "/ask-jackye",
     matchPaths: ["/ask-jackye"],
     subItems: [],
@@ -114,7 +115,7 @@ export function TopBar() {
       items.push(`SCANS: ${s.totalScans.toLocaleString()} total intelligence scans`);
     }
     items.push(`UPDATED: ${new Date().toLocaleDateString()} — connection chains refreshed`);
-    items.push('JACKYE INSIGHT: "Don\'t accept an offer without running the chain first"');
+    items.push('INSIDER CONTEXT: "Run the chain before you sign."');
     return items;
   }, [tickerStats]);
 

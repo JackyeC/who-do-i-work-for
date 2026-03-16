@@ -11,7 +11,7 @@ const OnePager = () => {
           <div>
             <div className="font-serif text-3xl font-bold text-primary mb-1">Who Do I Work For</div>
             <div className="font-mono text-[9px] tracking-[0.2em] uppercase text-muted-foreground">
-              Career Intelligence by Jackye Clayton
+              Workforce Transparency Standard
             </div>
           </div>
           <div className="text-right">
@@ -37,7 +37,7 @@ const OnePager = () => {
           {[
             { num: "01 — Intelligence", title: "Connection Chain", body: "Every verified link between a company and its political donors, lobbying firms, PAC contributions, federal contracts, and regulatory relationships. Bloomberg-grade transparency for hiring decisions.", tag: "FEC · USASpending · OpenSecrets · SEC EDGAR" },
             { num: "02 — Protection", title: "Offer Letter Analyzer", body: "Benchmarks salary, flags non-compete language, identifies benefits gaps, and provides a negotiation guide — before you sign. Know your number. Know your rights. Know what to push back on.", tag: "Real-time salary data · Contract language detection" },
-            { num: "03 — Coaching", title: "Ask Jackye — AI Coach", body: "Jackye Clayton's 20+ years of HR expertise as your personal career strategist. Available 24/7. She'll tell you what HR won't say and what most coaches are afraid to say out loud.", tag: "Jackye's methodology · Your situation · Your decisions" },
+            { num: "03 — Coaching", title: "Intelligence Advisor", body: "20+ years of HR expertise as your personal career strategist. Available 24/7. The advisor tells you what HR won't say and what most coaches are afraid to say out loud.", tag: "Talent framework · Your situation · Your decisions" },
             { num: "04 — HR Intelligence", title: "Employer Promise Check", body: "HR professionals: audit your Employee Value Proposition against what the data actually shows. Close the gap between what you promise and what employees experience — before candidates surface it first.", tag: "For CHROs · Recruiters · HR Business Partners" },
           ].map(m => (
             <div key={m.num} className="bg-background p-5">
@@ -75,7 +75,7 @@ const OnePager = () => {
           <img src={jackyeHeadshot} alt="Jackye Clayton" className="w-14 h-14 rounded-full object-cover shrink-0" />
           <div>
             <div className="font-serif text-base font-bold text-primary">Jackye Clayton</div>
-            <div className="font-mono text-micro tracking-wider uppercase text-muted-foreground mb-1.5">Founder · Career Intelligence by Jackye Clayton</div>
+            <div className="font-mono text-micro tracking-wider uppercase text-muted-foreground mb-1.5">Founder · Who Do I Work For?</div>
             <div className="text-[11px] text-muted-foreground italic leading-relaxed">
               "The question isn't just whether you want the job. It's whether you know exactly who you're going to work for. Every candidate deserves to walk into that negotiation armed with the same information the company already has about them."
             </div>
