@@ -51,6 +51,7 @@ const FEATURED_COMPANIES = [
   "Amazon", "Tesla", "Starbucks", "ExxonMobil", "Walmart",
   "Google", "Microsoft", "Goldman Sachs", "Tyson Foods",
   "Smith & Wesson Brands", "Dick's Sporting Goods", "Nike",
+  "UnitedHealth Group", "CVS Health", "Pfizer", "Apple",
 ];
 
 // ─── Main Component ───
