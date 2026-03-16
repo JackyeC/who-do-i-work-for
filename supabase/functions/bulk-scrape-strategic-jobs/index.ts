@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   const body = await req.json().catch(() => ({}));
-  const tier = body.tier || 'all'; // 'bcorp', 'political', 'unfilled', 'all'
+  const tier = body.tier || 'all'; // 'bcorp', 'political'/'power', 'unfilled', 'all'
   const dryRun = body.dryRun || false;
   const maxPerTier = body.maxPerTier || 20;
 
