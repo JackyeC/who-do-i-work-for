@@ -50,6 +50,7 @@ import { ValuesCheckSection, type ValuesCheckSignal } from "@/components/values-
 import { InfluenceChainCard } from "@/components/InfluenceChainCard";
 import { InstitutionalDNACard } from "@/components/dossier/InstitutionalDNACard";
 import { InsiderPrideBanner } from "@/components/community/InsiderPrideBanner";
+import { RecruiterDifficultyIndex } from "@/components/intelligence/RecruiterDifficultyIndex";
 import { CorporateCharacterScore, calculateCharacterScore } from "@/components/CorporateCharacterScore";
 import { TransparencyGhosting } from "@/components/TransparencyGhosting";
 import { DataFreshnessCard } from "@/components/DataFreshnessCard";
@@ -1007,6 +1008,9 @@ export default function CompanyProfile() {
               </div>
               <div className="mt-4">
                 <ExecutivePowerNetworkCard companyId={dbCompanyId} companyName={name} />
+              </div>
+              <div className="mt-4">
+                <RecruiterDifficultyIndex companyId={dbCompanyId} companyName={name} />
               </div>
             </section>
           )}

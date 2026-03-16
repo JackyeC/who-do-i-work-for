@@ -144,6 +144,10 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </div>
 
+      {/* ── Intelligence Dashboard — NEWS TERMINAL FEEL ── */}
+      <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
+        <IntelligenceDashboard />
+      </Suspense>
       {/* ── How It Works — 1-2-3 Flow ── */}
       <section className="px-6 lg:px-16 py-24 lg:py-32 max-w-[960px] mx-auto w-full">
         <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">How It Works</div>
@@ -258,10 +262,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </section>
 
-      {/* ── Intelligence Dashboard ── */}
-      <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
-        <IntelligenceDashboard />
-      </Suspense>
+      {/* Intelligence Dashboard moved above fold */}
 
       {/* ── Below-fold sections: lazy-loaded ── */}
       <Suspense fallback={null}>
