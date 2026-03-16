@@ -104,7 +104,7 @@ export function OfferLetterUpload({ companyId, companyName, onReviewCreated }: O
       onReviewCreated(reviewId);
       toast({ title: "Upload complete", description: "Your offer letter is being analyzed privately." });
     } catch (e: any) {
-      console.error(e);
+      console.error("[OfferLetterUpload] Upload error:", e, JSON.stringify(e));
       toast({ title: "Upload failed", description: e.message, variant: "destructive" });
     } finally {
       setUploading(false);
