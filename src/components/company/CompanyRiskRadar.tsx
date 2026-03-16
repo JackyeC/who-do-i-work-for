@@ -118,7 +118,7 @@ export function CompanyRiskRadar({ companyId, companyName, slug, lobbyingSpend, 
     queryKey: ["risk-radar-comp", companyId],
     queryFn: async () => {
       const { count } = await supabase
-        .from("company_compensation")
+        .from("compensation_data")
         .select("id", { count: "exact", head: true })
         .eq("company_id", companyId);
       return count || 0;
