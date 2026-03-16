@@ -248,6 +248,69 @@ Deno.serve(async (req) => {
       }
     }
 
+    // 5. Labor rights lens: compare worker/labor stances against court cases & NLRB
+    const laborStances = (stances || []).filter(s =>
+      ['labor', 'worker', 'union', 'wage', 'fair pay', 'employee', 'workplace'].some(
+        kw => (s.topic || '').toLowerCase().includes(kw)
+      )
+    );
+
+    if (laborStances.length > 0) {
+      // Check for labor-related court cases
+      const laborCases = (courtCases || []).filter((cc: any) => {
+        const text = `${cc.nature_of_suit || ''} ${cc.case_name || ''} ${cc.cause || ''} ${cc.summary || ''}`.toLowerCase();
+        return ['labor', 'wage', 'flsa', 'nlrb', 'osha', 'discrimination', 'retaliation', 'wrongful termination', 'class action'].some(
+          kw => text.includes(kw)
+        );
+      });
+
+      if (laborCases.length > 0) {
+        const totalDamages = laborCases.reduce((sum: number, c: any) => sum + (c.damages_amount || 0), 0);
+        contradictions.push({
+          company_id: companyId,
+          topic: 'Labor & Worker Rights',
+          public_statement: laborStances.map(s => s.public_position).filter(Boolean).join('; ') || 'Publicly supports worker rights',
+          spending_reality: `${laborCases.length} labor-related court case(s)` +
+            (totalDamages > 0 ? ` with $${totalDamages.toLocaleString()} in damages` : '') +
+            `. Cases: ${laborCases.slice(0, 2).map((c: any) => c.case_name?.slice(0, 50)).join('; ')}`,
+          severity: laborCases.length >= 3 || totalDamages > 500000 ? 'high' : 'medium',
+          evidence_sources: laborCases.map((c: any) => ({
+            type: 'court_case',
+            case_name: c.case_name,
+            source: c.source || 'CourtListener',
+            url: c.courtlistener_url,
+          })),
+          statement_source_url: null,
+          spending_source_url: laborCases[0]?.courtlistener_url || null,
+        });
+      }
+
+      // Check for labor-related lobbying against worker interests
+      const laborLobbying = (lobbyingLinks || []).filter((l: any) => {
+        const desc = (l.description || '').toLowerCase();
+        return ['wage', 'union', 'labor', 'nlrb', 'osha', 'worker', 'overtime'].some(kw => desc.includes(kw));
+      });
+
+      if (laborLobbying.length > 0 && !contradictions.some(c => c.topic === 'Labor & Worker Rights')) {
+        const totalAmount = laborLobbying.reduce((sum: number, l: any) => sum + (l.amount || 0), 0);
+        contradictions.push({
+          company_id: companyId,
+          topic: 'Labor & Worker Rights',
+          public_statement: laborStances.map(s => s.public_position).filter(Boolean).join('; ') || 'Publicly supports worker rights',
+          spending_reality: `${laborLobbying.length} lobbying filing(s) on labor legislation` +
+            (totalAmount > 0 ? ` ($${totalAmount.toLocaleString()})` : ''),
+          severity: 'medium',
+          evidence_sources: laborLobbying.map((l: any) => ({
+            type: 'lobbying',
+            target: l.target_entity_name,
+            url: l.evidence_url,
+          })),
+          statement_source_url: null,
+          spending_source_url: laborLobbying[0]?.evidence_url || null,
+        });
+      }
+    }
+
     // Deduplicate by topic
     const seen = new Set<string>();
     const unique = contradictions.filter(c => {
