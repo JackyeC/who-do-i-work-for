@@ -106,7 +106,7 @@ export function RecruiterDifficultyIndex({ companyId, companyName }: Props) {
     queryKey: ["rdi-warns", companyId],
     enabled: !!companyId,
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("warn_notices")
         .select("id")
         .eq("company_id", companyId);
