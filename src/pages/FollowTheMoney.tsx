@@ -784,6 +784,21 @@ const SAMPLE_LINKS: GraphLink[] = [
 
   // ── EEOC / DOJ connections ──
   { source: "eeoc-agency", target: "doj-civil-rights", label: "Enforcement partnership", linkType: "committee_oversight_of_contract", confidence: "direct" },
+
+  // ── Healthcare links ──
+  { source: "unitedhealth", target: "ira-drug-pricing", label: "$8.2M lobbying", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "unitedhealth", target: "mhpaea", label: "$3.1M lobbying on parity", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "unitedhealth", target: "cms-agency", label: "Medicare Advantage contracts", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "unitedhealth", target: "healthcare-industry", label: "Largest US insurer", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "cvs-health", target: "ira-drug-pricing", label: "$6.7M PBM/drug pricing lobbying", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "cvs-health", target: "healthcare-industry", label: "PBM/pharmacy operations", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "pfizer-hc", target: "ira-drug-pricing", label: "$7.8M lobbying on drug pricing", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "pfizer-hc", target: "healthcare-industry", label: "Major pharmaceutical", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "jnj-hc", target: "ira-drug-pricing", label: "$5.4M lobbying", linkType: "lobbying_on_bill", confidence: "direct" },
+  { source: "jnj-hc", target: "healthcare-industry", label: "Pharma/med devices", linkType: "trade_association_lobbying", confidence: "direct" },
+  { source: "dol-ebsa", target: "mhpaea", label: "Enforces parity compliance", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "cms-agency", target: "ira-drug-pricing", label: "Implements drug negotiations", linkType: "committee_oversight_of_contract", confidence: "direct" },
+  { source: "ira-drug-pricing", target: "healthcare-industry", label: "Impacts pricing", linkType: "committee_oversight_of_contract", confidence: "direct" },
 ];
 
 // ─── Main Component ───

@@ -155,6 +155,10 @@ export default function CorporateImpactMap() {
             count = (civilRightsSignals || []).length;
             topSignals = (civilRightsSignals || []).slice(0, 3).map(s => ({ type: s.signal_type, description: s.description, source: s.source_name, confidence: s.confidence }));
             (civilRightsSignals || []).forEach(s => sources.add(s.source_name || ""));
+          } else if (cat.key === "healthcare") {
+            count = (healthcareSignals || []).length;
+            topSignals = (healthcareSignals || []).slice(0, 3).map(s => ({ type: s.signal_type, description: s.description, source: s.source_name, confidence: s.confidence }));
+            (healthcareSignals || []).forEach(s => sources.add(s.source_name || ""));
           }
 
           if (count > 0) {
