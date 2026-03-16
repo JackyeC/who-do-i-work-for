@@ -4,7 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Compass, Send, Loader2, Share2, Sparkles, Lock } from "lucide-react";
+import { Compass, Loader2, Share2, Sparkles, Lock, Copy, Shield } from "lucide-react";
+
+const BASE_URL = "https://wdiwf.jackyeclayton.com";
 
 export function DreamJobWidget() {
   const [dreamRole, setDreamRole] = useState("");
@@ -18,7 +20,6 @@ export function DreamJobWidget() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Sign in to manifest your dream job");
 
-      // Check if company exists
       const slug = dreamCompany.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       const { data: existing } = await supabase
         .from("companies")
@@ -63,43 +64,45 @@ export function DreamJobWidget() {
     },
   });
 
-  const shareText = `I just mapped my values to my dream role at ${matchedCompanyName} on Who Do I Work For? 🛡️ Check your alignment.`;
-  const shareUrl = "https://who-do-i-work-for.lovable.app";
+  const linkedInShareText = `I just mapped my values to my dream role at ${matchedCompanyName}. It's time we knew who we really worked for. Check your alignment at ${BASE_URL}`;
+  const copyShareText = `I just mapped my values to my dream role at ${matchedCompanyName}. It's time we knew who we really worked for. Check your alignment → ${BASE_URL}`;
 
   if (submitted) {
     return (
-      <div className="p-6 lg:p-8 border border-primary/15 bg-primary/[0.03] rounded-xl space-y-4">
+      <div className="p-6 lg:p-8 border border-civic-gold/30 bg-primary/[0.03] rounded-xl space-y-4">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <h3 className="font-serif text-lg text-foreground">Dream job mapped.</h3>
+          <Sparkles className="w-5 h-5 text-civic-gold" />
+          <h3 className="font-serif text-lg text-foreground">Manifested. 🚀</h3>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Intelligence Gathering in Progress... We are verifying the receipts to ensure 100% accuracy for your dream match.
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          We're auditing the receipts for <span className="text-primary font-medium">{matchedCompanyName}</span> to help you get there.
         </p>
         <div className="flex flex-wrap gap-2">
           <Button
-            variant="outline"
             size="sm"
             className="gap-1.5"
             onClick={() => {
-              const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareText)}`;
-              window.open(url, '_blank', 'width=600,height=400');
+              const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(BASE_URL)}&summary=${encodeURIComponent(linkedInShareText)}`;
+              window.open(url, '_blank', 'width=600,height=600');
             }}
           >
             <Share2 className="w-3.5 h-3.5" /> Share on LinkedIn
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="gap-1.5"
+            className="gap-1.5 border-civic-gold text-civic-gold hover:bg-civic-gold/10"
             onClick={() => {
-              navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
-              toast({ title: "Copied to clipboard!" });
+              navigator.clipboard.writeText(copyShareText);
+              toast({ title: "Copied to clipboard! 📋" });
             }}
           >
-            Copy Share Text
+            <Copy className="w-3.5 h-3.5" /> Copy Share Text
           </Button>
         </div>
+        <p className="text-[10px] text-civic-gold-muted flex items-center gap-1">
+          <Shield className="w-2.5 h-2.5" /> No judgment, just receipts.
+        </p>
         <Button variant="link" size="sm" className="px-0" onClick={() => { setSubmitted(false); setDreamRole(""); setDreamCompany(""); }}>
           Map another dream job →
         </Button>
