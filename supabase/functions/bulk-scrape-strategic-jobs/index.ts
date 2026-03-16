@@ -175,7 +175,7 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════
     // TIER 2: Power & Influence Top 10 + DB political donors
     // ═══════════════════════════════════════════
-    if (tier === 'all' || tier === 'political') {
+    if (tier === 'all' || tier === 'political' || tier === 'power') {
       console.log(`\n═══ TIER 2: Power & Influence Companies ═══`);
 
       // First: process hardcoded Power & Influence targets
