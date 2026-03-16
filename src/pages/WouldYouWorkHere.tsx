@@ -133,7 +133,7 @@ function VerdictSection({ result }: { result: VerdictOutput }) {
       <div className="mx-6 mb-4 p-5 border-l-2 border-primary bg-primary/[0.04]">
         <div className="flex items-center gap-2 mb-3">
           <MessageCircle className="w-4 h-4 text-primary" strokeWidth={1.5} />
-          <span className="font-mono text-[0.65rem] tracking-widest uppercase text-primary">Jackye's Verdict</span>
+          <span className="font-mono text-[0.65rem] tracking-widest uppercase text-primary">Intelligence Assessment</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
