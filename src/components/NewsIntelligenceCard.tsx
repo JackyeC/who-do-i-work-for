@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Newspaper, AlertTriangle, TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MediaBiasIndicator } from "@/components/MediaBiasIndicator";
+import { CoverageBalanceChart } from "@/components/CoverageBalanceChart";
 
 interface Props {
   companyId: string;
