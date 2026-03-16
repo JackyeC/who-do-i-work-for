@@ -111,6 +111,15 @@ Deno.serve(async (req) => {
             succeeded: data?.succeeded || 0,
           });
         }
+
+        // Run verification engine after scan
+        try {
+          await supabase.functions.invoke("verify-signal", {
+            body: { company_id: company.id },
+          });
+        } catch (vErr) {
+          console.warn(`[bulk-refresh] Verification failed for ${company.name}:`, vErr);
+        }
       } catch (e) {
         results.push({
           name: company.name,
