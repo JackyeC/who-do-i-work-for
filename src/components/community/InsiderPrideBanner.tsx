@@ -3,22 +3,27 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Send, Quote, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Heart, Send, Quote, Loader2, Share2, Copy, Shield } from "lucide-react";
 
 interface InsiderPrideProps {
   companyId: string;
   companyName: string;
+  companySlug?: string;
   isVerified: boolean;
 }
 
-export function InsiderPrideBanner({ companyId, companyName, isVerified }: InsiderPrideProps) {
+const BASE_URL = "https://wdiwf.jackyeclayton.com";
+
+export function InsiderPrideBanner({ companyId, companyName, companySlug, isVerified }: InsiderPrideProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showShareCard, setShowShareCard] = useState(false);
   const [text, setText] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const profileUrl = companySlug ? `${BASE_URL}/company/${companySlug}` : BASE_URL;
+  const shareText = `I'm proud to work at a company that puts its receipts where its mouth is. 🛡️ See how ${companyName} aligns with your values on Who Do I Work For?\n\n${profileUrl}`;
 
   // Fetch approved testimonials
   const { data: testimonials } = useQuery({
@@ -54,6 +59,7 @@ export function InsiderPrideBanner({ companyId, companyName, isVerified }: Insid
       toast({ title: "Your pride has been shared! 🎉", description: "It'll appear after a quick review." });
       setText("");
       setIsOpen(false);
+      setShowShareCard(true);
       queryClient.invalidateQueries({ queryKey: ["insider-testimonials", companyId] });
     },
     onError: (err: any) => {
@@ -82,8 +88,48 @@ export function InsiderPrideBanner({ companyId, companyName, isVerified }: Insid
         </div>
       )}
 
+      {/* Post-submit share card */}
+      {showShareCard && (
+        <div className="p-5 rounded-xl border border-civic-gold/30 bg-primary/[0.03] space-y-4">
+          <div className="flex items-center gap-2">
+            <Shield className="w-5 h-5 text-civic-gold" />
+            <h3 className="font-serif text-base font-semibold text-foreground">Share Your Alignment</h3>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            I'm proud to work at a company that puts its receipts where its mouth is. 🛡️ See how{" "}
+            <span className="text-primary font-medium">{companyName}</span> aligns with your values on Who Do I Work For?
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              className="gap-1.5"
+              onClick={() => {
+                const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(profileUrl)}`;
+                window.open(url, "_blank", "width=600,height=600");
+              }}
+            >
+              <Share2 className="w-3.5 h-3.5" /> Share on LinkedIn
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5 border-civic-gold text-civic-gold hover:bg-civic-gold/10"
+              onClick={() => {
+                navigator.clipboard.writeText(shareText);
+                toast({ title: "Copied to clipboard! 📋" });
+              }}
+            >
+              <Copy className="w-3.5 h-3.5" /> Copy Share Text
+            </Button>
+          </div>
+          <p className="text-[10px] text-civic-gold-muted flex items-center gap-1">
+            <Shield className="w-2.5 h-2.5" /> No judgment, just receipts.
+          </p>
+        </div>
+      )}
+
       {/* Submit button & form */}
-      {!isOpen ? (
+      {!isOpen && !showShareCard ? (
         <Button
           variant="outline"
           size="sm"
@@ -92,7 +138,7 @@ export function InsiderPrideBanner({ companyId, companyName, isVerified }: Insid
         >
           <Heart className="w-3.5 h-3.5" /> I Work Here & Love It
         </Button>
-      ) : (
+      ) : isOpen ? (
         <div className="p-4 rounded-lg border border-primary/15 bg-primary/[0.03] space-y-3">
           <p className="text-xs font-medium text-foreground">
             Share your Insider Win at <span className="text-primary">{companyName}</span>
@@ -122,7 +168,7 @@ export function InsiderPrideBanner({ companyId, companyName, isVerified }: Insid
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
