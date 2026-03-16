@@ -14,7 +14,7 @@ interface ConnectionNode {
   name: string;
   type: "company" | "policy_org" | "board" | "pac" | "lobbying" | "nonprofit";
   role?: string;
-  icon: typeof Building2;
+  icon?: typeof Building2;
 }
 
 interface ExecutiveNetwork {
