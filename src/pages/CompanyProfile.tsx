@@ -982,6 +982,9 @@ export default function CompanyProfile() {
                   onExecutiveClick={handleExecutiveClick}
                 />
               </div>
+              <div className="mt-4">
+                <ExecutivePowerNetworkCard companyId={dbCompanyId} companyName={name} />
+              </div>
             </section>
           )}
 
