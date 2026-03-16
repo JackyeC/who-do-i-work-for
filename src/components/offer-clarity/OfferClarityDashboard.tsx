@@ -255,10 +255,6 @@ export function OfferClarityDashboard({ report, offerData, onStartOver }: Props)
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <BLSECITrendCard />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <BLSECITrendCard />
-        <BLSBenefitsCard />
-      </div>
 
       {/* Category Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
