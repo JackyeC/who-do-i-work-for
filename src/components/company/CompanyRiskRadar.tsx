@@ -114,19 +114,6 @@ export function CompanyRiskRadar({ companyId, companyName, slug, lobbyingSpend, 
     staleTime: 5 * 60 * 1000,
   });
 
-  // Fetch compensation data
-  const { data: compCount } = useQuery({
-    queryKey: ["risk-radar-comp", companyId],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("compensation_data")
-        .select("id", { count: "exact", head: true })
-        .eq("company_id", companyId);
-      return count || 0;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
   // Fetch executive departures
   const { data: execDepartures } = useQuery({
     queryKey: ["risk-radar-execs", companyId],
@@ -143,7 +130,7 @@ export function CompanyRiskRadar({ companyId, companyName, slug, lobbyingSpend, 
 
   // Build signals
   const warns = warnCount ?? 0;
-  const comp = compCount ?? 0;
+  const comp = hasCompensationData ? 1 : 0;
   const execs = execDepartures ?? 0;
   const lobby = (lobbyingSpend || 0) + (totalPacSpending || 0);
 
