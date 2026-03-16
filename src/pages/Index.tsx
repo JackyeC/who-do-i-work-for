@@ -382,14 +382,23 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-border px-6 lg:px-16 py-6 flex justify-between items-center flex-wrap gap-4">
-        <div className="font-mono text-sm tracking-wider text-muted-foreground">
-          Who Do I Work For? · by Jackye Clayton
-        </div>
-        <div className="flex gap-6">
-          <a href="/privacy" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
-          <a href="/terms" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Terms</a>
-          <a href="/methodology" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Methodology</a>
+      <footer className="border-t border-border px-6 lg:px-16 py-6">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="flex justify-between items-center flex-wrap gap-4 mb-4">
+            <div className="font-mono text-sm tracking-wider text-muted-foreground">
+              Who Do I Work For? · by Jackye Clayton
+            </div>
+            <div className="flex gap-6">
+              <a href="/privacy" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
+              <a href="/terms" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Terms</a>
+              <a href="/methodology" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Methodology</a>
+            </div>
+          </div>
+          <div className="border-t border-border/50 pt-4">
+            <p className="font-mono text-[11px] tracking-wider text-muted-foreground/60 leading-relaxed max-w-[800px]">
+              WDIWF reports publicly available data and does not provide character assessments, legal advice, or employment recommendations. All signals are sourced from public records and verified watchdog databases. Users should independently verify information before making employment decisions.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
