@@ -105,7 +105,7 @@ import { computeEvidenceQuality, sourceTypeToTier, type SourceSignal } from "@/l
 import { LayoffProbabilityCard } from "@/components/LayoffProbabilityCard";
 import { EthicsRiskCard } from "@/components/EthicsRiskCard";
 import { ExecutivePowerNetworkCard } from "@/components/ExecutivePowerNetworkCard";
-
+import { CompanyRiskRadar } from "@/components/company/CompanyRiskRadar";
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   discovered: { label: "Discovered", color: "bg-[hsl(var(--civic-yellow))]/10 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/30" },
