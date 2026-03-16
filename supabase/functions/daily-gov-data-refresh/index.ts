@@ -85,15 +85,17 @@ Deno.serve(async (req) => {
     }
 
     for (const [companyId, info] of topCompanies) {
-      for (const source of GOV_SOURCES) {
+      // For private companies, skip SEC/FEC-heavy sources and use private enrichment
+      const sourcesToRun = info.isPrivate
+        ? GOV_SOURCES.filter(s => !['sync-openfec', 'sync-congress-votes'].includes(s.name))
+        : GOV_SOURCES;
+
+      for (const source of sourcesToRun) {
         try {
           const body: Record<string, string> = {
             companyId,
             companyName: info.name,
           };
-
-          // sync-congress-votes needs candidate data from FEC first
-          // sync-openfec and sync-lobbying just need companyId/companyName
 
           const { error } = await supabase.functions.invoke(source.name, { body });
 
@@ -110,6 +112,18 @@ Deno.serve(async (req) => {
 
         // Throttle: 3s between calls to respect free API rate limits
         await new Promise(r => setTimeout(r, 3000));
+      }
+
+      // Also run private company enrichment for private companies
+      if (info.isPrivate) {
+        try {
+          await supabase.functions.invoke('enrich-private-company', {
+            body: { companyId, companyName: info.name },
+          });
+        } catch (e) {
+          console.warn(`[enrich-private-company] Error for ${info.name}:`, e);
+        }
+        await new Promise(r => setTimeout(r, 2000));
       }
     }
 
