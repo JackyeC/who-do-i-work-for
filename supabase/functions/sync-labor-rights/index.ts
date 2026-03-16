@@ -368,15 +368,21 @@ Deno.serve(async (req) => {
       const series = blsData[0];
       const latestData = series.data?.[0];
       if (latestData) {
+        const value = parseFloat(latestData.value);
+        // LNU02073395 returns union members in thousands; LNU02034093 would be the rate
+        const isRate = series.seriesID?.includes('034093');
+        const desc = isRate 
+          ? `National union membership rate: ${value}% (${latestData.year} ${latestData.periodName || ''})`
+          : `National union members: ${(value / 1000).toFixed(1)}M workers (${latestData.year} ${latestData.periodName || ''})`;
         laborSignals.push({
           company_id: companyId,
           signal_category: 'labor_rights',
           signal_type: 'union_membership_rate',
-          description: `National union membership rate: ${latestData.value}% (${latestData.year} ${latestData.periodName || ''})`,
+          description: desc,
           source_name: 'BLS Current Population Survey',
           source_url: 'https://www.bls.gov/news.release/union2.nr0.htm',
           confidence: 'direct',
-          evidence_text: `Series ${series.seriesID}: ${latestData.value}%`,
+          evidence_text: `Series ${series.seriesID}: ${latestData.value}`,
         });
         stats.bls = 1;
       }
