@@ -143,6 +143,22 @@ const PANELS: PanelConfig[] = [
     },
     metric: (c) => fmt(c.government_contracts),
   },
+  {
+    title: "Highest Risk",
+    icon: RadioTower,
+    queryKey: "panel-risk",
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("companies")
+        .select("id, name, slug, civic_footprint_score, career_intelligence_score, lobbying_spend, government_contracts, is_startup, category_tags, industry")
+        .eq("record_status", "published")
+        .or("lobbying_spend.gt.1000000,total_pac_spending.gt.500000")
+        .order("lobbying_spend", { ascending: false })
+        .limit(10);
+      return (data as any[] || []) as PanelCompany[];
+    },
+    metric: (c) => fmt(c.lobbying_spend),
+  },
 ];
 
 function IntelligencePanel({ panel }: { panel: PanelConfig }) {
