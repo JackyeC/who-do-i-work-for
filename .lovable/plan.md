@@ -1,43 +1,49 @@
 
 
-## Audit: Evidence Tier Architecture — Already Built
+## Upgrade Employer Post-Payment Onboarding Flow
 
-After reviewing the codebase, **all three architectural concerns raised are already implemented**. Here's the mapping:
+### What Exists Now
 
-### 1. Evidence Tier System ✅ Already Built
+The current `EmployerVerificationPending.tsx` page has:
+- 3 steps: Payment Received, Upload Docs, Jackye Review
+- A basic file upload form
+- A 3-point transparency audit reference
+- References $499/yr (needs updating to $599/yr)
+- **Missing**: Identity verification step, Connection Chain review step, "Schedule Jackye Audit" call booking, job credit status badge, Founding Partner branding/tone
 
-`src/lib/evidenceQualityScore.ts` implements a **5-tier source classification**:
+### What Needs to Change
 
-| Tier | Label | Weight | Examples |
+Upgrade `EmployerVerificationPending.tsx` into the full "Founding Partner Success & Onboarding" experience:
+
+#### 1. Rebrand the Page Header
+- Change title to: "Welcome, Founding Partner. You are officially leading the movement for workforce transparency."
+- Update price reference from $499/yr to $599/yr
+- Add the Gold Shield icon prominently
+
+#### 2. Expand to 4-Step Audit Checklist
+| Step | Label | Description | Interaction |
 |---|---|---|---|
-| T1 | Government Record | 1.0 | SEC, FEC, LDA, courts, EPA, OSHA |
-| T2 | Company Disclosure | 0.8 | Proxy filings, annual reports, IR |
-| T3 | Major Reporting | 0.6 | ProPublica, Reuters, investigative journalism |
-| T4 | Commercial Enrichment | 0.4 | Crunchbase, People Data Labs |
-| T5 | Unverified | 0.1 | Forums, anonymous reviews |
+| 1 | Verify Identity | Confirm account is linked to a corporate email domain | Auto-check against user email |
+| 2 | Submit Disclosure Docs | Upload DEI report, ESG statement, or Employee Handbook | Existing file upload (keep) |
+| 3 | Review Connection Chain | Review current public-data findings for your company, prepare Official Response | Link to `/follow-the-money` or company profile |
+| 4 | Schedule Jackye Audit | Book a 15-min intro call to finalize Certification | External Calendly/booking link button |
 
-The user's 3-tier model maps cleanly: their Tier 1 = our T1, Tier 2 = our T2+T3, Tier 3 = our T4+T5. Our model is actually *more granular*.
+#### 3. Add Job Credit Status Badge
+- Display: "5 Value-Aligned Job Credits Active" badge card below the checklist
+- Pull from `employer_profiles.job_credits` if available, otherwise show static "5"
 
-**UI components using this**: `SourceProvenanceCard` (expandable with tier badge, verification status, dates, entity match, confidence %), `EvidenceQualityBadge` (aggregate score with breakdown tooltip), `ConfidenceBadge` (High/Medium/Low).
+#### 4. Add Timeline Notice
+- Card at bottom: "Your Gold Shield and Job Posts will go live globally within 24 hours of document submission and Jackye's manual review."
 
-### 2. Data Freshness ✅ Already Built
+#### 5. Update Pricing Reference
+- Fix $499 to $599 throughout the page
 
-- `DataFreshnessCard` — shows per-section freshness with staleness detection (hours/days/weeks labels), color-coded badges, and a "Refresh All" button
-- `DataFreshnessTag` — inline freshness indicators with presets for Leadership, Layoff, Lobbying, Compensation data
-- `recencyWeight()` function in the scoring engine penalizes stale data (30d=1.0, 90d=0.7, 180d=0.5, older=0.4)
+### Files Changed
 
-### 3. Corporate Family / Entity Scope ✅ Already Built
+| File | Change |
+|---|---|
+| `src/pages/EmployerVerificationPending.tsx` | Full rewrite of content, 4-step checklist, job credit badge, timeline, branding |
 
-- `CorporateOwnershipCard` — shows parent company, subsidiaries, sister brands
-- `parent_company` field on company records, displayed in profile header with "Owned by X" badge
-- Influence Graph maps `parent_company` as a distinct node type
-- Private Company Intelligence Mode explicitly notes parent relationships
-
-### Assessment: No Code Changes Needed
-
-The platform already implements a **more sophisticated version** of every architecture point raised. The 5-tier model with weighted scoring, recency decay, cross-verification bonuses, and entity matching exceeds the 3-tier suggestion.
-
-The "golden rule" (never show a claim without source, date, confidence level, entity scope) is enforced by the `SourceProvenanceCard` component and the `EvidenceQualityBadge` system.
-
-**This is validation that the architecture is sound** — no changes required.
+### No Database Changes Required
+The existing `employer_profiles` table and `career_docs` storage bucket already support this flow.
 
