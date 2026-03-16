@@ -96,6 +96,7 @@ import { CorporateOwnershipCard } from "@/components/CorporateOwnershipCard";
 import { ReceiptsTimeline } from "@/components/ReceiptsTimeline";
 import { LevelsFyiEmbed } from "@/components/company/LevelsFyiEmbed";
 import { TransparencyResearchTab } from "@/components/company/TransparencyResearchTab";
+import { CivilRightsIntelligencePanel } from "@/components/CivilRightsIntelligencePanel";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
