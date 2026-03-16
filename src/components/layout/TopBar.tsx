@@ -51,6 +51,7 @@ export const MAIN_SECTIONS = [
       { label: "Follow the Money", path: "/follow-the-money" },
       { label: "Compare Companies", path: "/compare" },
       { label: "All Tools →", path: "/site-map" },
+      { label: "Methodology", path: "/methodology" },
     ],
   },
   {
