@@ -101,6 +101,9 @@ import { AlignmentSignalsPanel } from "@/components/AlignmentSignalsPanel";
 import { EntityResolutionReport } from "@/components/EntityResolutionReport";
 import { EvidenceQualityBadge } from "@/components/EvidenceQualityBadge";
 import { computeEvidenceQuality, sourceTypeToTier, type SourceSignal } from "@/lib/evidenceQualityScore";
+import { LayoffProbabilityCard } from "@/components/LayoffProbabilityCard";
+import { EthicsRiskCard } from "@/components/EthicsRiskCard";
+import { ExecutivePowerNetworkCard } from "@/components/ExecutivePowerNetworkCard";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
