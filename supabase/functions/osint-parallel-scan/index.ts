@@ -68,6 +68,7 @@ Deno.serve(async (req) => {
       'sync-labor-rights',
       'sync-workplace-enforcement',
       'enrich-private-company',
+      'detect-contradictions',
     ];
 
     // Route to the appropriate source list
