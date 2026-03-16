@@ -97,6 +97,7 @@ import { ReceiptsTimeline } from "@/components/ReceiptsTimeline";
 import { LevelsFyiEmbed } from "@/components/company/LevelsFyiEmbed";
 import { TransparencyResearchTab } from "@/components/company/TransparencyResearchTab";
 import { CivilRightsIntelligencePanel } from "@/components/CivilRightsIntelligencePanel";
+import { AlignmentSignalsPanel } from "@/components/AlignmentSignalsPanel";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -1161,6 +1162,10 @@ export default function CompanyProfile() {
                       }}
                       onCandidateClick={handleCandidateClick}
                     />
+                    {/* Alignment Signals — Contradiction Heatmap */}
+                    {dbCompanyId && (
+                      <AlignmentSignalsPanel companyId={dbCompanyId} companyName={name} />
+                    )}
                     {/* Civil Rights Intelligence Panel */}
                     {dbCompanyId && (
                       <CivilRightsIntelligencePanel companyId={dbCompanyId} companyName={name} />
