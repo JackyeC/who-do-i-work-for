@@ -29,7 +29,8 @@ const stagger = {
 
 export default function Browse() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"name" | "score">("score");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<"name" | "score" | "cis">("score");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDiscovering, setIsDiscovering] = useState(false);
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function Browse() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("companies")
-        .select("id, name, slug, industry, state, civic_footprint_score, total_pac_spending, lobbying_spend, revenue, employee_count, description")
+        .select("id, name, slug, industry, state, civic_footprint_score, total_pac_spending, lobbying_spend, revenue, employee_count, description, is_startup, category_tags, career_intelligence_score")
         .order("civic_footprint_score", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -48,13 +49,15 @@ export default function Browse() {
   });
 
   const allCompanies = useMemo(() => {
-    const dbList = (dbCompanies || []).map((c) => ({
+    const dbList = (dbCompanies || []).map((c: any) => ({
       id: c.slug, dbId: c.id, name: c.name, slug: c.slug, industry: c.industry, state: c.state,
       civicFootprintScore: c.civic_footprint_score, totalPacSpending: c.total_pac_spending,
       lobbyingSpend: c.lobbying_spend, revenue: c.revenue, employeeCount: c.employee_count,
       description: c.description, isDbOnly: true,
+      isStartup: c.is_startup, categoryTags: c.category_tags || [],
+      careerIntelligenceScore: c.career_intelligence_score,
     }));
-    const dbSlugs = new Set(dbList.map((c) => c.slug));
+    const dbSlugs = new Set(dbList.map((c: any) => c.slug));
     const sampleExtras = sampleCompanies
       .filter((c) => !dbSlugs.has(c.id))
       .map((c) => ({
@@ -62,21 +65,36 @@ export default function Browse() {
         civicFootprintScore: c.civicFootprintScore, totalPacSpending: c.totalPacSpending,
         lobbyingSpend: c.lobbyingSpend, revenue: c.revenue, employeeCount: c.employeeCount,
         description: c.description, isDbOnly: false,
+        isStartup: false, categoryTags: [] as string[],
+        careerIntelligenceScore: null as number | null,
       }));
     return [...dbList, ...sampleExtras];
   }, [dbCompanies]);
 
   const allIndustries = useMemo(() => [...new Set(allCompanies.map((c) => c.industry))].sort(), [allCompanies]);
 
+  const CATEGORY_FILTERS = ["HR Tech", "Big Tech", "Finance", "Defense", "Government Contractors", "Startups", "Healthcare", "Energy", "Retail"];
+
   const filtered = useMemo(() => {
     let list = allCompanies;
     if (selectedIndustry !== "all") list = list.filter((c) => c.industry === selectedIndustry);
+    if (selectedCategory !== "all") {
+      if (selectedCategory === "Startups") {
+        list = list.filter((c) => c.isStartup);
+      } else {
+        list = list.filter((c) => c.categoryTags?.includes(selectedCategory));
+      }
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter((c) => c.name.toLowerCase().includes(q) || c.industry.toLowerCase().includes(q) || c.state.toLowerCase().includes(q) || (c.description || "").toLowerCase().includes(q));
     }
-    return [...list].sort((a, b) => sortBy === "score" ? b.civicFootprintScore - a.civicFootprintScore : a.name.localeCompare(b.name));
-  }, [allCompanies, selectedIndustry, sortBy, searchQuery]);
+    return [...list].sort((a, b) => {
+      if (sortBy === "cis") return (b.careerIntelligenceScore ?? 0) - (a.careerIntelligenceScore ?? 0);
+      if (sortBy === "score") return b.civicFootprintScore - a.civicFootprintScore;
+      return a.name.localeCompare(b.name);
+    });
+  }, [allCompanies, selectedIndustry, selectedCategory, sortBy, searchQuery]);
 
   return (
     <div className="flex-1">
@@ -150,7 +168,16 @@ export default function Browse() {
               }`}
             >
               <TrendingUp className="w-3 h-3" />
-              Score
+              CFS
+            </button>
+            <button
+              onClick={() => setSortBy("cis")}
+              className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-md transition-all ${
+                sortBy === "cis" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <TrendingUp className="w-3 h-3" />
+              CIS
             </button>
             <button
               onClick={() => setSortBy("name")}
@@ -162,6 +189,29 @@ export default function Browse() {
               A–Z
             </button>
           </div>
+        </div>
+
+        {/* Category filter chips */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          <button
+            onClick={() => setSelectedCategory("all")}
+            className={`text-xs font-mono tracking-wider uppercase px-2.5 py-1 transition-all ${
+              selectedCategory === "all" ? "bg-primary text-primary-foreground" : "bg-muted/40 text-muted-foreground hover:text-foreground border border-border/40"
+            }`}
+          >
+            All
+          </button>
+          {CATEGORY_FILTERS.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(selectedCategory === cat ? "all" : cat)}
+              className={`text-xs font-mono tracking-wider uppercase px-2.5 py-1 transition-all ${
+                selectedCategory === cat ? "bg-primary text-primary-foreground" : "bg-muted/40 text-muted-foreground hover:text-foreground border border-border/40"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
         {/* Results count */}

@@ -8,6 +8,7 @@ import { HeroSearch } from "@/components/landing/HeroSearch";
 // Lazy-load below-fold components
 const SocialProofStrip = lazy(() => import("@/components/landing/SocialProofStrip").then(m => ({ default: m.SocialProofStrip })));
 const MiniReportTeaser = lazy(() => import("@/components/landing/MiniReportTeaser").then(m => ({ default: m.MiniReportTeaser })));
+const IntelligenceDashboard = lazy(() => import("@/components/landing/IntelligenceDashboard").then(m => ({ default: m.IntelligenceDashboard })));
 const FAQSection = lazy(() => import("@/components/landing/FAQSection").then(m => ({ default: m.FAQSection })));
 const EmailCapture = lazy(() => import("@/components/landing/EmailCapture").then(m => ({ default: m.EmailCapture })));
 const ExitIntentCapture = lazy(() => import("@/components/ExitIntentCapture").then(m => ({ default: m.ExitIntentCapture })));
@@ -256,6 +257,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </div>
         </div>
       </section>
+
+      {/* ── Intelligence Dashboard ── */}
+      <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
+        <IntelligenceDashboard />
+      </Suspense>
 
       {/* ── Below-fold sections: lazy-loaded ── */}
       <Suspense fallback={null}>
