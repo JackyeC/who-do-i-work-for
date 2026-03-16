@@ -436,10 +436,11 @@ Deno.serve(async (req) => {
     // Record scan
     await supabase.from('company_signal_scans').insert({
       company_id: companyId,
-      scan_type: 'labor_rights',
-      status: 'completed',
-      signals_found: laborSignals.length,
-      metadata: stats,
+      signal_category: 'labor_rights',
+      signal_type: 'full_scan',
+      confidence_level: 'high',
+      signal_value: `OSHA:${stats.osha} WHD:${stats.whd} NLRB:${stats.nlrb} BLS:${stats.bls}`,
+      source_url: 'https://enforcedata.dol.gov',
     }).then(({ error }) => {
       if (error) console.warn('[sync-labor-rights] scan record error:', error);
     });
