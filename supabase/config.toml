@@ -116,3 +116,6 @@ verify_jwt = false
 
 [functions.calculate-alignment-scores]
 verify_jwt = false
+
+[functions.seed-company-intelligence]
+verify_jwt = false
