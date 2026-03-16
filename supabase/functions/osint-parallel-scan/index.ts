@@ -54,6 +54,7 @@ Deno.serve(async (req) => {
       'sync-federal-contracts',
       'sync-insider-trades',
       'sync-sec-edgar',
+      'detect-contradictions',
     ];
 
     // Private company sources (labor/regulatory/enforcement heavy)
