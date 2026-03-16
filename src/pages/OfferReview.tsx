@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OfferLetterUpload } from "@/components/offer-review/OfferLetterUpload";
 import { OfferReviewResults } from "@/components/offer-review/OfferReviewResults";
 import { PremiumGate } from "@/components/PremiumGate";
@@ -168,11 +169,13 @@ export default function OfferReview() {
                 )}
 
                 {activeReview && (
-                  <OfferReviewResults
-                    review={activeReview}
-                    onDelete={() => handleDelete(activeReview.id)}
-                    onRerun={() => handleRerun(activeReview.id)}
-                  />
+                  <ErrorBoundary>
+                    <OfferReviewResults
+                      review={activeReview}
+                      onDelete={() => handleDelete(activeReview.id)}
+                      onRerun={() => handleRerun(activeReview.id)}
+                    />
+                  </ErrorBoundary>
                 )}
               </div>
             )}

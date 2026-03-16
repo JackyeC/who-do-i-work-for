@@ -56,6 +56,7 @@ export function OfferLetterUpload({ companyId, companyName, onReviewCreated }: O
     }
 
     setUploading(true);
+    console.log("[OfferLetterUpload] Starting upload", { mode, fileSize: selectedFile?.size, textLength: pastedText.length });
     try {
       let filePath: string | null = null;
       let originalFilename: string | null = null;
@@ -104,7 +105,7 @@ export function OfferLetterUpload({ companyId, companyName, onReviewCreated }: O
       onReviewCreated(reviewId);
       toast({ title: "Upload complete", description: "Your offer letter is being analyzed privately." });
     } catch (e: any) {
-      console.error(e);
+      console.error("[OfferLetterUpload] Upload error:", e, JSON.stringify(e));
       toast({ title: "Upload failed", description: e.message, variant: "destructive" });
     } finally {
       setUploading(false);
