@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Newspaper, AlertTriangle, TrendingUp, TrendingDown, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MediaBiasIndicator } from "@/components/MediaBiasIndicator";
+import { CoverageBalanceChart } from "@/components/CoverageBalanceChart";
 
 interface Props {
   companyId: string;
@@ -93,6 +95,7 @@ export function NewsIntelligenceCard({ companyId, companyName }: Props) {
                         {s.controversy_type || "controversy"}
                       </Badge>
                     )}
+                    <MediaBiasIndicator sourceUrl={s.source_url} sourceName={s.source_name} />
                   </div>
                 </div>
                 {s.source_url && (
@@ -105,8 +108,11 @@ export function NewsIntelligenceCard({ companyId, companyName }: Props) {
           ))}
         </div>
 
+        {/* Coverage Balance */}
+        <CoverageBalanceChart sourceUrls={signals.map((s: any) => s.source_url).filter(Boolean)} />
+
         <p className="text-[10px] text-muted-foreground text-center">
-          Source: GDELT Global News Database • Sentiment analysis via GDELT tone scoring
+          Source: GDELT Global News Database • Sentiment analysis via GDELT tone scoring • Bias ratings via AllSides / Ad Fontes Media
         </p>
       </CardContent>
     </Card>

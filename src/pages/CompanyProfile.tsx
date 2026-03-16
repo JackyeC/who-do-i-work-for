@@ -98,6 +98,9 @@ import { LevelsFyiEmbed } from "@/components/company/LevelsFyiEmbed";
 import { TransparencyResearchTab } from "@/components/company/TransparencyResearchTab";
 import { CivilRightsIntelligencePanel } from "@/components/CivilRightsIntelligencePanel";
 import { AlignmentSignalsPanel } from "@/components/AlignmentSignalsPanel";
+import { EntityResolutionReport } from "@/components/EntityResolutionReport";
+import { EvidenceQualityBadge } from "@/components/EvidenceQualityBadge";
+import { computeEvidenceQuality, sourceTypeToTier, type SourceSignal } from "@/lib/evidenceQualityScore";
 
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -313,6 +316,27 @@ export default function CompanyProfile() {
     queryFn: async () => { const { data } = await (supabase as any).from("board_members").select("id, is_independent").eq("company_id", dbCompanyId!); return data || []; },
     enabled: !!dbCompanyId,
   });
+
+  // Signal sources for evidence quality
+  const { data: signalSources } = useQuery({
+    queryKey: ["signal-sources", dbCompanyId],
+    queryFn: async () => {
+      const { data } = await (supabase as any).from("signal_sources").select("source_type, date_retrieved, match_confidence, verification_status").eq("company_id", dbCompanyId!);
+      return data || [];
+    },
+    enabled: !!dbCompanyId,
+  });
+
+  const evidenceQuality = useMemo(() => {
+    if (!signalSources?.length) return null;
+    const signals: SourceSignal[] = signalSources.map((s: any) => ({
+      tier: sourceTypeToTier(s.source_type),
+      dateRetrieved: s.date_retrieved,
+      matchConfidence: s.match_confidence,
+      verificationStatus: s.verification_status,
+    }));
+    return computeEvidenceQuality(signals);
+  }, [signalSources]);
 
   const dbCompanyIdMap: Record<string, string> = {
     "google": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
@@ -534,7 +558,15 @@ export default function CompanyProfile() {
                   </div>
 
                   {/* Score badges */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {evidenceQuality && (
+                      <EvidenceQualityBadge
+                        score={evidenceQuality.score}
+                        primarySourceCoverage={evidenceQuality.primarySourceCoverage}
+                        crossVerifiedCount={evidenceQuality.crossVerifiedCount}
+                        conflictsDetected={evidenceQuality.conflictsDetected}
+                      />
+                    )}
                     <CivicFootprintBadge score={civicScore} size="sm" />
                     {transparencyScore > 0 && (
                       <Badge variant="outline" className="text-xs gap-1">
@@ -543,6 +575,17 @@ export default function CompanyProfile() {
                       </Badge>
                     )}
                   </div>
+                  {/* Entity Resolution Report */}
+                  {dbCompanyId && (
+                    <EntityResolutionReport
+                      companyId={dbCompanyId}
+                      companyName={name}
+                      parentCompany={(dbCompany as any)?.parent_company}
+                      secCik={(dbCompany as any)?.sec_cik}
+                      ticker={(dbCompany as any)?.ticker}
+                      className="mt-2"
+                    />
+                  )}
                 </div>
               </div>
             </CardContent>
