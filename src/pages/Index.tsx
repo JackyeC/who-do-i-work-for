@@ -1,7 +1,7 @@
 import { useState, lazy, Suspense, forwardRef } from "react";
 import jackyeHeadshotSm from "@/assets/jackye-headshot-sm.webp";
 import { useNavigate } from "react-router-dom";
-import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap, Briefcase } from "lucide-react";
+import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap, Briefcase, Search, BarChart3, Eye, Users, DollarSign, Scale, Cpu, CheckCircle2 } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { HeroSearch } from "@/components/landing/HeroSearch";
 
@@ -81,7 +81,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             <span className="text-primary">before you say yes.</span>
           </h1>
           <p className="text-base lg:text-lg text-muted-foreground mb-10 max-w-[480px] leading-relaxed">
-            The background check just flipped. I've been blessed to be in the rooms where it happens — now I'm taking everything I've learned and putting it into your hands.
+            Independent, public-data-based insights on employers' power, politics, people practices, and worker experience. Not another background check on you — this time, it's about <em>them</em>.
           </p>
           <HeroSearch />
           <div className="mt-6">
@@ -142,30 +142,117 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </div>
 
-      {/* ── Core Tools — static grid, no SectionReveal ── */}
+      {/* ── How It Works — 1-2-3 Flow ── */}
       <section className="px-6 lg:px-16 py-24 lg:py-32 max-w-[960px] mx-auto w-full">
-        <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">Core Intelligence</div>
-        <h2 className="text-2xl lg:text-3xl mb-4 text-foreground">
-          Four tools. One truth. Zero surprises.
+        <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">How It Works</div>
+        <h2 className="text-2xl lg:text-3xl mb-14 text-foreground">
+          Three steps. Full clarity.
         </h2>
-        <p className="text-muted-foreground text-base mb-14 max-w-[480px]">
-          Every tool connects to the same intelligence engine. Same data, same sources, same rigor.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border">
-          {tools.map((t) => (
-            <div
-              key={t.title}
-              className="bg-card p-8 lg:p-10 hover:bg-muted/30 transition-colors cursor-pointer group"
-              onClick={() => navigate(t.href)}
-            >
-              <t.icon className="w-5 h-5 text-primary mb-4" strokeWidth={1.5} />
-              <div className="font-serif text-lg mb-2 text-foreground">{t.title}</div>
-              <div className="text-sm text-muted-foreground leading-relaxed mb-5">{t.desc}</div>
-              <div className="flex items-center gap-1.5 font-mono text-sm tracking-wider uppercase text-primary group-hover:gap-2.5 transition-all">
-                {t.cta} <ArrowRight className="w-3.5 h-3.5" />
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
+          {[
+            { step: "01", icon: Search, title: "Search a company", desc: "Type any employer you're considering — or dreaming about. We'll pull the intelligence." },
+            { step: "02", icon: BarChart3, title: "Get a Company Intelligence Report", desc: "Political spend, lawsuits, sentiment, diversity indicators, benefits, hiring tech — all sourced from public records." },
+            { step: "03", icon: Eye, title: "Decide with eyes open", desc: "Ask better interview questions, negotiate smarter, or walk away. The intelligence is yours." },
+          ].map(s => (
+            <div key={s.step} className="bg-card p-8 lg:p-10">
+              <div className="font-mono text-sm text-primary/50 mb-4">{s.step}</div>
+              <s.icon className="w-5 h-5 text-primary mb-4" strokeWidth={1.5} />
+              <div className="font-serif text-lg mb-2 text-foreground">{s.title}</div>
+              <div className="text-sm text-muted-foreground leading-relaxed">{s.desc}</div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── Five Pillars of Intelligence ── */}
+      <section className="bg-card border-y border-border px-6 lg:px-16 py-24 lg:py-32">
+        <div className="max-w-[960px] mx-auto">
+          <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">What You'll See</div>
+          <h2 className="text-2xl lg:text-3xl mb-4 text-foreground">
+            Five pillars. One complete picture.
+          </h2>
+          <p className="text-muted-foreground text-base mb-14 max-w-[520px]">
+            Every company report is organized around the signals that actually matter for your career decision.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px bg-border border border-border">
+            {[
+              { icon: Scale, title: "Power & Influence", signals: ["Political contributions", "Lobbying spend", "Board ties & interlocks"] },
+              { icon: Users, title: "People & Experience", signals: ["Turnover signals", "Sentiment analysis", "Lawsuits & complaints"] },
+              { icon: DollarSign, title: "Pay & Benefits", signals: ["Comp benchmarks", "Pay equity signals", "Benefits data"] },
+              { icon: Shield, title: "Practice & Policy", signals: ["DEI actions vs. words", "ESG commitments", "Public stances"] },
+              { icon: Cpu, title: "Process & Tech", signals: ["ATS detection", "AI hiring tools", "Surveillance signals"] },
+            ].map(p => (
+              <div key={p.title} className="bg-card p-6">
+                <p.icon className="w-5 h-5 text-primary mb-3" strokeWidth={1.5} />
+                <div className="font-mono text-sm tracking-wider uppercase text-foreground mb-3">{p.title}</div>
+                <ul className="space-y-1.5">
+                  {p.signals.map(s => (
+                    <li key={s} className="text-sm text-muted-foreground flex items-start gap-1.5">
+                      <span className="w-1 h-1 bg-primary/50 rounded-full mt-1.5 shrink-0" />
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Use This To — Decision Moments ── */}
+      <section className="px-6 lg:px-16 py-24 lg:py-32 max-w-[960px] mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+          <div>
+            <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">Real Decisions</div>
+            <h2 className="text-2xl lg:text-3xl mb-4 text-foreground">
+              Use this before the moment that matters.
+            </h2>
+            <p className="text-muted-foreground text-base leading-relaxed">
+              Before you accept an offer. Before you move across the country. Before you stay at a company that keeps making the news.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3">
+            {[
+              "Write smarter questions for your interviews.",
+              "Spot red flags early — before the ink is dry.",
+              "Compare multiple offers beyond salary.",
+              "Gather receipts before you refer your community.",
+            ].map(item => (
+              <div key={item} className="flex items-start gap-3 p-4 border border-border bg-card">
+                <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" strokeWidth={1.5} />
+                <span className="text-sm text-foreground leading-relaxed">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Core Tools ── */}
+      <section className="bg-card border-y border-border px-6 lg:px-16 py-24 lg:py-32">
+        <div className="max-w-[960px] mx-auto">
+          <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">Core Intelligence</div>
+          <h2 className="text-2xl lg:text-3xl mb-4 text-foreground">
+            Four tools. One truth. Zero surprises.
+          </h2>
+          <p className="text-muted-foreground text-base mb-14 max-w-[480px]">
+            Every tool connects to the same intelligence engine. Same data, same sources, same rigor.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border">
+            {tools.map((t) => (
+              <div
+                key={t.title}
+                className="bg-background p-8 lg:p-10 hover:bg-muted/30 transition-colors cursor-pointer group"
+                onClick={() => navigate(t.href)}
+              >
+                <t.icon className="w-5 h-5 text-primary mb-4" strokeWidth={1.5} />
+                <div className="font-serif text-lg mb-2 text-foreground">{t.title}</div>
+                <div className="text-sm text-muted-foreground leading-relaxed mb-5">{t.desc}</div>
+                <div className="flex items-center gap-1.5 font-mono text-sm tracking-wider uppercase text-primary group-hover:gap-2.5 transition-all">
+                  {t.cta} <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -215,9 +302,12 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ── Audiences ── */}
       <section className="px-6 lg:px-16 py-24 lg:py-32 max-w-[960px] mx-auto w-full">
         <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">Who It's For</div>
-        <h2 className="text-2xl lg:text-3xl mb-10 text-foreground">
-          One engine. Five lenses. Every answer.
+        <h2 className="text-2xl lg:text-3xl mb-2 text-foreground">
+          Built for people who care about where people land.
         </h2>
+        <p className="text-sm text-muted-foreground mb-10 max-w-[520px]">
+          Not another background check on you — this time, it's about them.
+        </p>
 
         {/* Mobile: simplified tabs without heavy Radix */}
         <div className="lg:hidden">
