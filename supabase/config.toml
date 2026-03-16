@@ -110,3 +110,9 @@ verify_jwt = false
 
 [functions.detect-board-interlocks]
 verify_jwt = false
+
+[functions.extract-corporate-claims]
+verify_jwt = false
+
+[functions.calculate-alignment-scores]
+verify_jwt = false
