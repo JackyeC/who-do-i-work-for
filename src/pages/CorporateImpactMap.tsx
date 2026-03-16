@@ -93,30 +93,30 @@ export default function CorporateImpactMap() {
         // Fetch issue_signals (labor + immigration)
         const { data: issueSignals } = await supabase
           .from("issue_signals")
-          .select("issue_category, signal_type, title, source_name, confidence")
-          .eq("company_id", company.id)
-          .limit(50);
+          .select("issue_category, signal_type, description, source_dataset, confidence_score")
+          .eq("entity_id", company.id)
+          .limit(50) as { data: any[] | null };
 
         // Fetch climate_signals
         const { data: climateSignals } = await supabase
           .from("climate_signals")
           .select("signal_type, description, source_name, confidence")
           .eq("company_id", company.id)
-          .limit(20);
+          .limit(20) as { data: any[] | null };
 
         // Fetch gun_policy_signals
         const { data: gunSignals } = await supabase
           .from("gun_policy_signals")
           .select("signal_type, description, source_name, confidence")
           .eq("company_id", company.id)
-          .limit(20);
+          .limit(20) as { data: any[] | null };
 
         // Fetch civil_rights_signals
         const { data: civilRightsSignals } = await supabase
           .from("civil_rights_signals")
           .select("signal_type, description, source_name, confidence")
           .eq("company_id", company.id)
-          .limit(20);
+          .limit(20) as { data: any[] | null };
 
         // Build summaries per category
         for (const cat of IMPACT_CATEGORIES) {
@@ -125,15 +125,15 @@ export default function CorporateImpactMap() {
           let sources = new Set<string>();
 
           if (cat.key === "labor_rights") {
-            const labor = (issueSignals || []).filter(s => s.issue_category === "labor");
+            const labor = (issueSignals || []).filter((s: any) => s.issue_category === "labor");
             count = labor.length;
-            topSignals = labor.slice(0, 3).map(s => ({ type: s.signal_type, description: s.title, source: s.source_name, confidence: s.confidence }));
-            labor.forEach(s => sources.add(s.source_name || ""));
+            topSignals = labor.slice(0, 3).map((s: any) => ({ type: s.signal_type, description: s.description, source: s.source_dataset, confidence: s.confidence_score }));
+            labor.forEach((s: any) => sources.add(s.source_dataset || ""));
           } else if (cat.key === "immigration") {
-            const imm = (issueSignals || []).filter(s => s.issue_category === "immigration");
+            const imm = (issueSignals || []).filter((s: any) => s.issue_category === "immigration");
             count = imm.length;
-            topSignals = imm.slice(0, 3).map(s => ({ type: s.signal_type, description: s.title, source: s.source_name, confidence: s.confidence }));
-            imm.forEach(s => sources.add(s.source_name || ""));
+            topSignals = imm.slice(0, 3).map((s: any) => ({ type: s.signal_type, description: s.description, source: s.source_dataset, confidence: s.confidence_score }));
+            imm.forEach((s: any) => sources.add(s.source_dataset || ""));
           } else if (cat.key === "climate") {
             count = (climateSignals || []).length;
             topSignals = (climateSignals || []).slice(0, 3).map(s => ({ type: s.signal_type, description: s.description, source: s.source_name, confidence: s.confidence }));
