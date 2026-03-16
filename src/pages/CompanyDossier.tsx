@@ -253,6 +253,11 @@ export default function CompanyDossier() {
           governmentContracts={governmentContractSignals}
           policyLinks={[]}
         />
+        {companyId && (
+          <div className="mt-6">
+            <HighRiskConnectionCard companyId={companyId} companyName={company.name} />
+          </div>
+        )}
       </DossierLayer>
 
       <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
