@@ -1162,6 +1162,10 @@ export default function CompanyProfile() {
                       }}
                       onCandidateClick={handleCandidateClick}
                     />
+                    {/* Alignment Signals — Contradiction Heatmap */}
+                    {dbCompanyId && (
+                      <AlignmentSignalsPanel companyId={dbCompanyId} companyName={name} />
+                    )}
                     {/* Civil Rights Intelligence Panel */}
                     {dbCompanyId && (
                       <CivilRightsIntelligencePanel companyId={dbCompanyId} companyName={name} />
