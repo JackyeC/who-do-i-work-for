@@ -77,11 +77,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             Career Intelligence Platform
           </div>
           <h1 className="text-3xl lg:text-[clamp(2.4rem,5vw,3.6rem)] leading-tight mb-6 text-foreground">
-            You vetted the candidate.{" "}
-            <span className="text-primary">Who vetted the employer?</span>
+            See who you really work for{" "}
+            <span className="text-primary">before you say yes.</span>
           </h1>
           <p className="text-base lg:text-lg text-muted-foreground mb-10 max-w-[480px] leading-relaxed">
-            Surface compensation traps, non-compete risks, and political spending behind any offer. FEC · SEC · BLS sourced.
+            The background check just flipped. I've been blessed to be in the rooms where it happens — now I'm taking everything I've learned and putting it into your hands.
           </p>
           <HeroSearch />
           <div className="mt-6">
