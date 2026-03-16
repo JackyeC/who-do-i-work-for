@@ -302,9 +302,12 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ── Audiences ── */}
       <section className="px-6 lg:px-16 py-24 lg:py-32 max-w-[960px] mx-auto w-full">
         <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">Who It's For</div>
-        <h2 className="text-2xl lg:text-3xl mb-10 text-foreground">
-          One engine. Five lenses. Every answer.
+        <h2 className="text-2xl lg:text-3xl mb-2 text-foreground">
+          Built for people who care about where people land.
         </h2>
+        <p className="text-sm text-muted-foreground mb-10 max-w-[520px]">
+          Not another background check on you — this time, it's about them.
+        </p>
 
         {/* Mobile: simplified tabs without heavy Radix */}
         <div className="lg:hidden">
