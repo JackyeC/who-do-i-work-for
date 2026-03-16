@@ -12,6 +12,7 @@ const FAQSection = lazy(() => import("@/components/landing/FAQSection").then(m =
 const EmailCapture = lazy(() => import("@/components/landing/EmailCapture").then(m => ({ default: m.EmailCapture })));
 const ExitIntentCapture = lazy(() => import("@/components/ExitIntentCapture").then(m => ({ default: m.ExitIntentCapture })));
 const RivalryBattleCard = lazy(() => import("@/components/RivalryBattleCard").then(m => ({ default: m.RivalryBattleCard })));
+const DreamJobWidget = lazy(() => import("@/components/community/DreamJobWidget").then(m => ({ default: m.DreamJobWidget })));
 
 // Lazy-load framer-motion SectionReveal — not needed for hero
 const SectionReveal = lazy(() => import("@/components/landing/SectionReveal").then(m => ({ default: m.SectionReveal })));
