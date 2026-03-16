@@ -514,6 +514,12 @@ export default function CompanyProfile() {
                     {(dbCompany as any)?.employee_count && <Badge variant="secondary" className="text-xs">{(dbCompany as any).employee_count} employees</Badge>}
                     {(dbCompany as any)?.revenue && <Badge variant="secondary" className="text-xs">{(dbCompany as any).revenue}</Badge>}
                     {(dbCompany as any)?.ticker && <Badge variant="outline" className="font-mono text-[10px]">{(dbCompany as any).ticker}</Badge>}
+                    {dbCompany?.is_publicly_traded === false && (
+                      <Badge variant="outline" className="text-xs gap-1 border-amber-500/30 bg-amber-500/5 text-amber-600 dark:text-amber-400">
+                        <EyeOff className="w-3 h-3" />
+                        Private Company
+                      </Badge>
+                    )}
                   </div>
 
                   {/* Score badges */}
