@@ -28,7 +28,7 @@ const STATIC_COMPANY_COUNT = 850;
 const tools = [
   { icon: Shield, title: "Company Intelligence", desc: "Workforce signals, compensation patterns, political influence — one report.", cta: "Run a scan", href: "/browse" },
   { icon: FileText, title: "Offer Intelligence", desc: "Benchmark salary, flag non-competes, get negotiation language.", cta: "Analyze an offer", href: "/check" },
-  { icon: MessageSquare, title: "Ask Jackye", desc: "20+ years of HR strategy, on demand. Real advice, not platitudes.", cta: "Ask Jackye", href: "/ask-jackye" },
+  { icon: MessageSquare, title: "Intelligence Advisor", desc: "20+ years of HR strategy, on demand. Real advice, not platitudes.", cta: "Ask the Advisor", href: "/ask-jackye" },
   { icon: Compass, title: "Career Intelligence", desc: "Map skills to demand, align values to employers, build a plan.", cta: "Discover paths", href: "/career-intelligence" },
 ];
 
