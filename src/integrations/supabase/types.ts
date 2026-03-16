@@ -1364,6 +1364,47 @@ export type Database = {
           },
         ]
       }
+      company_alignment_categories: {
+        Row: {
+          alignment_level: string
+          alignment_score: number
+          category: string
+          claim_count: number
+          company_id: string
+          id: string
+          last_calculated: string
+          signal_count: number
+        }
+        Insert: {
+          alignment_level?: string
+          alignment_score?: number
+          category: string
+          claim_count?: number
+          company_id: string
+          id?: string
+          last_calculated?: string
+          signal_count?: number
+        }
+        Update: {
+          alignment_level?: string
+          alignment_score?: number
+          category?: string
+          claim_count?: number
+          company_id?: string
+          id?: string
+          last_calculated?: string
+          signal_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_alignment_categories_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_benchmarks: {
         Row: {
           company_id: string
@@ -1483,6 +1524,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "company_candidates_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_corporate_claims: {
+        Row: {
+          approved_at: string | null
+          category: string
+          claim_source: string
+          claim_source_url: string | null
+          claim_text: string
+          company_id: string
+          created_at: string
+          extracted_at: string
+          extraction_method: string
+          id: string
+          is_approved: boolean
+        }
+        Insert: {
+          approved_at?: string | null
+          category?: string
+          claim_source?: string
+          claim_source_url?: string | null
+          claim_text: string
+          company_id: string
+          created_at?: string
+          extracted_at?: string
+          extraction_method?: string
+          id?: string
+          is_approved?: boolean
+        }
+        Update: {
+          approved_at?: string | null
+          category?: string
+          claim_source?: string
+          claim_source_url?: string | null
+          claim_text?: string
+          company_id?: string
+          created_at?: string
+          extracted_at?: string
+          extraction_method?: string
+          id?: string
+          is_approved?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_corporate_claims_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
