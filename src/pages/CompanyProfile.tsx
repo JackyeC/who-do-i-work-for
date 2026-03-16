@@ -950,7 +950,7 @@ export default function CompanyProfile() {
               />
               <IntelStat
                 label="Layoff Risk"
-                value="Review below"
+                value="See Workforce Stability"
                 status="unknown"
               />
               <IntelStat
