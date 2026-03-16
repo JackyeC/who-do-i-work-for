@@ -76,6 +76,7 @@ Deno.serve(async (req) => {
       { data: civilRights },
       { data: climateSignals },
       { data: lobbyingLinks },
+      { data: courtCases },
     ] = await Promise.all([
       supabase.from('company_public_stances').select('*').eq('company_id', companyId),
       supabase.from('entity_linkages').select('*').eq('company_id', companyId).in('link_type', ['donation_to_member', 'dark_money_channel', 'trade_association_lobbying']),
@@ -83,6 +84,7 @@ Deno.serve(async (req) => {
       supabase.from('civil_rights_signals').select('*').eq('company_id', companyId),
       supabase.from('climate_signals').select('*').eq('company_id', companyId),
       supabase.from('entity_linkages').select('*').eq('company_id', companyId).eq('link_type', 'lobbying_on_bill'),
+      supabase.from('company_court_cases').select('*').eq('company_id', companyId),
     ]);
 
     const contradictions: Array<{
