@@ -120,6 +120,13 @@ export default function CorporateImpactMap() {
           .eq("company_id", company.id)
           .limit(20) as { data: any[] | null };
 
+        // Fetch healthcare_signals
+        const { data: healthcareSignals } = await supabase
+          .from("healthcare_signals")
+          .select("signal_type, description, source_name, confidence")
+          .eq("company_id", company.id)
+          .limit(20) as { data: any[] | null };
+
         // Build summaries per category
         for (const cat of IMPACT_CATEGORIES) {
           let count = 0;
