@@ -459,6 +459,15 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       <Suspense fallback={null}><FAQSection /></Suspense>
       <Suspense fallback={null}><EmailCapture /></Suspense>
 
+      {/* ── Dream Job Widget ── */}
+      <section className="px-6 lg:px-16 py-20 lg:py-28">
+        <div className="max-w-[480px] mx-auto">
+          <Suspense fallback={<div className="h-64 animate-pulse bg-muted/30 rounded-xl" />}>
+            <DreamJobWidget />
+          </Suspense>
+        </div>
+      </section>
+
       {/* ── Final CTA ── */}
       <section className="px-6 lg:px-16 py-28 lg:py-36 text-center">
         <h2 className="text-2xl lg:text-3xl mb-4 text-foreground">

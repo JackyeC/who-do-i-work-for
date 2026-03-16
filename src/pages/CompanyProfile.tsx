@@ -590,6 +590,14 @@ export default function CompanyProfile() {
                       className="mt-2"
                     />
                   )}
+                  {/* Insider Pride */}
+                  {dbCompanyId && (
+                    <InsiderPrideBanner
+                      companyId={dbCompanyId}
+                      companyName={name}
+                      isVerified={dbCompany?.vetted_status === "verified" || dbCompany?.vetted_status === "certified"}
+                    />
+                  )}
                 </div>
               </div>
             </CardContent>
