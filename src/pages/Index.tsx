@@ -287,14 +287,14 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               </div>
               <div>
                 <blockquote className="border-l-2 border-primary pl-4 text-lg italic text-foreground leading-relaxed mb-2 font-serif" style={{ fontWeight: 400 }}>
-                  "I've seen firsthand how corporate decisions are made, how talent is vetted, and how power is wielded. Who Do I Work For? is the background check the industry never wanted you to have."
+                  "I've been in the rooms where corporate decisions are made, where talent strategies are set, and where power is wielded. Who Do I Work For? is the intelligence the industry never wanted you to have."
                 </blockquote>
-                <div className="font-mono text-sm tracking-wider uppercase text-muted-foreground pl-4 mb-6">— Jackye Clayton</div>
+                <div className="font-mono text-sm tracking-wider uppercase text-muted-foreground pl-4 mb-6">— Jackye Clayton, Founder</div>
                 <p className="text-base text-muted-foreground leading-relaxed">
-                  I don't tell you where to work; I give you the truth so you can decide. 20+ years in the rooms where it happens — now that intelligence is yours.
+                  WDIWF was built to help both sides tell a clearer story through transparency. 20+ years in the rooms where it happens — now that intelligence is yours.
                 </p>
                 <p className="font-mono text-sm italic text-primary mt-6 tracking-wide">
-                  Unapologetically Transparent. — Jackye Clayton
+                  No judgment, just receipts.
                 </p>
               </div>
             </div>
