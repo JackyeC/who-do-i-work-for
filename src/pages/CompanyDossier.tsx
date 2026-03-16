@@ -50,6 +50,7 @@ const LENS_META = {
 export default function CompanyDossier() {
   const { id } = useParams();
   const { isCompanyTracked } = useTrackedCompanies();
+  const { canAccessRecruiter } = useViewMode();
   const { lens } = useDossierLens();
 
   const { data: company, isLoading } = useQuery({
