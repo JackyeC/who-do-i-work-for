@@ -58,7 +58,7 @@ const auditSteps: AuditStep[] = [
   {
     id: "audit-call",
     icon: CalendarCheck,
-    label: "Schedule the Jackye Audit",
+    label: "Schedule the Transparency Audit",
     description:
       "Book a 15-minute intro call to finalize your Certification. This is the last step before your Gold Shield goes live.",
     actionLabel: "Book 15-Min Intro Call",
