@@ -1008,6 +1008,7 @@ export default function CompanyProfile() {
                         <InsiderTradingCard companyId={dbCompanyId} companyName={name} ticker={dbCompany?.ticker} cik={dbCompany?.sec_cik} />
                       </div>
                     )}
+                    <EthicsRiskCard companyId={dbCompanyId} companyName={name} hasRevolvingDoor={(dbRevolvingDoor?.length || 0) > 0} hasDarkMoney={(dbDarkMoney?.length || 0) > 0} />
                   </div>
                 </section>
               ),
