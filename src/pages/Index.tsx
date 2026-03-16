@@ -262,10 +262,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </section>
 
-      {/* ── Intelligence Dashboard ── */}
-      <Suspense fallback={<div className="h-96 animate-pulse bg-muted/10" />}>
-        <IntelligenceDashboard />
-      </Suspense>
+      {/* Intelligence Dashboard moved above fold */}
 
       {/* ── Below-fold sections: lazy-loaded ── */}
       <Suspense fallback={null}>
