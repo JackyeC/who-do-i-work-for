@@ -104,7 +104,7 @@ export function CompanyRiskRadar({ companyId, companyName, slug, lobbyingSpend, 
       const oneYearAgo = new Date();
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
       const { count } = await supabase
-        .from("warn_notices")
+        .from("company_warn_notices")
         .select("id", { count: "exact", head: true })
         .eq("company_id", companyId)
         .gte("notice_date", oneYearAgo.toISOString().split("T")[0]);
