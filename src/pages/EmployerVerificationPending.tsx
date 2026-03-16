@@ -140,7 +140,7 @@ export default function EmployerVerificationPending() {
       if (error) throw error;
       setUploaded(true);
       toast.success(
-        "Document uploaded. Jackye will review within 24 hours."
+        "Document uploaded. Our team will review within 24 hours."
       );
     } catch (e: any) {
       toast.error("Upload failed: " + e.message);
