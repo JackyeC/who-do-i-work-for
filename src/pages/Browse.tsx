@@ -49,13 +49,15 @@ export default function Browse() {
   });
 
   const allCompanies = useMemo(() => {
-    const dbList = (dbCompanies || []).map((c) => ({
+    const dbList = (dbCompanies || []).map((c: any) => ({
       id: c.slug, dbId: c.id, name: c.name, slug: c.slug, industry: c.industry, state: c.state,
       civicFootprintScore: c.civic_footprint_score, totalPacSpending: c.total_pac_spending,
       lobbyingSpend: c.lobbying_spend, revenue: c.revenue, employeeCount: c.employee_count,
       description: c.description, isDbOnly: true,
+      isStartup: c.is_startup, categoryTags: c.category_tags || [],
+      careerIntelligenceScore: c.career_intelligence_score,
     }));
-    const dbSlugs = new Set(dbList.map((c) => c.slug));
+    const dbSlugs = new Set(dbList.map((c: any) => c.slug));
     const sampleExtras = sampleCompanies
       .filter((c) => !dbSlugs.has(c.id))
       .map((c) => ({
@@ -63,6 +65,8 @@ export default function Browse() {
         civicFootprintScore: c.civicFootprintScore, totalPacSpending: c.totalPacSpending,
         lobbyingSpend: c.lobbyingSpend, revenue: c.revenue, employeeCount: c.employeeCount,
         description: c.description, isDbOnly: false,
+        isStartup: false, categoryTags: [] as string[],
+        careerIntelligenceScore: null as number | null,
       }));
     return [...dbList, ...sampleExtras];
   }, [dbCompanies]);
