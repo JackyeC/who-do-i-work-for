@@ -44,6 +44,7 @@ const IMPACT_CATEGORIES = [
   { key: "climate", label: "Climate", icon: Leaf, color: "text-green-400", bgColor: "bg-green-500/10", borderColor: "border-green-500/20", table: "climate_signals", filter: null },
   { key: "gun_policy", label: "Gun Policy", icon: Crosshair, color: "text-red-400", bgColor: "bg-red-500/10", borderColor: "border-red-500/20", table: "gun_policy_signals", filter: null },
   { key: "civil_rights", label: "Civil Rights", icon: Scale, color: "text-purple-400", bgColor: "bg-purple-500/10", borderColor: "border-purple-500/20", table: "civil_rights_signals", filter: null },
+  { key: "healthcare", label: "Healthcare", icon: Heart, color: "text-pink-400", bgColor: "bg-pink-500/10", borderColor: "border-pink-500/20", table: "healthcare_signals", filter: null },
 ];
 
 const FEATURED_COMPANIES = [
