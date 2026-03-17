@@ -78,19 +78,21 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Fetch company signals in parallel
+    // Fetch company signals + public stances in parallel
     const [
       { data: aiSignals },
       { data: benefitSignals },
       { data: paySignals },
       { data: sentimentData },
       { data: warnNotices },
+      { data: publicStances },
     ] = await Promise.all([
       supabase.from('ai_hr_signals').select('signal_type, signal_category, confidence').eq('company_id', company_id).limit(10),
       supabase.from('company_signal_scans').select('signal_type, signal_category, signal_value').eq('company_id', company_id).eq('signal_category', 'worker_benefits').limit(10),
       supabase.from('pay_equity_signals').select('signal_type, signal_category, confidence').eq('company_id', company_id).limit(10),
       supabase.from('company_worker_sentiment').select('overall_rating, sentiment, ai_summary, top_praises, top_complaints').eq('company_id', company_id).order('created_at', { ascending: false }).limit(1),
       supabase.from('company_warn_notices').select('employees_affected, notice_date, layoff_type').eq('company_id', company_id).limit(5),
+      supabase.from('company_public_stances').select('topic, public_position, spending_reality, gap').eq('company_id', company_id).limit(10),
     ]);
 
     // Fetch user preferences
