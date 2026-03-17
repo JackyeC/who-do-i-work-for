@@ -177,65 +177,73 @@ Deno.serve(async (req) => {
     scanLog.steps.search = { source: searchSource, pages_returned: pagesReturnedCount };
     console.log(`[ai-hr-scan] Search complete via ${searchSource}: ${pagesReturnedCount} results`);
 
-    // ── Step 2: Crawl company pages (careers, privacy, etc.) ──
-    const { data: companyRow } = await supabase
-      .from('companies')
-      .select('careers_url')
-      .eq('id', companyId)
-      .single();
-
-    const pagesToScrape: { url: string; type: string }[] = [];
-    if (companyRow?.careers_url) {
-      pagesToScrape.push({ url: companyRow.careers_url, type: 'company careers page' });
-    }
-
-    const companyDomain = extractDomain(companyName);
-    if (companyDomain) {
-      const paths = ['/careers', '/jobs', '/talent', '/recruiting', '/work-with-us', '/privacy', '/about', '/blog', '/news'];
-      for (const path of paths) {
-        pagesToScrape.push({ url: `https://www.${companyDomain}${path}`, type: `company ${path.slice(1)} page` });
-      }
-    }
-
+    // ── Step 2: Crawl company pages (only if Firecrawl is available) ──
     let scrapeSuccessCount = 0;
     let scrapeFailCount = 0;
 
-    for (const page of pagesToScrape) {
-      try {
-        const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${firecrawlKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            url: page.url,
-            formats: ['markdown'],
-            onlyMainContent: true,
-            waitFor: 4000,
-          }),
-        });
+    if (firecrawlKey) {
+      const { data: companyRow } = await supabase
+        .from('companies')
+        .select('careers_url')
+        .eq('id', companyId)
+        .single();
 
-        if (scrapeResp.ok) {
-          const scrapeData = await scrapeResp.json();
-          const md = scrapeData.data?.markdown || scrapeData.markdown || '';
-          if (md.length > 50) {
-            scrapeSuccessCount++;
-            pagesReturnedCount++;
-            allContent += `\n\nSOURCE: ${page.url}\nTYPE: ${page.type}\n${md.slice(0, 5000)}`;
-            allSourceUrls.push(page.url);
+      const pagesToScrape: { url: string; type: string }[] = [];
+      if (companyRow?.careers_url) {
+        pagesToScrape.push({ url: companyRow.careers_url, type: 'company careers page' });
+      }
+
+      const companyDomain = extractDomain(companyName);
+      if (companyDomain) {
+        const paths = ['/careers', '/jobs', '/privacy', '/about'];
+        for (const path of paths) {
+          pagesToScrape.push({ url: `https://www.${companyDomain}${path}`, type: `company ${path.slice(1)} page` });
+        }
+      }
+
+      for (const page of pagesToScrape) {
+        try {
+          const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${firecrawlKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              url: page.url,
+              formats: ['markdown'],
+              onlyMainContent: true,
+              waitFor: 4000,
+            }),
+          });
+
+          if (scrapeResp.status === 402) {
+            console.log('[ai-hr-scan] Firecrawl credits exhausted, skipping remaining scrapes');
+            break;
           }
-        } else {
+
+          if (scrapeResp.ok) {
+            const scrapeData = await scrapeResp.json();
+            const md = scrapeData.data?.markdown || scrapeData.markdown || '';
+            if (md.length > 50) {
+              scrapeSuccessCount++;
+              pagesReturnedCount++;
+              allContent += `\n\nSOURCE: ${page.url}\nTYPE: ${page.type}\n${md.slice(0, 5000)}`;
+              allSourceUrls.push(page.url);
+            }
+          } else {
+            scrapeFailCount++;
+          }
+        } catch (e) {
           scrapeFailCount++;
         }
-      } catch (e) {
-        scrapeFailCount++;
-        console.warn(`[ai-hr-scan] Scrape failed for ${page.url}`);
       }
+    } else {
+      console.log('[ai-hr-scan] No Firecrawl key, skipping page scraping');
     }
 
-    scanLog.steps.scrape = { attempted: pagesToScrape.length, success: scrapeSuccessCount, failed: scrapeFailCount };
-    console.log(`[ai-hr-scan] Scrape complete: ${scrapeSuccessCount}/${pagesToScrape.length} succeeded`);
+    scanLog.steps.scrape = { attempted: scrapeSuccessCount + scrapeFailCount, success: scrapeSuccessCount, failed: scrapeFailCount };
+    console.log(`[ai-hr-scan] Scrape: ${scrapeSuccessCount} succeeded`);
 
     const now = new Date().toISOString();
     const totalSourcesScanned = pagesReturnedCount;
