@@ -67,7 +67,7 @@ export default function CareerMap() {
     if (!state.data && !state.loading) {
       discover(aiType);
     }
-  }, [activeStep, profile, user]);
+  }, [activeStep, profile, user, discover, careerPaths, companies, skillGap, futures, actionPlan]);
 
   if (!user) return <Navigate to="/login" replace />;
 
