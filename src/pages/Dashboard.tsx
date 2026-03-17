@@ -78,7 +78,12 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (tab) {
       case "overview":
-        return <DashboardOverview onNavigate={setTab} />;
+        return (
+          <>
+            <DecisionCheckpoint />
+            <DashboardOverview onNavigate={setTab} />
+          </>
+        );
       case "tracked":
         return <SlotManagementDashboard />;
       case "matches":
