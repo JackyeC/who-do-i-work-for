@@ -348,6 +348,11 @@ export default function FounderConsole() {
           <CertificationQueue />
         </div>
 
+        {/* Career Waitlist */}
+        <div className="mt-6">
+          <CareerWaitlistQueue />
+        </div>
+
         {/* Legacy Pending Reviews */}
         <div className="mt-8">
           <PendingReviewsDashboard />
