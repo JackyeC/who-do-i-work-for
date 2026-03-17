@@ -786,6 +786,11 @@ export default function CompanyProfile() {
                 staleSections.forEach(r => refreshSection(r.section_type));
               }}
             />
+            <SourcesCheckedBanner
+              scanCompletion={(dbCompany as any)?.scan_completion}
+              intelligenceReports={intelligenceReports}
+              isPubliclyTraded={!!dbCompany?.is_publicly_traded}
+            />
           </div>
 
           {/* ═══════════════════════════════════════════════════════════
