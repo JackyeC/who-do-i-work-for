@@ -4,6 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { resilientSearch } from '../_shared/resilient-search.ts';
 
 const HR_KEYWORDS = [
   'AI recruiting', 'automated candidate screening', 'automated screening', 'resume ranking',
