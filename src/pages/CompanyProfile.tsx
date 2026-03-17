@@ -1385,6 +1385,11 @@ export default function CompanyProfile() {
             </CardContent>
           </Card>
 
+          {/* Employer Rebuttal */}
+          {dbCompanyId && (
+            <EmployerRebuttalSection companyId={dbCompanyId} companyName={name} />
+          )}
+
           {/* Related Reports */}
           <RelatedReportsCard companyName={name} companyId={dbCompanyId} />
 
