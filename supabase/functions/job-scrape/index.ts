@@ -177,6 +177,51 @@ const ATS_CONFIGS: Record<string, { detect: (url: string) => boolean; fetchJobs:
     detect: (url) => /jobvite\.com|jobs\.jobvite/i.test(url),
     fetchJobs: async (_url) => [],
   },
+  bamboohr: {
+    platform: 'bamboohr',
+    detect: (url) => /bamboohr\.com/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
+  rippling: {
+    platform: 'rippling',
+    detect: (url) => /rippling\.com.*careers|rippling-ats/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
+  breezy: {
+    platform: 'breezy',
+    detect: (url) => /breezy\.hr/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
+  teamtailor: {
+    platform: 'teamtailor',
+    detect: (url) => /teamtailor\.com/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
+  recruitee: {
+    platform: 'recruitee',
+    detect: (url) => /recruitee\.com/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
+  zohorecruit: {
+    platform: 'zohorecruit',
+    detect: (url) => /zoho\.com.*recruit|zohorecruit/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
+  pinpoint: {
+    platform: 'pinpoint',
+    detect: (url) => /pinpointhq\.com/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
+  manatal: {
+    platform: 'manatal',
+    detect: (url) => /manatal\.com/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
+  gem: {
+    platform: 'gem',
+    detect: (url) => /gem\.com.*jobs/i.test(url),
+    fetchJobs: async (_url) => [],
+  },
 };
 
 // ─── ATS patterns to find in page content (for pages that link to ATS) ───
