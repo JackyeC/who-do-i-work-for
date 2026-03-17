@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -14,11 +14,13 @@ import { VALUES_LENSES } from "@/lib/valuesLenses";
 import { JobSidebar } from "@/components/jobs/JobSidebar";
 import { JobListRow } from "@/components/jobs/JobListRow";
 import { JobDetailDrawer } from "@/components/jobs/JobDetailDrawer";
+import { JobCardSkeleton } from "@/components/jobs/JobCardSkeleton";
 import { TrackingDashboard } from "@/components/jobs/TrackingDashboard";
 import { AutoApplySettings } from "@/components/jobs/AutoApplySettings";
 import { ApplyQueueDashboard } from "@/components/jobs/ApplyQueueDashboard";
 import { UserProfileForm } from "@/components/jobs/UserProfileForm";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAutoApplySubscription, STRIPE_TIERS } from "@/hooks/use-premium";
@@ -26,10 +28,12 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Search, Briefcase, Building2, Filter, SlidersHorizontal, X, Monitor,
   Zap, LayoutDashboard, User, Wand2, Copy, Check, Loader2, ExternalLink,
-  FileText, Sparkles, Shield, Lock, Crown,
+  FileText, Sparkles, Shield, Lock, Crown, DollarSign,
 } from "lucide-react";
 
 function AutoApplyGated() {
