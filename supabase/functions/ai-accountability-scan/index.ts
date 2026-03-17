@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+import { resilientSearch } from '../_shared/resilient-search.ts';
 // Vendor fingerprint database: domain → { name, category, risk_flags }
 const VENDOR_SIGNATURES: Record<string, { name: string; category: string; riskFlags: string[] }> = {
   // Sourcing AI
