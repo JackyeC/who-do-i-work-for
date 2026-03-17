@@ -25,7 +25,7 @@ export const ISSUE_AREAS = [
   { key: "voting_rights", label: "Voting Rights", icon: Vote, color: "text-primary" },
   { key: "immigration", label: "Immigration", icon: Globe, color: "text-[hsl(var(--civic-blue))]" },
   { key: "education", label: "Education", icon: BookOpen, color: "text-[hsl(var(--civic-green))]" },
-  { key: "healthcare", label: "Healthcare", icon: Stethoscope, color: "text-[hsl(var(--civic-red))]" },
+  { key: "healthcare", label: "Healthcare", icon: Stethoscope, color: "text-[hsl(var(--civic-yellow))]" },
   { key: "consumer_protection", label: "Consumer Protection", icon: ShoppingCart, color: "text-[hsl(var(--civic-yellow))]" },
 ] as const;
 
