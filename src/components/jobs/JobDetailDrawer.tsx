@@ -142,8 +142,9 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
 
           {/* Actions */}
           <div className="flex gap-2">
+            <EasyApplyButton job={job} className="flex-1" />
             {job.url && (
-              <Button className="flex-1 gap-1.5" onClick={() => {
+              <Button variant="outline" className="flex-1 gap-1.5" onClick={() => {
                 supabase.from("job_click_events").insert({
                   job_id: job.id,
                   company_id: job.company_id,
@@ -152,11 +153,11 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
                 }).then(() => {});
                 onApply(job);
               }}>
-                Apply <ExternalLink className="w-3.5 h-3.5" />
+                Apply External <ExternalLink className="w-3.5 h-3.5" />
               </Button>
             )}
-            <Link to={`/offer-check/${company?.id}`} className="flex-1">
-              <Button variant="outline" className="w-full gap-1.5">
+            <Link to={`/offer-check/${company?.id}`}>
+              <Button variant="outline" className="gap-1.5">
                 <FileCheck className="w-3.5 h-3.5" /> Offer Check
               </Button>
             </Link>
