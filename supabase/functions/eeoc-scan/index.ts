@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resilientSearch } from "../_shared/resilient-search.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
