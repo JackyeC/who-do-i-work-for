@@ -108,7 +108,7 @@ const FAQ_ITEMS: FAQItem[] = [
   },
   {
     question: "How is the intelligence generated?",
-    answer: "We have codified decades of professional talent logic into the system's core algorithms. This includes cross-referencing public filings, federal databases, and open records to surface workforce transparency signals — not opinions.",
+    answer: "The system cross-references public filings, federal databases, and open records to surface workforce transparency signals — not opinions.",
   },
 ];
 
