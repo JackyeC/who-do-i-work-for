@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { companyName, companyId, enrichExisting } = await req.json();
+    const { companyName, companyId: inputCompanyId, enrichExisting } = await req.json();
 
     if (!companyName || typeof companyName !== 'string' || companyName.trim().length < 2) {
       return new Response(
@@ -36,11 +36,11 @@ Deno.serve(async (req) => {
 
     // Check if company already exists — prefer companyId if provided
     let existing: any = null;
-    if (companyId) {
+    if (inputCompanyId) {
       const { data } = await supabase
         .from('companies')
         .select('id, name, slug')
-        .eq('id', companyId)
+        .eq('id', inputCompanyId)
         .maybeSingle();
       existing = data;
     }
