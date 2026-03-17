@@ -142,7 +142,7 @@ export const PERSONAS: PersonaConfig[] = [
         title: "Company Reputation in the Talent Market",
         subtitle: "Employer reputation trends, media coverage, narrative power, and alumni success. Does having this company on my resume open doors or close them?",
         iconName: "Eye",
-        sections: ["narrative_power", "public_records"],
+        sections: ["narrative_power", "public_records", "off_the_record"],
       },
       {
         id: "ethical_alignment",
