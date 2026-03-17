@@ -346,7 +346,7 @@ export default function ForEmployers() {
           >
             {loadingTier === "founding_partner_cta" && <Loader2 className="w-4 h-4 animate-spin" />}
             <ShieldCheck className="w-4 h-4" />
-            Get Started as a Founding Partner
+            Get Your Narrative Alignment Package
           </Button>
         </section>
       </main>

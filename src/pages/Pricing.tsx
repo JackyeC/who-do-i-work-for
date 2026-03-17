@@ -255,11 +255,11 @@ export default function Pricing() {
             </div>
             <div>
               <h3 className="font-bold text-foreground text-lg flex items-center gap-2">
-                Founding Partner
+                Narrative Alignment Package
                 <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/20">Gold Shield</Badge>
               </h3>
               <p className="text-sm text-muted-foreground">
-                Claim your profile, get the 3-point transparency audit by Jackye, and receive 5 job credits. Move to the top of the feed.
+                Claim your profile, complete the transparency audit, and receive 5 job credits. Bridge the narrative gap with values-aligned talent.
               </p>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-2xl font-bold font-mono text-foreground">$599</span>
@@ -275,11 +275,11 @@ export default function Pricing() {
           <Button
             size="lg"
             className="shrink-0 gap-2"
-            onClick={() => handleCheckout(STRIPE_TIERS.founding_partner.price_id, null, "Founding Partner")}
-            disabled={loadingTier === "Founding Partner"}
+            onClick={() => handleCheckout(STRIPE_TIERS.founding_partner.price_id, null, "Narrative Alignment")}
+            disabled={loadingTier === "Narrative Alignment"}
           >
-            {loadingTier === "Founding Partner" ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-            Become a Founding Partner
+            {loadingTier === "Narrative Alignment" ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+            Get Your Narrative Alignment Package
           </Button>
         </div>
 
