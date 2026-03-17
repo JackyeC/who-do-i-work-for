@@ -1936,6 +1936,59 @@ export type Database = {
           },
         ]
       }
+      company_dossiers: {
+        Row: {
+          bottom_line: string | null
+          company_id: string
+          confidence: string
+          created_at: string | null
+          fit_signals: string[]
+          id: string
+          insights: string[]
+          risk_level: string
+          risk_signals: string[]
+          score: number
+          sources_note: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          bottom_line?: string | null
+          company_id: string
+          confidence?: string
+          created_at?: string | null
+          fit_signals?: string[]
+          id?: string
+          insights?: string[]
+          risk_level?: string
+          risk_signals?: string[]
+          score?: number
+          sources_note?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          bottom_line?: string | null
+          company_id?: string
+          confidence?: string
+          created_at?: string | null
+          fit_signals?: string[]
+          id?: string
+          insights?: string[]
+          risk_level?: string
+          risk_signals?: string[]
+          score?: number
+          sources_note?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_dossiers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_eeo1_data: {
         Row: {
           asian_count: number | null
