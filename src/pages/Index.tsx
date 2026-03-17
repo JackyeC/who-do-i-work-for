@@ -69,6 +69,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
   return (
     <div ref={ref} className="flex flex-col min-h-screen bg-background">
+      {/* Live Intelligence Ticker */}
+      <Suspense fallback={<div className="h-[28px] bg-primary" />}>
+        <LiveIntelligenceTicker />
+      </Suspense>
+
       {/* Exit intent deferred */}
       <Suspense fallback={null}><ExitIntentCapture /></Suspense>
 
