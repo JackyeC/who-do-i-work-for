@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+import { resilientSearch } from '../_shared/resilient-search.ts';
 // ─── AI Hiring Vendor Signatures ──────────────────────────────────────
 const AI_VENDORS = [
   'Eightfold', 'Phenom', 'HireVue', 'Paradox', 'SeekOut', 'Findem',
