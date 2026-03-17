@@ -483,6 +483,22 @@ export default function Jobs() {
                     onChange={(e) => setSearch(e.target.value)}
                     className="pl-10"
                   />
+                  {/* Semantic search expansion indicator */}
+                  {semanticLoading && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                    </span>
+                  )}
+                  {semanticTerms.length > 0 && !semanticLoading && (
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      <span className="text-[10px] text-muted-foreground">AI expanded:</span>
+                      {semanticTerms.slice(0, 5).map((term) => (
+                        <Badge key={term} variant="outline" className="text-[10px] py-0 px-1.5 bg-primary/5">
+                          {term}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2 flex-wrap">
                   <Select value={minScore} onValueChange={setMinScore}>
