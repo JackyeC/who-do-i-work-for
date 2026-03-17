@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -14,11 +14,14 @@ import { VALUES_LENSES } from "@/lib/valuesLenses";
 import { JobSidebar } from "@/components/jobs/JobSidebar";
 import { JobListRow } from "@/components/jobs/JobListRow";
 import { JobDetailDrawer } from "@/components/jobs/JobDetailDrawer";
+import { JobCardSkeleton } from "@/components/jobs/JobCardSkeleton";
 import { TrackingDashboard } from "@/components/jobs/TrackingDashboard";
 import { AutoApplySettings } from "@/components/jobs/AutoApplySettings";
 import { ApplyQueueDashboard } from "@/components/jobs/ApplyQueueDashboard";
 import { UserProfileForm } from "@/components/jobs/UserProfileForm";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";
+import { JobAlertPreferences } from "@/components/jobs/JobAlertPreferences";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAutoApplySubscription, STRIPE_TIERS } from "@/hooks/use-premium";
@@ -26,10 +29,12 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Search, Briefcase, Building2, Filter, SlidersHorizontal, X, Monitor,
   Zap, LayoutDashboard, User, Wand2, Copy, Check, Loader2, ExternalLink,
-  FileText, Sparkles, Shield, Lock, Crown,
+  FileText, Sparkles, Shield, Lock, Crown, DollarSign,
 } from "lucide-react";
 
 function AutoApplyGated() {
@@ -93,6 +98,7 @@ export default function Jobs() {
   const [minScore, setMinScore] = useState("0");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [workModeFilter, setWorkModeFilter] = useState("all");
+  const [salaryOnly, setSalaryOnly] = useState(false);
   const [valuesFilters, setValuesFilters] = useState<string[]>([]);
   const [showValues, setShowValues] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any>(null);
@@ -100,6 +106,8 @@ export default function Jobs() {
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
   const [generatedPayload, setGeneratedPayload] = useState<any>(null);
   const [copied, setCopied] = useState(false);
+  const PAGE_SIZE = 50;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const { data: jobs, isLoading } = useQuery({
     queryKey: ["jobs-with-companies"],
@@ -189,6 +197,7 @@ export default function Jobs() {
 
   const filtered = useMemo(() => {
     if (!jobs) return [];
+    // Reset visible count when filters change
     return jobs.filter((job: any) => {
       const company = job.companies;
       if (!company) return false;
@@ -196,6 +205,7 @@ export default function Jobs() {
       const isNonUS = /\b(india|germany|china|japan|south korea|mexico|brazil|canada|uk|france|spain|italy|australia|singapore|ireland|netherlands|israel|sweden|switzerland)\b/i.test(loc) ||
         /,\s*(in|de|cn|jp|kr|mx|br|ca|gb|fr|es|it|au|sg|ie|nl|il|se|ch)\s*$/i.test(loc);
       if (isNonUS) return false;
+      if (salaryOnly && !job.salary_range) return false;
       const matchesSearch = !search ||
         job.title.toLowerCase().includes(search.toLowerCase()) ||
         company.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -218,7 +228,27 @@ export default function Jobs() {
       if (!aSponsored && bSponsored) return 1;
       return (jobScores[b.id] || 0) - (jobScores[a.id] || 0);
     });
-  }, [jobs, search, minScore, industryFilter, workModeFilter, valuesFilters, valuesSignals, jobScores]);
+  }, [jobs, search, minScore, industryFilter, workModeFilter, salaryOnly, valuesFilters, valuesSignals, jobScores]);
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [search, minScore, industryFilter, workModeFilter, salaryOnly, valuesFilters]);
+
+  const visibleJobs = useMemo(() => filtered?.slice(0, visibleCount) || [], [filtered, visibleCount]);
+  const hasMore = visibleCount < (filtered?.length || 0);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadMore = useCallback(() => {
+    setLoadingMore(true);
+    // Small delay to show skeleton feedback
+    setTimeout(() => {
+      setVisibleCount((prev) => prev + PAGE_SIZE);
+      setLoadingMore(false);
+    }, 300);
+  }, []);
+
+  const sentinelRef = useInfiniteScroll(loadMore, hasMore, loadingMore);
 
   const companiesWithJobs = useMemo(() => {
     if (!filtered) return 0;
@@ -459,8 +489,20 @@ export default function Jobs() {
                     <SlidersHorizontal className="w-4 h-4" />
                     <span className="hidden sm:inline">Values</span>
                   </Button>
-                </div>
-              </div>
+                 </div>
+               </div>
+
+               {/* Salary filter toggle */}
+               <div className="flex items-center gap-2 mb-3">
+                 <Switch
+                   id="salary-only"
+                   checked={salaryOnly}
+                   onCheckedChange={setSalaryOnly}
+                 />
+                 <Label htmlFor="salary-only" className="text-xs text-muted-foreground cursor-pointer flex items-center gap-1">
+                   <DollarSign className="w-3 h-3" /> Show only jobs with salary listed
+                 </Label>
+               </div>
 
               {/* Active values chips */}
               {valuesFilters.length > 0 && (
@@ -492,7 +534,13 @@ export default function Jobs() {
                 )}
 
                 <div className="flex-1 min-w-0">
-                  {isLoading && <LoadingState message="Loading job listings..." />}
+                  {isLoading && (
+                    <div className="space-y-2">
+                      {Array.from({ length: 8 }).map((_, i) => (
+                        <JobCardSkeleton key={i} />
+                      ))}
+                    </div>
+                  )}
                   {!isLoading && filtered?.length === 0 && (
                     <EmptyState
                       icon={Briefcase}
@@ -508,7 +556,7 @@ export default function Jobs() {
                   )}
 
                   <div className="space-y-2">
-                    {filtered?.map((job: any) => {
+                    {visibleJobs.map((job: any) => {
                       const company = job.companies;
                       const companyValueSignals = valuesSignals?.[company?.id] || [];
                       const companySignals = signalFlags?.[company?.id] || [];
@@ -551,6 +599,20 @@ export default function Jobs() {
                       );
                     })}
                   </div>
+
+                  {/* Infinite scroll sentinel + loading skeletons */}
+                  {hasMore && (
+                    <div ref={sentinelRef} className="space-y-2 mt-2">
+                      {loadingMore && Array.from({ length: 3 }).map((_, i) => (
+                        <JobCardSkeleton key={`load-${i}`} />
+                      ))}
+                    </div>
+                  )}
+                  {!isLoading && filtered.length > 0 && (
+                    <p className="text-center text-xs text-muted-foreground mt-4">
+                      Showing {Math.min(visibleCount, filtered.length)} of {filtered.length} jobs
+                    </p>
+                  )}
                 </div>
               </div>
             </TabsContent>
@@ -586,6 +648,7 @@ export default function Jobs() {
               {user ? (
                 <div className="space-y-6">
                   <UserProfileForm />
+                  <JobAlertPreferences />
                   <PreferenceCenter />
                 </div>
               ) : (

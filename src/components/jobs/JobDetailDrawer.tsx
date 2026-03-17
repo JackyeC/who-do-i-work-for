@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CivicScoreCard, CivicScoreBadge } from "@/components/CivicScoreCard";
 import { JobMatchBadge } from "./JobMatchBadge";
+import { EasyApplyButton } from "./EasyApplyButton";
 import { VALUES_LENSES } from "@/lib/valuesLenses";
 import {
   MapPin, Building2, ExternalLink, FileCheck, Wifi, Monitor, Home,
@@ -76,6 +77,11 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
             {job.salary_range && (
               <span className="flex items-center gap-1 text-civic-green font-medium"><DollarSign className="w-3.5 h-3.5" />{job.salary_range}</span>
             )}
+            {job.salary_range && (
+              <Badge variant="success" className="text-[10px] gap-0.5">
+                <DollarSign className="w-2.5 h-2.5" /> Pay Transparent
+              </Badge>
+            )}
             {job.department && (
               <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{job.department}</span>
             )}
@@ -136,8 +142,9 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
 
           {/* Actions */}
           <div className="flex gap-2">
+            <EasyApplyButton job={job} className="flex-1" />
             {job.url && (
-              <Button className="flex-1 gap-1.5" onClick={() => {
+              <Button variant="outline" className="flex-1 gap-1.5" onClick={() => {
                 supabase.from("job_click_events").insert({
                   job_id: job.id,
                   company_id: job.company_id,
@@ -146,11 +153,11 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
                 }).then(() => {});
                 onApply(job);
               }}>
-                Apply <ExternalLink className="w-3.5 h-3.5" />
+                Apply External <ExternalLink className="w-3.5 h-3.5" />
               </Button>
             )}
-            <Link to={`/offer-check/${company?.id}`} className="flex-1">
-              <Button variant="outline" className="w-full gap-1.5">
+            <Link to={`/offer-check/${company?.id}`}>
+              <Button variant="outline" className="gap-1.5">
                 <FileCheck className="w-3.5 h-3.5" /> Offer Check
               </Button>
             </Link>
