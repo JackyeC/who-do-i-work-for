@@ -656,6 +656,16 @@ export default function CompanyProfile() {
           )}
 
           {/* ═══════════════════════════════════════════════════════════
+              NARRATIVE GAP CARD
+             ═══════════════════════════════════════════════════════════ */}
+          <NarrativeGapCard
+            companyName={name}
+            lastAuditedAt={(dbCompany as any)?.last_audited_at}
+            signalGroupCount={0}
+            isCertified={dbCompany?.vetted_status === "certified"}
+          />
+
+          {/* ═══════════════════════════════════════════════════════════
               PERSONA SELECTOR
              ═══════════════════════════════════════════════════════════ */}
           <PersonaSelector activePersona={activePersona} onPersonaChange={handlePersonaChange} />
