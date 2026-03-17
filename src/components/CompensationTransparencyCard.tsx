@@ -109,7 +109,7 @@ export function CompensationTransparencyCard({ companyName, dbCompanyId }: Props
       queryClient.invalidateQueries({ queryKey: ["pay-equity-signals", dbCompanyId] });
     },
     onError: (reason) => {
-      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+      if (reason === 'firecrawl_error') setFirecrawlDown(true);
     },
   });
 

@@ -80,7 +80,7 @@ export function SocialMonitorCard({ companyId, companyName, executiveNames, dbCo
       refetch();
     },
     onError: (reason) => {
-      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+      if (reason === 'firecrawl_error') setFirecrawlDown(true);
     },
   });
 

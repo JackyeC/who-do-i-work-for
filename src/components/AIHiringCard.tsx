@@ -115,7 +115,7 @@ export function AIHiringCard({ companyName, dbCompanyId }: AIHiringCardProps) {
       queryClient.invalidateQueries({ queryKey: ["ai-hr-signals", dbCompanyId] });
     },
     onError: (reason, message) => {
-      if (reason === 'firecrawl_error' || reason === 'circuit_open') {
+      if (reason === 'firecrawl_error') {
         setFirecrawlDown(true);
         setScanState({ status: effectiveScanStatus === 'not_run' ? 'not_run' : effectiveScanStatus });
       } else {

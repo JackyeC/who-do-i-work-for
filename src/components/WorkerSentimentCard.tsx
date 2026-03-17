@@ -115,7 +115,7 @@ export function WorkerSentimentCard({ companyName, dbCompanyId }: WorkerSentimen
       refetch();
     },
     onError: (reason) => {
-      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+      if (reason === 'firecrawl_error') setFirecrawlDown(true);
     },
   });
 

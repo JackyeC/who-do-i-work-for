@@ -78,7 +78,7 @@ export function WorkerBenefitsCard({ companyName, dbCompanyId }: WorkerBenefitsC
       queryClient.invalidateQueries({ queryKey: ["worker-benefit-signals", dbCompanyId] });
     },
     onError: (reason) => {
-      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+      if (reason === 'firecrawl_error') setFirecrawlDown(true);
     },
   });
 
