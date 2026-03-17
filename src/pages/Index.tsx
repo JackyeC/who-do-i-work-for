@@ -47,7 +47,9 @@ const audiences = [
 
 const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const [rivalries, setRivalries] = useState<any[] | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeAudience, setActiveAudience] = useState("Candidates");
 
   usePageSEO({
