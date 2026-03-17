@@ -1,7 +1,9 @@
 import { useState, lazy, Suspense, forwardRef } from "react";
 import jackyeHeadshotSm from "@/assets/jackye-headshot-sm.webp";
-import { useNavigate } from "react-router-dom";
-import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap, Briefcase, Search, BarChart3, Eye, Users, DollarSign, Scale, Cpu, CheckCircle2 } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap, Briefcase, Search, BarChart3, Eye, Users, DollarSign, Scale, Cpu, CheckCircle2, Menu, X } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { HeroSearch } from "@/components/landing/HeroSearch";
 const LiveIntelligenceTicker = lazy(() => import("@/components/landing/LiveIntelligenceTicker").then(m => ({ default: m.LiveIntelligenceTicker })));
