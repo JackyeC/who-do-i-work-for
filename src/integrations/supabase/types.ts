@@ -2027,6 +2027,38 @@ export type Database = {
           },
         ]
       }
+      company_family_tags: {
+        Row: {
+          company_id: string
+          created_at: string
+          family_model: Database["public"]["Enums"]["family_model_type"]
+          id: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          family_model: Database["public"]["Enums"]["family_model_type"]
+          id?: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          family_model?: Database["public"]["Enums"]["family_model_type"]
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_family_tags_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_flagged_orgs: {
         Row: {
           company_id: string
@@ -9130,6 +9162,7 @@ export type Database = {
       document_status: "pending" | "parsing" | "parsed" | "error" | "deleted"
       document_type: "offer_letter" | "resume" | "job_description"
       documentation_strength: "high" | "medium" | "low"
+      family_model_type: "traditional" | "progressive"
       link_type:
         | "donation_to_member"
         | "member_on_committee"
@@ -9311,6 +9344,7 @@ export const Constants = {
       document_status: ["pending", "parsing", "parsed", "error", "deleted"],
       document_type: ["offer_letter", "resume", "job_description"],
       documentation_strength: ["high", "medium", "low"],
+      family_model_type: ["traditional", "progressive"],
       link_type: [
         "donation_to_member",
         "member_on_committee",
