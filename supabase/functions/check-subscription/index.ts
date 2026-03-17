@@ -33,7 +33,16 @@ serve(async (req) => {
     if (!authHeader) throw new Error("No authorization header provided");
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
+    // Retry getUser up to 3 times to handle transient connection resets
+    let userData, userError;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const result = await supabaseClient.auth.getUser(token);
+      userData = result.data;
+      userError = result.error;
+      if (!userError) break;
+      logStep(`Auth attempt ${attempt} failed`, { message: userError.message });
+      if (attempt < 3) await new Promise(r => setTimeout(r, 500 * attempt));
+    }
     if (userError) throw new Error(`Authentication error: ${userError.message}`);
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
