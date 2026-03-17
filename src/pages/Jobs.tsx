@@ -97,6 +97,7 @@ export default function Jobs() {
   const [minScore, setMinScore] = useState("0");
   const [industryFilter, setIndustryFilter] = useState("all");
   const [workModeFilter, setWorkModeFilter] = useState("all");
+  const [salaryOnly, setSalaryOnly] = useState(false);
   const [valuesFilters, setValuesFilters] = useState<string[]>([]);
   const [showValues, setShowValues] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any>(null);
@@ -104,6 +105,8 @@ export default function Jobs() {
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
   const [generatedPayload, setGeneratedPayload] = useState<any>(null);
   const [copied, setCopied] = useState(false);
+  const PAGE_SIZE = 50;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const { data: jobs, isLoading } = useQuery({
     queryKey: ["jobs-with-companies"],
