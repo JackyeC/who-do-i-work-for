@@ -999,6 +999,39 @@ export type Database = {
           },
         ]
       }
+      career_waitlist: {
+        Row: {
+          approved_at: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string | null
+          reason: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name?: string | null
+          reason?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string | null
+          reason?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       civil_rights_signals: {
         Row: {
           case_number: string | null
