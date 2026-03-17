@@ -53,7 +53,8 @@ function buildSearchNames(companyName: string, searchNames?: string[]): string[]
   return Array.from(names);
 }
 
-async function scrapeWithFirecrawl(url: string, firecrawlKey: string): Promise<string | null> {
+async function scrapeWithFirecrawl(url: string, firecrawlKey: string | undefined): Promise<string | null> {
+  if (!firecrawlKey) return null;
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30_000);
