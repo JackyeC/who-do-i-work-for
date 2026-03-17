@@ -19,6 +19,7 @@ import { UpgradeMoment } from "@/components/company/UpgradeMoment";
 import { ValuesSignalMatch } from "@/components/company/ValuesSignalMatch";
 import { RealityGapBlock } from "@/components/company/RealityGapBlock";
 import { DecisionCheckpointBeforeSign } from "@/components/company/DecisionCheckpointBeforeSign";
+import { InnovationSignals } from "@/components/company/InnovationSignals";
 import { ReportTeaserGate } from "@/components/ReportTeaserGate";
 import { PostReportNudge } from "@/components/PostReportNudge";
 import { ContentProtector } from "@/components/ContentProtector";
@@ -179,7 +180,7 @@ export default function CompanyProfile() {
       if (data?.success) {
         const count = Object.values(data.tablesPopulated || {}).reduce((a: number, b: any) => a + (b as number), 0);
         toast({ title: "Scan complete", description: `Found ${count} records for ${dbCompany.name}.` });
-        const keys = ["company-profile", "company-candidates", "company-executives", "company-party-breakdown", "company-public-stances", "company-dark-money", "company-revolving-door", "company-trade-assoc", "company-issue-signals", "ti-ai-hr", "ti-benefits", "ti-pay", "ti-sentiment"];
+        const keys = ["company-profile", "company-candidates", "company-executives", "company-party-breakdown", "company-public-stances", "company-dark-money", "company-revolving-door", "company-trade-assoc", "company-issue-signals", "ti-ai-hr", "ti-benefits", "ti-pay", "ti-sentiment", "company-patents"];
         keys.forEach(k => queryClient.invalidateQueries({ queryKey: [k] }));
       } else { throw new Error(data?.error || "Scan failed"); }
     } catch (e: any) {
@@ -379,6 +380,13 @@ export default function CompanyProfile() {
               updatedAt={dbCompany?.updated_at}
             />
           </ReportTeaserGate>
+
+          {/* ═══════════════════════════════════════════════════════
+              2.6 INNOVATION SIGNALS (Patents)
+             ═══════════════════════════════════════════════════════ */}
+          {dbCompanyId && (
+            <InnovationSignals companyId={dbCompanyId} companyName={name} />
+          )}
 
           {/* ═══════════════════════════════════════════════════════
               2.5 REALITY GAP
