@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+import { resilientSearch } from '../_shared/resilient-search.ts';
 const FEC_API_BASE = 'https://api.open.fec.gov/v1';
 
 // Search FEC for a candidate and get their top PAC/organization donors
