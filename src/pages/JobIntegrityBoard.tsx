@@ -190,6 +190,7 @@ export default function JobIntegrityBoard() {
           </div>
         )}
       </main>
+      <AskJackyeWidget />
       <Footer />
     </div>
   );
