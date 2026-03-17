@@ -22,6 +22,17 @@ interface WikidataEntity {
   properties: Record<string, any>;
 }
 
+function checkServiceRoleAuth(req: Request, corsHeaders: Record<string, string>): Response | null {
+  const authHeader = req.headers.get('Authorization');
+  const token = authHeader?.replace('Bearer ', '') || '';
+  if (token !== Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+  return null;
+}
+
 async function searchWikidata(query: string): Promise<{ id: string; label: string; description: string }[]> {
   const params = new URLSearchParams({
     action: 'wbsearchentities',
@@ -162,6 +173,10 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  // Auth gate: require service-role key
+  const authRes = checkServiceRoleAuth(req, corsHeaders);
+  if (authRes) return authRes;
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
   const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;

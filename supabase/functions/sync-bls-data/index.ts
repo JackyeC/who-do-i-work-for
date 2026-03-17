@@ -96,6 +96,15 @@ async function callBLS(seriesIds: string[], startYear: number, endYear: number, 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // Auth gate: require service-role key
+  const authHeader = req.headers.get("Authorization");
+  const token = authHeader?.replace("Bearer ", "") || "";
+  if (token !== Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
