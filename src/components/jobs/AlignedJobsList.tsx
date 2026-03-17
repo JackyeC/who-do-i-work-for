@@ -10,8 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import {
   ExternalLink, Briefcase, MapPin, Building2, Shield, Sparkles,
-  Loader2, Copy, Check, Wand2, ShieldAlert, X, Zap,
+  Loader2, Copy, Check, Wand2, ShieldAlert, X, Zap, FileDown,
 } from "lucide-react";
+import { generateCandidateAdvocacyPdf } from "@/lib/generateCandidateAdvocacyPdf";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -151,6 +152,7 @@ function ClipboardBanner({ payload, onDismiss }: {
     companyName: string;
     matchedSignals: string[];
     careerSiteUrl?: string;
+    advocacyData?: any;
   };
   onDismiss: () => void;
 }) {
@@ -202,6 +204,21 @@ function ClipboardBanner({ payload, onDismiss }: {
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? "Copied!" : "Copy Statement"}
             </Button>
+            {payload.advocacyData && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                onClick={() => {
+                  const pdf = generateCandidateAdvocacyPdf(payload.advocacyData);
+                  const slug = payload.companyName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+                  pdf.save(`${slug}-advocacy-dossier.pdf`);
+                }}
+              >
+                <FileDown className="w-3.5 h-3.5" />
+                Advocacy Dossier
+              </Button>
+            )}
             <Button size="icon" variant="ghost" onClick={onDismiss} className="h-8 w-8">
               <X className="w-4 h-4" />
             </Button>

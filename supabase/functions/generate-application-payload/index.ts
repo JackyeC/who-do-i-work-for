@@ -78,19 +78,21 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Fetch company signals in parallel
+    // Fetch company signals + public stances in parallel
     const [
       { data: aiSignals },
       { data: benefitSignals },
       { data: paySignals },
       { data: sentimentData },
       { data: warnNotices },
+      { data: publicStances },
     ] = await Promise.all([
       supabase.from('ai_hr_signals').select('signal_type, signal_category, confidence').eq('company_id', company_id).limit(10),
       supabase.from('company_signal_scans').select('signal_type, signal_category, signal_value').eq('company_id', company_id).eq('signal_category', 'worker_benefits').limit(10),
       supabase.from('pay_equity_signals').select('signal_type, signal_category, confidence').eq('company_id', company_id).limit(10),
       supabase.from('company_worker_sentiment').select('overall_rating, sentiment, ai_summary, top_praises, top_complaints').eq('company_id', company_id).order('created_at', { ascending: false }).limit(1),
       supabase.from('company_warn_notices').select('employees_affected, notice_date, layoff_type').eq('company_id', company_id).limit(5),
+      supabase.from('company_public_stances').select('topic, public_position, spending_reality, gap').eq('company_id', company_id).limit(10),
     ]);
 
     // Fetch user preferences
@@ -252,6 +254,29 @@ The letter must read like something a smart, busy professional would actually se
       valuesCheck = 'Ethical employment practices matter to me.';
     }
 
+    // Build advocacy dossier data for client-side PDF generation
+    const advocacyData = {
+      candidateName: profile.full_name || 'Candidate',
+      candidateEmail: profile.email || '',
+      candidateSkills: profile.skills || [],
+      candidateTargetRoles: profile.target_job_titles || [],
+      candidateLinkedin: profile.linkedin_url || '',
+      candidateBio: profile.bio || '',
+      companyName: company.name,
+      companyIndustry: company.industry,
+      alignmentScore,
+      civicFootprintScore: company.civic_footprint_score,
+      matchedSignals,
+      missingSignals,
+      publicStances: (publicStances || []).map((s: any) => ({
+        topic: s.topic,
+        public_position: s.public_position,
+        spending_reality: s.spending_reality,
+        gap: s.gap,
+      })),
+      verificationDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+    };
+
     return new Response(JSON.stringify({
       success: true,
       payload: {
@@ -271,6 +296,7 @@ The letter must read like something a smart, busy professional would actually se
         companyName: company.name,
         civicScore: company.civic_footprint_score,
         careerSiteUrl: company.careers_url || null,
+        advocacyData,
       },
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

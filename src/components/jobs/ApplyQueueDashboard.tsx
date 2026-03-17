@@ -6,8 +6,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Loader2, Play, Trash2, ExternalLink, Copy, Check,
-  ListTodo, CheckCircle2, AlertCircle, Clock, RotateCcw, Zap,
+  ListTodo, CheckCircle2, AlertCircle, Clock, RotateCcw, Zap, FileDown,
 } from "lucide-react";
+import { generateCandidateAdvocacyPdf } from "@/lib/generateCandidateAdvocacyPdf";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -80,6 +81,20 @@ function QueueItemCard({
               <Button size="sm" variant="outline" onClick={handleCopy} className="gap-1 text-xs h-7">
                 {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                 {copied ? "Copied" : "Copy"}
+              </Button>
+            )}
+            {item.generated_payload?.advocacyData && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1 text-xs h-7"
+                onClick={() => {
+                  const pdf = generateCandidateAdvocacyPdf(item.generated_payload.advocacyData);
+                  const slug = item.company_name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+                  pdf.save(`${slug}-advocacy-dossier.pdf`);
+                }}
+              >
+                <FileDown className="w-3 h-3" /> Dossier
               </Button>
             )}
             {item.application_url && (
