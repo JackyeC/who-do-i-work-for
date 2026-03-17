@@ -179,7 +179,7 @@ export const PERSONAS: PersonaConfig[] = [
         title: "Talent Brand Reality",
         subtitle: "Candidate sentiment, layoff impact, media reputation, and recruiter response rate signals. Will candidates trust this company?",
         iconName: "Eye",
-        sections: ["workforce_intel", "narrative_power"],
+        sections: ["workforce_intel", "narrative_power", "off_the_record"],
       },
       {
         id: "hiring_manager_landscape",
