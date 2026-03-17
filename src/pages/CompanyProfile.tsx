@@ -49,6 +49,7 @@ import { RelatedReportsCard } from "@/components/RelatedReportsCard";
 import { ValuesCheckSection, type ValuesCheckSignal } from "@/components/values-check/ValuesCheckSection";
 import { InfluenceChainCard } from "@/components/InfluenceChainCard";
 import { InstitutionalDNACard } from "@/components/dossier/InstitutionalDNACard";
+import { FamilyFirstTag } from "@/components/company/FamilyFirstTag";
 import { InsiderPrideBanner } from "@/components/community/InsiderPrideBanner";
 import { RecruiterDifficultyIndex } from "@/components/intelligence/RecruiterDifficultyIndex";
 import { CorporateCharacterScore, calculateCharacterScore } from "@/components/CorporateCharacterScore";
