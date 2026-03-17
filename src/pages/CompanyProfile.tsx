@@ -1394,6 +1394,7 @@ export default function CompanyProfile() {
               off_the_record: () => (
                 <section className="mb-10 scroll-mt-28">
                   <OffTheRecordSignals companyId={dbCompanyId || ""} companyName={name} />
+                  <EmptyStateExplainer type="off_the_record" className="mt-4" />
                 </section>
               ),
             };
