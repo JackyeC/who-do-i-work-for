@@ -2,6 +2,11 @@ import { AlertTriangle } from "lucide-react";
 import type { CompanyResult } from "./EmployerDossierSearch";
 
 function deriveSignals(company: CompanyResult): string[] {
+  // Use curated dossier insights if available
+  if (company.dossier?.insights?.length) {
+    return company.dossier.insights.slice(0, 5);
+  }
+
   const signals: string[] = [];
   if (company.total_pac_spending > 100000) signals.push("Significant political spending detected (transparency risk)");
   if ((company.lobbying_spend ?? 0) > 50000) signals.push("Active lobbying presence — check policy alignment");

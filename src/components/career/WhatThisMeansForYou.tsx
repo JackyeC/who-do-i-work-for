@@ -2,6 +2,14 @@ import { ThumbsUp, ShieldAlert } from "lucide-react";
 import type { CompanyResult } from "./EmployerDossierSearch";
 
 function deriveFit(company: CompanyResult): { strengths: string[]; risks: string[] } {
+  // Use curated dossier data if available
+  if (company.dossier?.fit_signals?.length || company.dossier?.risk_signals?.length) {
+    return {
+      strengths: (company.dossier.fit_signals || []).slice(0, 3),
+      risks: (company.dossier.risk_signals || []).slice(0, 3),
+    };
+  }
+
   const score = company.career_intelligence_score ?? company.civic_footprint_score / 10;
   const strengths: string[] = [];
   const risks: string[] = [];

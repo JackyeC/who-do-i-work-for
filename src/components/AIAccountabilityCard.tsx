@@ -95,7 +95,7 @@ export function AIAccountabilityCard({ companyName, dbCompanyId }: AIAccountabil
       queryClient.invalidateQueries({ queryKey: ["ai-hiring-signals", dbCompanyId] });
     },
     onError: (reason) => {
-      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+      if (reason === 'firecrawl_error') setFirecrawlDown(true);
     },
   });
 

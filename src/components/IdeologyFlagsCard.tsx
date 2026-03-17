@@ -112,7 +112,7 @@ export function IdeologyFlagsCard({ companyName, dbCompanyId }: Props) {
       if (data?.data) setResult(data.data);
     },
     onError: (reason) => {
-      if (reason === 'firecrawl_error' || reason === 'circuit_open') setFirecrawlDown(true);
+      if (reason === 'firecrawl_error') setFirecrawlDown(true);
     },
   });
 

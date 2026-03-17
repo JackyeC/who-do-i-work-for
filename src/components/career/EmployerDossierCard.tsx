@@ -3,6 +3,12 @@ import { ConfidenceBadge, scoreToConfidence } from "@/components/ConfidenceBadge
 import type { CompanyResult } from "./EmployerDossierSearch";
 
 function getRiskLevel(company: CompanyResult) {
+  if (company.dossier) {
+    const l = company.dossier.risk_level;
+    if (l === "Low") return { label: "Low Risk", color: "text-[hsl(var(--civic-green))]", bg: "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/30" };
+    if (l === "Moderate") return { label: "Moderate Risk", color: "text-[hsl(var(--civic-yellow))]", bg: "bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/30" };
+    return { label: "High Risk", color: "text-destructive", bg: "bg-destructive/10 border-destructive/30" };
+  }
   const score = company.career_intelligence_score ?? company.civic_footprint_score / 10;
   if (score >= 7) return { label: "Low Risk", color: "text-[hsl(var(--civic-green))]", bg: "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/30" };
   if (score >= 4) return { label: "Moderate Risk", color: "text-[hsl(var(--civic-yellow))]", bg: "bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/30" };
@@ -10,6 +16,7 @@ function getRiskLevel(company: CompanyResult) {
 }
 
 function getScore(company: CompanyResult): number {
+  if (company.dossier) return company.dossier.score;
   return company.career_intelligence_score ?? Math.min(10, company.civic_footprint_score / 10);
 }
 
@@ -20,9 +27,10 @@ interface EmployerDossierCardProps {
 export function EmployerDossierCard({ company }: EmployerDossierCardProps) {
   const score = getScore(company);
   const risk = getRiskLevel(company);
-  const confidence = scoreToConfidence(
-    company.confidence_rating === "high" ? 0.9 : company.confidence_rating === "medium" ? 0.6 : 0.3
-  );
+  const confidenceVal = company.dossier
+    ? (company.dossier.confidence === "High" ? 0.9 : company.dossier.confidence === "Medium" ? 0.6 : 0.3)
+    : (company.confidence_rating === "high" ? 0.9 : company.confidence_rating === "medium" ? 0.6 : 0.3);
+  const confidence = scoreToConfidence(confidenceVal);
 
   return (
     <div className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-elevated max-w-2xl mx-auto">
@@ -51,8 +59,14 @@ export function EmployerDossierCard({ company }: EmployerDossierCardProps) {
         </div>
       </div>
 
+      {company.dossier?.bottom_line && (
+        <p className="text-sm text-foreground/80 text-center mt-3 font-medium">
+          {company.dossier.bottom_line}
+        </p>
+      )}
+
       <p className="text-[11px] text-muted-foreground text-center mt-4 italic">
-        Sources analyzed: public filings, workforce data, compensation benchmarks, and employee sentiment signals
+        Sources analyzed: {company.dossier?.sources_note || "public filings, workforce data, compensation benchmarks, and employee sentiment signals"}
       </p>
     </div>
   );
