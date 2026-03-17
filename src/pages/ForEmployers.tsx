@@ -216,7 +216,7 @@ export default function ForEmployers() {
                         disabled={loadingTier === "founding_partner"}
                       >
                         {loadingTier === "founding_partner" && <Loader2 className="w-4 h-4 animate-spin" />}
-                        <ShieldCheck className="w-4 h-4" /> Become a Founding Partner
+                        <ShieldCheck className="w-4 h-4" /> Get Narrative Alignment Package
                       </Button>
                     )}
                   </CardContent>
