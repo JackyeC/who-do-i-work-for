@@ -3,10 +3,11 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDemoSafeMode } from "@/contexts/DemoSafeModeContext";
 import { cn } from "@/lib/utils";
-import { Search, LogIn, LogOut, Menu, X, Shield, Map, ChevronDown } from "lucide-react";
+import { Search, LogIn, LogOut, Menu, X, Shield, Map, ChevronDown, Lock } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { SignupModal } from "@/components/SignupModal";
 
 export const MAIN_SECTIONS = [
   {
