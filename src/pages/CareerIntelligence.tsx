@@ -15,11 +15,15 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, User, Bell, Upload, Wand2, Compass, CheckCircle2 } from "lucide-react";
 import { CareerMappingView } from "@/components/career/CareerMappingView";
+import { useCareerWaitlist } from "@/hooks/use-career-waitlist";
+import { CareerWaitlistGate } from "@/components/career/CareerWaitlistGate";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CareerIntelligence() {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "upload");
+  const { isApproved, isLoading: waitlistLoading, hasJoined } = useCareerWaitlist();
 
   // Auto-create a career profile for every authenticated user
   useEffect(() => {
@@ -44,6 +48,31 @@ export default function CareerIntelligence() {
   }, [user]);
 
   if (!user) return <Navigate to="/login" replace />;
+
+  // Waitlist gate
+  if (waitlistLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="container mx-auto px-4 py-6 flex-1 flex items-center justify-center">
+          <Skeleton className="h-64 w-96 rounded-xl" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!isApproved) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="container mx-auto px-4 py-6 flex-1">
+          <CareerWaitlistGate />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
