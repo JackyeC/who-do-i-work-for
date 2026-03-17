@@ -196,6 +196,7 @@ export default function Jobs() {
 
   const filtered = useMemo(() => {
     if (!jobs) return [];
+    // Reset visible count when filters change
     return jobs.filter((job: any) => {
       const company = job.companies;
       if (!company) return false;
@@ -203,6 +204,7 @@ export default function Jobs() {
       const isNonUS = /\b(india|germany|china|japan|south korea|mexico|brazil|canada|uk|france|spain|italy|australia|singapore|ireland|netherlands|israel|sweden|switzerland)\b/i.test(loc) ||
         /,\s*(in|de|cn|jp|kr|mx|br|ca|gb|fr|es|it|au|sg|ie|nl|il|se|ch)\s*$/i.test(loc);
       if (isNonUS) return false;
+      if (salaryOnly && !job.salary_range) return false;
       const matchesSearch = !search ||
         job.title.toLowerCase().includes(search.toLowerCase()) ||
         company.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -225,7 +227,27 @@ export default function Jobs() {
       if (!aSponsored && bSponsored) return 1;
       return (jobScores[b.id] || 0) - (jobScores[a.id] || 0);
     });
-  }, [jobs, search, minScore, industryFilter, workModeFilter, valuesFilters, valuesSignals, jobScores]);
+  }, [jobs, search, minScore, industryFilter, workModeFilter, salaryOnly, valuesFilters, valuesSignals, jobScores]);
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [search, minScore, industryFilter, workModeFilter, salaryOnly, valuesFilters]);
+
+  const visibleJobs = useMemo(() => filtered?.slice(0, visibleCount) || [], [filtered, visibleCount]);
+  const hasMore = visibleCount < (filtered?.length || 0);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadMore = useCallback(() => {
+    setLoadingMore(true);
+    // Small delay to show skeleton feedback
+    setTimeout(() => {
+      setVisibleCount((prev) => prev + PAGE_SIZE);
+      setLoadingMore(false);
+    }, 300);
+  }, []);
+
+  const sentinelRef = useInfiniteScroll(loadMore, hasMore, loadingMore);
 
   const companiesWithJobs = useMemo(() => {
     if (!filtered) return 0;
