@@ -78,6 +78,72 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <LiveIntelligenceTicker />
       </Suspense>
 
+      {/* ── Site Header ── */}
+      <header className="px-6 lg:px-16 py-4 max-w-[1100px] mx-auto w-full flex items-center justify-between">
+        <Link to="/" className="font-mono text-sm tracking-wider text-foreground font-semibold uppercase">
+          WDIWF
+        </Link>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-4">
+          {!authLoading && (
+            user ? (
+              <Button size="sm" variant="outline" onClick={() => navigate("/dashboard")} className="font-mono text-xs tracking-wider uppercase">
+                Dashboard
+              </Button>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Sign in
+                </button>
+                <Button size="sm" onClick={() => navigate("/login")} className="font-mono text-xs tracking-wider uppercase">
+                  Get started
+                </Button>
+              </>
+            )
+          )}
+        </nav>
+
+        {/* Mobile menu toggle */}
+        <button
+          className="md:hidden p-1 text-muted-foreground hover:text-foreground transition-colors"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </header>
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden px-6 pb-4 border-b border-border/50">
+          <nav className="flex flex-col gap-3">
+            {!authLoading && (
+              user ? (
+                <Button size="sm" variant="outline" onClick={() => { setMobileMenuOpen(false); navigate("/dashboard"); }} className="font-mono text-xs tracking-wider uppercase w-full">
+                  Dashboard
+                </Button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => { setMobileMenuOpen(false); navigate("/login"); }}
+                    className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors py-2"
+                  >
+                    Sign in
+                  </button>
+                  <Button size="sm" onClick={() => { setMobileMenuOpen(false); navigate("/login"); }} className="font-mono text-xs tracking-wider uppercase w-full">
+                    Get started
+                  </Button>
+                </>
+              )
+            )}
+          </nav>
+        </div>
+      )}
+
       {/* Exit intent deferred */}
       <Suspense fallback={null}><ExitIntentCapture /></Suspense>
 
