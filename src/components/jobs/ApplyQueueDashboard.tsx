@@ -6,8 +6,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Loader2, Play, Trash2, ExternalLink, Copy, Check,
-  ListTodo, CheckCircle2, AlertCircle, Clock, RotateCcw, Zap,
+  ListTodo, CheckCircle2, AlertCircle, Clock, RotateCcw, Zap, FileDown,
 } from "lucide-react";
+import { generateCandidateAdvocacyPdf } from "@/lib/generateCandidateAdvocacyPdf";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
