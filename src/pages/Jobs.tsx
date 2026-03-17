@@ -647,6 +647,7 @@ export default function Jobs() {
               {user ? (
                 <div className="space-y-6">
                   <UserProfileForm />
+                  <JobAlertPreferences />
                   <PreferenceCenter />
                 </div>
               ) : (
