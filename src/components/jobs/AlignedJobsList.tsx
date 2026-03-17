@@ -367,10 +367,7 @@ export function AlignedJobsList() {
         <JobCard
           key={job.job_id}
           job={job}
-          onApply={handleApply}
           onQueue={handleQueue}
-          applying={trackApplication.isPending}
-          generating={generatingFor === job.job_id}
           queueing={addToQueue.isPending}
           isQueued={queuedJobIds.has(job.job_id)}
         />
