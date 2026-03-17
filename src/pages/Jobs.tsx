@@ -488,8 +488,20 @@ export default function Jobs() {
                     <SlidersHorizontal className="w-4 h-4" />
                     <span className="hidden sm:inline">Values</span>
                   </Button>
-                </div>
-              </div>
+                 </div>
+               </div>
+
+               {/* Salary filter toggle */}
+               <div className="flex items-center gap-2 mb-3">
+                 <Switch
+                   id="salary-only"
+                   checked={salaryOnly}
+                   onCheckedChange={setSalaryOnly}
+                 />
+                 <Label htmlFor="salary-only" className="text-xs text-muted-foreground cursor-pointer flex items-center gap-1">
+                   <DollarSign className="w-3 h-3" /> Show only jobs with salary listed
+                 </Label>
+               </div>
 
               {/* Active values chips */}
               {valuesFilters.length > 0 && (
