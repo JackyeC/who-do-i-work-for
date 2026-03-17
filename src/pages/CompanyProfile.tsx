@@ -1179,6 +1179,7 @@ export default function CompanyProfile() {
                     <LevelsFyiEmbed companyName={name} />
                     <CompensationMarketCard companyName={name} dbCompanyId={dbCompanyId} />
                     <CompensationTransparencyCard companyName={name} dbCompanyId={dbCompanyId} />
+                    {!tiPayEquity && <EmptyStateExplainer type="compensation" />}
                   </div>
                 </section>
               ),
