@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+import { resilientSearch } from '../_shared/resilient-search.ts';
 // Vendor fingerprint database: domain → { name, category, risk_flags }
 const VENDOR_SIGNATURES: Record<string, { name: string; category: string; riskFlags: string[] }> = {
   // Sourcing AI
@@ -85,8 +85,8 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (!firecrawlKey || !lovableKey) {
-      return new Response(JSON.stringify({ success: false, error: 'Required API keys not configured' }), {
+    if (!lovableKey) {
+      return new Response(JSON.stringify({ success: false, error: 'LOVABLE_API_KEY not configured' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
@@ -103,75 +103,61 @@ Deno.serve(async (req) => {
       `site:${companyName.toLowerCase().replace(/\s+/g, '')}.com careers`,
     ];
 
+    const { results: searchResults } = await resilientSearch(searchQueries, firecrawlKey, lovableKey);
+
     let allContent = '';
     const foundUrls: string[] = [];
 
-    for (const query of searchQueries) {
-      try {
-        const searchResp = await fetch('https://api.firecrawl.dev/v1/search', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${firecrawlKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ query, limit: 5 }),
-        });
+    for (const r of searchResults) {
+      foundUrls.push(r.url || '');
+      allContent += `\n\nSOURCE: ${r.url}\nTITLE: ${r.title}\n${r.description || ''}\n${(r.markdown || '').slice(0, 2500)}`;
+    }
 
-        if (searchResp.ok) {
-          const searchData = await searchResp.json();
-          for (const r of (searchData.data || [])) {
-            foundUrls.push(r.url || '');
-            allContent += `\n\nSOURCE: ${r.url}\nTITLE: ${r.title}\n${r.description || ''}\n${r.markdown?.slice(0, 2500) || ''}`;
-          }
-        }
-      } catch (e) {
-        console.error(`Search failed: ${query}`, e);
+    // Step 2: Optionally scrape company careers and privacy pages (only if Firecrawl available)
+    if (firecrawlKey) {
+      const { data: company } = await supabase
+        .from('companies')
+        .select('careers_url')
+        .eq('id', companyId)
+        .single();
+
+      const pagesToScrape: { url: string; label: string }[] = [];
+      if (company?.careers_url) {
+        pagesToScrape.push({ url: company.careers_url, label: 'careers page' });
       }
-    }
 
-    // Step 2: Scrape company careers and privacy pages
-    const { data: company } = await supabase
-      .from('companies')
-      .select('careers_url')
-      .eq('id', companyId)
-      .single();
+      const domain = companyName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      pagesToScrape.push(
+        { url: `https://www.${domain}.com/privacy`, label: 'privacy policy' },
+        { url: `https://www.${domain}.com/careers`, label: 'careers page' },
+      );
 
-    const pagesToScrape: { url: string; label: string }[] = [];
-    if (company?.careers_url) {
-      pagesToScrape.push({ url: company.careers_url, label: 'careers page' });
-    }
-
-    const domain = companyName.toLowerCase().replace(/[^a-z0-9]/g, '');
-    pagesToScrape.push(
-      { url: `https://www.${domain}.com/privacy`, label: 'privacy policy' },
-      { url: `https://www.${domain}.com/careers`, label: 'careers page' },
-    );
-
-    for (const page of pagesToScrape) {
-      try {
-        const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${firecrawlKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            url: page.url,
-            formats: ['markdown', 'html'],
-            onlyMainContent: false, // Need full HTML for script detection
-            waitFor: 4000,
-          }),
-        });
-        if (scrapeResp.ok) {
-          const scrapeData = await scrapeResp.json();
-          const md = scrapeData.data?.markdown || scrapeData.markdown || '';
-          const html = scrapeData.data?.html || scrapeData.html || '';
-          if (md.length > 50 || html.length > 50) {
-            allContent += `\n\nSOURCE: ${page.url}\nTYPE: ${page.label}\nMARKDOWN:\n${md.slice(0, 5000)}\nHTML_EXCERPT:\n${html.slice(0, 5000)}`;
+      for (const page of pagesToScrape) {
+        try {
+          const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${firecrawlKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              url: page.url,
+              formats: ['markdown', 'html'],
+              onlyMainContent: false,
+              waitFor: 4000,
+            }),
+          });
+          if (scrapeResp.ok) {
+            const scrapeData = await scrapeResp.json();
+            const md = scrapeData.data?.markdown || scrapeData.markdown || '';
+            const html = scrapeData.data?.html || scrapeData.html || '';
+            if (md.length > 50 || html.length > 50) {
+              allContent += `\n\nSOURCE: ${page.url}\nTYPE: ${page.label}\nMARKDOWN:\n${md.slice(0, 5000)}\nHTML_EXCERPT:\n${html.slice(0, 5000)}`;
+            }
           }
+        } catch (e) {
+          console.error(`Scrape failed for ${page.url}`, e);
         }
-      } catch (e) {
-        console.error(`Scrape failed for ${page.url}`, e);
       }
     }
 

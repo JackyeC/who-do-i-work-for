@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resilientSearch } from "../_shared/resilient-search.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -24,10 +25,10 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const firecrawlKey = Deno.env.get("FIRECRAWL_API_KEY");
-    if (!firecrawlKey) {
-      return new Response(JSON.stringify({ error: "Firecrawl not configured" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!lovableKey) {
+      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not configured" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -58,19 +59,14 @@ Deno.serve(async (req) => {
           `"${company_name}" layoffs cuts ${currentYear} site:reuters.com OR site:cnbc.com`,
         ];
 
-    await Promise.allSettled(
-      searches.map((query) =>
-        fetchFirecrawl(firecrawlKey, { query, limit: 10, scrapeOptions: { formats: ["markdown"] } })
-          .then((data) => { if (data?.data) allResults.push(...data.data); })
-          .catch((e) => console.error(`Search failed: ${query}`, e))
-      )
-    );
+    const { results: searchResults } = await resilientSearch(searches, firecrawlKey, lovableKey, { batchSize: 3 });
+    const allResults = searchResults;
 
     if (allResults.length === 0) {
       console.log("[warn-scan] No results found");
       await supabase.from("warn_sync_log").insert({
-        source_name: `Firecrawl WARN search for ${company_name}`,
-        source_type: "firecrawl_search",
+        source_name: `WARN search for ${company_name}`,
+        source_type: "resilient_search",
         records_fetched: 0,
         records_inserted: 0,
         status: "success",
@@ -91,16 +87,9 @@ Deno.serve(async (req) => {
     });
 
     const combinedText = uniqueResults
-      .map((r) => `URL: ${r.url}\nTitle: ${r.title || ""}\n${(r.markdown || r.description || "").slice(0, 2000)}`)
+      .map((r: any) => `URL: ${r.url}\nTitle: ${r.title || ""}\n${(r.markdown || r.description || "").slice(0, 2000)}`)
       .join("\n---\n")
       .slice(0, 15000);
-
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableKey) {
-      return new Response(JSON.stringify({ error: "LOVABLE_API_KEY not configured" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
 
     const nationalPrompt = national
       ? `This is a NATIONAL scan. Extract WARN notices from ALL US states. Include every distinct location/state filing separately. Also look for SEC 8-K Item 2.05 filings.`
@@ -282,8 +271,8 @@ ${combinedText}`,
 
     // Log sync
     await supabase.from("warn_sync_log").insert({
-      source_name: `Firecrawl WARN search for ${company_name}`,
-      source_type: "firecrawl_search",
+      source_name: `WARN search for ${company_name}`,
+      source_type: "resilient_search",
       records_fetched: notices.length,
       records_inserted: inserted,
       status: "success",
@@ -303,16 +292,3 @@ ${combinedText}`,
     );
   }
 });
-
-async function fetchFirecrawl(apiKey: string, body: Record<string, unknown>): Promise<any> {
-  const res = await fetch("https://api.firecrawl.dev/v1/search", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) return null;
-  return res.json();
-}

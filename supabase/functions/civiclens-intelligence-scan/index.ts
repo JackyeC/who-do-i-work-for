@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+import { resilientSearch } from '../_shared/resilient-search.ts';
 // ─── AI Hiring Vendor Signatures ──────────────────────────────────────
 const AI_VENDORS = [
   'Eightfold', 'Phenom', 'HireVue', 'Paradox', 'SeekOut', 'Findem',
@@ -67,15 +67,15 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (!firecrawlKey || !lovableKey) {
-      return new Response(JSON.stringify({ success: false, error: 'Required API keys not configured' }), {
+    if (!lovableKey) {
+      return new Response(JSON.stringify({ success: false, error: 'LOVABLE_API_KEY not configured' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
     console.log(`CivicLens Intelligence Scan for: ${companyName}, parts: ${parts.join(', ')}`);
 
-    // ─── Phase 1: Gather content via Firecrawl ──────────────────────
+    // ─── Phase 1: Gather content via resilient search ──────────────────────
     const searchQueries = [
       `"${companyName}" employee benefits healthcare parental leave retirement`,
       `"${companyName}" AI hiring technology automated screening recruitment`,
@@ -87,53 +87,41 @@ Deno.serve(async (req) => {
       `"${companyName}" salary transparency pay band PayAnalytics Syndio CEO pay ratio`,
     ];
 
-    let allContent = '';
-    let sourcesScanned = 0;
+    const { results: searchResults } = await resilientSearch(searchQueries, firecrawlKey, lovableKey);
 
-    for (const query of searchQueries) {
-      try {
-        const searchResp = await fetch('https://api.firecrawl.dev/v1/search', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, limit: 5 }),
-        });
-        if (searchResp.ok) {
-          const searchData = await searchResp.json();
-          const results = searchData.data || [];
-          sourcesScanned += results.length;
-          for (const r of results) {
-            allContent += `\n\nSOURCE: ${r.url}\nTITLE: ${r.title}\n${r.description || ''}\n${r.markdown?.slice(0, 2000) || ''}`;
-          }
-        }
-      } catch (e) {
-        console.error(`Search failed: ${query}`, e);
-      }
+    let allContent = '';
+    let sourcesScanned = searchResults.length;
+
+    for (const r of searchResults) {
+      allContent += `\n\nSOURCE: ${r.url}\nTITLE: ${r.title}\n${r.description || ''}\n${(r.markdown || '').slice(0, 2000)}`;
     }
 
-    // Scrape careers page if available
-    const { data: company } = await supabase
-      .from('companies')
-      .select('careers_url')
-      .eq('id', companyId)
-      .single();
+    // Optionally scrape careers page if Firecrawl available
+    if (firecrawlKey) {
+      const { data: company } = await supabase
+        .from('companies')
+        .select('careers_url')
+        .eq('id', companyId)
+        .single();
 
-    if (company?.careers_url) {
-      try {
-        const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: company.careers_url, formats: ['markdown'], onlyMainContent: true, waitFor: 3000 }),
-        });
-        if (scrapeResp.ok) {
-          const scrapeData = await scrapeResp.json();
-          const md = scrapeData.data?.markdown || scrapeData.markdown || '';
-          if (md.length > 50) {
-            allContent += `\n\nSOURCE: ${company.careers_url}\nTYPE: careers page\n${md.slice(0, 5000)}`;
-            sourcesScanned++;
+      if (company?.careers_url) {
+        try {
+          const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: company.careers_url, formats: ['markdown'], onlyMainContent: true, waitFor: 3000 }),
+          });
+          if (scrapeResp.ok) {
+            const scrapeData = await scrapeResp.json();
+            const md = scrapeData.data?.markdown || scrapeData.markdown || '';
+            if (md.length > 50) {
+              allContent += `\n\nSOURCE: ${company.careers_url}\nTYPE: careers page\n${md.slice(0, 5000)}`;
+              sourcesScanned++;
+            }
           }
+        } catch (e) {
+          console.error('Careers scrape failed', e);
         }
-      } catch (e) {
-        console.error('Careers scrape failed', e);
       }
     }
 

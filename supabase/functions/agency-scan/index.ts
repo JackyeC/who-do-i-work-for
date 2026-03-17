@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+import { resilientSearch } from '../_shared/resilient-search.ts';
 const CONTROVERSIAL_AGENCIES = [
   { name: 'Immigration and Customs Enforcement', acronym: 'ICE', category: 'immigration_enforcement' },
   { name: 'Customs and Border Protection', acronym: 'CBP', category: 'immigration_enforcement' },
@@ -34,9 +34,9 @@ Deno.serve(async (req) => {
 
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
     const lovableKey = Deno.env.get('LOVABLE_API_KEY');
-    if (!firecrawlKey || !lovableKey) {
+    if (!lovableKey) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Required API keys not configured' }),
+        JSON.stringify({ success: false, error: 'LOVABLE_API_KEY not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -50,28 +50,12 @@ Deno.serve(async (req) => {
       `${companyName} forced labor supply chain controversy`,
     ];
 
-    const allResults: any[] = [];
-    for (const query of searchQueries) {
-      try {
-        const resp = await fetch('https://api.firecrawl.dev/v1/search', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, limit: 5, scrapeOptions: { formats: ['markdown'] } }),
-        });
-        if (resp.ok) {
-          const data = await resp.json();
-          if (data.data) {
-            allResults.push(...data.data.map((r: any) => ({
-              title: r.title || '', url: r.url || '',
-              description: r.description || '',
-              markdown: (r.markdown || '').slice(0, 2000), query,
-            })));
-          }
-        }
-      } catch (e) {
-        console.error(`Search failed: ${query}`, e);
-      }
-    }
+    const { results: searchResults } = await resilientSearch(searchQueries, firecrawlKey, lovableKey);
+    const allResults = searchResults.map((r: any) => ({
+      title: r.title || '', url: r.url || '',
+      description: r.description || '',
+      markdown: (r.markdown || '').slice(0, 2000), query: r.query,
+    }));
 
     // AI analysis
     const content = allResults.slice(0, 12).map((r, i) =>

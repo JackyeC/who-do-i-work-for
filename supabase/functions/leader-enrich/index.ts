@@ -7,6 +7,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+import { resilientSearch } from "../_shared/resilient-search.ts";
+
 async function findHeadshot(name: string, company: string, firecrawlKey: string): Promise<string | null> {
   try {
     const query = `${name} ${company} headshot portrait photo`;
@@ -27,7 +29,6 @@ async function findHeadshot(name: string, company: string, firecrawlKey: string)
     if (!resp.ok) return null;
     const data = await resp.json();
     const results = data.data || [];
-    // Look for image URLs in results
     for (const r of results) {
       const links: string[] = r.links || [];
       for (const link of links) {
@@ -35,7 +36,6 @@ async function findHeadshot(name: string, company: string, firecrawlKey: string)
           return link;
         }
       }
-      // Check if the URL itself is an image
       if (r.url && /\.(jpg|jpeg|png|webp)/i.test(r.url)) {
         return r.url;
       }
@@ -104,48 +104,20 @@ serve(async (req) => {
     let scrapedBio = "";
     let photoUrl: string | null = null;
 
-    if (FIRECRAWL_API_KEY) {
-      const [bioResult, headshot] = await Promise.all([
-        // Bio search
-        (async () => {
-          try {
-            const searchQuery = `${leader_name} ${company_name || ""} executive leadership biography site:linkedin.com OR site:bloomberg.com`;
-            const searchResp = await fetch("https://api.firecrawl.dev/v1/search", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${FIRECRAWL_API_KEY}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                query: searchQuery,
-                limit: 3,
-                lang: "en",
-                country: "us",
-                scrapeOptions: { formats: ["markdown"] },
-              }),
-            });
-            if (searchResp.ok) {
-              const searchData = await searchResp.json();
-              const results = searchData.data || [];
-              let bio = "";
-              for (const r of results) {
-                if (r.markdown && r.markdown.length > 100) {
-                  bio += r.markdown.slice(0, 2000) + "\n\n";
-                }
-              }
-              return bio.slice(0, 4000);
-            }
-          } catch (e) {
-            console.error("Bio search error:", e);
-          }
-          return "";
-        })(),
-        // Headshot search
-        findHeadshot(leader_name, company_name || "", FIRECRAWL_API_KEY),
-      ]);
-      scrapedBio = bioResult;
-      photoUrl = headshot;
+    // Bio search via resilientSearch (works with or without Firecrawl)
+    const bioQueries = [`${leader_name} ${company_name || ""} executive leadership biography`];
+    const [bioSearchResult, headshot] = await Promise.all([
+      resilientSearch(bioQueries, FIRECRAWL_API_KEY, LOVABLE_API_KEY),
+      FIRECRAWL_API_KEY ? findHeadshot(leader_name, company_name || "", FIRECRAWL_API_KEY) : Promise.resolve(null),
+    ]);
+
+    for (const r of bioSearchResult.results) {
+      if (r.markdown && r.markdown.length > 100) {
+        scrapedBio += r.markdown.slice(0, 2000) + "\n\n";
+      }
     }
+    scrapedBio = scrapedBio.slice(0, 4000);
+    photoUrl = headshot;
 
     // AI dossier generation
     const aiPrompt = `You are an intelligence analyst creating a leader dossier for a career intelligence platform.

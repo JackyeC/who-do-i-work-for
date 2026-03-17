@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+import { resilientSearch } from '../_shared/resilient-search.ts';
 const FEC_API_BASE = 'https://api.open.fec.gov/v1';
 
 // Search FEC for a candidate and get their top PAC/organization donors
@@ -128,13 +128,6 @@ Deno.serve(async (req) => {
     }
 
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
-    if (!firecrawlKey) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Firecrawl connector not configured' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
     const lovableKey = Deno.env.get('LOVABLE_API_KEY');
     if (!lovableKey) {
       return new Response(
@@ -150,28 +143,12 @@ Deno.serve(async (req) => {
       ? `who are the elected representatives for "${address}" US Congress senator representative 2025`
       : `${state} ${district || ''} elected representatives US Congress senator 2025`;
 
-    const searchResp = await fetch('https://api.firecrawl.dev/v1/search', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${firecrawlKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: searchQuery,
-        limit: 8,
-        scrapeOptions: { formats: ['markdown'] },
-      }),
-    });
-
-    let searchResults: any[] = [];
-    if (searchResp.ok) {
-      const searchData = await searchResp.json();
-      searchResults = (searchData.data || []).map((r: any) => ({
-        title: r.title || '',
-        url: r.url || '',
-        markdown: (r.markdown || '').slice(0, 1500),
-      }));
-    }
+    const { results: searchResults } = await resilientSearch([searchQuery], firecrawlKey, lovableKey);
+    const formattedResults = searchResults.map(r => ({
+      title: r.title || '',
+      url: r.url || '',
+      markdown: (r.markdown || '').slice(0, 1500),
+    }));
 
     // 2. Get all candidates from our DB to cross-reference
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -216,7 +193,7 @@ Deno.serve(async (req) => {
     });
 
     // 3. AI to identify representatives from search results
-    const contentForAI = searchResults.map((r, i) =>
+    const contentForAI = formattedResults.map((r: any, i: number) =>
       `[${i + 1}] "${r.title}" (${r.url})\n${r.markdown?.slice(0, 800) || ''}`
     ).join('\n\n---\n\n');
 

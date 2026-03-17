@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { resilientSearch } from "../_shared/resilient-search.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,11 +22,20 @@ Deno.serve(async (req) => {
     // Step 1: Search CourtListener for EEOC dismissal motions
     const courtListenerResults = await searchCourtListener();
 
-    // Step 2: Search news via Firecrawl for recent EEOC dropped cases
+    // Step 2: Search news via resilient search for recent EEOC dropped cases
     let newsResults: any[] = [];
-    if (firecrawlKey) {
-      newsResults = await searchFirecrawlNews(firecrawlKey);
-    }
+    const newsQueries = [
+      '"EEOC moved to dismiss" 2025',
+      '"EEOC withdrew" discrimination lawsuit 2025',
+      '"EEOC dropped" employment case 2025',
+    ];
+    const { results: searchResults } = await resilientSearch(newsQueries, firecrawlKey, lovableKey);
+    newsResults = searchResults.map(r => ({
+      source: "resilient_search",
+      title: r.title || "",
+      url: r.url || "",
+      markdown: (r.markdown || "").slice(0, 2000),
+    }));
 
     // Step 3: Use AI to extract structured case data from search results
     const allResults = [...courtListenerResults, ...newsResults];
@@ -131,58 +141,6 @@ async function searchCourtListener(): Promise<any[]> {
   }
 }
 
-async function searchFirecrawlNews(apiKey: string): Promise<any[]> {
-  try {
-    const queries = [
-      '"EEOC moved to dismiss" 2025',
-      '"EEOC withdrew" discrimination lawsuit 2025',
-      '"EEOC dropped" employment case 2025',
-    ];
-
-    const results: any[] = [];
-
-    for (const query of queries) {
-      const resp = await fetch("https://api.firecrawl.dev/v1/search", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query,
-          limit: 5,
-          lang: "en",
-          country: "us",
-          tbs: "qdr:m", // last month
-          scrapeOptions: { formats: ["markdown"] },
-        }),
-      });
-
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data.data) {
-          results.push(
-            ...data.data.map((r: any) => ({
-              source: "firecrawl_news",
-              title: r.title || "",
-              url: r.url || "",
-              markdown: r.markdown?.slice(0, 2000) || "",
-            }))
-          );
-        }
-      }
-
-      // Rate limit between queries
-      await new Promise((r) => setTimeout(r, 500));
-    }
-
-    return results;
-  } catch (err) {
-    console.error("Firecrawl news search failed:", err);
-    return [];
-  }
-}
-
 async function extractCasesWithAI(lovableKey: string, results: any[]): Promise<any[]> {
   try {
     const context = results
@@ -192,7 +150,7 @@ async function extractCasesWithAI(lovableKey: string, results: any[]): Promise<a
       )
       .join("\n---\n");
 
-    const resp = await fetch("https://api.lovable.dev/v1/chat/completions", {
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${lovableKey}`,
@@ -209,7 +167,7 @@ Return a JSON array of cases. Each case must have:
 - case_name: string (e.g. "EEOC v. Company Name")
 - case_number: string or null
 - court_name: string or null
-- discrimination_type: string (e.g. "Transgender harassment", "Gender identity discrimination")
+- discrimination_type: string
 - discrimination_category: one of: gender_identity, race, sex, disability, age, retaliation, disparate_impact, other
 - action_type: one of: moved_to_dismiss, withdrew, dismissed, settled
 - state: string or null (US state)
@@ -239,7 +197,6 @@ Return ONLY the JSON array, no markdown.`,
     const data = await resp.json();
     const content = data.choices?.[0]?.message?.content || "";
 
-    // Parse JSON from response
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
       return JSON.parse(jsonMatch[0]);

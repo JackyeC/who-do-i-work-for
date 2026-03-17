@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
+import { resilientSearch } from '../_shared/resilient-search.ts';
 // ─── ATS API endpoints (public, no auth needed) ───
 const ATS_CONFIGS: Record<string, { detect: (url: string) => boolean; fetchJobs: (url: string) => Promise<any[]>; platform: string }> = {
   greenhouse: {
@@ -245,21 +245,16 @@ Deno.serve(async (req) => {
         }
 
         // Search fallback
-        if (allMarkdown.length < 100) {
-          try {
-            const searchResp = await fetch('https://api.firecrawl.dev/v1/search', {
-              method: 'POST',
-              headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ query: `${companyName} careers jobs openings hiring 2026`, limit: 5, scrapeOptions: { formats: ['markdown'] } }),
-            });
-            if (searchResp.ok) {
-              const searchData = await searchResp.json();
-              for (const result of (searchData.data || [])) {
-                const md = result.markdown || '';
-                if (md.length > 50) allMarkdown += `\n\n--- SEARCH: ${result.url} ---\n${md}`;
-              }
-            }
-          } catch (e) { console.warn('Search fallback failed:', e); }
+        if (allMarkdown.length < 100 && lovableKey) {
+          // Use resilient search fallback
+          const { results: fallbackResults } = await resilientSearch(
+            [`${companyName} careers jobs openings hiring 2026`],
+            firecrawlKey, lovableKey
+          );
+          for (const result of fallbackResults) {
+            const md = result.markdown || '';
+            if (md.length > 50) allMarkdown += `\n\n--- SEARCH: ${result.url} ---\n${md}`;
+          }
         }
 
         // AI extraction
