@@ -81,6 +81,7 @@ function isSectionActive(section: typeof MAIN_SECTIONS[0], pathname: string) {
 export function TopBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [signupModalOpen, setSignupModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
