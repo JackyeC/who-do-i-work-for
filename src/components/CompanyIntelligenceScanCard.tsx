@@ -229,9 +229,9 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
               {isScanning ? (
                 <><Loader2 className="w-4 h-4 animate-spin" />Scanning...</>
               ) : latestScan ? (
-                <><RefreshCw className="w-4 h-4" />Run Fresh Scan</>
-              ) : (
-                <><Search className="w-4 h-4" />Run Intelligence Scan</>
+              <><RefreshCw className="w-4 h-4" />Refresh Intelligence</>
+            ) : (
+              <><Search className="w-4 h-4" />Deep-Dive Research</>
               )}
             </Button>
           </div>

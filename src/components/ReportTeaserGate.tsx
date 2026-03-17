@@ -11,9 +11,10 @@ interface ReportTeaserGateProps {
   children: ReactNode;
   teaser: ReactNode;
   companyName?: string;
+  hiddenSignalCount?: number;
 }
 
-export function ReportTeaserGate({ children, teaser, companyName }: ReportTeaserGateProps) {
+export function ReportTeaserGate({ children, teaser, companyName, hiddenSignalCount }: ReportTeaserGateProps) {
   const { user } = useAuth();
   const { isPremium } = usePremium();
   const { hasCredits } = useCredits();
@@ -28,7 +29,7 @@ export function ReportTeaserGate({ children, teaser, companyName }: ReportTeaser
       <div className="mb-4">{teaser}</div>
 
       <div className="relative">
-        <div className="blur-[6px] pointer-events-none select-none max-h-[400px] overflow-hidden">
+        <div className="blur-[8px] pointer-events-none select-none max-h-[400px] overflow-hidden">
           {children}
         </div>
 
@@ -41,7 +42,9 @@ export function ReportTeaserGate({ children, teaser, companyName }: ReportTeaser
               Unlock the full {companyName ? `${companyName} ` : ""}report
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              See all signals, connection chains, workforce data, and Jackye's Take.
+              {hiddenSignalCount && hiddenSignalCount > 0
+                ? `Unlock Full Intelligence to see ${hiddenSignalCount} more Risk Signals.`
+                : "See all signals, connection chains, workforce data, and Jackye's Take."}
             </p>
 
             {user ? (

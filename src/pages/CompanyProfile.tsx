@@ -100,6 +100,7 @@ import { JackyeNote } from "@/components/JackyeNote";
 import { CorporateOwnershipCard } from "@/components/CorporateOwnershipCard";
 import { ReceiptsTimeline } from "@/components/ReceiptsTimeline";
 import { OffTheRecordSignals } from "@/components/company/OffTheRecordSignals";
+import { SourcesCheckedBanner } from "@/components/company/SourcesCheckedBanner";
 import { LevelsFyiEmbed } from "@/components/company/LevelsFyiEmbed";
 import { TransparencyResearchTab } from "@/components/company/TransparencyResearchTab";
 import { CivilRightsIntelligencePanel } from "@/components/CivilRightsIntelligencePanel";
@@ -784,6 +785,11 @@ export default function CompanyProfile() {
                 const staleSections = Object.values(intelligenceReports).filter(r => r.isStale);
                 staleSections.forEach(r => refreshSection(r.section_type));
               }}
+            />
+            <SourcesCheckedBanner
+              scanCompletion={(dbCompany as any)?.scan_completion}
+              intelligenceReports={intelligenceReports}
+              isPubliclyTraded={!!dbCompany?.is_publicly_traded}
             />
           </div>
 
