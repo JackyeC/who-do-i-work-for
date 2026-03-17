@@ -42,7 +42,9 @@ export function ReportTeaserGate({ children, teaser, companyName, hiddenSignalCo
               Unlock the full {companyName ? `${companyName} ` : ""}report
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              See all signals, connection chains, workforce data, and Jackye's Take.
+              {hiddenSignalCount && hiddenSignalCount > 0
+                ? `Unlock Full Intelligence to see ${hiddenSignalCount} more Risk Signals.`
+                : "See all signals, connection chains, workforce data, and Jackye's Take."}
             </p>
 
             {user ? (
