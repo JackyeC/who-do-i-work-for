@@ -25,7 +25,7 @@ interface CareerWrappedStepProps {
 }
 
 const REVEAL_SLIDES = [
-  { key: "intro", label: "Your Career, Mapped" },
+  { key: "intro", label: "Your Career Map Results" },
   { key: "paths", label: "Paths Discovered" },
   { key: "companies", label: "Companies Found" },
   { key: "skills", label: "Skill Snapshot" },
