@@ -92,16 +92,18 @@ function JobCard({ job, onQueue, queueing, isQueued }: {
             )}
           </div>
           <div className="flex flex-col gap-2 shrink-0">
-            <Button
-              size="sm"
-              onClick={() => onApply(job)}
-              disabled={applying || generating || belowThreshold}
+            <EasyApplyButton
+              job={{
+                id: job.job_id,
+                company_id: job.company_id,
+                title: job.title,
+                company_name: job.company_name,
+                url: job.url,
+                alignment_score: job.alignment_score,
+                matched_signals: job.matched_signals,
+              }}
               className="gap-1.5"
-              title={belowThreshold ? `Alignment score must be ${AI_TRANSPARENCY_THRESHOLD}%+ to apply` : undefined}
-            >
-              {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5" />}
-              Apply Now
-            </Button>
+            />
             {!belowThreshold && (
               <Button
                 size="sm"
