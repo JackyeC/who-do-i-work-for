@@ -53,16 +53,16 @@ const TIERS = [
   },
   {
     id: "certified",
-    name: "Certified — Founding Partner",
+    name: "Certified — Narrative Alignment",
     price: "$599/yr",
     originalPrice: "$999/yr",
     badge: "Certified",
     badgeIcon: ShieldCheck,
     badgeClass: "text-amber-600 border-amber-500/20 bg-amber-500/10",
-    description: "Pass Jackye's transparency audit to earn the Gold Shield. Founding cohort pricing — limited availability.",
+    description: "Complete the transparency audit to earn the Gold Shield. Bridge the narrative gap with values-aligned talent.",
     features: [
       { label: "Everything in Verified", included: true },
-      { label: "Permanent Founding Partner Gold Shield", included: true },
+      { label: "Permanent Narrative Alignment Gold Shield", included: true },
       { label: "5 job slots (30 days each)", included: true },
       { label: "Full 10-point Transparency Audit", included: true },
       { label: "Unlimited Official Responses to findings", included: true },
@@ -91,7 +91,7 @@ export default function ForEmployers() {
 
   usePageSEO({
     title: "For Employers — Claim, Respond & Get Certified",
-    description: "Post values-aligned jobs and earn Gold Shield certification on Who Do I Work For. Founding Partner pricing available now.",
+    description: "Post values-aligned jobs and earn Gold Shield certification on Who Do I Work For. Narrative Alignment Package available now.",
     path: "/for-employers",
   });
 
@@ -216,7 +216,7 @@ export default function ForEmployers() {
                         disabled={loadingTier === "founding_partner"}
                       >
                         {loadingTier === "founding_partner" && <Loader2 className="w-4 h-4 animate-spin" />}
-                        <ShieldCheck className="w-4 h-4" /> Become a Founding Partner
+                        <ShieldCheck className="w-4 h-4" /> Get Narrative Alignment Package
                       </Button>
                     )}
                   </CardContent>
@@ -346,7 +346,7 @@ export default function ForEmployers() {
           >
             {loadingTier === "founding_partner_cta" && <Loader2 className="w-4 h-4 animate-spin" />}
             <ShieldCheck className="w-4 h-4" />
-            Get Started as a Founding Partner
+            Get Your Narrative Alignment Package
           </Button>
         </section>
       </main>

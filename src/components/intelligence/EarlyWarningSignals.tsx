@@ -23,14 +23,14 @@ interface WarningSignal {
 }
 
 const STATUS_STYLES = {
-  elevated: "bg-destructive/8 border-destructive/20 text-destructive",
-  moderate: "bg-[hsl(var(--civic-yellow))]/8 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]",
+  elevated: "bg-[hsl(var(--civic-yellow))]/8 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]",
+  moderate: "bg-[hsl(var(--civic-yellow))]/5 border-[hsl(var(--civic-yellow))]/15 text-[hsl(var(--civic-yellow))]",
   low: "bg-[hsl(var(--civic-green))]/8 border-[hsl(var(--civic-green))]/20 text-[hsl(var(--civic-green))]",
   no_data: "bg-muted/50 border-border/30 text-muted-foreground",
 };
 
 const STATUS_BADGE = {
-  elevated: "Elevated",
+  elevated: "Review Required",
   moderate: "Moderate",
   low: "Low Risk",
   no_data: "No Data",
@@ -236,7 +236,7 @@ export function EarlyWarningSignals({ companyId, companyName }: Props) {
   const elevatedCount = signals.filter(s => s.status === "elevated").length;
   const moderateCount = signals.filter(s => s.status === "moderate").length;
   const compositeLevel = elevatedCount >= 3 ? "High" : elevatedCount >= 1 || moderateCount >= 3 ? "Moderate" : "Low";
-  const compositeColor = compositeLevel === "High" ? "text-destructive" : compositeLevel === "Moderate" ? "text-[hsl(var(--civic-yellow))]" : "text-[hsl(var(--civic-green))]";
+  const compositeColor = compositeLevel === "High" ? "text-[hsl(var(--civic-yellow))]" : compositeLevel === "Moderate" ? "text-[hsl(var(--civic-yellow))]" : "text-[hsl(var(--civic-green))]";
 
   return (
     <Card className="border-border/50">
@@ -284,8 +284,8 @@ export function EarlyWarningSignals({ companyId, companyName }: Props) {
         })}
 
         <p className="text-[10px] text-muted-foreground border-t border-border pt-2 mt-3">
-          These signals highlight patterns observed in public records. No single signal is conclusive —
-          review the full intelligence report for context.
+          These signals highlight patterns observed in public records. We recommend employers provide
+          an "Insider Context" statement to clarify their stance. No single signal is conclusive.
         </p>
       </CardContent>
     </Card>

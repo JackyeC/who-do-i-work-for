@@ -56,10 +56,10 @@ export function JackyeNote(props: JackyeNoteProps) {
       items.push({ text: "AI hiring tools detected — audit status pending", icon: Eye });
     }
     if (!props.hasPayEquity) {
-      items.push({ text: "No public pay equity data found", icon: TrendingDown });
+      items.push({ text: "Pay equity data — context opportunity available", icon: TrendingDown });
     }
     if (!props.hasBenefitsData) {
-      items.push({ text: "No public benefits data found", icon: TrendingDown });
+      items.push({ text: "Benefits data — context opportunity available", icon: TrendingDown });
     }
 
     return items;
@@ -96,7 +96,7 @@ export function JackyeNote(props: JackyeNoteProps) {
       parts.push(`Gaps exist in ${gaps.join(", ")}.`);
     }
 
-    parts.push("The signals below are sourced from public filings, federal databases, and open records. No judgment, just receipts.");
+    parts.push("The signals below are sourced from public filings, federal databases, and open records. Employers can provide context through the Narrative Alignment Package.");
 
     return parts.join(" ");
   }, [companyName, props]);

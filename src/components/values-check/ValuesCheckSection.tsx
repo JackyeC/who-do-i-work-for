@@ -16,8 +16,8 @@ import { ValuesSignalCard } from "./ValuesSignalCard";
 import { ValuesEmptyState } from "./ValuesEmptyState";
 
 export const ISSUE_AREAS = [
-  { key: "gun_policy", label: "Gun Policy", icon: Crosshair, color: "text-destructive" },
-  { key: "reproductive_rights", label: "Reproductive Rights", icon: Heart, color: "text-[hsl(var(--civic-red))]" },
+  { key: "gun_policy", label: "Gun Policy", icon: Crosshair, color: "text-[hsl(var(--civic-yellow))]" },
+  { key: "reproductive_rights", label: "Reproductive Rights", icon: Heart, color: "text-[hsl(var(--civic-yellow))]" },
   { key: "labor_rights", label: "Labor Rights", icon: Hammer, color: "text-[hsl(var(--civic-blue))]" },
   { key: "climate", label: "Climate", icon: Leaf, color: "text-[hsl(var(--civic-green))]" },
   { key: "civil_rights", label: "Civil Rights", icon: Scale, color: "text-primary" },
@@ -25,7 +25,7 @@ export const ISSUE_AREAS = [
   { key: "voting_rights", label: "Voting Rights", icon: Vote, color: "text-primary" },
   { key: "immigration", label: "Immigration", icon: Globe, color: "text-[hsl(var(--civic-blue))]" },
   { key: "education", label: "Education", icon: BookOpen, color: "text-[hsl(var(--civic-green))]" },
-  { key: "healthcare", label: "Healthcare", icon: Stethoscope, color: "text-[hsl(var(--civic-red))]" },
+  { key: "healthcare", label: "Healthcare", icon: Stethoscope, color: "text-[hsl(var(--civic-yellow))]" },
   { key: "consumer_protection", label: "Consumer Protection", icon: ShoppingCart, color: "text-[hsl(var(--civic-yellow))]" },
 ] as const;
 
