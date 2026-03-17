@@ -115,6 +115,8 @@ import { UpdateTheRecordButton } from "@/components/company/UpdateTheRecordButto
 import { EmployerRebuttalSection } from "@/components/company/EmployerRebuttalSection";
 import { NarrativeGapCard } from "@/components/company/NarrativeGapCard";
 import { RecruitmentAdvantageScore } from "@/components/company/RecruitmentAdvantageScore";
+import { VerificationBountyCard } from "@/components/company/VerificationBountyCard";
+import { CIOAuditBadge } from "@/components/company/CIOAuditBadge";
 /* ─── Status labels ─── */
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   discovered: { label: "Discovered", color: "bg-[hsl(var(--civic-yellow))]/10 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/30" },
