@@ -15,6 +15,9 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, User, Bell, Upload, Wand2, Compass, CheckCircle2 } from "lucide-react";
 import { CareerMappingView } from "@/components/career/CareerMappingView";
+import { useCareerWaitlist } from "@/hooks/use-career-waitlist";
+import { CareerWaitlistGate } from "@/components/career/CareerWaitlistGate";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CareerIntelligence() {
   const { user } = useAuth();
