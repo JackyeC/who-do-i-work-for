@@ -36,6 +36,7 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+        {open && job && <JobPostingSchema job={job} />}
         <SheetHeader className="text-left pb-0">
           <SheetTitle className="text-lg leading-snug">{job.title}</SheetTitle>
           <Link
