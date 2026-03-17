@@ -54,7 +54,7 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
   if (!profile) {
     return (
       <Card className="border-border bg-card p-8 text-center">
-        <p className="text-muted-foreground">Complete your profile first to see your Career Wrapped summary.</p>
+        <p className="text-muted-foreground">Complete your profile first to see your Career Map Results.</p>
       </Card>
     );
   }
