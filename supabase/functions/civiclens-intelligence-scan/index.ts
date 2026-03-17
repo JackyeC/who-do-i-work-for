@@ -67,15 +67,15 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (!firecrawlKey || !lovableKey) {
-      return new Response(JSON.stringify({ success: false, error: 'Required API keys not configured' }), {
+    if (!lovableKey) {
+      return new Response(JSON.stringify({ success: false, error: 'LOVABLE_API_KEY not configured' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
     console.log(`CivicLens Intelligence Scan for: ${companyName}, parts: ${parts.join(', ')}`);
 
-    // ─── Phase 1: Gather content via Firecrawl ──────────────────────
+    // ─── Phase 1: Gather content via resilient search ──────────────────────
     const searchQueries = [
       `"${companyName}" employee benefits healthcare parental leave retirement`,
       `"${companyName}" AI hiring technology automated screening recruitment`,
@@ -87,27 +87,13 @@ Deno.serve(async (req) => {
       `"${companyName}" salary transparency pay band PayAnalytics Syndio CEO pay ratio`,
     ];
 
-    let allContent = '';
-    let sourcesScanned = 0;
+    const { results: searchResults } = await resilientSearch(searchQueries, firecrawlKey, lovableKey);
 
-    for (const query of searchQueries) {
-      try {
-        const searchResp = await fetch('https://api.firecrawl.dev/v1/search', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, limit: 5 }),
-        });
-        if (searchResp.ok) {
-          const searchData = await searchResp.json();
-          const results = searchData.data || [];
-          sourcesScanned += results.length;
-          for (const r of results) {
-            allContent += `\n\nSOURCE: ${r.url}\nTITLE: ${r.title}\n${r.description || ''}\n${r.markdown?.slice(0, 2000) || ''}`;
-          }
-        }
-      } catch (e) {
-        console.error(`Search failed: ${query}`, e);
-      }
+    let allContent = '';
+    let sourcesScanned = searchResults.length;
+
+    for (const r of searchResults) {
+      allContent += `\n\nSOURCE: ${r.url}\nTITLE: ${r.title}\n${r.description || ''}\n${(r.markdown || '').slice(0, 2000)}`;
     }
 
     // Scrape careers page if available
