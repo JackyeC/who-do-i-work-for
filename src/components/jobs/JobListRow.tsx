@@ -106,9 +106,14 @@ export function JobListRow({ job, companyValueSignals = [], companySignalFlags =
           {/* Salary + signal indicators + values badges */}
           <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
             {job.salary_range && (
-              <span className="text-xs font-medium text-[hsl(var(--civic-green))] flex items-center gap-0.5">
-                <DollarSign className="w-3 h-3" />{job.salary_range}
-              </span>
+              <>
+                <span className="text-xs font-medium text-[hsl(var(--civic-green))] flex items-center gap-0.5">
+                  <DollarSign className="w-3 h-3" />{job.salary_range}
+                </span>
+                <Badge variant="success" className="text-[10px] gap-0.5">
+                  <DollarSign className="w-2.5 h-2.5" /> Pay Transparent
+                </Badge>
+              </>
             )}
             {job.source_platform && job.source_platform !== "custom" && (
               <Badge variant="outline" className="text-[10px] bg-muted/50">

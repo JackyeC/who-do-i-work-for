@@ -76,6 +76,11 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
             {job.salary_range && (
               <span className="flex items-center gap-1 text-civic-green font-medium"><DollarSign className="w-3.5 h-3.5" />{job.salary_range}</span>
             )}
+            {job.salary_range && (
+              <Badge variant="success" className="text-[10px] gap-0.5">
+                <DollarSign className="w-2.5 h-2.5" /> Pay Transparent
+              </Badge>
+            )}
             {job.department && (
               <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{job.department}</span>
             )}
