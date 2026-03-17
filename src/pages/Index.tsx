@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Shield, FileText, MessageSquare, Compass, ArrowRight, ArrowLeftRight, Zap, Briefcase, Search, BarChart3, Eye, Users, DollarSign, Scale, Cpu, CheckCircle2 } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { HeroSearch } from "@/components/landing/HeroSearch";
+const LiveIntelligenceTicker = lazy(() => import("@/components/landing/LiveIntelligenceTicker").then(m => ({ default: m.LiveIntelligenceTicker })));
 
 // Lazy-load below-fold components
 const SocialProofStrip = lazy(() => import("@/components/landing/SocialProofStrip").then(m => ({ default: m.SocialProofStrip })));
