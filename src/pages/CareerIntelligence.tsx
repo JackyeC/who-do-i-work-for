@@ -15,11 +15,17 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { FileText, User, Bell, Upload, Wand2, Compass, CheckCircle2 } from "lucide-react";
 import { CareerMappingView } from "@/components/career/CareerMappingView";
+import { EmployerDossierSearch, type CompanyResult } from "@/components/career/EmployerDossierSearch";
+import { EmployerDossierCard } from "@/components/career/EmployerDossierCard";
+import { BeforeYouAcceptBlock } from "@/components/career/BeforeYouAcceptBlock";
+import { WhatThisMeansForYou } from "@/components/career/WhatThisMeansForYou";
+import { SampleDossierPreview } from "@/components/career/SampleDossierPreview";
 
 export default function CareerIntelligence() {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "upload");
+  const [selectedCompany, setSelectedCompany] = useState<CompanyResult | null>(null);
 
   // Auto-create a career profile for every authenticated user
   useEffect(() => {
@@ -54,14 +60,31 @@ export default function CareerIntelligence() {
             Map My Career
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
-            Upload career documents for AI-powered signal analysis. Get career trajectory suggestions,
-            skill gap identification, and dream job alerts based on your skills and values.
+            Search any employer to generate a risk-scored Employer Dossier. Get signals on transparency,
+            political spending, and workplace culture — before you accept.
           </p>
           <p className="text-xs text-muted-foreground mt-2 max-w-xl mx-auto italic">
-            This tool detects signals in uploaded documents and public sources. It provides educational insights only — not legal, financial, or employment advice.
+            This tool detects signals from public sources. It provides educational insights only — not legal, financial, or employment advice.
           </p>
         </div>
 
+        {/* Employer Dossier Search */}
+        <EmployerDossierSearch onSelect={setSelectedCompany} selectedCompany={selectedCompany} />
+
+        {/* Dossier Results or Sample Preview */}
+        {selectedCompany ? (
+          <div className="mb-8">
+            <EmployerDossierCard company={selectedCompany} />
+            <BeforeYouAcceptBlock company={selectedCompany} />
+            <WhatThisMeansForYou company={selectedCompany} />
+          </div>
+        ) : (
+          <div className="mb-8">
+            <SampleDossierPreview />
+          </div>
+        )}
+
+        {/* Deep Dive Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-4xl mx-auto">
           <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="upload" className="flex items-center gap-1.5 text-xs sm:text-sm">
