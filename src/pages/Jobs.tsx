@@ -728,6 +728,7 @@ export default function Jobs() {
         </div>
       )}
 
+      <AskJackyeWidget />
       <Footer />
     </div>
   );
