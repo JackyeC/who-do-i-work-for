@@ -6,13 +6,14 @@ import { Progress } from "@/components/ui/progress";
 import {
   Download, Share2, Sparkles, TrendingUp, Target, GitBranch,
   Building2, GraduationCap, Users, Lock, Linkedin, Link2, Copy,
-  CheckCircle2, ArrowRight, Zap, BarChart3, Calendar,
+  CheckCircle2, ArrowRight, Zap, BarChart3, Calendar, Mail, Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePremium } from "@/hooks/use-premium";
 import { toast } from "sonner";
 import html2canvas from "html2canvas";
+import { supabase } from "@/integrations/supabase/client";
 import type { CareerDiscoveryData, CompanyDiscoveryData, SkillGapData, MultipleFuturesData, ActionPlanData, CareerProfile } from "@/hooks/use-career-discovery";
 
 interface CareerWrappedStepProps {
@@ -25,7 +26,7 @@ interface CareerWrappedStepProps {
 }
 
 const REVEAL_SLIDES = [
-  { key: "intro", label: "Your Career, Mapped" },
+  { key: "intro", label: "Your Career Map Results" },
   { key: "paths", label: "Paths Discovered" },
   { key: "companies", label: "Companies Found" },
   { key: "skills", label: "Skill Snapshot" },
@@ -37,6 +38,7 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
   const [currentSlide, setCurrentSlide] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [autoPlaying, setAutoPlaying] = useState(true);
+  const [emailing, setEmailing] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const { isPremium } = usePremium();
 
@@ -54,7 +56,7 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
   if (!profile) {
     return (
       <Card className="border-border bg-card p-8 text-center">
-        <p className="text-muted-foreground">Complete your profile first to see your Career Wrapped summary.</p>
+        <p className="text-muted-foreground">Complete your profile first to see your Career Map Results.</p>
       </Card>
     );
   }
@@ -101,8 +103,26 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
       });
       return;
     }
-    // Trigger the existing CareerReportView download logic
     toast.success("Generating your full PDF roadmap...");
+  };
+
+  const handleEmailResults = async () => {
+    setEmailing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("email-career-results", {
+        body: { profile, careerPaths, companies, skillGap, futures, actionPlan },
+      });
+      if (error) throw error;
+      if (data?.method === 'saved') {
+        toast.success("Results saved! They'll be emailed once email sending is fully configured.");
+      } else {
+        toast.success("Career Map Results sent to your email!");
+      }
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to send email. Please try again.");
+    } finally {
+      setEmailing(false);
+    }
   };
 
   const slideKey = REVEAL_SLIDES[currentSlide]?.key;
@@ -139,7 +159,7 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.3, type: "spring" }}>
                   <Sparkles className="w-16 h-16 mx-auto mb-4 opacity-90" />
                 </motion.div>
-                <h2 className="text-3xl font-bold font-display">Your Career, Mapped.</h2>
+                <h2 className="text-3xl font-bold font-display">Your Career Map Results</h2>
                 <p className="text-primary-foreground/80 text-sm">
                   Here's what we discovered for <span className="font-semibold">{profile.jobTitle}</span>
                 </p>
@@ -264,6 +284,10 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
 
       {/* Action Buttons */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <Button onClick={handleEmailResults} disabled={emailing} className="gap-2">
+          {emailing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+          {emailing ? "Sending…" : "Email My Results"}
+        </Button>
         <Button onClick={handleShareLinkedIn} className="gap-2 bg-[#0A66C2] hover:bg-[#004182] text-white">
           <Linkedin className="w-4 h-4" /> Share on LinkedIn
         </Button>
@@ -275,7 +299,7 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
         </Button>
         <Button
           onClick={handleDownloadPDF}
-          className={cn("gap-2", !isPremium && "opacity-80")}
+          className={cn("gap-2 sm:col-span-2", !isPremium && "opacity-80")}
           variant={isPremium ? "default" : "outline"}
         >
           {isPremium ? <Download className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
