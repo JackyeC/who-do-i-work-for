@@ -16,6 +16,17 @@ interface CompanyResult {
   employee_count: string | null;
   confidence_rating: string;
   record_status: string;
+  /** Curated dossier fields (populated when available) */
+  dossier?: {
+    score: number;
+    risk_level: string;
+    confidence: string;
+    insights: string[];
+    fit_signals: string[];
+    risk_signals: string[];
+    bottom_line: string | null;
+    sources_note: string | null;
+  };
 }
 
 interface EmployerDossierSearchProps {
@@ -47,6 +58,23 @@ export function EmployerDossierSearch({ onSelect, selectedCompany }: EmployerDos
     setLoading(false);
   };
 
+  const handleSelect = async (company: CompanyResult) => {
+    // Fetch dossier if available
+    const { data: dossier } = await supabase
+      .from("company_dossiers")
+      .select("score, risk_level, confidence, insights, fit_signals, risk_signals, bottom_line, sources_note")
+      .eq("company_id", company.id)
+      .maybeSingle();
+
+    const enriched: CompanyResult = dossier
+      ? { ...company, dossier: dossier as CompanyResult["dossier"] }
+      : company;
+
+    onSelect(enriched);
+    setQuery(company.name);
+    setOpen(false);
+  };
+
   return (
     <div className="relative max-w-2xl mx-auto mb-6">
       <div className="relative">
@@ -67,11 +95,7 @@ export function EmployerDossierSearch({ onSelect, selectedCompany }: EmployerDos
             <button
               key={c.id}
               className="w-full text-left px-4 py-3 hover:bg-accent/50 transition-colors border-b border-border/30 last:border-0"
-              onMouseDown={() => {
-                onSelect(c);
-                setQuery(c.name);
-                setOpen(false);
-              }}
+              onMouseDown={() => handleSelect(c)}
             >
               <span className="font-semibold text-foreground">{c.name}</span>
               <span className="text-xs text-muted-foreground ml-2">{c.industry} · {c.state}</span>
