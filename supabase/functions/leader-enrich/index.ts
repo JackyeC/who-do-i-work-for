@@ -51,6 +51,15 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Auth gate: require service-role key
+  const authHeader = req.headers.get("Authorization");
+  const token = authHeader?.replace("Bearer ", "") || "";
+  if (token !== Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const { leader_id, leader_type, leader_name, leader_title, company_id, company_name, company_industry } = await req.json();
 
