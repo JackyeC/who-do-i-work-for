@@ -89,7 +89,7 @@ export function EmployerRebuttalSection({ companyId, companyName }: EmployerRebu
               {rebuttals.map((r: any) => (
                 <div key={r.id} className="p-3 rounded-lg border border-border bg-muted/20">
                   <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="outline" className="text-[10px] gap-1 bg-primary/5 text-primary border-primary/20">
+                    <Badge variant="outline" className="text-xs gap-1 bg-primary/5 text-primary border-primary/20">
                       <MessageSquareWarning className="w-2.5 h-2.5" />
                       Employer Response
                     </Badge>
