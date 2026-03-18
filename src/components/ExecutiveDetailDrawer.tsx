@@ -280,118 +280,145 @@ export function ExecutiveDetailDrawer({ open, onOpenChange, executive, companyNa
         {/* Recipients with impact drill-down */}
         <div className="mb-4">
           <p className="text-sm font-semibold text-foreground mb-1">Where the Money Goes</p>
-          <p className="text-xs text-muted-foreground mb-3">Sorted by amount. Click any recipient to see what they vote for.</p>
           {isLoading ? (
             <LoadingState message="Loading recipients..." />
           ) : recipients && recipients.length > 0 ? (
-            <div className="space-y-2">
-              {recipients.map((r, idx) => {
-                const isExpanded = expandedRecipient === r.name;
-                const summary = recipientSummaries[r.name];
-                const isLoadingThis = loadingRecipient === r.name;
-                const stateDisplay = r.state || (r as any).district ? `${r.state || ""}${(r as any).district ? `, Dist. ${(r as any).district}` : ""}` : null;
+            <>
+              <p className="text-xs text-muted-foreground mb-3">Sorted by amount. Click any recipient to see what they vote for.</p>
+              <div className="space-y-2">
+                {recipients.map((r, idx) => {
+                  const isExpanded = expandedRecipient === r.name;
+                  const summary = recipientSummaries[r.name];
+                  const isLoadingThis = loadingRecipient === r.name;
+                  const stateDisplay = r.state || (r as any).district ? `${r.state || ""}${(r as any).district ? `, Dist. ${(r as any).district}` : ""}` : null;
 
-                return (
-                  <div key={r.id} className="rounded-lg border border-border overflow-hidden">
-                    <button
-                      onClick={() => fetchRecipientImpact(r.name, r.party)}
-                      className="w-full flex items-center justify-between p-3 bg-muted/50 hover:bg-primary/5 transition-colors text-left"
-                    >
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <span className="text-xs text-muted-foreground font-mono w-5 shrink-0">#{idx + 1}</span>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-medium text-sm text-foreground">{r.name}</span>
-                            <Badge
-                              variant="outline"
-                              className={cn(
-                                "text-[10px] px-1.5 py-0",
-                                r.party === "Republican" && "border-destructive/50 text-destructive",
-                                r.party === "Democrat" && "border-primary/50 text-primary"
+                  return (
+                    <div key={r.id} className="rounded-lg border border-border overflow-hidden">
+                      <button
+                        onClick={() => fetchRecipientImpact(r.name, r.party)}
+                        className="w-full flex items-center justify-between p-3 bg-muted/50 hover:bg-primary/5 transition-colors text-left"
+                      >
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className="text-xs text-muted-foreground font-mono w-5 shrink-0">#{idx + 1}</span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-medium text-sm text-foreground">{r.name}</span>
+                              <Badge
+                                variant="outline"
+                                className={cn(
+                                  "text-[10px] px-1.5 py-0",
+                                  r.party === "Republican" && "border-destructive/50 text-destructive",
+                                  r.party === "Democrat" && "border-primary/50 text-primary"
+                                )}
+                              >
+                                {r.party === "Republican" ? "R" : r.party === "Democrat" ? "D" : r.party}
+                              </Badge>
+                              {stateDisplay && (
+                                <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                                  <MapPin className="w-2.5 h-2.5" />{stateDisplay}
+                                </span>
                               )}
-                            >
-                              {r.party === "Republican" ? "R" : r.party === "Democrat" ? "D" : r.party}
-                            </Badge>
-                            {stateDisplay && (
-                              <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-                                <MapPin className="w-2.5 h-2.5" />{stateDisplay}
-                              </span>
+                            </div>
+                            {(r as any).committee_name && (
+                              <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{(r as any).committee_name}</p>
                             )}
                           </div>
-                          {(r as any).committee_name && (
-                            <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{(r as any).committee_name}</p>
-                          )}
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-sm font-bold text-foreground">{formatCurrency(r.amount)}</span>
-                        {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-                      </div>
-                    </button>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-sm font-bold text-foreground">{formatCurrency(r.amount)}</span>
+                          {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                        </div>
+                      </button>
 
-                    {isExpanded && (
-                      <div className="p-3 border-t border-border bg-card">
-                        {isLoadingThis ? (
-                          <div className="flex items-center gap-2 py-3">
-                            <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                            <span className="text-xs text-muted-foreground">Researching what {r.name} supports...</span>
-                          </div>
-                        ) : summary ? (
-                          <>
-                            <div className="flex items-center gap-1.5 mb-2">
-                              <Sparkles className="w-3.5 h-3.5 text-primary" />
-                              <span className="text-xs font-semibold text-foreground uppercase tracking-wide">What this money supports</span>
+                      {isExpanded && (
+                        <div className="p-3 border-t border-border bg-card">
+                          {isLoadingThis ? (
+                            <div className="flex items-center gap-2 py-3">
+                              <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                              <span className="text-xs text-muted-foreground">Researching what {r.name} supports...</span>
                             </div>
-                            <p className="text-xs text-foreground leading-relaxed whitespace-pre-line mb-3">{summary}</p>
-                          </>
-                        ) : null}
+                          ) : summary ? (
+                            <>
+                              <div className="flex items-center gap-1.5 mb-2">
+                                <Sparkles className="w-3.5 h-3.5 text-primary" />
+                                <span className="text-xs font-semibold text-foreground uppercase tracking-wide">What this money supports</span>
+                              </div>
+                              <p className="text-xs text-foreground leading-relaxed whitespace-pre-line mb-3">{summary}</p>
+                            </>
+                          ) : null}
 
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" asChild>
-                            <a href={`https://www.congress.gov/search?q=${encodeURIComponent(r.name)}`} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="w-3 h-3" /> Congress.gov
-                            </a>
-                          </Button>
-                          <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" asChild>
-                            <a href={`https://www.fec.gov/data/candidates/?search=${encodeURIComponent(r.name)}`} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="w-3 h-3" /> FEC Filings
-                            </a>
-                          </Button>
-                          <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" asChild>
-                            <a href={`https://justfacts.votesmart.org/candidate/key-votes/${encodeURIComponent(r.name.replace(/\s+/g, '-').toLowerCase())}`} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="w-3 h-3" /> VoteSmart
-                            </a>
-                          </Button>
-                          <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" asChild>
-                            <a href={`https://www.opensecrets.org/search?q=${encodeURIComponent(r.name)}&type=members`} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="w-3 h-3" /> OpenSecrets
-                            </a>
-                          </Button>
-                          <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" onClick={() => onCandidateClick?.({
-                            id: r.id,
-                            name: r.name,
-                            party: r.party,
-                            state: "",
-                            amount: r.amount,
-                            donation_type: "Individual",
-                            flagged: false,
-                          })}>
-                            <ArrowRight className="w-3 h-3" /> Full Profile
-                          </Button>
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" asChild>
+                              <a href={`https://www.congress.gov/search?q=${encodeURIComponent(r.name)}`} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="w-3 h-3" /> Congress.gov
+                              </a>
+                            </Button>
+                            <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" asChild>
+                              <a href={`https://www.fec.gov/data/candidates/?search=${encodeURIComponent(r.name)}`} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="w-3 h-3" /> FEC Filings
+                              </a>
+                            </Button>
+                            <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" asChild>
+                              <a href={`https://justfacts.votesmart.org/candidate/key-votes/${encodeURIComponent(r.name.replace(/\s+/g, '-').toLowerCase())}`} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="w-3 h-3" /> VoteSmart
+                              </a>
+                            </Button>
+                            <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" asChild>
+                              <a href={`https://www.opensecrets.org/search?q=${encodeURIComponent(r.name)}&type=members`} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="w-3 h-3" /> OpenSecrets
+                              </a>
+                            </Button>
+                            <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" onClick={() => onCandidateClick?.({
+                              id: r.id,
+                              name: r.name,
+                              party: r.party,
+                              state: "",
+                              amount: r.amount,
+                              donation_type: "Individual",
+                              flagged: false,
+                            })}>
+                              <ArrowRight className="w-3 h-3" /> Full Profile
+                            </Button>
+                          </div>
+                          <p className="text-[10px] text-muted-foreground italic">
+                            Research this person to understand what policies and legislation your executive is financially supporting.
+                          </p>
                         </div>
-                        <p className="text-[10px] text-muted-foreground italic">
-                          Research this person to understand what policies and legislation your executive is financially supporting.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           ) : (
-            <p className="text-sm text-muted-foreground py-4 text-center">
-              No itemized recipient data available. Check FEC individual contribution records for full details.
-            </p>
+            <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+              {executive.total_donations > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-foreground">Total political donations on record</span>
+                  <span className="text-sm font-bold font-mono text-foreground">{formatCurrency(executive.total_donations)}</span>
+                </div>
+              )}
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Itemized recipient breakdown has not been indexed yet. Use the links below to research individual contribution records directly.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" asChild>
+                  <a href={fecDonorUrl} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-3 h-3" /> FEC Individual Contributions
+                  </a>
+                </Button>
+                <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" asChild>
+                  <a href={`https://www.opensecrets.org/search?q=${encodeURIComponent(displayName)}&type=donors`} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-3 h-3" /> OpenSecrets Donor Search
+                  </a>
+                </Button>
+                <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5" asChild>
+                  <a href={`https://www.followthemoney.org/search?s=DA&c-t-eid=1&c-t-id=${encodeURIComponent(displayName)}`} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-3 h-3" /> FollowTheMoney
+                  </a>
+                </Button>
+              </div>
+            </div>
           )}
         </div>
 
