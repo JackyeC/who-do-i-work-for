@@ -46,6 +46,38 @@ Deno.serve(async (req) => {
 
     if (existing) {
       console.log(`Company already exists: ${existing.slug}`);
+
+      // Trigger job-scrape for stale existing companies (no scan or >48h old)
+      const { data: companyDetail } = await supabase
+        .from('companies')
+        .select('last_scan_attempted, careers_url, name')
+        .eq('id', existing.id)
+        .single();
+
+      const lastScan = companyDetail?.last_scan_attempted ? new Date(companyDetail.last_scan_attempted).getTime() : 0;
+      const hoursSinceLastScan = (Date.now() - lastScan) / (1000 * 60 * 60);
+
+      if (hoursSinceLastScan > 48) {
+        console.log(`Triggering background job-scrape for stale company: ${existing.slug}`);
+        fetch(`${supabaseUrl}/functions/v1/job-scrape`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            companyName: companyDetail?.name || name,
+            companyId: existing.id,
+            careersUrl: companyDetail?.careers_url || null,
+          }),
+        }).catch(e => console.error('Background job-scrape (existing) failed:', e));
+
+        // Update last_scan_attempted to prevent duplicate triggers
+        await supabase.from('companies').update({
+          last_scan_attempted: new Date().toISOString(),
+        }).eq('id', existing.id);
+      }
+
       return new Response(JSON.stringify({
         success: true,
         action: 'existing',
@@ -185,7 +217,7 @@ ${searchContent ? `Search results:\n${searchContent}` : 'Use your knowledge.'}`,
 
     await supabase.from('companies').update(updateFields).eq('id', newCompany.id);
 
-    // Step 5: Trigger company-research in background (fire-and-forget)
+    // Step 5: Trigger company-research + job-scrape in background (fire-and-forget)
     // NOTE: Do NOT trigger company-intelligence-scan here — the profile page's
     // useROIPipeline hook auto-triggers it when it detects empty data, avoiding double invocation.
     try {
@@ -199,6 +231,26 @@ ${searchContent ? `Search results:\n${searchContent}` : 'Use your knowledge.'}`,
       }).catch(e => console.error('Background company-research failed:', e));
     } catch (e) {
       console.error('Failed to trigger company-research:', e);
+    }
+
+    // Step 5b: Trigger job-scrape if we have a careers URL
+    const careersUrl = identityData.careers_url || null;
+    try {
+      console.log(`Triggering job-scrape for new company: ${newCompany.id} (careers: ${careersUrl || 'none'})`);
+      fetch(`${supabaseUrl}/functions/v1/job-scrape`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          companyName: identityData.official_name || name,
+          companyId: newCompany.id,
+          careersUrl,
+        }),
+      }).catch(e => console.error('Background job-scrape failed:', e));
+    } catch (e) {
+      console.error('Failed to trigger job-scrape:', e);
     }
 
     // Update status to research in progress
