@@ -190,7 +190,7 @@ export function CompanyRiskRadar({ companyId, companyName, slug, lobbyingSpend, 
             Company Signal Radar
           </span>
         </div>
-        <Button variant="ghost" size="sm" className="h-7 px-2 font-mono text-[10px] tracking-wider uppercase text-muted-foreground hover:text-foreground" onClick={handleShare}>
+        <Button variant="ghost" size="sm" className="h-7 px-2 font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground" onClick={handleShare}>
           <Copy className="w-3 h-3 mr-1" /> Share
         </Button>
       </div>
