@@ -307,7 +307,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                         </p>
                       </div>
                       {doc.status === "parsed" && doc.parsed_signals?.skills?.length > 0 && (
-                        <Badge variant="outline" className="text-[9px] shrink-0">
+                        <Badge variant="outline" className="text-xs shrink-0">
                           {doc.parsed_signals.skills.length} skills
                         </Badge>
                       )}
