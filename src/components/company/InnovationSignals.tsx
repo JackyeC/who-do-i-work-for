@@ -175,7 +175,7 @@ export function InnovationSignals({ companyId, companyName }: InnovationSignalsP
                   {Math.abs(Math.round(trend))}% YoY
                 </div>
               )}
-              <Badge variant="outline" className="text-[10px]">{total} patents</Badge>
+              <Badge variant="outline" className="text-xs">{total} patents</Badge>
             </div>
           </div>
 
