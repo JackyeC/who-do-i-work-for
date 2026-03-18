@@ -227,7 +227,7 @@ export function TopBar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
-              className="bg-transparent border-none outline-none text-foreground font-mono text-[10px] w-full placeholder:text-muted-foreground"
+              className="bg-transparent border-none outline-none text-foreground font-mono text-xs w-full placeholder:text-muted-foreground"
             />
           </form>
 
