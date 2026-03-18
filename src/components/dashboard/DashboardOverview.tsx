@@ -99,7 +99,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                   <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                     {lastTracked.company.name}
                   </p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     {lastTracked.company.industry}
                     {lastTracked.company.civic_footprint_score != null && ` · Score: ${lastTracked.company.civic_footprint_score}/100`}
                   </p>
