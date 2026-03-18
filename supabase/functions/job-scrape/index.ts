@@ -677,6 +677,7 @@ Deno.serve(async (req) => {
             /\/job/i, /\/position/i, /\/career/i, /\/opening/i, /\/apply/i,
             /\/role/i, /lever\.co/i, /greenhouse\.io/i, /ashbyhq\.com/i,
             /myworkdayjobs\.com/i, /icims\.com/i, /smartrecruiters\.com/i,
+            /pinpointhq\.com/i,
           ];
 
           const priorityUrls = allLinks.filter((u: string) => priorityPatterns.some(p => p.test(u)));
