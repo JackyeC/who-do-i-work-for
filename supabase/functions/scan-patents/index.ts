@@ -99,18 +99,18 @@ serve(async (req) => {
     // Upsert patents
     const rows = patents.map((p: any) => ({
       company_id: companyId,
-      patent_number: p.patent_number,
+      patent_number: p.patent_id,
       title: p.patent_title || "Untitled",
       abstract: p.patent_abstract?.substring(0, 1000) || null,
       filing_date: p.patent_date || null,
       grant_date: p.patent_date || null,
       patent_type: p.patent_type || "utility",
       category: categorizePatent(p.patent_title || ""),
-      inventors: (p.inventors || []).map((inv: any) =>
-        `${inv.inventor_first_name || ""} ${inv.inventor_last_name || ""}`.trim()
+      inventors: (p.inventors_at_grant || []).map((inv: any) =>
+        `${inv.name_first || ""} ${inv.name_last || ""}`.trim()
       ),
-      assignee_name: p.assignees?.[0]?.assignee_organization || companyName,
-      source_url: `https://patents.google.com/patent/US${p.patent_number}`,
+      assignee_name: p.assignees_at_grant?.[0]?.assignee_organization || companyName,
+      source_url: `https://patents.google.com/patent/US${p.patent_id}`,
       source: "patentsview",
       confidence: "High",
     }));
