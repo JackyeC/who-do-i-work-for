@@ -59,7 +59,7 @@ export function PersonalizationBanner() {
           <div className="flex items-center gap-2 shrink-0">
             {user ? (
               <Button size="sm" asChild className="gap-1.5">
-                <Link to="/career-dashboard">
+              <Link to="/job-dashboard?tab=preferences">
                   Set Preferences <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
               </Button>
@@ -96,7 +96,7 @@ export function PersonalizationBanner() {
           ))}
         </div>
         <Button size="sm" variant="ghost" asChild className="gap-1 text-xs h-7 shrink-0">
-          <Link to="/career-dashboard">
+          <Link to="/job-dashboard?tab=preferences">
             <Settings className="w-3 h-3" /> Edit
           </Link>
         </Button>
