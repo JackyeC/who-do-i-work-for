@@ -200,6 +200,9 @@ export default function CompanyDossier() {
         <span className="text-xs text-muted-foreground ml-1">— viewing dossier through this lens. Switch via header toggle.</span>
       </div>
 
+      {/* Situation-Aware Context Banner */}
+      <SituationContextBanner companyName={company.name} />
+
       {/* Score gauges */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 p-6 rounded-2xl border border-border/40 bg-card">
         <InfluenceGauge value={influenceScore} label="Influence Score" />

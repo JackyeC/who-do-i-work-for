@@ -853,6 +853,7 @@ export default function StrategicOfferReview() {
                     annualBaseline={annualBaseline}
                     companyName={offer.companyName}
                     roleTitle={offer.roleTitle}
+                    situations={userSituations}
                   />
                 </div>
 
