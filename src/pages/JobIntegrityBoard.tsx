@@ -13,6 +13,8 @@ import { Loader2, Briefcase } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { computeRankingScore, evaluateJobQuality, hasEvergreenSignals } from "@/lib/jobQuality";
 import { differenceInDays } from "date-fns";
+import { useJobPreferences } from "@/hooks/use-job-preferences";
+import { evaluateJobFit } from "@/lib/jobFitEngine";
 
 function getUserPreferenceCategories(): Set<string> {
   try {
@@ -57,6 +59,7 @@ function parseSalaryMin(salaryRange: string | null): number {
 
 export default function JobIntegrityBoard() {
   const [filters, setFilters] = useState<JobBoardFilterState>(DEFAULT_FILTERS);
+  const { preferences } = useJobPreferences();
 
   usePageSEO({
     title: "Job Integrity Board | Who Do I Work For?",
@@ -242,12 +245,14 @@ export default function JobIntegrityBoard() {
               const prefCategories = getUserPreferenceCategories();
               const companyCats = alignmentSignals?.[job.company_id];
               const matchedCats = companyCats ? [...prefCategories].filter((c) => companyCats.has(c)) : [];
+              const fit = evaluateJobFit(job, preferences);
               return (
                 <JobIntegrityCard
                   key={job.id}
                   job={job}
                   matchCount={matchedCats.length}
                   matchedCategories={matchedCats}
+                  fitBadges={fit.fitBadges}
                 />
               );
             })}

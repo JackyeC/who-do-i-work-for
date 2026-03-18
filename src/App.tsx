@@ -94,6 +94,7 @@ const CorporateImpactMap = lazy(() => import("./pages/CorporateImpactMap"));
 const InfluenceGraph = lazy(() => import("./pages/InfluenceGraph"));
 const CorporateAlignment = lazy(() => import("./pages/CorporateAlignment"));
 const PolicyIntelligence = lazy(() => import("./pages/PolicyIntelligence"));
+const NegotiationSimulator = lazy(() => import("./pages/NegotiationSimulator"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -214,6 +215,7 @@ const App = () => (
                   <Route path="/corporate-impact" element={<CorporateImpactMap />} />
                   <Route path="/alignment/:slug" element={<CorporateAlignment />} />
                   <Route path="/policy-intelligence" element={<PolicyIntelligence />} />
+                  <Route path="/negotiation-simulator" element={<NegotiationSimulator />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

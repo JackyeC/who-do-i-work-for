@@ -5483,6 +5483,78 @@ export type Database = {
         }
         Relationships: []
       }
+      job_preferences: {
+        Row: {
+          commute_tolerance: string | null
+          company_stage_preference: string | null
+          created_at: string | null
+          dealbreakers: string[] | null
+          employment_type: string | null
+          id: string
+          industry_preferences: string[] | null
+          minimum_compensation: number | null
+          preferred_functions: string[] | null
+          preferred_locations: string[] | null
+          remote_preference: string | null
+          search_urgency: string | null
+          seniority_level: string | null
+          sponsorship_required: boolean | null
+          stretch_preference: boolean | null
+          target_compensation: number | null
+          timezone_preference: string | null
+          travel_tolerance: string | null
+          updated_at: string | null
+          user_id: string
+          willing_to_relocate: boolean | null
+        }
+        Insert: {
+          commute_tolerance?: string | null
+          company_stage_preference?: string | null
+          created_at?: string | null
+          dealbreakers?: string[] | null
+          employment_type?: string | null
+          id?: string
+          industry_preferences?: string[] | null
+          minimum_compensation?: number | null
+          preferred_functions?: string[] | null
+          preferred_locations?: string[] | null
+          remote_preference?: string | null
+          search_urgency?: string | null
+          seniority_level?: string | null
+          sponsorship_required?: boolean | null
+          stretch_preference?: boolean | null
+          target_compensation?: number | null
+          timezone_preference?: string | null
+          travel_tolerance?: string | null
+          updated_at?: string | null
+          user_id: string
+          willing_to_relocate?: boolean | null
+        }
+        Update: {
+          commute_tolerance?: string | null
+          company_stage_preference?: string | null
+          created_at?: string | null
+          dealbreakers?: string[] | null
+          employment_type?: string | null
+          id?: string
+          industry_preferences?: string[] | null
+          minimum_compensation?: number | null
+          preferred_functions?: string[] | null
+          preferred_locations?: string[] | null
+          remote_preference?: string | null
+          search_urgency?: string | null
+          seniority_level?: string | null
+          sponsorship_required?: boolean | null
+          stretch_preference?: boolean | null
+          target_compensation?: number | null
+          timezone_preference?: string | null
+          travel_tolerance?: string | null
+          updated_at?: string | null
+          user_id?: string
+          willing_to_relocate?: boolean | null
+        }
+        Relationships: []
+      }
       labor_rights_signals: {
         Row: {
           case_number: string | null

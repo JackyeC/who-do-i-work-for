@@ -15,7 +15,7 @@ import { EasyApplyButton } from "@/components/jobs/EasyApplyButton";
 import { SaveJobButton } from "@/components/jobs/SaveJobButton";
 import {
   ExternalLink, MapPin, Wifi, Monitor, Home, DollarSign,
-  Shield, ShieldCheck, Network, Building2, AlertTriangle, Eye, ChevronLeft, Briefcase,
+  Shield, ShieldCheck, Network, Building2, AlertTriangle, Eye, ChevronLeft, Briefcase, MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
@@ -318,6 +318,11 @@ export default function JobDetailPage() {
           <Button variant="outline" size="lg" className="gap-2" asChild>
             <Link to={`/company/${co?.slug}`}>
               <Building2 className="w-4 h-4" /> Full Company Intelligence
+            </Link>
+          </Button>
+          <Button variant="secondary" size="lg" className="gap-2" asChild>
+            <Link to={`/negotiation-simulator?company=${encodeURIComponent(co?.name || "")}&role=${encodeURIComponent(job.title)}&salary=${encodeURIComponent(job.salary_range || "")}`}>
+              <MessageSquare className="w-4 h-4" /> Practice the Conversation
             </Link>
           </Button>
         </div>
