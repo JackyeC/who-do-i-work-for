@@ -333,7 +333,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-foreground">Recent Applications</h3>
-                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => onNavigate("tracker")}>
+                <Button variant="ghost" size="sm" className="text-sm h-7" onClick={() => onNavigate("tracker")}>
                   View all <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
               </div>
