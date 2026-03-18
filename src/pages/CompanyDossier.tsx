@@ -249,6 +249,11 @@ export default function CompanyDossier() {
         <WorkforceDemographicsLayer companyId={companyId!} companyName={company.name} />
       </DossierLayer>
 
+      {/* State-level women's status context */}
+      {company.state && (
+        <StateWomenStatusCard stateCode={company.state} companyName={company.name} />
+      )}
+
       <DossierLayer title="Influence & Policy Signals" subtitle="PAC giving, lobbying, government contracts" icon={Landmark} layerNumber={6}>
         <InfluencePolicyLayer
           politicalGiving={politicalGiving}
