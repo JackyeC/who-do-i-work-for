@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { WorkforceEquityModule } from "@/components/workforce-equity/WorkforceEquityModule";
 import { FlightRiskModule } from "@/components/flight-risk/FlightRiskModule";
+import { EntityDetailDrawer, type DarkMoneyEntity } from "@/components/company/EntityDetailDrawer";
 
 interface CompanyOption {
   id: string;
