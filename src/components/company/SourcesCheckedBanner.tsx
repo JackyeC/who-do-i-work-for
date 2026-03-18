@@ -42,7 +42,7 @@ export function SourcesCheckedBanner({ scanCompletion, intelligenceReports, isPu
     <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
       <div className="flex items-center gap-1.5 shrink-0">
         <Shield className="w-3.5 h-3.5 text-muted-foreground" />
-        <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+        <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground whitespace-nowrap">
           Sources Checked
         </span>
       </div>
