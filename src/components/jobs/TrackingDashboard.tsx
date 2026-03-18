@@ -254,7 +254,7 @@ export function TrackingDashboard() {
               >
                 <CardContent className="p-3 text-center">
                   <p className="text-xl font-bold text-foreground">{grouped[status] || 0}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{status}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">{status}</p>
                 </CardContent>
               </Card>
             ))}

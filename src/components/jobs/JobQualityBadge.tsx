@@ -72,7 +72,7 @@ export function JobQualityBadge({ signal, isRepost, isEvergreen, className }: Jo
       {isEvergreen && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Badge variant="outline" className="text-[10px] gap-0.5 py-0 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow)/0.2)] border-dashed">
+            <Badge variant="outline" className="text-xs gap-0.5 py-0 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow)/0.2)] border-dashed">
               🌿 Evergreen
             </Badge>
           </TooltipTrigger>
