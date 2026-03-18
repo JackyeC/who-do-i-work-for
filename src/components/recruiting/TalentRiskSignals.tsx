@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { ShieldAlert, ExternalLink, Users, Building2, Scale, AlertTriangle, Briefcase, FileWarning } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { normalizeCategory } from "@/utils/signalTextSanitizer";
 
 interface RiskSignal {
   label: string;
