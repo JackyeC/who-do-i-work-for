@@ -87,17 +87,17 @@ export function MediaNarrativeCard({ companyId, companyName }: MediaNarrativeCar
           <div className="text-center">
             <TrendingUp className="w-3.5 h-3.5 text-primary mx-auto mb-1" />
             <div className="font-mono text-lg font-bold text-foreground tabular-nums">{pctPos}%</div>
-            <div className="font-mono text-[10px] uppercase text-muted-foreground">Positive</div>
+            <div className="font-mono text-xs uppercase text-muted-foreground">Positive</div>
           </div>
           <div className="text-center">
             <Minus className="w-3.5 h-3.5 text-muted-foreground mx-auto mb-1" />
             <div className="font-mono text-lg font-bold text-foreground tabular-nums">{pctNeu}%</div>
-            <div className="font-mono text-[10px] uppercase text-muted-foreground">Neutral</div>
+            <div className="font-mono text-xs uppercase text-muted-foreground">Neutral</div>
           </div>
           <div className="text-center">
             <TrendingDown className="w-3.5 h-3.5 text-destructive mx-auto mb-1" />
             <div className="font-mono text-lg font-bold text-foreground tabular-nums">{pctNeg}%</div>
-            <div className="font-mono text-[10px] uppercase text-muted-foreground">Negative</div>
+            <div className="font-mono text-xs uppercase text-muted-foreground">Negative</div>
           </div>
         </div>
 
