@@ -93,6 +93,7 @@ const ForEmployers = lazy(() => import("./pages/ForEmployers"));
 const CorporateImpactMap = lazy(() => import("./pages/CorporateImpactMap"));
 const InfluenceGraph = lazy(() => import("./pages/InfluenceGraph"));
 const CorporateAlignment = lazy(() => import("./pages/CorporateAlignment"));
+const PolicyIntelligence = lazy(() => import("./pages/PolicyIntelligence"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -212,6 +213,7 @@ const App = () => (
                   <Route path="/rankings" element={<Rankings />} />
                   <Route path="/corporate-impact" element={<CorporateImpactMap />} />
                   <Route path="/alignment/:slug" element={<CorporateAlignment />} />
+                  <Route path="/policy-intelligence" element={<PolicyIntelligence />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
