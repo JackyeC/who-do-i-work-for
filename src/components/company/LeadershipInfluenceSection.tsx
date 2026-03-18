@@ -91,6 +91,8 @@ export function LeadershipInfluenceSection({
   onLobbyingClick,
   onContractsClick,
 }: LeadershipInfluenceSectionProps) {
+  const [selectedEntity, setSelectedEntity] = useState<DarkMoneyEntity | null>(null);
+
   const hasAnyData = executives.length > 0 || candidates.length > 0 || revolvingDoor.length > 0 || darkMoney.length > 0;
   if (!hasAnyData) return null;
 
