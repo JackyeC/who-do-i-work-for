@@ -227,7 +227,7 @@ function OpenRolesSection({ companyId, companyName }: { companyId: string; compa
           {jobs.map((job) => (
             <a
               key={job.id}
-              href={job.application_url || job.source_url || '#'}
+              href={job.url || job.source_url || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-start justify-between gap-3 p-3 rounded-lg border border-border/50 hover:border-primary/30 hover:bg-primary/[0.02] transition-all group"
