@@ -145,7 +145,7 @@ export function HiringScanContextCard({ companyId, companyName }: HiringScanCont
         {/* Hiring signals */}
         {hiringSignals.length > 0 && (
           <div className="pt-2 border-t border-border/50 space-y-2">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
               Hiring Signals
             </p>
             {hiringSignals.map((signal, i) => (

@@ -47,7 +47,7 @@ export function NarrativeGapCard({ companyName, lastAuditedAt, signalGroupCount,
                   Claim This Profile & Provide Context
                 </Link>
               </Button>
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 Narrative Alignment Package · $599/yr
               </span>
             </div>
