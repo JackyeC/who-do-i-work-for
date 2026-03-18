@@ -44,6 +44,7 @@ const DEFAULT_FILTERS: JobBoardFilterState = {
   valuesAligned: false,
   freshOnly: false,
   salaryMin: 0,
+  location: "",
 };
 
 function parseSalaryMin(salaryRange: string | null): number {
