@@ -107,7 +107,7 @@ export function DecisionCheckpoint() {
                         <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                           {alert.company_name}
                         </span>
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-xs">
                           {alert.signal_category}
                         </Badge>
                       </div>

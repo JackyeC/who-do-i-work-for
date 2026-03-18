@@ -347,7 +347,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                       </div>
                       <Badge
                         variant="outline"
-                        className={`text-[10px] shrink-0 ${
+                        className={`text-xs shrink-0 ${
                           app.status === "applied" ? "border-[hsl(var(--civic-green))]/30 text-[hsl(var(--civic-green))]" :
                           app.status === "interviewing" ? "border-primary/30 text-primary" :
                           ""

@@ -86,7 +86,7 @@ export function DashboardSidebar({ activeTab, onTabChange }: DashboardSidebarPro
       <SidebarContent>
         {navGroups.map((group) => (
           <SidebarGroup key={group.label}>
-            <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 font-semibold">
+            <SidebarGroupLabel className="text-xs uppercase tracking-[0.15em] text-muted-foreground/60 font-semibold">
               {group.label}
             </SidebarGroupLabel>
             <SidebarGroupContent>
