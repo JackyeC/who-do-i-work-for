@@ -219,7 +219,7 @@ export function ScoreExplainabilityDrawer({ companyId, score }: Props) {
 
           {/* Formula */}
           <div className="p-3 rounded-lg bg-muted/30 border border-border/20">
-            <p className="text-[10px] text-muted-foreground font-mono leading-relaxed">
+            <p className="text-xs text-muted-foreground font-mono leading-relaxed">
               CIS = (0.20 × Salary) + (0.15 × Layoff) + (0.15 × Lobbying) + (0.20 × Sentiment) + (0.15 × Hiring) + (0.15 × Turnover)
             </p>
           </div>

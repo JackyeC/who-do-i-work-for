@@ -160,7 +160,7 @@ export function FamilyFirstTag({ companyId, companyName }: Props) {
           <p className="text-xs text-muted-foreground">Sign in to tag this company as Family-First.</p>
         )}
 
-        <p className="text-[10px] text-muted-foreground leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           This company's "Family" model aligns with {traditionalCount > progressiveCount ? "Traditional" : progressiveCount > traditionalCount ? "Progressive" : "no consensus on"} receipts
           based on community intelligence and institutional funding data.
         </p>

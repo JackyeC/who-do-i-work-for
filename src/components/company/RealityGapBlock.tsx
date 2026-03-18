@@ -137,7 +137,7 @@ export function RealityGapBlock({ companyId, companyName, updatedAt }: RealityGa
       )}
 
       <div className="px-5 py-3 border-t border-border/30">
-        <p className="text-[10px] text-muted-foreground text-center italic">
+        <p className="text-xs text-muted-foreground text-center italic">
           Signals do not imply wrongdoing. Data reflects public records and may be incomplete.
         </p>
       </div>
