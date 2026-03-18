@@ -214,7 +214,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     <Briefcase className="w-4 h-4 text-primary shrink-0" />
                     <div>
                       <p className="text-xs font-medium text-foreground">{profile.skills.length} skills</p>
-                      <p className="text-[10px] text-muted-foreground">Detected from profile</p>
+                      <p className="text-xs text-muted-foreground">Detected from profile</p>
                     </div>
                   </div>
                 )}
