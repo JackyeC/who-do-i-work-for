@@ -75,9 +75,11 @@ const sanitize = (v: string, maxLen = 500): string =>
 
 /* ── Navigation anchors for the scrolling dashboard ── */
 const DASHBOARD_SECTIONS = [
+  { id: "reality-check", label: "Reality Check" },
   { id: "offer-strength-score", label: "Score" },
   { id: "red-flags", label: "Red Flags" },
   { id: "green-flags", label: "Green Flags" },
+  { id: "risk-signals", label: "Risk Signals" },
   { id: "employer-intel", label: "Employer" },
   { id: "compensation", label: "Compensation" },
   { id: "equity", label: "Equity" },
