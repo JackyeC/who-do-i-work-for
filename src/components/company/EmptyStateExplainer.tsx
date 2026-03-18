@@ -149,13 +149,13 @@ export function EmptyStateExplainer({ type, className, companyName, scanContext 
       <div className="px-4 py-2.5 bg-muted/30 border-t border-border/30 flex items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 min-w-0">
           <Search className="w-3 h-3 text-muted-foreground shrink-0" />
-          <span className="text-[10px] text-muted-foreground truncate">
+          <span className="text-xs text-muted-foreground truncate">
             Checked: {(info.checkedSources || []).join(" · ")}
             {lastChecked && ` · as of ${new Date(lastChecked).toLocaleDateString()}`}
           </span>
         </div>
         {info.suggestedAction && (
-          <span className="text-[10px] text-primary font-medium whitespace-nowrap flex items-center gap-1 shrink-0 cursor-default">
+          <span className="text-xs text-primary font-medium whitespace-nowrap flex items-center gap-1 shrink-0 cursor-default">
             <ExternalLink className="w-3 h-3" />
             {info.suggestedAction.length > 50 ? info.suggestedAction.slice(0, 47) + "…" : info.suggestedAction}
           </span>
