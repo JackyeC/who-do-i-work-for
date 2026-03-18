@@ -77,6 +77,7 @@ export function WhatYoureSupportingCard({
   issueSignals = [],
 }: Props) {
   const [worthKnowingExpanded, setWorthKnowingExpanded] = useState(false);
+  const [selectedDarkEntity, setSelectedDarkEntity] = useState<DarkMoneyEntity | null>(null);
   const hasActivity = totalPacSpending > 0 || lobbyingSpend > 0 || topCandidates.length > 0 || issueSignals.length > 0;
 
   // Aggregate issue signals by category
