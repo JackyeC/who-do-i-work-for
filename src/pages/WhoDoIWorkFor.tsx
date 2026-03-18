@@ -45,6 +45,7 @@ export default function WhoDoIWorkFor() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [selectedDarkEntity, setSelectedDarkEntity] = useState<DarkMoneyEntity | null>(null);
 
   // Get user profile with employer
   const { data: profile, isLoading: profileLoading } = useQuery({
