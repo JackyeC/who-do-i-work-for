@@ -61,6 +61,7 @@ export function JobBoardFilters({ filters, onFiltersChange, availableDepartments
     filters.valuesAligned,
     filters.freshOnly,
     filters.salaryMin > 0,
+    filters.location.trim().length > 0,
   ].filter(Boolean).length;
 
   const clearFilters = () =>
