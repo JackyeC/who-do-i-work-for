@@ -87,7 +87,7 @@ export function JobSidebar() {
               <LogIn className="w-4 h-4" /> Sign In
             </Button>
           </Link>
-          <p className="text-[10px] text-muted-foreground mt-2 text-center">
+          <p className="text-xs text-muted-foreground mt-2 text-center">
             Sign in for AI cover letters & auto-apply
           </p>
         </div>

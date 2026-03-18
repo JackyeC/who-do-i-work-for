@@ -140,7 +140,7 @@ export function SmartJobRow({ job, isSelected, matchScore, matchLabel, onClick }
 
         {/* Department */}
         {job.department && (
-          <Badge variant="outline" className="text-[10px] py-0 text-muted-foreground">
+          <Badge variant="outline" className="text-xs py-0 text-muted-foreground">
             {job.department}
           </Badge>
         )}
