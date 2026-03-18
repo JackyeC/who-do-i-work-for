@@ -18,7 +18,7 @@ function ReceiptSection({ icon: Icon, title, count, children }: { icon: any; tit
         <div className="flex items-center gap-2">
           <Icon className="w-4 h-4 text-muted-foreground" />
           <span className="text-sm font-medium text-foreground">{title}</span>
-          <Badge variant="outline" className="text-[10px]">{count}</Badge>
+          <Badge variant="outline" className="text-xs">{count}</Badge>
         </div>
         <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
       </CollapsibleTrigger>
