@@ -47,7 +47,7 @@ interface JobIntegrityCardProps {
   fitBadges?: string[];
 }
 
-export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [] }: JobIntegrityCardProps) {
+export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [], fitBadges = [] }: JobIntegrityCardProps) {
   const co = job.companies;
   const isCertified = co?.vetted_status === "certified";
   const isVerified = co?.vetted_status === "verified";
