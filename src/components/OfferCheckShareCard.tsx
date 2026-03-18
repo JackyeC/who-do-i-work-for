@@ -92,7 +92,7 @@ export function OfferCheckShareCard({
                       {section.signals.length} signal{section.signals.length !== 1 ? 's' : ''}
                     </Badge>
                   ) : (
-                    <span className="text-[9px] text-muted-foreground">No public evidence</span>
+                    <span className="text-xs text-muted-foreground">No public evidence</span>
                   )}
                 </div>
               );
