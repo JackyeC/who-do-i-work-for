@@ -4,11 +4,15 @@ import { OffTheRecordSignals } from "@/components/company/OffTheRecordSignals";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { getUiStatement } from "@/lib/signalPersonalization";
+import { AlertTriangle, TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 interface Signal {
   summary: string;
   confidence: "Low" | "Medium" | "High";
   recency: string;
+  uiStatement?: string;
+  direction?: string;
 }
 
 interface SignalCategoryProps {
@@ -39,6 +43,18 @@ const RECENCY_DOT: Record<string, string> = {
   "Unknown": "bg-muted-foreground/20",
 };
 
+const DIRECTION_ICON: Record<string, typeof TrendingUp> = {
+  increase: TrendingUp,
+  decrease: TrendingDown,
+  stable: Minus,
+};
+
+const DIRECTION_COLOR: Record<string, string> = {
+  increase: "text-[hsl(var(--civic-green))]",
+  decrease: "text-destructive",
+  stable: "text-muted-foreground",
+};
+
 function SignalCategory({ title, signals, emptyType, companyName, scanContext }: SignalCategoryProps) {
   if (signals.length === 0 && emptyType) {
     return (
@@ -55,20 +71,34 @@ function SignalCategory({ title, signals, emptyType, companyName, scanContext }:
     <div className="py-4 border-b border-border/30 last:border-b-0">
       <p className="text-sm font-semibold text-foreground mb-3">{title}</p>
       <div className="space-y-2.5">
-        {signals.map((s, i) => (
-          <div key={i} className="flex items-start gap-3 text-sm">
-            <div className="flex-1 text-foreground/85 leading-relaxed">{s.summary}</div>
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="flex items-center gap-1">
-                <div className={cn("w-1.5 h-1.5 rounded-full", RECENCY_DOT[s.recency] || RECENCY_DOT["Unknown"])} />
-                <span className="text-xs text-muted-foreground whitespace-nowrap">{s.recency}</span>
+        {signals.map((s, i) => {
+          const DirIcon = s.direction ? DIRECTION_ICON[s.direction] : null;
+          const dirColor = s.direction ? DIRECTION_COLOR[s.direction] : "";
+          return (
+            <div key={i} className="space-y-1">
+              {/* UI Statement headline */}
+              {s.uiStatement && (
+                <div className="flex items-center gap-2">
+                  {DirIcon && <DirIcon className={cn("w-3.5 h-3.5", dirColor)} />}
+                  <span className="text-sm font-medium text-foreground">{s.uiStatement}</span>
+                </div>
+              )}
+              {/* Detail summary */}
+              <div className="flex items-start gap-3 text-sm">
+                <div className="flex-1 text-foreground/85 leading-relaxed">{s.summary}</div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-1">
+                    <div className={cn("w-1.5 h-1.5 rounded-full", RECENCY_DOT[s.recency] || RECENCY_DOT["Unknown"])} />
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">{s.recency}</span>
+                  </div>
+                  <Badge variant="outline" className={cn("text-xs px-1.5 py-0", CONFIDENCE_COLOR[s.confidence])}>
+                    {s.confidence}
+                  </Badge>
+                </div>
               </div>
-              <Badge variant="outline" className={cn("text-xs px-1.5 py-0", CONFIDENCE_COLOR[s.confidence])}>
-                {s.confidence}
-              </Badge>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -132,6 +162,17 @@ function mapRecency(timestamp: string): string {
   return "6+ months ago";
 }
 
+/** Check if data is stale (>30 days) */
+function getStaleWarning(canonicalSignals: any[] | null): { isStale: boolean; daysSince: number } | null {
+  if (!canonicalSignals || canonicalSignals.length === 0) return null;
+  const oldest = canonicalSignals.reduce((min, s) => {
+    const ts = new Date(s.scan_timestamp).getTime();
+    return ts < min ? ts : min;
+  }, Date.now());
+  const daysSince = Math.floor((Date.now() - oldest) / 86_400_000);
+  return daysSince > 30 ? { isStale: true, daysSince } : null;
+}
+
 /** Hook to fetch pre-computed canonical signals */
 function useCanonicalSignals(companyId: string) {
   return useQuery({
@@ -154,26 +195,32 @@ function useCanonicalSignals(companyId: string) {
   });
 }
 
+function buildSignalFromCanonical(canonical: any): Signal {
+  return {
+    summary: canonical.summary,
+    confidence: mapConfidence(canonical.confidence_level),
+    recency: mapRecency(canonical.scan_timestamp),
+    uiStatement: getUiStatement(canonical.signal_category, canonical.value_normalized || "not_disclosed"),
+    direction: canonical.direction || undefined,
+  };
+}
+
 export function StructuredSignalsSection(props: StructuredSignalsProps) {
   const recency = getRecency(props.lastReviewed, props.updatedAt);
   const { data: canonicalSignals } = useCanonicalSignals(props.companyId);
 
-  // Build a map from canonical signals
   const signalMap = new Map(
     (canonicalSignals || []).map(s => [s.signal_category, s])
   );
+
+  const staleWarning = getStaleWarning(canonicalSignals || null);
 
   // ── Hiring Reality ──
   const hiringSignals: Signal[] = [];
   const hiringCanonical = signalMap.get('hiring_activity');
   if (hiringCanonical?.summary) {
-    hiringSignals.push({
-      summary: hiringCanonical.summary,
-      confidence: mapConfidence(hiringCanonical.confidence_level),
-      recency: mapRecency(hiringCanonical.scan_timestamp),
-    });
+    hiringSignals.push(buildSignalFromCanonical(hiringCanonical));
   } else {
-    // Fallback to boolean-derived signals
     if (props.hasAiHrSignals)
       hiringSignals.push({ summary: "AI-powered hiring tools detected in application pipeline. Bias audit status is pending.", confidence: "Medium", recency });
     if (props.hasGhostJobs)
@@ -186,11 +233,7 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
   const stabilitySignals: Signal[] = [];
   const stabilityCanonical = signalMap.get('workforce_stability');
   if (stabilityCanonical?.summary) {
-    stabilitySignals.push({
-      summary: stabilityCanonical.summary,
-      confidence: mapConfidence(stabilityCanonical.confidence_level),
-      recency: mapRecency(stabilityCanonical.scan_timestamp),
-    });
+    stabilitySignals.push(buildSignalFromCanonical(stabilityCanonical));
   } else {
     if (props.hasWarnNotices)
       stabilitySignals.push({ summary: "WARN Act notices filed within the past 12 months — potential layoffs or plant closings.", confidence: "High", recency });
@@ -204,11 +247,7 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
   const compSignals: Signal[] = [];
   const compCanonical = signalMap.get('compensation_transparency');
   if (compCanonical?.summary) {
-    compSignals.push({
-      summary: compCanonical.summary,
-      confidence: mapConfidence(compCanonical.confidence_level),
-      recency: mapRecency(compCanonical.scan_timestamp),
-    });
+    compSignals.push(buildSignalFromCanonical(compCanonical));
   } else {
     if (props.hasPayEquity)
       compSignals.push({ summary: "Pay equity data available — signals suggest some level of compensation reporting.", confidence: "Medium", recency });
@@ -222,11 +261,7 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
   const leadershipSignals: Signal[] = [];
   const behaviorCanonical = signalMap.get('company_behavior');
   if (behaviorCanonical?.summary) {
-    leadershipSignals.push({
-      summary: behaviorCanonical.summary,
-      confidence: mapConfidence(behaviorCanonical.confidence_level),
-      recency: mapRecency(behaviorCanonical.scan_timestamp),
-    });
+    leadershipSignals.push(buildSignalFromCanonical(behaviorCanonical));
   } else {
     if (props.executiveCount > 0)
       leadershipSignals.push({ summary: `${props.executiveCount} executive(s) identified with public donation records.`, confidence: "Medium", recency });
@@ -240,12 +275,36 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
       leadershipSignals.push({ summary: `${props.revolvingDoorCount} revolving door connection(s) between government and corporate roles.`, confidence: "Medium", recency });
   }
 
+  // ── Innovation & Growth (NEW — Logic Bible V8.0) ──
+  const innovationSignals: Signal[] = [];
+  const innovCanonical = signalMap.get('innovation_activity');
+  if (innovCanonical?.summary) {
+    innovationSignals.push(buildSignalFromCanonical(innovCanonical));
+  }
+
+  // ── Employee Experience (NEW — Logic Bible V8.0) ──
+  const sentimentSignals: Signal[] = [];
+  const sentCanonical = signalMap.get('public_sentiment');
+  if (sentCanonical?.summary) {
+    sentimentSignals.push(buildSignalFromCanonical(sentCanonical));
+  }
+
   return (
     <div className="mb-6 rounded-xl border border-border/50 bg-card overflow-hidden">
       <div className="px-5 py-3 border-b border-border/40">
         <p className="text-sm font-bold text-foreground tracking-tight">What We're Seeing</p>
         <p className="text-xs text-muted-foreground mt-0.5">Structured signals from public records and open data. Not all signals are complete or current.</p>
       </div>
+
+      {/* Stale data warning (Logic Bible V8.0) */}
+      {staleWarning && (
+        <div className="mx-5 mt-3 p-3 rounded-lg border border-[hsl(var(--civic-yellow))]/30 bg-[hsl(var(--civic-yellow))]/5 flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 text-[hsl(var(--civic-yellow))] mt-0.5 shrink-0" />
+          <p className="text-sm text-foreground/80 leading-relaxed">
+            This intelligence was last updated {staleWarning.daysSince} days ago. Some signals may have changed.
+          </p>
+        </div>
+      )}
 
       <div className="px-5">
         <SignalCategory
@@ -263,6 +322,8 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
         </div>
 
         <SignalCategory title="Leadership & Influence" signals={leadershipSignals} />
+        <SignalCategory title="Innovation & Growth" signals={innovationSignals} />
+        <SignalCategory title="Employee Experience" signals={sentimentSignals} emptyType="sentiment" companyName={props.companyName} />
       </div>
     </div>
   );

@@ -112,12 +112,13 @@ export function TopBar() {
       items.push(`PLATFORM: ${s.totalCompanies.toLocaleString()} companies tracked`);
       items.push(`SCANS: ${s.totalScans.toLocaleString()} total intelligence scans`);
       if (s.recentScans.length > 0) {
-        items.push(`LATEST SCAN: ${s.recentScans[0]?.company_name ?? "—"}`);
+        items.push(`${s.recentScans[0]?.company_name ?? "—"}: latest signal scan completed`);
       }
-      items.push(`SCANS: ${s.totalScans.toLocaleString()} total intelligence scans`);
+      if (s.recentScans.length > 1) {
+        items.push(`${s.recentScans[1]?.company_name ?? "—"}: signals refreshed`);
+      }
     }
     items.push(`UPDATED: ${new Date().toLocaleDateString()} — connection chains refreshed`);
-    items.push('INSIDER CONTEXT: "Run the chain before you sign."');
     return items;
   }, [tickerStats]);
 

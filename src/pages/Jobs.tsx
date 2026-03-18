@@ -181,6 +181,29 @@ export default function Jobs() {
     },
   });
 
+  // Canonical signals for job cards (Logic Bible V8.0)
+  const { data: canonicalSignalsMap } = useQuery({
+    queryKey: ["canonical-signals-all"],
+    queryFn: async () => {
+      const canonicalCategories = [
+        'compensation_transparency', 'hiring_activity', 'workforce_stability',
+        'company_behavior', 'innovation_activity', 'public_sentiment',
+      ];
+      const { data } = await supabase
+        .from('company_signal_scans')
+        .select('company_id, signal_category, signal_type, signal_value, confidence_level, scan_timestamp, summary, direction, value_normalized')
+        .in('signal_category', canonicalCategories)
+        .limit(1000);
+      const map: Record<string, any[]> = {};
+      (data || []).forEach((s: any) => {
+        if (!map[s.company_id]) map[s.company_id] = [];
+        map[s.company_id].push(s);
+      });
+      return map;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
   const { data: valuesSignals } = useQuery({
     queryKey: ["company-values-signals", valuesFilters],
     queryFn: async () => {
@@ -625,6 +648,7 @@ export default function Jobs() {
                             job={job}
                             companyValueSignals={companyValueSignals}
                             companySignalFlags={companySignals}
+                            companySignals={canonicalSignalsMap?.[company?.id] || []}
                             matchScore={score}
                             isSelected={selectedJob?.id === job.id}
                             onClick={() => setSelectedJob(job)}
@@ -723,6 +747,7 @@ export default function Jobs() {
       <JobDetailDrawer
         job={selectedJob}
         companyValueSignals={selectedJob ? (valuesSignals?.[selectedJob.companies?.id] || []) : []}
+        companySignals={selectedJob ? (canonicalSignalsMap?.[selectedJob.companies?.id] || []) : []}
         matchScore={selectedJob ? jobScores[selectedJob.id] : undefined}
         open={!!selectedJob}
         onOpenChange={(open) => { if (!open) setSelectedJob(null); }}

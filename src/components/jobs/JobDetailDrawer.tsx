@@ -10,8 +10,19 @@ import { EasyApplyButton } from "./EasyApplyButton";
 import { JobPostingSchema } from "./JobPostingSchema";
 import { VALUES_LENSES } from "@/lib/valuesLenses";
 import {
+  getStoredWorkProfile,
+} from "@/components/WorkProfileQuiz";
+import {
+  generateBeforeYouSignItems,
+  generateDualFramings,
+  generateRankingExplanation,
+  getUiStatement,
+  type CanonicalSignal,
+} from "@/lib/signalPersonalization";
+import {
   MapPin, Building2, ExternalLink, FileCheck, Wifi, Monitor, Home,
-  Briefcase, DollarSign, Calendar, Clock,
+  Briefcase, DollarSign, Calendar, Clock, AlertTriangle, CheckCircle2,
+  Sparkles, Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,16 +33,23 @@ const WORK_MODE_ICONS: Record<string, any> = {
 interface JobDetailDrawerProps {
   job: any;
   companyValueSignals?: any[];
+  companySignals?: CanonicalSignal[];
   matchScore?: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onApply: (job: any) => void;
 }
 
-export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, open, onOpenChange, onApply }: JobDetailDrawerProps) {
+export function JobDetailDrawer({ job, companyValueSignals = [], companySignals = [], matchScore, open, onOpenChange, onApply }: JobDetailDrawerProps) {
   if (!job) return null;
   const company = job.companies;
   const WorkModeIcon = job.work_mode ? WORK_MODE_ICONS[job.work_mode] : null;
+  const profile = getStoredWorkProfile();
+
+  // Logic Bible V8.0 sections
+  const beforeYouSign = generateBeforeYouSignItems(companySignals, profile, job);
+  const dualFramings = generateDualFramings(companySignals, profile);
+  const rankingExplanation = generateRankingExplanation(companySignals, profile, matchScore);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -90,6 +108,59 @@ export function JobDetailDrawer({ job, companyValueSignals = [], matchScore, ope
           </div>
 
           <Separator />
+
+          {/* ── Before You Sign (Logic Bible V8.0) ── */}
+          {beforeYouSign.length > 0 && (
+            <div className="p-4 rounded-lg border border-border/60 bg-muted/30 space-y-3">
+              <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                <AlertTriangle className="w-4 h-4 text-[hsl(var(--civic-yellow))]" />
+                Before you sign…
+              </p>
+              <div className="space-y-2">
+                {beforeYouSign.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2 text-sm">
+                    {item.type === "positive" && <CheckCircle2 className="w-4 h-4 text-[hsl(var(--civic-green))] mt-0.5 shrink-0" />}
+                    {item.type === "warning" && <AlertTriangle className="w-4 h-4 text-[hsl(var(--civic-yellow))] mt-0.5 shrink-0" />}
+                    {item.type === "neutral" && <Info className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />}
+                    <div>
+                      <span className="font-medium text-foreground">{item.label}</span>
+                      <p className="text-muted-foreground text-xs mt-0.5 leading-relaxed">{item.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── What This Could Mean For You (Logic Bible V8.0) ── */}
+          {dualFramings.length > 0 && (
+            <div className="p-4 rounded-lg border border-primary/15 bg-primary/[0.03] space-y-3">
+              <p className="text-sm font-semibold text-primary flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4" />
+                What this could mean for you
+              </p>
+              <div className="space-y-3">
+                {dualFramings.map((f, i) => (
+                  <div key={i} className="text-sm space-y-1">
+                    <p className="text-foreground/90 leading-relaxed">
+                      <span className="text-[hsl(var(--civic-yellow))]">⚠</span> {f.cautionary}
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed">
+                      <span className="text-[hsl(var(--civic-green))]">✓</span> {f.neutral}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Why This Is Ranked For You (Logic Bible V8.0) ── */}
+          {companySignals.length > 0 && (
+            <div className="p-3 rounded-lg bg-muted/40 border border-border/40">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Why this is ranked for you</p>
+              <p className="text-sm text-foreground/80 leading-relaxed">{rankingExplanation}</p>
+            </div>
+          )}
 
           {/* Company signal badges */}
           {companyValueSignals.length > 0 && (
