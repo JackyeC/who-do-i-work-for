@@ -103,6 +103,7 @@ export default function StrategicOfferReview() {
   const [legalFlags, setLegalFlags] = useState<LegalFlag[]>([]);
   const [uploadReviewId, setUploadReviewId] = useState<string | null>(null);
   const [showConsentModal, setShowConsentModal] = useState(false);
+  const userSituations = getSituationsFromStorage();
 
   const [companyResults, setCompanyResults] = useState<any[]>([]);
 
