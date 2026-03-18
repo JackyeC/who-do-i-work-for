@@ -8,7 +8,7 @@ interface ContentProtectorProps {
 
 /**
  * Wraps premium content with copy/print/screenshot protections.
- * Admins and owners bypass all protections.
+ * Admins, owners, and internal testers bypass all protections.
  */
 export function ContentProtector({ children, className }: ContentProtectorProps) {
   const { isAdmin, isOwner, isInternalTest } = useUserRole();
