@@ -88,7 +88,7 @@ export function OfferCheckShareCard({
                   <Icon className="w-3 h-3 text-primary shrink-0" />
                   <span className="text-foreground font-medium flex-1">{label}</span>
                   {section.hasData ? (
-                    <Badge variant="secondary" className="text-[9px] h-4">
+                    <Badge variant="secondary" className="text-xs h-4">
                       {section.signals.length} signal{section.signals.length !== 1 ? 's' : ''}
                     </Badge>
                   ) : (
