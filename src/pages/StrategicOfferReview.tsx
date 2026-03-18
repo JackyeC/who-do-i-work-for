@@ -740,6 +740,11 @@ export default function StrategicOfferReview() {
                   </div>
                 </div>
 
+                {/* Situation Context */}
+                {userSituations.length > 0 && (
+                  <SituationContextBanner companyName={offer.companyName} />
+                )}
+
                 {/* 0. Offer Reality Check — Hero Summary */}
                 <div id="reality-check">
                   <OfferRealityCheck
@@ -755,6 +760,7 @@ export default function StrategicOfferReview() {
                     riskLevel={riskLevel}
                     salaryTransparency={salaryTransparency}
                     internalConsistency={internalConsistency}
+                    situations={userSituations}
                   />
                 </div>
 
