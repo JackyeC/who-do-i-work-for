@@ -62,7 +62,7 @@ export function OfferCheckShareCard({
             <span className="text-xs text-muted-foreground">by Jackye Clayton</span>
           </div>
           {confidenceRating && (
-            <Badge variant="secondary" className="text-[10px] ml-auto">
+            <Badge variant="secondary" className="text-xs ml-auto">
               {confidenceRating} confidence
             </Badge>
           )}
