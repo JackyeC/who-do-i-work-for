@@ -13,6 +13,10 @@ import { SituationSelector } from "@/components/policy-intelligence/SituationSel
 import { MismatchEngine } from "@/components/policy-intelligence/MismatchEngine";
 import { PolicyReceiptsPanel } from "@/components/policy-intelligence/PolicyReceiptsPanel";
 import { PolicyIntelligenceSummary } from "@/components/policy-intelligence/PolicyIntelligenceSummary";
+import { LeadershipSnapshot } from "@/components/policy-intelligence/LeadershipSnapshot";
+import { CompensationInsight } from "@/components/policy-intelligence/CompensationInsight";
+import { IssueBreakdownGrid } from "@/components/policy-intelligence/IssueBreakdownGrid";
+import { LastAuditedStamp } from "@/components/company/LastAuditedStamp";
 import { computePolicyScore, getSituationsFromStorage, type Situation } from "@/lib/policyScoreEngine";
 
 export default function PolicyIntelligence() {
