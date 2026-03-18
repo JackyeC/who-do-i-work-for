@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { MessageSquare, DollarSign, Wifi, Award, Shield, Zap } from "lucide-react";
 
 export interface SimulatorConfig {
+  perspective: "candidate" | "recruiter";
   company: string;
   role: string;
   baseSalary: string;
