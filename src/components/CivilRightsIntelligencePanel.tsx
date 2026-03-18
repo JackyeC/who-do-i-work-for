@@ -296,6 +296,13 @@ export function CivilRightsIntelligencePanel({ companyId, companyName, stateCode
             </p>
           </div>
         )}
+
+        {/* State-level women's status context */}
+        {stateCode && (
+          <div className="mx-4 mb-4 mt-2">
+            <StateWomenStatusCard stateCode={stateCode} companyName={companyName} />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
