@@ -273,10 +273,10 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
 
         {staleJobs.length > 0 && (
           <div className="mt-3">
-            <h4 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Potentially Ghost Listings</h4>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Potentially Ghost Listings</h4>
             <div className="space-y-1">
               {staleJobs.slice(0, 5).map(j => (
-                <div key={j.id} className="flex items-center justify-between text-[11px] p-2 rounded-lg bg-muted/30">
+                <div key={j.id} className="flex items-center justify-between text-sm p-2 rounded-lg bg-muted/30">
                   <span className="text-foreground truncate flex-1">{j.title}</span>
                   <span className="text-muted-foreground shrink-0 ml-2 font-mono">
                     {daysSince(j.posted_at || j.scraped_at)}d old
