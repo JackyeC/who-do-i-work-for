@@ -361,9 +361,9 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
               ) : (
                 <div className="text-center py-6">
                   <Briefcase className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">No applications tracked yet</p>
-                  <Button variant="link" size="sm" className="text-xs mt-1" onClick={() => onNavigate("tracker")}>
-                    Track an application →
+                   <p className="text-sm text-muted-foreground">No applications tracked yet</p>
+                   <Button variant="link" size="sm" className="text-sm mt-1" onClick={() => onNavigate("tracker")}>
+                     Track an application →
                   </Button>
                 </div>
               )}
