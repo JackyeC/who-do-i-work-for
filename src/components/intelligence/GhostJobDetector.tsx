@@ -44,22 +44,22 @@ function useScanContext(companyId?: string) {
     queryFn: async () => {
       const { data } = await supabase
         .from("company_report_sections")
-        .select("section_data, generated_at")
+        .select("content, updated_at")
         .eq("company_id", companyId!)
         .eq("section_type", "hiring_scan")
-        .order("generated_at", { ascending: false })
+        .order("updated_at", { ascending: false })
         .limit(1);
 
       if (!data?.length) return null;
 
-      const d = data[0].section_data as Record<string, unknown> | null;
+      const d = data[0].content as Record<string, unknown> | null;
       if (!d) return null;
 
       const sc = d.scanContext as Record<string, unknown> | undefined;
       return {
         atsDetected: (sc?.atsName as string) || undefined,
         pageClassification: (sc?.pageType as string) || (d.hiring_status as string) || undefined,
-        lastScanned: data[0].generated_at,
+        lastScanned: data[0].updated_at,
         whatTheySay: (sc?.brandingClaim as string) || undefined,
         whatWeSee: (sc?.reality as string) || undefined,
         checkedSources: (sc?.checkedSources as string[]) || ["Careers page", "ATS endpoint"],
