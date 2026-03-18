@@ -343,7 +343,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     <div key={app.id} className="flex items-center justify-between gap-3 p-2.5 rounded-lg bg-muted/20 border border-border/20">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-foreground truncate">{app.job_title}</p>
-                        <p className="text-[10px] text-muted-foreground">{app.company_name}</p>
+                        <p className="text-xs text-muted-foreground">{app.company_name}</p>
                       </div>
                       <Badge
                         variant="outline"
