@@ -80,7 +80,7 @@ export function PolicyReceiptsPanel({ stances, linkages, lobbyingRecords, tradeA
                 <Card key={`f-${i}`} className="border-border/30">
                   <CardContent className="p-2.5 flex items-center justify-between">
                     <span className="text-xs text-foreground">{l.description || l.target_entity_name}</span>
-                    <Badge variant="outline" className="text-[10px]">Federal</Badge>
+                    <Badge variant="outline" className="text-xs">Federal</Badge>
                   </CardContent>
                 </Card>
               ))}
