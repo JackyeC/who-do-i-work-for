@@ -225,7 +225,7 @@ export function MyValuesProfile() {
                       {isOpen ? <ChevronDown className="w-4 h-4 text-muted-foreground" /> : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
                       <CardTitle className="font-display text-base">{group.label}</CardTitle>
                       {activeCount > 0 && (
-                        <Badge variant="secondary" className="text-[10px]">
+                        <Badge variant="secondary" className="text-xs">
                           {activeCount} customized
                         </Badge>
                       )}

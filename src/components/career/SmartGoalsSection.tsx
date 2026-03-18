@@ -195,11 +195,11 @@ export function SmartGoalsSection({ trackId, userId, targetRole }: SmartGoalsSec
                   )}
                   <div className="flex items-center gap-2 mt-1">
                     {goal.is_ai_generated && (
-                      <span className="text-[9px] text-primary/60 flex items-center gap-0.5">
+                      <span className="text-xs text-primary/60 flex items-center gap-0.5">
                         <Sparkles className="w-2.5 h-2.5" /> AI suggested
                       </span>
                     )}
-                    <span className="text-[9px] text-muted-foreground capitalize">{statusConfig.label}</span>
+                    <span className="text-xs text-muted-foreground capitalize">{statusConfig.label}</span>
                   </div>
                 </div>
 

@@ -274,7 +274,7 @@ export function RelationshipDashboard() {
               </div>
               <div>
                 <p className="text-xl font-bold font-mono text-foreground">{stat.value}</p>
-                <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
