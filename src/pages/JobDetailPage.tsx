@@ -15,7 +15,7 @@ import { EasyApplyButton } from "@/components/jobs/EasyApplyButton";
 import { SaveJobButton } from "@/components/jobs/SaveJobButton";
 import {
   ExternalLink, MapPin, Wifi, Monitor, Home, DollarSign,
-  Shield, ShieldCheck, Network, Building2, AlertTriangle, Eye, ChevronLeft, Briefcase,
+  Shield, ShieldCheck, Network, Building2, AlertTriangle, Eye, ChevronLeft, Briefcase, MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";

@@ -895,8 +895,8 @@ export default function StrategicOfferReview() {
                   hasBonus={!!offer.bonus}
                 />
 
-                {/* Start Over */}
-                <div className="flex justify-center pt-4">
+                {/* Start Over / Practice */}
+                <div className="flex justify-center gap-3 pt-4">
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -908,6 +908,11 @@ export default function StrategicOfferReview() {
                     className="gap-2"
                   >
                     <ArrowLeft className="w-4 h-4" /> Start New Analysis
+                  </Button>
+                  <Button variant="secondary" className="gap-2" asChild>
+                    <a href={`/negotiation-simulator?company=${encodeURIComponent(offer.companyName)}&role=${encodeURIComponent(offer.roleTitle)}&salary=${encodeURIComponent(offer.baseSalary)}`}>
+                      Practice This Negotiation
+                    </a>
                   </Button>
                 </div>
 
