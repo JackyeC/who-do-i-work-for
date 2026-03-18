@@ -592,6 +592,7 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════════════
     if (jobs.length === 0 && (firecrawlKey || lovableKey)) {
       console.log('[job-scrape] Layer 2: Scraping and classifying career page...');
+      scanContext.layersChecked.push('company_site');
       sourceType = 'careers_page';
       sourcePlatform = 'custom';
 
