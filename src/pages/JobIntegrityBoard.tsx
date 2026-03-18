@@ -245,12 +245,14 @@ export default function JobIntegrityBoard() {
               const prefCategories = getUserPreferenceCategories();
               const companyCats = alignmentSignals?.[job.company_id];
               const matchedCats = companyCats ? [...prefCategories].filter((c) => companyCats.has(c)) : [];
+              const fit = evaluateJobFit(job, preferences);
               return (
                 <JobIntegrityCard
                   key={job.id}
                   job={job}
                   matchCount={matchedCats.length}
                   matchedCategories={matchedCats}
+                  fitBadges={fit.fitBadges}
                 />
               );
             })}

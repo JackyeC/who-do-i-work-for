@@ -99,6 +99,16 @@ export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [], 
                 </Badge>
               )}
               <MatchIndicator matchCount={matchCount} matchedCategories={matchedCategories} />
+              {fitBadges.map((badge) => (
+                <Badge key={badge} variant="outline" className={cn(
+                  "text-[9px] gap-0.5",
+                  badge === "Strong Fit" && "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/20",
+                  badge === "Flexible Work Fit" && "bg-primary/5 text-primary border-primary/20",
+                  (badge === "Location Mismatch" || badge === "Compensation Mismatch" || badge === "Relocation Required") && "bg-destructive/10 text-destructive border-destructive/20",
+                )}>
+                  {badge}
+                </Badge>
+              ))}
             </div>
             <p className="text-[11px] text-muted-foreground mt-0.5">
               {job.location || "Remote"} {job.work_mode ? `· ${job.work_mode}` : ""}

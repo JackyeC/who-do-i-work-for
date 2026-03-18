@@ -320,6 +320,11 @@ export default function JobDetailPage() {
               <Building2 className="w-4 h-4" /> Full Company Intelligence
             </Link>
           </Button>
+          <Button variant="secondary" size="lg" className="gap-2" asChild>
+            <Link to={`/negotiation-simulator?company=${encodeURIComponent(co?.name || "")}&role=${encodeURIComponent(job.title)}&salary=${encodeURIComponent(job.salary_range || "")}`}>
+              <MessageSquare className="w-4 h-4" /> Practice the Conversation
+            </Link>
+          </Button>
         </div>
       </main>
       <Footer />
