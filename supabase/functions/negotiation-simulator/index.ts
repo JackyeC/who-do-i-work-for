@@ -71,6 +71,7 @@ IMPORTANT RULES:
         model: "google/gemini-3-flash-preview",
         messages: allMessages,
         stream: true,
+        max_tokens: 400,
       }),
     });
 
