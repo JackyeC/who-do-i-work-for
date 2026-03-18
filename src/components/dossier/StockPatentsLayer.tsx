@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { safeSignalLabel } from "@/utils/signalTextSanitizer";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { TrendingUp, Lightbulb, BarChart3, Loader2, ExternalLink, Calendar, Lock } from "lucide-react";

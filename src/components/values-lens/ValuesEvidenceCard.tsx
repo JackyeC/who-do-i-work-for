@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { safeSignalLabel } from "@/utils/signalTextSanitizer";
 import { ExternalLink, Shield, Info, FileText, Camera, MessageSquare, Globe, ChevronDown, ChevronUp, Scale } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { CONFIDENCE_CONFIG } from "@/lib/valuesLenses";

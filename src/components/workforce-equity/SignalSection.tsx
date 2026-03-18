@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { safeSignalLabel } from "@/utils/signalTextSanitizer";
 import { cn } from "@/lib/utils";
 import {
   CheckCircle2, ArrowUpRight, AlertTriangle, EyeOff, Info,

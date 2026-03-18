@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { safeSignalLabel } from "@/utils/signalTextSanitizer";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ExternalLink, ChevronDown, ChevronUp, AlertTriangle, Shield } from "lucide-react";
