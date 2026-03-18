@@ -130,7 +130,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                   <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                     Check your first company
                   </p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Search any employer for civic footprint & hiring signals
                   </p>
                 </div>
