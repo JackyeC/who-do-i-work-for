@@ -6,10 +6,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { SignalFreshness, REFRESH_CADENCES } from "@/components/SignalFreshness";
 import { Scale, AlertTriangle, DollarSign, FileText, Megaphone, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { StateWomenStatusCard } from "@/components/StateWomenStatusCard";
 
 interface CivilRightsIntelligencePanelProps {
   companyId: string;
   companyName: string;
+  stateCode?: string;
 }
 
 const SEVERITY_STYLES: Record<string, { bg: string; text: string; label: string }> = {
