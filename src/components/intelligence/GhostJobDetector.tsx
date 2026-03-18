@@ -97,11 +97,11 @@ function ZeroStateIntelligence({ companyName, scanContext }: { companyName: stri
       {/* ATS badge */}
       {scanContext?.atsDetected && (
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-[10px] bg-primary/5 border-primary/20 text-primary">
+          <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
             ATS: {scanContext.atsDetected}
           </Badge>
           {scanContext.pageClassification && (
-            <Badge variant="outline" className="text-[10px] bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
+            <Badge variant="outline" className="text-xs bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
               {scanContext.pageClassification}
             </Badge>
           )}
