@@ -66,7 +66,6 @@ interface SignalOutput {
   signal_value: string;
   direction: string;
   summary: string;
-  ui_statement: string;
   value_normalized: string;
   confidence_level: string;
   source_url: string | null;
