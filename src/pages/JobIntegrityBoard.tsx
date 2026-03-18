@@ -15,6 +15,7 @@ import { computeRankingScore, evaluateJobQuality, hasEvergreenSignals } from "@/
 import { differenceInDays } from "date-fns";
 import { useJobPreferences } from "@/hooks/use-job-preferences";
 import { evaluateJobFit } from "@/lib/jobFitEngine";
+import { computeLeverage } from "@/components/jobs/LeverageScore";
 
 function getUserPreferenceCategories(): Set<string> {
   try {
