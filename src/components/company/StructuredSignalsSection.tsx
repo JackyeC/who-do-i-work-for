@@ -61,9 +61,9 @@ function SignalCategory({ title, signals, emptyType, companyName, scanContext }:
             <div className="flex items-center gap-2 shrink-0">
               <div className="flex items-center gap-1">
                 <div className={cn("w-1.5 h-1.5 rounded-full", RECENCY_DOT[s.recency] || RECENCY_DOT["Unknown"])} />
-                <span className="text-[10px] text-muted-foreground whitespace-nowrap">{s.recency}</span>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">{s.recency}</span>
               </div>
-              <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0", CONFIDENCE_COLOR[s.confidence])}>
+              <Badge variant="outline" className={cn("text-xs px-1.5 py-0", CONFIDENCE_COLOR[s.confidence])}>
                 {s.confidence}
               </Badge>
             </div>

@@ -47,7 +47,7 @@ function OutreachPanel({
             className="w-full h-40 rounded-xl border border-border/40 bg-muted/30 p-4 text-sm text-foreground resize-none focus:outline-none"
           />
           <div className="flex items-center justify-between mt-4">
-            <p className="text-[10px] text-muted-foreground">Professional & neutral — no assumptions.</p>
+            <p className="text-xs text-muted-foreground">Professional & neutral — no assumptions.</p>
             <Button
               size="sm"
               onClick={() => {
@@ -99,7 +99,7 @@ function ConnectionCard({
           </button>
         )}
         {connection.match_confidence != null && (
-          <Badge variant="secondary" className="text-[10px] mt-1">
+          <Badge variant="secondary" className="text-xs mt-1">
             {Math.round(connection.match_confidence * 100)}% match
           </Badge>
         )}
@@ -137,7 +137,7 @@ function Column({
       <div className="flex items-center gap-2 mb-4">
         <Icon className="w-4 h-4 text-primary" />
         <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-        <Badge variant="secondary" className="text-[10px]">{count}</Badge>
+        <Badge variant="secondary" className="text-xs">{count}</Badge>
       </div>
       <div className={cn("space-y-3 relative", blurred && "select-none")}>
         {blurred && (
@@ -188,7 +188,7 @@ function RelationshipMapViz({
         <svg viewBox="0 0 600 320" className="w-full max-w-xl">
           {/* Center node = You */}
           <circle cx="300" cy="160" r="28" className="fill-primary/20 stroke-primary" strokeWidth="2" />
-          <text x="300" y="164" textAnchor="middle" className="fill-foreground text-[11px] font-semibold">You</text>
+          <text x="300" y="164" textAnchor="middle" className="fill-foreground text-xs font-semibold">You</text>
 
           {matchedCompanies.map((company, i) => {
             const angle = (i / matchedCompanies.length) * Math.PI * 2 - Math.PI / 2;
@@ -201,10 +201,10 @@ function RelationshipMapViz({
               <g key={company.name}>
                 <line x1="300" y1="160" x2={cx} y2={cy} className="stroke-border" strokeWidth="1" strokeDasharray="4 2" />
                 <circle cx={cx} cy={cy} r={nodeR} className="fill-primary/10 stroke-primary/40" strokeWidth="1.5" />
-                <text x={cx} y={cy + nodeR + 12} textAnchor="middle" className="fill-muted-foreground text-[9px]">
+                <text x={cx} y={cy + nodeR + 12} textAnchor="middle" className="fill-muted-foreground text-xs">
                   {company.name.length > 14 ? company.name.slice(0, 14) + "…" : company.name}
                 </text>
-                <text x={cx} y={cy + 4} textAnchor="middle" className="fill-foreground text-[9px] font-medium">
+                <text x={cx} y={cy + 4} textAnchor="middle" className="fill-foreground text-xs font-medium">
                   {company.count}
                 </text>
               </g>
@@ -274,7 +274,7 @@ export function RelationshipDashboard() {
               </div>
               <div>
                 <p className="text-xl font-bold font-mono text-foreground">{stat.value}</p>
-                <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
           </Card>

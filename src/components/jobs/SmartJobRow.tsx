@@ -103,17 +103,17 @@ export function SmartJobRow({ job, isSelected, matchScore, matchLabel, onClick }
       {/* Row 2: Signals strip */}
       <div className="flex flex-wrap items-center gap-1.5 mt-2">
         {/* Freshness */}
-        <Badge variant="outline" className={cn("text-[10px] gap-0.5 py-0", freshness.className)}>
+        <Badge variant="outline" className={cn("text-xs gap-0.5 py-0", freshness.className)}>
           <FreshnessIcon className="w-2.5 h-2.5" /> {freshness.label}
         </Badge>
 
         {/* Salary / Pay Transparency */}
         {job.salary_range ? (
-          <Badge variant="outline" className="text-[10px] gap-0.5 py-0 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green)/0.2)]">
+          <Badge variant="outline" className="text-xs gap-0.5 py-0 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green)/0.2)]">
             <DollarSign className="w-2.5 h-2.5" /> {job.salary_range}
           </Badge>
         ) : (
-          <Badge variant="outline" className="text-[10px] gap-0.5 py-0 text-muted-foreground border-dashed">
+          <Badge variant="outline" className="text-xs gap-0.5 py-0 text-muted-foreground border-dashed">
             <DollarSign className="w-2.5 h-2.5" /> No salary posted
           </Badge>
         )}
@@ -121,7 +121,7 @@ export function SmartJobRow({ job, isSelected, matchScore, matchLabel, onClick }
         {/* Values fit */}
         {matchScore != null && matchScore > 0 && (
           <Badge variant="outline" className={cn(
-            "text-[10px] gap-0.5 py-0",
+            "text-xs gap-0.5 py-0",
             matchScore >= 3 ? "text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green)/0.2)] bg-[hsl(var(--civic-green)/0.06)]" :
             matchScore >= 2 ? "text-primary border-primary/20 bg-primary/5" :
             "text-muted-foreground"
@@ -133,14 +133,14 @@ export function SmartJobRow({ job, isSelected, matchScore, matchLabel, onClick }
 
         {/* Seniority */}
         {job.seniority_level && (
-          <Badge variant="outline" className="text-[10px] py-0 text-muted-foreground">
+          <Badge variant="outline" className="text-xs py-0 text-muted-foreground">
             {job.seniority_level}
           </Badge>
         )}
 
         {/* Department */}
         {job.department && (
-          <Badge variant="outline" className="text-[10px] py-0 text-muted-foreground">
+          <Badge variant="outline" className="text-xs py-0 text-muted-foreground">
             {job.department}
           </Badge>
         )}

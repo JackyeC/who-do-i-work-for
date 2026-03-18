@@ -116,16 +116,16 @@ export function EmptyStateExplainer({ type, className, companyName, scanContext 
             <div className="p-3 bg-muted/30">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Eye className="w-3 h-3 text-muted-foreground" />
-                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">What They Say</span>
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">What They Say</span>
               </div>
-              <p className="text-[11px] text-foreground/80 leading-relaxed italic">{whatTheySay}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed italic">{whatTheySay}</p>
             </div>
             <div className="p-3 bg-primary/5">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <EyeOff className="w-3 h-3 text-primary" />
-                <span className="text-[10px] font-semibold text-primary uppercase tracking-wider">What We See</span>
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider">What We See</span>
               </div>
-              <p className="text-[11px] text-foreground/80 leading-relaxed">{whatWeSee}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed">{whatWeSee}</p>
             </div>
           </div>
         </div>
@@ -134,11 +134,11 @@ export function EmptyStateExplainer({ type, className, companyName, scanContext 
       {/* ATS Detection Badge */}
       {scanContext?.atsDetected && (
         <div className="mx-4 mb-3">
-          <Badge variant="outline" className="text-[10px] bg-primary/5 border-primary/20 text-primary">
+          <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
             ATS Detected: {scanContext.atsDetected}
           </Badge>
           {scanContext.pageClassification && (
-            <Badge variant="outline" className="text-[10px] ml-1.5 bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
+            <Badge variant="outline" className="text-xs ml-1.5 bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
               {scanContext.pageClassification}
             </Badge>
           )}
@@ -149,13 +149,13 @@ export function EmptyStateExplainer({ type, className, companyName, scanContext 
       <div className="px-4 py-2.5 bg-muted/30 border-t border-border/30 flex items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 min-w-0">
           <Search className="w-3 h-3 text-muted-foreground shrink-0" />
-          <span className="text-[10px] text-muted-foreground truncate">
+          <span className="text-xs text-muted-foreground truncate">
             Checked: {(info.checkedSources || []).join(" · ")}
             {lastChecked && ` · as of ${new Date(lastChecked).toLocaleDateString()}`}
           </span>
         </div>
         {info.suggestedAction && (
-          <span className="text-[10px] text-primary font-medium whitespace-nowrap flex items-center gap-1 shrink-0 cursor-default">
+          <span className="text-xs text-primary font-medium whitespace-nowrap flex items-center gap-1 shrink-0 cursor-default">
             <ExternalLink className="w-3 h-3" />
             {info.suggestedAction.length > 50 ? info.suggestedAction.slice(0, 47) + "…" : info.suggestedAction}
           </span>

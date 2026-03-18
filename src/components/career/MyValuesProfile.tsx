@@ -154,7 +154,7 @@ export function MyValuesProfile() {
               {item.dataSources && item.dataSources.length > 0 && (
                 <div className="flex items-center gap-1 mt-1">
                   <Database className="w-3 h-3 text-muted-foreground/60" />
-                  <span className="text-[10px] text-muted-foreground/60">
+                  <span className="text-xs text-muted-foreground/60">
                     {item.dataSources.slice(0, 2).join(" · ")}
                     {item.dataSources.length > 2 && ` +${item.dataSources.length - 2}`}
                   </span>
@@ -164,7 +164,7 @@ export function MyValuesProfile() {
           </div>
           <div className="flex flex-col items-end gap-0.5 shrink-0">
             <Badge variant="outline" className="text-xs">{val}</Badge>
-            <span className={`text-[10px] font-medium ${getPriorityColor(val)}`}>
+            <span className={`text-xs font-medium ${getPriorityColor(val)}`}>
               {getPriorityLabel(val)}
             </span>
           </div>
@@ -203,7 +203,7 @@ export function MyValuesProfile() {
             Your values profile influences your Career Alignment Score, job matching, and company recommendations.
             Slide each value to reflect how important it is to you — <strong>0 = Not Important</strong>, <strong>70+ = Very Important</strong>, <strong>90+ = Deal Breaker</strong>.
           </p>
-          <p className="text-[10px] text-muted-foreground/70">
+          <p className="text-xs text-muted-foreground/70">
             Every value is tied to verifiable public data sources — no opinions, just receipts.
           </p>
         </div>
@@ -225,7 +225,7 @@ export function MyValuesProfile() {
                       {isOpen ? <ChevronDown className="w-4 h-4 text-muted-foreground" /> : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
                       <CardTitle className="font-display text-base">{group.label}</CardTitle>
                       {activeCount > 0 && (
-                        <Badge variant="secondary" className="text-[10px]">
+                        <Badge variant="secondary" className="text-xs">
                           {activeCount} customized
                         </Badge>
                       )}

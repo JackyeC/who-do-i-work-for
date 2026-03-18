@@ -95,7 +95,7 @@ export function InnovationSignals({ companyId, companyName }: InnovationSignalsP
             <div className="flex items-center gap-2 mb-3">
               <Lightbulb className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold text-foreground">Innovation Signals</h3>
-              <Badge variant="outline" className="text-[10px] ml-auto">Patents</Badge>
+              <Badge variant="outline" className="text-xs ml-auto">Patents</Badge>
             </div>
             <EmptyStateExplainer type="jobs" />
             <p className="text-xs text-muted-foreground mt-2">
@@ -162,11 +162,11 @@ export function InnovationSignals({ companyId, companyName }: InnovationSignalsP
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-semibold text-foreground">Innovation Signals</h3>
-            <span className="text-[10px] text-muted-foreground ml-1">What they're building</span>
+            <span className="text-xs text-muted-foreground ml-1">What they're building</span>
             <div className="ml-auto flex items-center gap-2">
               {trend !== null && (
                 <div className={cn(
-                  "flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded",
+                  "flex items-center gap-1 text-xs font-medium px-1.5 py-0.5 rounded",
                   trend > 10 ? "text-[hsl(var(--civic-green))] bg-[hsl(var(--civic-green))]/10" :
                   trend < -10 ? "text-destructive bg-destructive/10" :
                   "text-muted-foreground bg-muted"
@@ -175,7 +175,7 @@ export function InnovationSignals({ companyId, companyName }: InnovationSignalsP
                   {Math.abs(Math.round(trend))}% YoY
                 </div>
               )}
-              <Badge variant="outline" className="text-[10px]">{total} patents</Badge>
+              <Badge variant="outline" className="text-xs">{total} patents</Badge>
             </div>
           </div>
 
@@ -186,13 +186,13 @@ export function InnovationSignals({ companyId, companyName }: InnovationSignalsP
                 <div className="flex-1 text-foreground/85 leading-relaxed">{s.summary}</div>
                 <div className="flex items-center gap-2 shrink-0">
                   <Badge variant="outline" className={cn(
-                    "text-[10px]",
+                    "text-xs",
                     s.confidence === "High" ? "border-[hsl(var(--civic-green))]/30 text-[hsl(var(--civic-green))]" :
                     "border-[hsl(var(--civic-yellow))]/30 text-[hsl(var(--civic-yellow))]"
                   )}>
                     {s.confidence}
                   </Badge>
-                  <span className="text-[10px] text-muted-foreground whitespace-nowrap">{s.recency}</span>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">{s.recency}</span>
                 </div>
               </div>
             ))}
@@ -204,7 +204,7 @@ export function InnovationSignals({ companyId, companyName }: InnovationSignalsP
               <Badge
                 key={cat}
                 variant="outline"
-                className={cn("text-[10px] gap-1", CATEGORY_COLORS[cat] || "bg-muted text-muted-foreground")}
+                className={cn("text-xs gap-1", CATEGORY_COLORS[cat] || "bg-muted text-muted-foreground")}
               >
                 {cat} ({count})
               </Badge>

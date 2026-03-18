@@ -169,10 +169,10 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {t.company?.industry && (
-                        <span className="text-[10px] text-muted-foreground hidden sm:block">{t.company.industry}</span>
+                        <span className="text-xs text-muted-foreground hidden sm:block">{t.company.industry}</span>
                       )}
                       {t.company?.civic_footprint_score != null && (
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-xs">
                           {t.company.civic_footprint_score}
                         </Badge>
                       )}
@@ -205,7 +205,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                           ? `From $${(profile.target_salary_min / 1000).toFixed(0)}k`
                           : `Up to $${(profile.target_salary_max / 1000).toFixed(0)}k`}
                       </p>
-                      <p className="text-[10px] text-muted-foreground">Target range</p>
+                      <p className="text-xs text-muted-foreground">Target range</p>
                     </div>
                   </div>
                 )}
@@ -214,7 +214,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     <Briefcase className="w-4 h-4 text-primary shrink-0" />
                     <div>
                       <p className="text-xs font-medium text-foreground">{profile.skills.length} skills</p>
-                      <p className="text-[10px] text-muted-foreground">Detected from profile</p>
+                      <p className="text-xs text-muted-foreground">Detected from profile</p>
                     </div>
                   </div>
                 )}
@@ -223,7 +223,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     <Briefcase className="w-4 h-4 text-primary shrink-0" />
                     <div>
                       <p className="text-xs font-medium text-foreground capitalize">{profile.seniority_level}</p>
-                      <p className="text-[10px] text-muted-foreground">Seniority level</p>
+                      <p className="text-xs text-muted-foreground">Seniority level</p>
                     </div>
                   </div>
                 )}
@@ -238,7 +238,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                   <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                     Upload your resume
                   </p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     We'll extract skills & compensation context to power your evaluations
                   </p>
                 </div>
@@ -271,9 +271,9 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-xs font-medium text-foreground">{alert.company_name}</span>
-                        <Badge variant="outline" className="text-[9px]">{alert.signal_category}</Badge>
+                        <Badge variant="outline" className="text-xs">{alert.signal_category}</Badge>
                       </div>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-1">
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-1">
                         {alert.change_description}
                       </p>
                     </div>
@@ -293,7 +293,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-foreground">Recent Documents</h3>
-                <Link to="/career-map" className="text-[11px] text-primary font-medium hover:underline">View all</Link>
+                <Link to="/career-map" className="text-sm text-primary font-medium hover:underline">View all</Link>
               </div>
               {docs.length > 0 ? (
                 <div className="space-y-2">
@@ -302,12 +302,12 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                       <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-foreground truncate">{doc.original_filename}</p>
-                        <p className="text-[10px] text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {doc.document_type.replace("_", " ")} · {doc.status === "parsed" ? "✓ Parsed" : doc.status}
                         </p>
                       </div>
                       {doc.status === "parsed" && doc.parsed_signals?.skills?.length > 0 && (
-                        <Badge variant="outline" className="text-[9px] shrink-0">
+                        <Badge variant="outline" className="text-xs shrink-0">
                           {doc.parsed_signals.skills.length} skills
                         </Badge>
                       )}
@@ -343,11 +343,11 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     <div key={app.id} className="flex items-center justify-between gap-3 p-2.5 rounded-lg bg-muted/20 border border-border/20">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-foreground truncate">{app.job_title}</p>
-                        <p className="text-[10px] text-muted-foreground">{app.company_name}</p>
+                        <p className="text-xs text-muted-foreground">{app.company_name}</p>
                       </div>
                       <Badge
                         variant="outline"
-                        className={`text-[10px] shrink-0 ${
+                        className={`text-xs shrink-0 ${
                           app.status === "applied" ? "border-[hsl(var(--civic-green))]/30 text-[hsl(var(--civic-green))]" :
                           app.status === "interviewing" ? "border-primary/30 text-primary" :
                           ""

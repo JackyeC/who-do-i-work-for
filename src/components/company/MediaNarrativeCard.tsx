@@ -87,23 +87,23 @@ export function MediaNarrativeCard({ companyId, companyName }: MediaNarrativeCar
           <div className="text-center">
             <TrendingUp className="w-3.5 h-3.5 text-primary mx-auto mb-1" />
             <div className="font-mono text-lg font-bold text-foreground tabular-nums">{pctPos}%</div>
-            <div className="font-mono text-[10px] uppercase text-muted-foreground">Positive</div>
+            <div className="font-mono text-xs uppercase text-muted-foreground">Positive</div>
           </div>
           <div className="text-center">
             <Minus className="w-3.5 h-3.5 text-muted-foreground mx-auto mb-1" />
             <div className="font-mono text-lg font-bold text-foreground tabular-nums">{pctNeu}%</div>
-            <div className="font-mono text-[10px] uppercase text-muted-foreground">Neutral</div>
+            <div className="font-mono text-xs uppercase text-muted-foreground">Neutral</div>
           </div>
           <div className="text-center">
             <TrendingDown className="w-3.5 h-3.5 text-destructive mx-auto mb-1" />
             <div className="font-mono text-lg font-bold text-foreground tabular-nums">{pctNeg}%</div>
-            <div className="font-mono text-[10px] uppercase text-muted-foreground">Negative</div>
+            <div className="font-mono text-xs uppercase text-muted-foreground">Negative</div>
           </div>
         </div>
 
         {controversies.length > 0 && (
           <div className="border-t border-border pt-3 space-y-2">
-            <div className="font-mono text-[10px] uppercase text-muted-foreground flex items-center gap-1">
+            <div className="font-mono text-xs uppercase text-muted-foreground flex items-center gap-1">
               <AlertCircle className="w-3 h-3" /> Recent Controversies
             </div>
             {controversies.map((c, i) => (

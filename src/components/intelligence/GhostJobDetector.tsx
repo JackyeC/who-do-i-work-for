@@ -97,11 +97,11 @@ function ZeroStateIntelligence({ companyName, scanContext }: { companyName: stri
       {/* ATS badge */}
       {scanContext?.atsDetected && (
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-[10px] bg-primary/5 border-primary/20 text-primary">
+          <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
             ATS: {scanContext.atsDetected}
           </Badge>
           {scanContext.pageClassification && (
-            <Badge variant="outline" className="text-[10px] bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
+            <Badge variant="outline" className="text-xs bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
               {scanContext.pageClassification}
             </Badge>
           )}
@@ -115,16 +115,16 @@ function ZeroStateIntelligence({ companyName, scanContext }: { companyName: stri
             <div className="p-3 bg-muted/30">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <Eye className="w-3 h-3 text-muted-foreground" />
-                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">What They Say</span>
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">What They Say</span>
               </div>
-              <p className="text-[11px] text-foreground/80 leading-relaxed italic">{scanContext!.whatTheySay}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed italic">{scanContext!.whatTheySay}</p>
             </div>
             <div className="p-3 bg-primary/5">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <EyeOff className="w-3 h-3 text-primary" />
-                <span className="text-[10px] font-semibold text-primary uppercase tracking-wider">What We See</span>
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider">What We See</span>
               </div>
-              <p className="text-[11px] text-foreground/80 leading-relaxed">{scanContext!.whatWeSee}</p>
+              <p className="text-sm text-foreground/80 leading-relaxed">{scanContext!.whatWeSee}</p>
             </div>
           </div>
         </div>
@@ -134,12 +134,12 @@ function ZeroStateIntelligence({ companyName, scanContext }: { companyName: stri
       <div className="flex items-center justify-between gap-3 pt-2 border-t border-border/30">
         <div className="flex items-center gap-1.5 min-w-0">
           <Search className="w-3 h-3 text-muted-foreground shrink-0" />
-          <span className="text-[10px] text-muted-foreground truncate">
+          <span className="text-xs text-muted-foreground truncate">
             Checked: {(scanContext?.checkedSources || ["Careers page"]).join(" · ")}
             {scanContext?.lastScanned && ` · as of ${new Date(scanContext.lastScanned).toLocaleDateString()}`}
           </span>
         </div>
-        <span className="text-[10px] text-primary font-medium whitespace-nowrap flex items-center gap-1 shrink-0 cursor-default">
+        <span className="text-xs text-primary font-medium whitespace-nowrap flex items-center gap-1 shrink-0 cursor-default">
           <ExternalLink className="w-3 h-3" />
           Search LinkedIn for recruiters
         </span>
@@ -258,8 +258,8 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
             Hiring Transparency
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px]">{totalActive} active listings</Badge>
-            <Badge variant="outline" className={cn("text-[10px]", riskColor)}>{riskLabel}</Badge>
+            <Badge variant="outline" className="text-xs">{totalActive} active listings</Badge>
+            <Badge variant="outline" className={cn("text-xs", riskColor)}>{riskLabel}</Badge>
           </div>
         </div>
         <p className="text-xs text-muted-foreground">
@@ -273,10 +273,10 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
 
         {staleJobs.length > 0 && (
           <div className="mt-3">
-            <h4 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Potentially Ghost Listings</h4>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Potentially Ghost Listings</h4>
             <div className="space-y-1">
               {staleJobs.slice(0, 5).map(j => (
-                <div key={j.id} className="flex items-center justify-between text-[11px] p-2 rounded-lg bg-muted/30">
+                <div key={j.id} className="flex items-center justify-between text-sm p-2 rounded-lg bg-muted/30">
                   <span className="text-foreground truncate flex-1">{j.title}</span>
                   <span className="text-muted-foreground shrink-0 ml-2 font-mono">
                     {daysSince(j.posted_at || j.scraped_at)}d old
@@ -287,7 +287,7 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
           </div>
         )}
 
-        <p className="text-[10px] text-muted-foreground border-t border-border pt-2 mt-3">
+        <p className="text-xs text-muted-foreground border-t border-border pt-2 mt-3">
           Listings older than 60 days with no salary and repeated reposts may indicate ghost jobs, hiring freezes, or internal dysfunction.
           Sources: Greenhouse, Lever, Workday, company career pages.
         </p>
