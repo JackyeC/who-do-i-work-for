@@ -85,6 +85,7 @@ const sanitize = (v: string, maxLen = 500): string =>
 
 /* ── Navigation anchors for the scrolling dashboard ── */
 const DASHBOARD_SECTIONS = [
+  { id: "stability-delta", label: "Delta" },
   { id: "reality-check", label: "Reality Check" },
   { id: "offer-strength-score", label: "Score" },
   { id: "red-flags", label: "Red Flags" },
@@ -95,6 +96,7 @@ const DASHBOARD_SECTIONS = [
   { id: "equity", label: "Equity" },
   { id: "career-freedom", label: "Career Freedom" },
   { id: "negotiate", label: "Negotiate" },
+  { id: "negotiate-coach", label: "Coach" },
   { id: "questions-to-ask", label: "Questions" },
   { id: "culture-snapshot", label: "Culture" },
   { id: "decision-summary", label: "Decision" },
