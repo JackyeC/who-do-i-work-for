@@ -238,7 +238,7 @@ export function EmployerIntelligenceCard({ companyId, companyName }: Props) {
                   <span className={cn("text-xs font-bold w-5 text-center", partyMap[c.party] || "")}>{c.party}</span>
                   <span className="text-sm text-foreground">{c.name}</span>
                   {c.flagged && (
-                    <Badge variant="destructive" className="text-[9px]">{c.flag_reason || "Flagged"}</Badge>
+                    <Badge variant="destructive" className="text-xs">{c.flag_reason || "Flagged"}</Badge>
                   )}
                 </div>
                 <span className="text-sm font-semibold text-foreground">{formatCurrency(c.amount)}</span>
