@@ -41,6 +41,7 @@ import { useEEOCByCompanyName } from "@/hooks/use-eeoc-cases";
 import { PremiumGate } from "@/components/PremiumGate";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { HighRiskConnectionCard } from "@/components/company/HighRiskConnectionCard";
+import { StateWomenStatusCard } from "@/components/StateWomenStatusCard";
 
 /* ─── Lens config ─── */
 const LENS_META = {
