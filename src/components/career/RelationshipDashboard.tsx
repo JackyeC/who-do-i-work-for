@@ -201,10 +201,10 @@ function RelationshipMapViz({
               <g key={company.name}>
                 <line x1="300" y1="160" x2={cx} y2={cy} className="stroke-border" strokeWidth="1" strokeDasharray="4 2" />
                 <circle cx={cx} cy={cy} r={nodeR} className="fill-primary/10 stroke-primary/40" strokeWidth="1.5" />
-                <text x={cx} y={cy + nodeR + 12} textAnchor="middle" className="fill-muted-foreground text-[9px]">
+                <text x={cx} y={cy + nodeR + 12} textAnchor="middle" className="fill-muted-foreground text-xs">
                   {company.name.length > 14 ? company.name.slice(0, 14) + "…" : company.name}
                 </text>
-                <text x={cx} y={cy + 4} textAnchor="middle" className="fill-foreground text-[9px] font-medium">
+                <text x={cx} y={cy + 4} textAnchor="middle" className="fill-foreground text-xs font-medium">
                   {company.count}
                 </text>
               </g>
