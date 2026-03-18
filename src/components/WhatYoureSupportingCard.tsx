@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, HandCoins, Users, Scale, HelpCircle, ExternalLink, Share2, ChevronDown, ChevronUp, Info } from "lucide-react";
+import { AlertTriangle, HandCoins, Users, Scale, HelpCircle, ExternalLink, Share2, ChevronDown, ChevronUp, Info, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
 import { PartyBadge } from "@/components/PartyBadge";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { EntityDetailDrawer, type DarkMoneyEntity } from "@/components/company/EntityDetailDrawer";
 
 interface LobbyingDetail {
   target: string;
