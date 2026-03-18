@@ -118,10 +118,10 @@ export function FamilyFirstTag({ companyId, companyName }: Props) {
         {/* Community consensus */}
         {totalCount > 0 && (
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <Badge variant="outline" className="text-[10px] bg-destructive/5 text-destructive border-destructive/20">
+             <Badge variant="outline" className="text-xs bg-destructive/5 text-destructive border-destructive/20">
               {traditionalCount} Traditional
             </Badge>
-            <Badge variant="outline" className="text-[10px] bg-[hsl(var(--civic-blue))]/5 text-[hsl(var(--civic-blue))] border-[hsl(var(--civic-blue))]/20">
+            <Badge variant="outline" className="text-xs bg-[hsl(var(--civic-blue))]/5 text-[hsl(var(--civic-blue))] border-[hsl(var(--civic-blue))]/20">
               {progressiveCount} Progressive
             </Badge>
             <span className="ml-auto">{totalCount} community tag{totalCount !== 1 ? "s" : ""}</span>
