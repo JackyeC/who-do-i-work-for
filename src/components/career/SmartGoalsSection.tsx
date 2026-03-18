@@ -121,7 +121,7 @@ export function SmartGoalsSection({ trackId, userId, targetRole }: SmartGoalsSec
           <Target className="w-4 h-4 text-[hsl(var(--civic-gold))]" />
           <p className="text-sm font-semibold text-foreground font-display">SMART Goals</p>
           {totalCount > 0 && (
-            <Badge variant="outline" className="text-[10px]">
+            <Badge variant="outline" className="text-xs">
               {completedCount}/{totalCount} done
             </Badge>
           )}
