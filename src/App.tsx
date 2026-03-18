@@ -217,6 +217,7 @@ const App = () => (
                   <Route path="/alignment/:slug" element={<CorporateAlignment />} />
                   <Route path="/policy-intelligence" element={<PolicyIntelligence />} />
                   <Route path="/negotiation-simulator" element={<NegotiationSimulator />} />
+                  <Route path="/decision-engine" element={<DecisionEngine />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
