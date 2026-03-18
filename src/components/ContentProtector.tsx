@@ -8,11 +8,11 @@ interface ContentProtectorProps {
 
 /**
  * Wraps premium content with copy/print/screenshot protections.
- * Admins and owners bypass all protections.
+ * Admins, owners, and internal testers bypass all protections.
  */
 export function ContentProtector({ children, className }: ContentProtectorProps) {
-  const { isAdmin, isOwner } = useUserRole();
-  const bypass = isAdmin || isOwner;
+  const { isAdmin, isOwner, isInternalTest } = useUserRole();
+  const bypass = isAdmin || isOwner || isInternalTest;
 
   useEffect(() => {
     if (bypass) return;
@@ -42,8 +42,12 @@ export function ContentProtector({ children, className }: ContentProtectorProps)
     };
   }, [bypass]);
 
+  const wrapperClassName = bypass
+    ? className || ""
+    : `protected-content ${className || ""}`.trim();
+
   return (
-    <div className={`protected-content ${className || ""}`} style={bypass ? undefined : { userSelect: "none", WebkitUserSelect: "none" }}>
+    <div className={wrapperClassName}>
       {children}
     </div>
   );
