@@ -53,7 +53,7 @@ export function JobSidebar() {
           })}
         </nav>
 
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-3 mt-6">Settings</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 mt-6">Settings</p>
         <nav className="space-y-0.5">
           {SETTINGS_ITEMS.map((item) => {
             if (item.auth && !user) return null;
