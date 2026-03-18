@@ -131,10 +131,10 @@ export function calculateCharacterScore(inputs: CharacterInputs) {
   if (lSignals.length === 0) { lScore = 10; lSignals.push("Limited leadership data"); }
 
   const categories: CategoryScore[] = [
-    { key: "transparency", label: "Transparency", score: cap(tScore), weight: 0.25, icon: Shield, signals: tSignals, evidence: tEvidence },
-    { key: "worker_treatment", label: "Worker Treatment", score: cap(wScore), weight: 0.25, icon: Users, signals: wSignals, evidence: wEvidence },
-    { key: "political_influence", label: "Political Influence", score: cap(pScore), weight: 0.20, icon: Landmark, signals: pSignals, evidence: pEvidence },
-    { key: "ethical_conduct", label: "Ethical Conduct", score: cap(eScore), weight: 0.15, icon: Scale, signals: eSignals, evidence: eEvidence },
+    { key: "transparency", label: "Spending & Decision Transparency", score: cap(tScore), weight: 0.25, icon: Shield, signals: tSignals, evidence: tEvidence },
+    { key: "worker_treatment", label: "Worker Treatment & Conditions", score: cap(wScore), weight: 0.25, icon: Users, signals: wSignals, evidence: wEvidence },
+    { key: "political_influence", label: "Corporate Political Activity", score: cap(pScore), weight: 0.20, icon: Landmark, signals: pSignals, evidence: pEvidence },
+    { key: "ethical_conduct", label: "Ethical Leadership & Integrity", score: cap(eScore), weight: 0.15, icon: Scale, signals: eSignals, evidence: eEvidence },
     { key: "leadership", label: "Leadership Accountability", score: cap(lScore), weight: 0.15, icon: Crown, signals: lSignals, evidence: lEvidence },
   ];
 
