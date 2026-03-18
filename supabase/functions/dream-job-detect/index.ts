@@ -7,8 +7,10 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 /**
  * Dream Job Detector
- * Runs after batch-job-scrape to match newly ingested jobs against all user career profiles.
- * Creates job_alerts for strong matches (score >= 70).
+ * Matches jobs against user career profiles and creates job_alerts for strong matches (score >= 70).
+ * Accepts optional `user_id` to run for a single user (e.g. after resume upload).
+ * First-run behavior: matches ALL active jobs if user has no existing alerts.
+ * Subsequent runs: only matches jobs scraped in last 48 hours.
  */
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -20,11 +22,29 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Optional: scope to a single user
+    let targetUserId: string | null = null;
+    try {
+      const body = await req.json();
+      targetUserId = body?.user_id || null;
+    } catch {
+      // No body or invalid JSON — run for all users
+    }
+
     const DREAM_THRESHOLD = 70;
 
-    // 1. Get recent jobs (last 48 hours)
-    const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
-    const { data: recentJobs, error: jobsErr } = await supabase
+    // Determine if this is a first-run for the target user (no existing alerts)
+    let isFirstRun = false;
+    if (targetUserId) {
+      const { count } = await supabase
+        .from('job_alerts')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', targetUserId);
+      isFirstRun = (count || 0) === 0;
+    }
+
+    // 1. Get jobs — all active jobs for first-run, last 48h otherwise
+    let jobsQuery = supabase
       .from('company_jobs')
       .select(`
         id, title, location, work_mode, seniority_level, extracted_skills, salary_range,
@@ -32,20 +52,32 @@ Deno.serve(async (req) => {
         companies!inner (id, name, slug, civic_footprint_score)
       `)
       .eq('is_active', true)
-      .gte('scraped_at', twoDaysAgo)
-      .limit(200);
+      .limit(500);
+
+    if (!isFirstRun) {
+      const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+      jobsQuery = jobsQuery.gte('scraped_at', twoDaysAgo);
+    }
+
+    const { data: recentJobs, error: jobsErr } = await jobsQuery;
 
     if (jobsErr || !recentJobs || recentJobs.length === 0) {
       return new Response(JSON.stringify({
-        success: true, message: 'No recent jobs to match', alertsCreated: 0,
+        success: true, message: 'No jobs to match', alertsCreated: 0,
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // 2. Get all career profiles with meaningful data
-    const { data: profiles } = await supabase
+    // 2. Get career profiles
+    let profilesQuery = supabase
       .from('user_career_profile')
       .select('*')
       .not('skills', 'is', null);
+
+    if (targetUserId) {
+      profilesQuery = profilesQuery.eq('user_id', targetUserId);
+    }
+
+    const { data: profiles } = await profilesQuery;
 
     if (!profiles || profiles.length === 0) {
       return new Response(JSON.stringify({
@@ -54,17 +86,24 @@ Deno.serve(async (req) => {
     }
 
     // 3. Get existing alerts to avoid duplicates
-    const { data: existingAlerts } = await supabase
+    let existingQuery = supabase
       .from('job_alerts')
-      .select('user_id, job_id')
-      .gte('created_at', twoDaysAgo);
+      .select('user_id, job_id');
 
+    if (targetUserId) {
+      existingQuery = existingQuery.eq('user_id', targetUserId);
+    } else {
+      const twoDaysAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+      existingQuery = existingQuery.gte('created_at', twoDaysAgo);
+    }
+
+    const { data: existingAlerts } = await existingQuery;
     const alertSet = new Set((existingAlerts || []).map(a => `${a.user_id}:${a.job_id}`));
 
     let alertsCreated = 0;
     const alertsToInsert: any[] = [];
 
-    // 4. Match each profile against recent jobs
+    // 4. Match each profile against jobs
     for (const profile of profiles) {
       const userSkills = (profile.skills || []).map((s: string) => s.toLowerCase());
       const userTitles = ([...(profile.preferred_titles || []), ...(profile.job_titles || [])]).map((t: string) => t.toLowerCase());

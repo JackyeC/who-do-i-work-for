@@ -49,6 +49,22 @@ export default function CareerIntelligence() {
     ensureProfile();
   }, [user]);
 
+  const handleUploadComplete = () => {
+    setActiveTab("documents");
+    // Trigger dream job matching in background after upload
+    if (user) {
+      supabase.functions.invoke("dream-job-detect", {
+        body: { user_id: user.id },
+      }).then(({ data }) => {
+        if (data?.alertsCreated > 0) {
+          console.log(`Background scan: ${data.alertsCreated} dream job matches found`);
+        }
+      }).catch((err) => {
+        console.error("Background dream job scan failed:", err);
+      });
+    }
+  };
+
   if (!user) return <Navigate to="/login" replace />;
 
   return (
@@ -107,7 +123,7 @@ export default function CareerIntelligence() {
           </TabsList>
 
           <TabsContent value="upload" className="mt-6">
-            <DocumentUploader onUploadComplete={() => setActiveTab("documents")} />
+            <DocumentUploader onUploadComplete={handleUploadComplete} />
           </TabsContent>
           <TabsContent value="documents" className="mt-6">
             <MyDocuments />
