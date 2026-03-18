@@ -134,7 +134,7 @@ export function WalkAwayCalculator({ onComplete, offerSalary }: Props) {
                     <span className="text-xs font-mono text-muted-foreground w-20">${annualBaseline.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] text-muted-foreground w-16 text-right">Offer</span>
+                    <span className="text-xs text-muted-foreground w-16 text-right">Offer</span>
                     <div className="flex-1 h-6 bg-muted rounded-full overflow-hidden relative">
                       <div
                         className={cn(

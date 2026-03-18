@@ -76,7 +76,7 @@ export function CivicLegalAudit({ flags }: Props) {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-sm font-semibold text-foreground">{flag.title}</h3>
-                      <Badge variant="outline" className={cn("text-[9px]", config.color)}>
+                      <Badge variant="outline" className={cn("text-xs", config.color)}>
                         {flag.category}
                       </Badge>
                     </div>

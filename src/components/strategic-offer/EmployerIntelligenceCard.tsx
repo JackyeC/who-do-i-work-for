@@ -300,7 +300,7 @@ export function EmployerIntelligenceCard({ companyId, companyName }: Props) {
                 )} />
                 <div>
                   <p className="text-xs font-medium text-foreground">{f.org_name}</p>
-                  <p className="text-[10px] text-muted-foreground">{f.category} · {f.description?.substring(0, 120)}</p>
+                  <p className="text-xs text-muted-foreground">{f.category} · {f.description?.substring(0, 120)}</p>
                 </div>
               </div>
             ))}
