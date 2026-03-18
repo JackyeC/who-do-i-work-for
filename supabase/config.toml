@@ -125,3 +125,6 @@ verify_jwt = false
 
 [functions.negotiation-coach]
 verify_jwt = false
+
+[functions.dream-job-detect]
+verify_jwt = false
