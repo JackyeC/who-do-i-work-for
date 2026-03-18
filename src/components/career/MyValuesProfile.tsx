@@ -203,7 +203,7 @@ export function MyValuesProfile() {
             Your values profile influences your Career Alignment Score, job matching, and company recommendations.
             Slide each value to reflect how important it is to you — <strong>0 = Not Important</strong>, <strong>70+ = Very Important</strong>, <strong>90+ = Deal Breaker</strong>.
           </p>
-          <p className="text-[10px] text-muted-foreground/70">
+          <p className="text-xs text-muted-foreground/70">
             Every value is tied to verifiable public data sources — no opinions, just receipts.
           </p>
         </div>
