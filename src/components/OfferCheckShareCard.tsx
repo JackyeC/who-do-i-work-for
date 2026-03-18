@@ -59,7 +59,7 @@ export function OfferCheckShareCard({
           <ClipboardCheck className="w-5 h-5 text-primary" />
           <div className="flex flex-col leading-none">
             <span className="font-bold text-foreground text-sm">Offer Check</span>
-            <span className="text-[8px] text-muted-foreground">by Jackye Clayton</span>
+            <span className="text-xs text-muted-foreground">by Jackye Clayton</span>
           </div>
           {confidenceRating && (
             <Badge variant="secondary" className="text-[10px] ml-auto">
