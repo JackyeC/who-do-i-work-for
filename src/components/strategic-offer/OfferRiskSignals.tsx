@@ -62,7 +62,7 @@ export function OfferRiskSignals({ companyId, companyName }: Props) {
         .limit(12);
       // Dedupe by category (latest only)
       const seen = new Set<string>();
-      return ((data || []) as Signal[]).filter(s => {
+      return ((data || []) as unknown as Signal[]).filter(s => {
         if (seen.has(s.signal_category)) return false;
         seen.add(s.signal_category);
         return true;
