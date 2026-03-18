@@ -216,6 +216,7 @@ const App = () => (
                 <AskJackyeWidget />
                 <BetaFeedbackWidget />
                 <CookieNotice />
+                <PreviewTierToolbar />
               </Suspense>
             </AppShell>
           </BrowserRouter>
