@@ -556,6 +556,7 @@ Deno.serve(async (req) => {
       atsDetected: null,
       departmentBreakdown: null,
       deeperUrlFound: null,
+      layersChecked: [],
     };
 
     // ═══════════════════════════════════════════════════
