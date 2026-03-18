@@ -103,7 +103,7 @@ export function MediaNarrativeCard({ companyId, companyName }: MediaNarrativeCar
 
         {controversies.length > 0 && (
           <div className="border-t border-border pt-3 space-y-2">
-            <div className="font-mono text-[10px] uppercase text-muted-foreground flex items-center gap-1">
+            <div className="font-mono text-xs uppercase text-muted-foreground flex items-center gap-1">
               <AlertCircle className="w-3 h-3" /> Recent Controversies
             </div>
             {controversies.map((c, i) => (

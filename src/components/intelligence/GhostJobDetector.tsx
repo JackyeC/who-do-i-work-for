@@ -287,7 +287,7 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
           </div>
         )}
 
-        <p className="text-[10px] text-muted-foreground border-t border-border pt-2 mt-3">
+        <p className="text-xs text-muted-foreground border-t border-border pt-2 mt-3">
           Listings older than 60 days with no salary and repeated reposts may indicate ghost jobs, hiring freezes, or internal dysfunction.
           Sources: Greenhouse, Lever, Workday, company career pages.
         </p>

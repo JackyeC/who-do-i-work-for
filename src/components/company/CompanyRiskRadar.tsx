@@ -211,11 +211,11 @@ export function CompanyRiskRadar({ companyId, companyName, slug, lobbyingSpend, 
                   <div className="flex items-center gap-2 mb-0.5">
                     <Icon className="w-3.5 h-3.5 text-muted-foreground" strokeWidth={1.5} />
                     <span className="font-mono text-xs font-medium text-foreground">{s.label}</span>
-                    <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0", SEVERITY_STYLES[s.severity].badge)}>
+                    <Badge variant="outline" className={cn("text-xs px-1.5 py-0", SEVERITY_STYLES[s.severity].badge)}>
                       {SEVERITY_LABELS[s.severity]}
                     </Badge>
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-snug">{s.summary}</p>
+                  <p className="text-sm text-muted-foreground leading-snug">{s.summary}</p>
                 </div>
               </div>
             );
