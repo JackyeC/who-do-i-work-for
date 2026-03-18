@@ -188,7 +188,7 @@ function RelationshipMapViz({
         <svg viewBox="0 0 600 320" className="w-full max-w-xl">
           {/* Center node = You */}
           <circle cx="300" cy="160" r="28" className="fill-primary/20 stroke-primary" strokeWidth="2" />
-          <text x="300" y="164" textAnchor="middle" className="fill-foreground text-[11px] font-semibold">You</text>
+          <text x="300" y="164" textAnchor="middle" className="fill-foreground text-xs font-semibold">You</text>
 
           {matchedCompanies.map((company, i) => {
             const angle = (i / matchedCompanies.length) * Math.PI * 2 - Math.PI / 2;
