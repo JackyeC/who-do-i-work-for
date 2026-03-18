@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   Search, ArrowRight, Building2, Loader2, ShieldCheck,
-  ClipboardCheck, Users, Upload, ExternalLink,
+  ClipboardCheck, Users, Upload, ExternalLink, Briefcase,
+  MapPin, Globe, Clock,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { SituationSelector } from "@/components/policy-intelligence/SituationSelector";
@@ -28,6 +29,7 @@ import {
   type Situation,
 } from "@/lib/policyScoreEngine";
 import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
 
 function AddCompanyCard({ companyName, onDiscovered }: { companyName: string; onDiscovered: (id: string, slug: string, name: string) => void }) {
   const [scanning, setScanning] = useState(false);
