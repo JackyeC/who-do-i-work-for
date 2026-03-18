@@ -76,6 +76,7 @@ export function JobBoardFilters({ filters, onFiltersChange, availableDepartments
       valuesAligned: false,
       freshOnly: false,
       salaryMin: 0,
+      location: "",
     });
 
   const filterContent = (
