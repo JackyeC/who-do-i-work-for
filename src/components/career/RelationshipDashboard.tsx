@@ -47,7 +47,7 @@ function OutreachPanel({
             className="w-full h-40 rounded-xl border border-border/40 bg-muted/30 p-4 text-sm text-foreground resize-none focus:outline-none"
           />
           <div className="flex items-center justify-between mt-4">
-            <p className="text-[10px] text-muted-foreground">Professional & neutral — no assumptions.</p>
+            <p className="text-xs text-muted-foreground">Professional & neutral — no assumptions.</p>
             <Button
               size="sm"
               onClick={() => {
