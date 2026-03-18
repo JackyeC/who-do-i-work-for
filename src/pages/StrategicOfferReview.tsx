@@ -97,6 +97,7 @@ const DASHBOARD_SECTIONS = [
   { id: "career-freedom", label: "Career Freedom" },
   { id: "negotiate", label: "Negotiate" },
   { id: "negotiate-coach", label: "Coach" },
+  { id: "acceptance-email", label: "Accept" },
   { id: "questions-to-ask", label: "Questions" },
   { id: "culture-snapshot", label: "Culture" },
   { id: "decision-summary", label: "Decision" },
