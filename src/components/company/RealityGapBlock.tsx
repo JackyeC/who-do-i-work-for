@@ -44,7 +44,7 @@ function StanceRow({ stance }: { stance: { id: string; topic: string; public_pos
           <Icon className={`w-3.5 h-3.5 ${config.color} shrink-0`} />
           <span className="text-xs font-medium text-foreground uppercase tracking-wider">{stance.topic}</span>
         </div>
-        <Badge className={`text-[10px] shrink-0 ${config.bg}`}>
+        <Badge className={`text-xs shrink-0 ${config.bg}`}>
           {config.label}
         </Badge>
       </div>
