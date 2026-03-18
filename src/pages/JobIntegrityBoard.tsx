@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { JobIntegrityCard } from "@/components/jobs/JobIntegrityCard";
 import { AskJackyeWidget } from "@/components/jobs/AskJackyeWidget";
 import { PersonalizationBanner } from "@/components/jobs/PersonalizationBanner";
+import { ExternalJobFeed } from "@/components/jobs/ExternalJobFeed";
 import { EmptyState } from "@/components/EmptyState";
 import { Loader2, Search, Shield, ShieldCheck, Briefcase } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
