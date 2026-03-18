@@ -198,7 +198,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                   <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/20 border border-border/30">
                     <DollarSign className="w-4 h-4 text-primary shrink-0" />
                     <div>
-                      <p className="text-xs font-medium text-foreground">
+                      <p className="text-sm font-medium text-foreground">
                         {profile.target_salary_min && profile.target_salary_max
                           ? `$${(profile.target_salary_min / 1000).toFixed(0)}k – $${(profile.target_salary_max / 1000).toFixed(0)}k`
                           : profile.target_salary_min
