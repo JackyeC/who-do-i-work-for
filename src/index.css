@@ -135,8 +135,8 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
-    font-size: 17px;
-    line-height: 1.65;
+    font-size: 18px;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
