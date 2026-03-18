@@ -270,7 +270,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     <Bell className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-medium text-foreground">{alert.company_name}</span>
+                        <span className="text-sm font-medium text-foreground">{alert.company_name}</span>
                         <Badge variant="outline" className="text-xs">{alert.signal_category}</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground leading-relaxed line-clamp-1">
