@@ -98,7 +98,7 @@ export function UpdateTheRecordButton({ companyId, companyName }: UpdateTheRecor
             <div className="flex flex-col items-center py-6 gap-3">
               <CheckCircle2 className="w-10 h-10 text-[hsl(var(--civic-green))]" />
               <p className="text-sm font-medium text-foreground">Submitted for Review</p>
-              <Badge variant="outline" className="text-[10px]">Community-Sourced Intelligence (Pending CIO Audit)</Badge>
+              <Badge variant="outline" className="text-xs">Community-Sourced Intelligence (Pending CIO Audit)</Badge>
             </div>
           ) : (
             <div className="space-y-4">
