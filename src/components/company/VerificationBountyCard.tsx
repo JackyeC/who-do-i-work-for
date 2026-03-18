@@ -88,7 +88,7 @@ export function VerificationBountyCard({ companyId, companyName, lastAuditedAt }
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1.5">
                 <h3 className="text-sm font-bold text-foreground">Archive Signal</h3>
-                <Badge variant="outline" className="text-[9px] font-mono tracking-wider border-[hsl(var(--civic-red))]/20 text-[hsl(var(--civic-red))]">
+                <Badge variant="outline" className="text-xs font-mono tracking-wider border-[hsl(var(--civic-red))]/20 text-[hsl(var(--civic-red))]">
                   {daysSince ? `${daysSince} DAYS STALE` : "NO AUDIT DATE"}
                 </Badge>
               </div>
