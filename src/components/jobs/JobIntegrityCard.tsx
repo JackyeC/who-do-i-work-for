@@ -42,7 +42,7 @@ interface JobIntegrityCardProps {
   matchedCategories?: string[];
 }
 
-export function JobIntegrityCard({ job }: JobIntegrityCardProps) {
+export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [] }: JobIntegrityCardProps) {
   const co = job.companies;
   const isCertified = co?.vetted_status === "certified";
   const isVerified = co?.vetted_status === "verified";
