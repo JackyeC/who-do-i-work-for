@@ -64,7 +64,7 @@ export function PrivateCompanyIdentityCard({
           <div className="flex items-start gap-3">
             <Briefcase className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" strokeWidth={1.5} />
             <div>
-              <div className="font-mono text-[10px] uppercase text-muted-foreground mb-1 tracking-wider">
+               <div className="font-mono text-xs uppercase text-muted-foreground mb-1 tracking-wider">
                 Previously At
               </div>
               <div className="flex flex-wrap gap-1.5">
