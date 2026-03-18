@@ -22,6 +22,7 @@ interface Props {
   stances: Stance[];
   darkMoney: DarkMoneyEntry[];
   tradeAssociations: Array<{ name: string }>;
+  companyName?: string;
 }
 
 const GAP_CONFIG = {
