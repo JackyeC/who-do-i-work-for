@@ -240,7 +240,7 @@ export function EquityVisualizer() {
                         {year.vestedShares.toLocaleString()} shares
                       </span>
                     </div>
-                    <div className="flex gap-3 text-[10px] text-muted-foreground pl-5">
+                    <div className="flex gap-3 text-xs text-muted-foreground pl-5">
                       <span>Gross: ${year.grossValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                       <span className="text-destructive">Tax: ~${year.taxHit.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
                     </div>
