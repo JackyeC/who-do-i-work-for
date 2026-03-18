@@ -258,8 +258,8 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
             Hiring Transparency
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px]">{totalActive} active listings</Badge>
-            <Badge variant="outline" className={cn("text-[10px]", riskColor)}>{riskLabel}</Badge>
+            <Badge variant="outline" className="text-xs">{totalActive} active listings</Badge>
+            <Badge variant="outline" className={cn("text-xs", riskColor)}>{riskLabel}</Badge>
           </div>
         </div>
         <p className="text-xs text-muted-foreground">
