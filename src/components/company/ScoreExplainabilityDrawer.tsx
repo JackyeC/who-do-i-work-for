@@ -170,7 +170,7 @@ export function ScoreExplainabilityDrawer({ companyId, score }: Props) {
           {/* Info banner */}
           <div className="flex items-start gap-2 p-3 rounded-lg bg-primary/5 border border-primary/10">
             <Info className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-            <p className="text-[10px] text-foreground/80 leading-relaxed">
+            <p className="text-xs text-foreground/80 leading-relaxed">
               This score is computed from 6 weighted signal groups. Every factor includes its data source
               and evidence count. Click any factor to understand what drives it.
             </p>
