@@ -104,7 +104,7 @@ export function WalkAwayCalculator({ onComplete, offerSalary }: Props) {
           <CardContent className="p-6 space-y-4">
             <div className="grid grid-cols-2 gap-4 text-center">
               <div className="p-4 bg-muted/50 rounded-xl">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Monthly Total</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Monthly Total</p>
                 <p className="text-xl font-display font-bold text-foreground">
                   ${monthlyTotal.toLocaleString()}
                 </p>
