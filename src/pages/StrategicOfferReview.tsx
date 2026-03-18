@@ -70,6 +70,7 @@ interface OfferInput {
   arbitrationClause: boolean;
   ipClause: boolean;
   salarySharedUpfront: boolean;
+  interviewStartDate?: Date;
 }
 
 const STEPS = [
