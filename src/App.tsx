@@ -31,6 +31,7 @@ const RepresentativeProfile = lazy(() => import("./pages/RepresentativeProfile")
 const AddCompany = lazy(() => import("./pages/AddCompany"));
 const Jobs = lazy(() => import("./pages/Jobs"));
 const JobIntegrityBoard = lazy(() => import("./pages/JobIntegrityBoard"));
+const JobDetailPage = lazy(() => import("./pages/JobDetailPage"));
 const RequestCorrection = lazy(() => import("./pages/RequestCorrection"));
 const OfferCheck = lazy(() => import("./pages/OfferCheck"));
 const MyOfferChecks = lazy(() => import("./pages/MyOfferChecks"));
