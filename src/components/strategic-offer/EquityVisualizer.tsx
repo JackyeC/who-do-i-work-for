@@ -222,7 +222,7 @@ export function EquityVisualizer() {
                       </div>
                       <div className="text-right">
                         <span className="text-sm font-mono font-semibold text-foreground">${year.netValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-                        <span className="text-[10px] text-muted-foreground ml-1">net</span>
+                        <span className="text-xs text-muted-foreground ml-1">net</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
