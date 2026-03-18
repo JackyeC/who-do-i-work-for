@@ -184,7 +184,7 @@ export function EmployerIntelligenceCard({ companyId, companyName }: Props) {
               Who Will You Work For?
             </CardTitle>
             <Link to={`/company/${company.slug}`}>
-              <Badge variant="outline" className="text-[10px] gap-1 cursor-pointer hover:bg-accent">
+              <Badge variant="outline" className="text-xs gap-1 cursor-pointer hover:bg-accent">
                 Full Profile <ExternalLink className="w-2.5 h-2.5" />
               </Badge>
             </Link>
