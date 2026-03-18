@@ -81,7 +81,7 @@ function SignalCategory({ title, signals, emptyType, companyName, scanContext }:
               {s.uiStatement && (
                 <div className="flex items-center gap-2">
                   {DirIcon && <DirIcon className={cn("w-3.5 h-3.5", dirColor)} />}
-                  <span className="text-sm font-medium text-foreground">{s.uiStatement}</span>
+                  <span className="text-sm font-medium text-foreground">{safeSignalSummary(s.uiStatement, "Signal observed")}</span>
                 </div>
               )}
               {/* Detail summary */}
