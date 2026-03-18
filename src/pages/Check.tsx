@@ -27,6 +27,53 @@ import {
   getSituationsFromStorage,
   type Situation,
 } from "@/lib/policyScoreEngine";
+import { toast } from "sonner";
+
+function AddCompanyCard({ companyName, onDiscovered }: { companyName: string; onDiscovered: (id: string, slug: string, name: string) => void }) {
+  const [scanning, setScanning] = useState(false);
+
+  const handleScan = async () => {
+    setScanning(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("company-discover", {
+        body: { companyName, searchQuery: companyName },
+      });
+      if (error) throw error;
+      if (data?.companyId && data?.slug) {
+        toast.success("Company discovered! Loading intelligence…");
+        onDiscovered(data.companyId, data.slug, data.name || companyName);
+      } else {
+        toast.error("No matching company found. Try a different name.");
+      }
+    } catch {
+      toast.error("Intelligence scan failed. Please try again.");
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  return (
+    <div className="p-4 text-center space-y-2">
+      <p className="text-sm text-muted-foreground">
+        Can't find <span className="font-semibold text-foreground">{companyName}</span>?
+      </p>
+      <p className="text-xs text-muted-foreground">If we don't have it, we'll build it.</p>
+      <Button onClick={handleScan} disabled={scanning} size="sm" className="gap-2 mt-1">
+        {scanning ? (
+          <>
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            Live Scan in Progress…
+          </>
+        ) : (
+          <>
+            <Search className="w-3.5 h-3.5" />
+            + Add {companyName}
+          </>
+        )}
+      </Button>
+    </div>
+  );
+}
 
 export default function Check() {
   const navigate = useNavigate();
