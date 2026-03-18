@@ -6013,6 +6013,36 @@ export type Database = {
           },
         ]
       }
+      offer_outcomes: {
+        Row: {
+          amount_increase: number | null
+          company_name: string
+          created_at: string | null
+          details: string | null
+          id: string
+          outcome_type: string
+          user_id: string
+        }
+        Insert: {
+          amount_increase?: number | null
+          company_name: string
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          outcome_type?: string
+          user_id: string
+        }
+        Update: {
+          amount_increase?: number | null
+          company_name?: string
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          outcome_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       offer_records: {
         Row: {
           company_id: string | null

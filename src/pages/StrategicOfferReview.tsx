@@ -38,9 +38,16 @@ import { OfferReviewResults } from "@/components/offer-review/OfferReviewResults
 import { LegalDisclaimer } from "@/components/strategic-offer/LegalDisclaimer";
 import { ConsentModal } from "@/components/strategic-offer/ConsentModal";
 import { CareerPathForecast } from "@/components/strategic-offer/CareerPathForecast";
+import { StabilityDelta } from "@/components/strategic-offer/StabilityDelta";
+import { NegotiationCoach } from "@/components/strategic-offer/NegotiationCoach";
+import { OutcomeFeedback } from "@/components/strategic-offer/OutcomeFeedback";
 import { SituationContextBanner } from "@/components/policy-intelligence/SituationContextBanner";
 import { getSituationsFromStorage, type Situation } from "@/lib/policyScoreEngine";
 import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
 
 type InputMode = null | "manual" | "upload";
 
@@ -63,6 +70,7 @@ interface OfferInput {
   arbitrationClause: boolean;
   ipClause: boolean;
   salarySharedUpfront: boolean;
+  interviewStartDate?: Date;
 }
 
 const STEPS = [
@@ -77,6 +85,7 @@ const sanitize = (v: string, maxLen = 500): string =>
 
 /* ── Navigation anchors for the scrolling dashboard ── */
 const DASHBOARD_SECTIONS = [
+  { id: "stability-delta", label: "Delta" },
   { id: "reality-check", label: "Reality Check" },
   { id: "offer-strength-score", label: "Score" },
   { id: "red-flags", label: "Red Flags" },
@@ -87,6 +96,7 @@ const DASHBOARD_SECTIONS = [
   { id: "equity", label: "Equity" },
   { id: "career-freedom", label: "Career Freedom" },
   { id: "negotiate", label: "Negotiate" },
+  { id: "negotiate-coach", label: "Coach" },
   { id: "questions-to-ask", label: "Questions" },
   { id: "culture-snapshot", label: "Culture" },
   { id: "decision-summary", label: "Decision" },
@@ -560,6 +570,31 @@ export default function StrategicOfferReview() {
                       <label className="text-sm font-medium text-foreground mb-1.5 block">Years of Experience</label>
                       <Input type="number" placeholder="e.g. 5" value={offer.yearsExperience} onChange={e => update("yearsExperience", e.target.value)} />
                     </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-1.5 block">Interview Start Date</label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn("w-full justify-start text-left font-normal", !offer.interviewStartDate && "text-muted-foreground")}
+                          >
+                            <CalendarIcon className="w-4 h-4 mr-2" />
+                            {offer.interviewStartDate ? format(offer.interviewStartDate, "PPP") : "When did you start interviewing?"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={offer.interviewStartDate}
+                            onSelect={(d) => setOffer(prev => ({ ...prev, interviewStartDate: d || undefined }))}
+                            disabled={(date) => date > new Date() || date < new Date("2024-01-01")}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <p className="text-[10px] text-muted-foreground mt-1">Optional — enables "What Changed" delta scan</p>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -745,6 +780,13 @@ export default function StrategicOfferReview() {
                   <SituationContextBanner companyName={offer.companyName} />
                 )}
 
+                {/* -1. Stability Delta — What Changed */}
+                <StabilityDelta
+                  companyId={offer.companyId}
+                  companyName={offer.companyName}
+                  interviewStartDate={offer.interviewStartDate}
+                />
+
                 {/* 0. Offer Reality Check — Hero Summary */}
                 <div id="reality-check">
                   <OfferRealityCheck
@@ -857,6 +899,20 @@ export default function StrategicOfferReview() {
                   />
                 </div>
 
+                {/* 9.5. AI Negotiation Coach */}
+                <NegotiationCoach
+                  companyName={offer.companyName}
+                  roleTitle={offer.roleTitle}
+                  baseSalary={Number(offer.baseSalary) || 0}
+                  bonus={offer.bonus}
+                  equity={offer.equity}
+                  signOnBonus={offer.signOnBonus}
+                  annualBaseline={annualBaseline}
+                  legalFlags={legalFlags}
+                  riskSignals={riskSignals}
+                  userPriorities={userSituations}
+                />
+
                 {/* 10. Questions to Ask */}
                 <QuestionsToAsk
                   legalFlags={legalFlags}
@@ -895,7 +951,9 @@ export default function StrategicOfferReview() {
                   hasBonus={!!offer.bonus}
                 />
 
-                {/* Start Over / Practice */}
+                {/* 13. Outcome Feedback */}
+                <OutcomeFeedback companyName={offer.companyName} />
+
                 <div className="flex justify-center gap-3 pt-4">
                   <Button
                     variant="outline"

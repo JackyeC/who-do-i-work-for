@@ -122,3 +122,6 @@ verify_jwt = false
 
 [functions.negotiation-simulator]
 verify_jwt = false
+
+[functions.negotiation-coach]
+verify_jwt = false
