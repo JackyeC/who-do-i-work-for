@@ -7,7 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   Search, X, Wifi, Monitor, Home, DollarSign, Shield, ShieldCheck,
-  Sparkles, Clock, Eye, SlidersHorizontal, ChevronDown, ChevronUp,
+  Sparkles, Clock, Eye, SlidersHorizontal, ChevronDown, ChevronUp, MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -24,6 +24,7 @@ export interface JobBoardFilterState {
   valuesAligned: boolean;
   freshOnly: boolean;
   salaryMin: number;
+  location: string;
 }
 
 interface JobBoardFiltersProps {
@@ -60,6 +61,7 @@ export function JobBoardFilters({ filters, onFiltersChange, availableDepartments
     filters.valuesAligned,
     filters.freshOnly,
     filters.salaryMin > 0,
+    filters.location.trim().length > 0,
   ].filter(Boolean).length;
 
   const clearFilters = () =>
@@ -74,6 +76,7 @@ export function JobBoardFilters({ filters, onFiltersChange, availableDepartments
       valuesAligned: false,
       freshOnly: false,
       salaryMin: 0,
+      location: "",
     });
 
   const filterContent = (
@@ -88,6 +91,15 @@ export function JobBoardFilters({ filters, onFiltersChange, availableDepartments
 
       {/* Structured filters */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        {/* Location */}
+        <div>
+          <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1 block">Location</label>
+          <div className="relative">
+            <MapPin className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+            <Input value={filters.location} onChange={(e) => update({ location: e.target.value })} placeholder="City, state..." className="h-8 text-xs pl-7" />
+          </div>
+        </div>
+
         {/* Work Mode */}
         <div>
           <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1 block">Work Mode</label>
