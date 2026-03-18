@@ -222,8 +222,8 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                   <div className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/20 border border-border/30">
                     <Briefcase className="w-4 h-4 text-primary shrink-0" />
                     <div>
-                      <p className="text-xs font-medium text-foreground capitalize">{profile.seniority_level}</p>
-                      <p className="text-xs text-muted-foreground">Seniority level</p>
+                      <p className="text-sm font-medium text-foreground capitalize">{profile.seniority_level}</p>
+                      <p className="text-sm text-muted-foreground">Seniority level</p>
                     </div>
                   </div>
                 )}
