@@ -10,6 +10,7 @@ import {
 } from "@/lib/realityGapScore";
 import { VibeMatchQuestionnaire } from "@/components/reality-check/VibeMatchQuestionnaire";
 import { RealityGapResults } from "@/components/reality-check/RealityGapResults";
+import { FlinchTest } from "@/components/reality-check/FlinchTest";
 import {
   Terminal, ClipboardCheck, ArrowLeft,
 } from "lucide-react";
