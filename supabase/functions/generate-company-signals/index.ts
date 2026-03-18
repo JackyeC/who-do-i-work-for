@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
     ] = await Promise.all([
       supabase.from('companies').select('*').eq('id', companyId).single(),
       supabase.from('company_jobs').select('id, title, salary_range, is_active, department, created_at, posting_date').eq('company_id', companyId),
-      supabase.from('company_warn_notices').select('id, notice_date, num_affected').eq('company_id', companyId),
+      supabase.from('company_warn_notices').select('id, notice_date, employees_affected').eq('company_id', companyId),
       supabase.from('company_worker_sentiment').select('id, sentiment, source, created_at').eq('company_id', companyId),
       supabase.from('compensation_data').select('id, source, confidence_level').eq('company', companyId),
       supabase.from('company_patents').select('id, filing_date, patent_category').eq('company_id', companyId),
