@@ -121,7 +121,7 @@ export function OfferCheckShareCard({
            <span className="text-xs text-muted-foreground">
             Scanned {new Date(generatedAt).toLocaleDateString()}
           </span>
-          <span className="text-[10px] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             offercheck.app
           </span>
         </div>
