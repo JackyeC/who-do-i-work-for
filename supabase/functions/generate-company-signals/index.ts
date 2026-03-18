@@ -474,6 +474,7 @@ Deno.serve(async (req) => {
         value: s.value_normalized,
         direction: s.direction,
         summary: s.summary,
+        ui_statement: getUiStatement(s.signal_category, s.value_normalized),
       })),
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
