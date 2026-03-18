@@ -293,7 +293,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-foreground">Recent Documents</h3>
-                <Link to="/career-map" className="text-[11px] text-primary font-medium hover:underline">View all</Link>
+                <Link to="/career-map" className="text-sm text-primary font-medium hover:underline">View all</Link>
               </div>
               {docs.length > 0 ? (
                 <div className="space-y-2">
