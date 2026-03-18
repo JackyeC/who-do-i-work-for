@@ -207,7 +207,7 @@ export function TopBar() {
                       <Link
                         key={sub.path}
                         to={sub.path}
-                        className="block px-4 py-2.5 font-mono text-[10px] tracking-wider text-muted-foreground hover:text-primary hover:bg-primary/[0.04] transition-colors whitespace-nowrap"
+                        className="block px-4 py-2.5 font-mono text-xs tracking-wider text-muted-foreground hover:text-primary hover:bg-primary/[0.04] transition-colors whitespace-nowrap"
                       >
                         {sub.label}
                       </Link>
