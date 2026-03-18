@@ -399,6 +399,26 @@ export default function CompanyProfile() {
           </ReportTeaserGate>
 
           {/* ═══════════════════════════════════════════════════════
+              2.3 LEADERSHIP & INFLUENCE (Detail)
+             ═══════════════════════════════════════════════════════ */}
+          <LeadershipInfluenceSection
+            executives={dbExecutives || []}
+            candidates={dbCandidates || []}
+            partyBreakdown={dbPartyBreakdown?.map(p => ({ party: p.party, amount: p.amount, color: p.color })) || []}
+            revolvingDoor={dbRevolvingDoor || []}
+            darkMoney={dbDarkMoney || []}
+            boardMembers={dbBoardMembers || []}
+            companyName={name}
+            totalPacSpending={totalPac}
+            lobbyingSpend={lobbyingSpend}
+            onExecutiveClick={handleExecutiveClick}
+            onCandidateClick={handleCandidateClick}
+            onPacClick={() => setPacDrawerOpen(true)}
+            onLobbyingClick={() => setLobbyingDrawerOpen(true)}
+            onContractsClick={() => setContractsDrawerOpen(true)}
+          />
+
+          {/* ═══════════════════════════════════════════════════════
               2.6 INNOVATION SIGNALS (Patents)
              ═══════════════════════════════════════════════════════ */}
           {dbCompanyId && (
