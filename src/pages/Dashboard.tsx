@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -9,6 +9,7 @@ import { UserProfileForm } from "@/components/jobs/UserProfileForm";
 import { TrackingDashboard } from "@/components/jobs/TrackingDashboard";
 import { AutoApplySettings } from "@/components/jobs/AutoApplySettings";
 import { ApplyQueueDashboard } from "@/components/jobs/ApplyQueueDashboard";
+import { PurpleSquirrelOnboarding } from "@/components/jobs/PurpleSquirrelOnboarding";
 import { SlotManagementDashboard } from "@/components/slots/SlotManagementDashboard";
 import { UserAlertsList } from "@/components/UserAlerts";
 import { MyValuesProfile } from "@/components/career/MyValuesProfile";
@@ -98,13 +99,18 @@ export default function Dashboard() {
         return <RelationshipDashboard />;
       case "tracker":
         return <TrackingDashboard />;
-      case "auto-apply":
+      case "auto-apply": {
+        const hasCompleted = !!localStorage.getItem("purpleSquirrelParams");
+        if (!hasCompleted) {
+          return <PurpleSquirrelOnboarding onComplete={() => setTab("auto-apply")} />;
+        }
         return (
           <div className="space-y-6">
             <AutoApplySettings />
             <ApplyQueueDashboard />
           </div>
         );
+      }
       case "offers":
         return (
           <div className="text-center py-12">
