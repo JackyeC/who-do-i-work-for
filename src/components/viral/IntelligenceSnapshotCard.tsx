@@ -59,7 +59,7 @@ export function IntelligenceSnapshotCard({ companyName, overallScore, scoreLabel
 
         <div className="pl-4">
           {/* Brand header */}
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-primary mb-2">
+          <div className="font-mono text-xs tracking-[0.25em] uppercase text-primary mb-2">
             Corporate Behavior Index™
           </div>
           <div className="font-serif text-xl mb-1 text-foreground font-bold">{companyName}</div>
