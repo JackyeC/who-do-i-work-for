@@ -8,39 +8,39 @@ import {
 
 export const CATEGORY_DEFINITIONS: Record<string, { label: string; definition: string }> = {
   institutional_alignment: {
-    label: "Institutional Alignment",
-    definition: "Analysis of corporate leadership ties to policy-shaping networks like the Heritage Foundation or Center for American Progress. We track board seats and public endorsements.",
+    label: "Leadership Networks",
+    definition: "Analysis of corporate leadership ties to policy-shaping organizations. We track board seats and public endorsements.",
   },
   political_spending: {
-    label: "Political Spending",
-    definition: "Direct receipts from FEC and OpenSecrets filings. We look at PAC distributions to see which 2026 legislative blueprints a company is funding.",
+    label: "Corporate Political Activity",
+    definition: "Direct receipts from FEC and OpenSecrets filings. We look at PAC distributions to see which legislative efforts a company is funding.",
   },
   family_pillar: {
-    label: "Family Pillar",
-    definition: "A measure of alignment with 2026 family models, ranging from 'Traditional Restoration' (Heritage-aligned) to 'Progressive Flexibility' (CAP-aligned).",
+    label: "Work-Life & Family Policies",
+    definition: "A measure of how company policies support different family structures, from parental leave to dependent care benefits.",
   },
   dark_money: {
-    label: "Dark Money Signals",
-    definition: "Tracking non-disclosed contributions through trade associations and 501(c)(4) 'social welfare' organizations that do not require donor disclosure.",
+    label: "Undisclosed Spending Signals",
+    definition: "Tracking non-disclosed contributions through trade associations and organizations that do not require donor disclosure.",
   },
   insider_context: {
-    label: "Insider Context",
-    definition: "Qualitative data from verified employee testimonials and internal culture memos analyzed by our 2026 Career Intelligence model.",
+    label: "Employee Experience Signals",
+    definition: "Qualitative data from verified employee testimonials and internal culture signals analyzed by our Career Intelligence model.",
   },
   lobbying: {
-    label: "Lobbying Activity",
+    label: "Government Influence Activity",
     definition: "Federal and state-level lobbying expenditures tracked via Senate Lobbying Disclosure Act filings. We map which bills and agencies each company targets.",
   },
   civil_rights: {
-    label: "Civil Rights Signals",
-    definition: "Data from EEOC, HRC Corporate Equality Index, and federal court records tracking discrimination filings, settlements, and diversity commitments.",
+    label: "Workplace Fairness Signals",
+    definition: "Data from EEOC, HRC Corporate Equality Index, and federal court records tracking discrimination filings, settlements, and inclusion commitments.",
   },
   climate: {
-    label: "Climate & Environment",
-    definition: "EPA emissions data, CDP scores, and corporate climate pledges cross-referenced with actual emissions and energy policy lobbying.",
+    label: "Environmental Commitments",
+    definition: "EPA emissions data, CDP scores, and corporate climate commitments cross-referenced with actual emissions and energy policy positions.",
   },
   worker_treatment: {
-    label: "Worker Treatment",
+    label: "Worker Treatment & Conditions",
     definition: "OSHA violations, NLRB filings, WARN Act layoff notices, and compensation transparency signals aggregated from public records.",
   },
   government_contracts: {
