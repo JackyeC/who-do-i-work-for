@@ -162,11 +162,11 @@ export function InnovationSignals({ companyId, companyName }: InnovationSignalsP
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb className="w-4 h-4 text-primary" />
             <h3 className="text-sm font-semibold text-foreground">Innovation Signals</h3>
-            <span className="text-[10px] text-muted-foreground ml-1">What they're building</span>
+            <span className="text-xs text-muted-foreground ml-1">What they're building</span>
             <div className="ml-auto flex items-center gap-2">
               {trend !== null && (
                 <div className={cn(
-                  "flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded",
+                  "flex items-center gap-1 text-xs font-medium px-1.5 py-0.5 rounded",
                   trend > 10 ? "text-[hsl(var(--civic-green))] bg-[hsl(var(--civic-green))]/10" :
                   trend < -10 ? "text-destructive bg-destructive/10" :
                   "text-muted-foreground bg-muted"
