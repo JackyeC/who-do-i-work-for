@@ -27,6 +27,53 @@ import {
   getSituationsFromStorage,
   type Situation,
 } from "@/lib/policyScoreEngine";
+import { toast } from "sonner";
+
+function AddCompanyCard({ companyName, onDiscovered }: { companyName: string; onDiscovered: (id: string, slug: string, name: string) => void }) {
+  const [scanning, setScanning] = useState(false);
+
+  const handleScan = async () => {
+    setScanning(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("company-discover", {
+        body: { companyName, searchQuery: companyName },
+      });
+      if (error) throw error;
+      if (data?.companyId && data?.slug) {
+        toast.success("Company discovered! Loading intelligence…");
+        onDiscovered(data.companyId, data.slug, data.name || companyName);
+      } else {
+        toast.error("No matching company found. Try a different name.");
+      }
+    } catch {
+      toast.error("Intelligence scan failed. Please try again.");
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  return (
+    <div className="p-4 text-center space-y-2">
+      <p className="text-sm text-muted-foreground">
+        Can't find <span className="font-semibold text-foreground">{companyName}</span>?
+      </p>
+      <p className="text-xs text-muted-foreground">If we don't have it, we'll build it.</p>
+      <Button onClick={handleScan} disabled={scanning} size="sm" className="gap-2 mt-1">
+        {scanning ? (
+          <>
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            Live Scan in Progress…
+          </>
+        ) : (
+          <>
+            <Search className="w-3.5 h-3.5" />
+            + Add {companyName}
+          </>
+        )}
+      </Button>
+    </div>
+  );
+}
 
 export default function Check() {
   const navigate = useNavigate();
@@ -153,22 +200,31 @@ export default function Check() {
               </div>
 
               {/* Search dropdown */}
-              {searchResults && searchResults.length > 0 && !selectedCompanyId && (
+              {!selectedCompanyId && searchTerm.length >= 2 && (
                 <Card className="absolute z-10 w-full mt-1 shadow-lg">
                   <CardContent className="p-1">
-                    {searchResults.map((c) => (
-                      <button
-                        key={c.id}
-                        onClick={() => selectCompany(c.id, c.name, c.slug)}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-md hover:bg-muted/50 transition-colors"
-                      >
-                        <Building2 className="w-4 h-4 text-muted-foreground shrink-0" />
-                        <div>
-                          <p className="text-sm font-medium text-foreground">{c.name}</p>
-                          <p className="text-[11px] text-muted-foreground">{c.industry}</p>
-                        </div>
-                      </button>
-                    ))}
+                    {searchResults && searchResults.length > 0 ? (
+                      searchResults.map((c) => (
+                        <button
+                          key={c.id}
+                          onClick={() => selectCompany(c.id, c.name, c.slug)}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-md hover:bg-muted/50 transition-colors"
+                        >
+                          <Building2 className="w-4 h-4 text-muted-foreground shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{c.name}</p>
+                            <p className="text-[11px] text-muted-foreground">{c.industry}</p>
+                          </div>
+                        </button>
+                      ))
+                    ) : (
+                      <AddCompanyCard
+                        companyName={searchTerm}
+                        onDiscovered={(id, slug, name) => {
+                          selectCompany(id, name, slug);
+                        }}
+                      />
+                    )}
                   </CardContent>
                 </Card>
               )}
@@ -256,7 +312,8 @@ export default function Check() {
           {!selectedCompanyId && !isLoading && (
             <div className="text-center py-10 text-muted-foreground">
               <ShieldCheck className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="text-sm">Select your priorities above, then search for a company to begin.</p>
+              <p className="text-sm">Select your priorities above, then search for any company to begin.</p>
+              <p className="text-xs mt-1 text-muted-foreground/70">Don't see a company? Just type the name — we'll research it for you.</p>
             </div>
           )}
 
