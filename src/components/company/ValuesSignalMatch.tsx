@@ -302,8 +302,8 @@ export function ValuesSignalMatch(props: SignalInputs) {
               <li key={i} className="text-sm text-foreground/85 leading-relaxed pl-3 border-l-2 border-[hsl(var(--civic-yellow))]/30">
                 <div className="relative">
                   <span className="font-medium">{m.label}:</span> {m.summary}
-                  {m.source && <span className="ml-1.5 text-[10px] text-muted-foreground/70 font-mono">{m.source}</span>}
-                  <span className="ml-1.5 text-[10px] text-muted-foreground font-mono">{m.confidence}</span>
+                   {m.source && <span className="ml-1.5 text-xs text-muted-foreground/70 font-mono">{m.source}</span>}
+                  <span className="ml-1.5 text-xs text-muted-foreground font-mono">{m.confidence}</span>
                 </div>
                 {m.tacticalQuestion && (
                   <div className="mt-1.5 relative">
