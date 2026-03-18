@@ -165,7 +165,7 @@ export function CareerPathForecast({ companyName, roleTitle, signals }: CareerPa
             <div className="text-xs font-semibold text-foreground">{forecast.nextRole}</div>
           </div>
           <div className="rounded border border-border p-2.5">
-            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mb-0.5">
+             <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-0.5">
               {forecast.isPitstop ? (
                 <AlertTriangle className="w-3 h-3 text-[hsl(var(--civic-yellow))]" />
               ) : (
