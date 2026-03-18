@@ -126,7 +126,7 @@ function OpenRolesSection({ companyId, companyName }: { companyId: string; compa
     queryFn: async () => {
       const { data } = await supabase
         .from("company_jobs")
-        .select("id, title, location, work_mode, department, salary_range, application_url, posted_at, source_url")
+        .select("id, title, location, work_mode, department, salary_range, url, posted_at, source_url")
         .eq("company_id", companyId)
         .eq("is_active", true)
         .order("posted_at", { ascending: false })
