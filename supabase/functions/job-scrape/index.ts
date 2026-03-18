@@ -15,7 +15,9 @@ type PageClassification =
   | 'dynamic_jobs_feed'
   | 'department_landing'
   | 'no_active_jobs'
-  | 'limited_active_jobs';
+  | 'limited_active_jobs'
+  | 'careers_site_detected'
+  | 'ats_detected_jobs_found';
 
 interface ScanContext {
   classification: PageClassification;
@@ -25,6 +27,7 @@ interface ScanContext {
   atsDetected: string | null;
   departmentBreakdown: Record<string, number> | null;
   deeperUrlFound: string | null;
+  layersChecked: string[];
 }
 
 // ─── Expanded ATS detection (detect + public API fetch) ───
