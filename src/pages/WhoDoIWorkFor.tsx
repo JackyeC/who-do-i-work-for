@@ -514,6 +514,12 @@ export default function WhoDoIWorkFor() {
           )}
         </motion.div>
       </div>
+      <EntityDetailDrawer
+        entity={selectedDarkEntity}
+        companyName={employerCompany?.name}
+        open={!!selectedDarkEntity}
+        onOpenChange={(open) => { if (!open) setSelectedDarkEntity(null); }}
+      />
       <Footer />
     </div>
   );

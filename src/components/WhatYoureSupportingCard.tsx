@@ -367,6 +367,13 @@ export function WhatYoureSupportingCard({
         <p className="text-xs text-muted-foreground border-t border-border pt-3">
           All of this is public record. Campaign donations come from <a href="https://www.fec.gov" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-0.5">FEC filings <ExternalLink className="w-2.5 h-2.5" /></a> and lobbying reports come from the <a href="https://lda.senate.gov" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-0.5">Senate disclosure database <ExternalLink className="w-2.5 h-2.5" /></a>. We just organized it so you can understand it.
         </p>
+
+        <EntityDetailDrawer
+          entity={selectedDarkEntity}
+          companyName={companyName}
+          open={!!selectedDarkEntity}
+          onOpenChange={(open) => { if (!open) setSelectedDarkEntity(null); }}
+        />
       </CardContent>
     </Card>
   );
