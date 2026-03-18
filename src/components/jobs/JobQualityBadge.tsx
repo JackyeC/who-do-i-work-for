@@ -47,7 +47,7 @@ export function JobQualityBadge({ signal, isRepost, isEvergreen, className }: Jo
     <div className={cn("flex items-center gap-1", className)}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Badge variant="outline" className={cn("text-[10px] gap-0.5 py-0", config.colorClass, config.borderClass)}>
+          <Badge variant="outline" className={cn("text-xs gap-0.5 py-0", config.colorClass, config.borderClass)}>
             <Icon className="w-2.5 h-2.5" /> {signal.label}
           </Badge>
         </TooltipTrigger>
