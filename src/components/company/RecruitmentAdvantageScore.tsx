@@ -84,7 +84,7 @@ export function RecruitmentAdvantageScore(props: RecruitmentAdvantageScoreProps)
             <Icon className={cn("w-3.5 h-3.5", config.color)} />
             <div className="flex items-baseline gap-1.5">
               <span className={cn("text-sm font-bold font-mono", config.color)}>{score}</span>
-              <span className="text-[10px] text-muted-foreground">Recruitment Advantage</span>
+              <span className="text-xs text-muted-foreground">Recruitment Advantage</span>
             </div>
           </div>
         </TooltipTrigger>
