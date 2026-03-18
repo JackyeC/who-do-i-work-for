@@ -69,7 +69,7 @@ export function ShareableScoreCard({ companyName, clarityScore, signals, slug }:
           <div className="grid gap-2">
             {signals.slice(0, 5).map((s) => (
               <div key={s.label} className="flex items-center gap-3">
-                <div className="w-[120px] font-mono text-[9px] tracking-wider uppercase text-muted-foreground truncate">
+                <div className="w-[120px] font-mono text-xs tracking-wider uppercase text-muted-foreground truncate">
                   {s.label}
                 </div>
                 <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
