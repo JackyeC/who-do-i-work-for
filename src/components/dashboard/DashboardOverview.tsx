@@ -238,7 +238,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                   <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                     Upload your resume
                   </p>
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     We'll extract skills & compensation context to power your evaluations
                   </p>
                 </div>
