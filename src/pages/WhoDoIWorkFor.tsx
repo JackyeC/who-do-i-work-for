@@ -16,7 +16,7 @@ import { formatCurrency } from "@/data/sampleData";
 import {
   Building2, Search, Loader2, User, DollarSign, AlertTriangle,
   ExternalLink, LogOut, Flag, Users, Briefcase, ArrowRight,
-  UserCheck, Scale, Megaphone, X
+  UserCheck, Scale, Megaphone, X, ChevronRight
 } from "lucide-react";
 import { WorkforceEquityModule } from "@/components/workforce-equity/WorkforceEquityModule";
 import { FlightRiskModule } from "@/components/flight-risk/FlightRiskModule";
