@@ -79,7 +79,7 @@ export function IntelligenceSnapshotCard({ companyName, overallScore, scoreLabel
               {metrics.slice(0, 3).map((m) => (
                 <div key={m.label} className="p-2 rounded-lg bg-muted/30 border border-border/50 text-center">
                   <p className="text-sm font-bold text-foreground">{m.value}</p>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-wider">{m.label}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider">{m.label}</p>
                 </div>
               ))}
             </div>
