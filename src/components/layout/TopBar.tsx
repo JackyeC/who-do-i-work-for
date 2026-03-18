@@ -88,40 +88,42 @@ export function TopBar() {
   const { user, signOut } = useAuth();
   const { isDemoSafe, toggleDemoSafe, canToggle } = useDemoSafeMode();
 
-  // Live ticker data
-  const { data: tickerStats } = useQuery({
-    queryKey: ["ticker-stats"],
+  // Live signal intelligence ticker
+  const { data: tickerItems } = useQuery({
+    queryKey: ["signal-ticker"],
     queryFn: async () => {
-      const [companiesRes, scansRes] = await Promise.all([
-        supabase.from("companies").select("id", { count: "exact", head: true }),
-        supabase.from("company_scan_events").select("id, company_name", { count: "exact" }).order("scanned_at", { ascending: false }).limit(3),
-      ]);
-      return {
-        totalCompanies: companiesRes.count ?? 0,
-        recentScans: scansRes.data ?? [],
-        totalScans: scansRes.count ?? 0,
-      };
+      const DIRECTION_ICON: Record<string, string> = { increase: "↑", decrease: "↓", stable: "—" };
+
+      const { data: signals } = await supabase
+        .from("company_signal_scans")
+        .select("signal_category, value_normalized, direction, companies!inner(name)")
+        .order("scan_timestamp", { ascending: false })
+        .limit(10);
+
+      const items: string[] = [];
+
+      if (signals && signals.length > 0) {
+        for (const s of signals) {
+          const companyName = (s.companies as any)?.name ?? "—";
+          const statement = getUiStatement(s.signal_category, s.value_normalized ?? "not_disclosed");
+          const arrow = DIRECTION_ICON[s.direction ?? "stable"] ?? "—";
+          items.push(`${companyName}: ${statement} ${arrow}`);
+        }
+      }
+
+      // Fallback static items
+      if (items.length < 3) {
+        items.push("PLATFORM: Live intelligence scanning active");
+        items.push(`UPDATED: ${new Date().toLocaleDateString()} — signals refreshed`);
+      }
+
+      return items;
     },
     staleTime: 60_000,
     refetchInterval: 120_000,
   });
 
-  const tickerItems = useMemo(() => {
-    const items: string[] = [];
-    const s = tickerStats;
-    if (s) {
-      items.push(`PLATFORM: ${s.totalCompanies.toLocaleString()} companies tracked`);
-      items.push(`SCANS: ${s.totalScans.toLocaleString()} total intelligence scans`);
-      if (s.recentScans.length > 0) {
-        items.push(`${s.recentScans[0]?.company_name ?? "—"}: latest signal scan completed`);
-      }
-      if (s.recentScans.length > 1) {
-        items.push(`${s.recentScans[1]?.company_name ?? "—"}: signals refreshed`);
-      }
-    }
-    items.push(`UPDATED: ${new Date().toLocaleDateString()} — connection chains refreshed`);
-    return items;
-  }, [tickerStats]);
+  const finalTickerItems = tickerItems ?? ["PLATFORM: Live intelligence scanning active"];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
