@@ -116,11 +116,11 @@ function generateScripts(flags: LegalFlag[], salary: number, baseline: number, c
   return scripts;
 }
 
-export function NegotiationBot({ flags, offerSalary, annualBaseline, companyName, roleTitle }: Props) {
+export function NegotiationBot({ flags, offerSalary, annualBaseline, companyName, roleTitle, situations = [] }: Props) {
   const { toast } = useToast();
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 
-  const scripts = generateScripts(flags, offerSalary, annualBaseline, companyName, roleTitle);
+  const scripts = generateScripts(flags, offerSalary, annualBaseline, companyName, roleTitle, situations);
 
   const copyScript = (script: string, idx: number) => {
     navigator.clipboard.writeText(script);

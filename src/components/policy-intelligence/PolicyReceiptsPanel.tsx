@@ -127,12 +127,15 @@ export function PolicyReceiptsPanel({ stances, linkages, lobbyingRecords, tradeA
               <Card key={i} className="border-border/30">
                 <CardContent className="p-2.5">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-foreground">{s.topic}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium text-foreground">{s.topic}</span>
+                      <Badge variant="outline" className="text-xs text-muted-foreground">Statement</Badge>
+                    </div>
                     <Badge variant={s.gap === "aligned" ? "success" : s.gap === "direct-conflict" ? "destructive" : "outline"} className="text-xs">
                       {s.gap === "aligned" ? "Aligned" : s.gap === "direct-conflict" ? "Contradiction" : "Mixed"}
                     </Badge>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-1">{s.public_position}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{s.public_position}</p>
                 </CardContent>
               </Card>
             ))

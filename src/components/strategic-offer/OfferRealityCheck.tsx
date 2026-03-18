@@ -76,6 +76,11 @@ export function OfferRealityCheck(props: Props) {
   if (riskLevel === "elevated") gaps.push("elevated employer risk signals");
   if (redFlags > 0) gaps.push(`${redFlags} high-risk legal clause${redFlags > 1 ? "s" : ""}`);
 
+  // Situation-aware gap emphasis
+  if (situations.includes("caregiver") && !hasBonus) gaps.push("no benefits or flexibility signals visible in this offer");
+  if (situations.includes("compensation") && offerSalary > 0 && offerSalary < annualBaseline * 1.1) gaps.push("offer may not maximize your earning potential");
+  if (situations.includes("stability") && riskLevel === "moderate") gaps.push("moderate employer stability concerns for stability seekers");
+  if (situations.includes("early-career") && !hasEquity) gaps.push("no equity component — consider growth vs. pay tradeoff");
   // Build evaluation badges
   const marketPosition = offerSalary > 0
     ? report?.compensation.percentile
