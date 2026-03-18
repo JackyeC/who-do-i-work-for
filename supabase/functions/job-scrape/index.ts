@@ -566,12 +566,13 @@ Deno.serve(async (req) => {
     if (ats) {
       console.log(`[job-scrape] ATS detected directly: ${ats.platform}`);
       scanContext.atsDetected = ats.platform;
+      scanContext.layersChecked.push('direct_ats_detection');
       try {
         jobs = await ats.fetcher(careersUrl);
         if (jobs.length > 0) {
           sourceType = 'ats';
           sourcePlatform = ats.platform;
-          scanContext.classification = 'live_jobs_page';
+          scanContext.classification = 'ats_detected_jobs_found';
           scanContext.explanation = `Live job listings retrieved directly from ${ats.platform} ATS API.`;
           scanContext.confidence = 'high';
           console.log(`[job-scrape] ATS API returned ${jobs.length} jobs from ${ats.platform}`);
