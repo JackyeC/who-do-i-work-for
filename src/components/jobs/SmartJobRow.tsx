@@ -121,7 +121,7 @@ export function SmartJobRow({ job, isSelected, matchScore, matchLabel, onClick }
         {/* Values fit */}
         {matchScore != null && matchScore > 0 && (
           <Badge variant="outline" className={cn(
-            "text-[10px] gap-0.5 py-0",
+            "text-xs gap-0.5 py-0",
             matchScore >= 3 ? "text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green)/0.2)] bg-[hsl(var(--civic-green)/0.06)]" :
             matchScore >= 2 ? "text-primary border-primary/20 bg-primary/5" :
             "text-muted-foreground"
