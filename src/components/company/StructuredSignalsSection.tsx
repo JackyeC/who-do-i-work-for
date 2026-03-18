@@ -13,6 +13,14 @@ interface SignalCategoryProps {
   title: string;
   signals: Signal[];
   emptyType?: "jobs" | "sentiment" | "compensation" | "benefits" | "off_the_record";
+  companyName?: string;
+  scanContext?: {
+    atsDetected?: string;
+    pageClassification?: string;
+    lastScanned?: string;
+    whatTheySay?: string;
+    whatWeSee?: string;
+  };
 }
 
 const CONFIDENCE_COLOR: Record<string, string> = {
@@ -29,12 +37,12 @@ const RECENCY_DOT: Record<string, string> = {
   "Unknown": "bg-muted-foreground/20",
 };
 
-function SignalCategory({ title, signals, emptyType }: SignalCategoryProps) {
+function SignalCategory({ title, signals, emptyType, companyName, scanContext }: SignalCategoryProps) {
   if (signals.length === 0 && emptyType) {
     return (
       <div className="py-4 border-b border-border/30 last:border-b-0">
         <p className="text-sm font-semibold text-foreground mb-3">{title}</p>
-        <EmptyStateExplainer type={emptyType} />
+        <EmptyStateExplainer type={emptyType} companyName={companyName} scanContext={scanContext} />
       </div>
     );
   }
@@ -65,29 +73,30 @@ function SignalCategory({ title, signals, emptyType }: SignalCategoryProps) {
 }
 
 interface StructuredSignalsProps {
-  // Hiring Reality
   hasJobPostings: boolean;
   hasAiHrSignals: boolean;
   hasGhostJobs: boolean;
-  // Workforce Stability
   hasWarnNotices: boolean;
   hasLayoffSignals: boolean;
-  // Compensation
   hasPayEquity: boolean;
   hasBenefitsData: boolean;
   hasCompensationData: boolean;
-  // Leadership
   executiveCount: number;
   totalPacSpending: number;
   lobbyingSpend: number;
   revolvingDoorCount: number;
   darkMoneyCount: number;
-  // Off the Record
   companyId: string;
   companyName: string;
-  // Recency
   lastReviewed?: string;
   updatedAt?: string;
+  scanContext?: {
+    atsDetected?: string;
+    pageClassification?: string;
+    lastScanned?: string;
+    whatTheySay?: string;
+    whatWeSee?: string;
+  };
 }
 
 function getRecency(lastReviewed?: string, updatedAt?: string): string {
@@ -110,7 +119,6 @@ function formatMoney(n: number): string {
 export function StructuredSignalsSection(props: StructuredSignalsProps) {
   const recency = getRecency(props.lastReviewed, props.updatedAt);
 
-  // Build hiring signals
   const hiringSignals: Signal[] = [];
   if (props.hasAiHrSignals)
     hiringSignals.push({ summary: "AI-powered hiring tools detected in application pipeline. Bias audit status is pending.", confidence: "Medium", recency });
@@ -119,7 +127,6 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
   if (props.hasJobPostings && !props.hasAiHrSignals && !props.hasGhostJobs)
     hiringSignals.push({ summary: "Active job postings detected. No unusual hiring patterns flagged.", confidence: "Medium", recency });
 
-  // Workforce stability signals
   const stabilitySignals: Signal[] = [];
   if (props.hasWarnNotices)
     stabilitySignals.push({ summary: "WARN Act notices filed within the past 12 months — potential layoffs or plant closings.", confidence: "High", recency });
@@ -128,7 +135,6 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
   if (!props.hasWarnNotices && !props.hasLayoffSignals)
     stabilitySignals.push({ summary: "No recent WARN notices or layoff signals detected in public records.", confidence: "Medium", recency });
 
-  // Compensation signals
   const compSignals: Signal[] = [];
   if (props.hasPayEquity)
     compSignals.push({ summary: "Pay equity data available — signals suggest some level of compensation reporting.", confidence: "Medium", recency });
@@ -137,7 +143,6 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
   if (!props.hasPayEquity && !props.hasBenefitsData && !props.hasCompensationData)
     compSignals.push({ summary: "No compensation or benefits data has been publicly disclosed or indexed.", confidence: "Low", recency });
 
-  // Leadership signals
   const leadershipSignals: Signal[] = [];
   if (props.executiveCount > 0)
     leadershipSignals.push({ summary: `${props.executiveCount} executive(s) identified with public donation records.`, confidence: "Medium", recency });
@@ -158,11 +163,16 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
       </div>
 
       <div className="px-5">
-        <SignalCategory title="Hiring Reality" signals={hiringSignals} emptyType="jobs" />
+        <SignalCategory
+          title="Hiring Reality"
+          signals={hiringSignals}
+          emptyType="jobs"
+          companyName={props.companyName}
+          scanContext={props.scanContext}
+        />
         <SignalCategory title="Workforce Stability" signals={stabilitySignals} />
-        <SignalCategory title="Compensation & Market Position" signals={compSignals} emptyType="compensation" />
+        <SignalCategory title="Compensation & Market Position" signals={compSignals} emptyType="compensation" companyName={props.companyName} />
 
-        {/* Off-the-Record inline */}
         <div className="py-4 border-b border-border/30">
           <OffTheRecordSignals companyId={props.companyId} companyName={props.companyName} />
         </div>

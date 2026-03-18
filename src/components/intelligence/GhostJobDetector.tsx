@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Ghost, Clock, RefreshCw, AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { Ghost, Clock, RefreshCw, AlertTriangle, Shield, Eye, EyeOff, ExternalLink, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,9 +23,158 @@ interface JobRow {
   last_verified_at: string | null;
 }
 
+interface ScanContext {
+  atsDetected?: string;
+  pageClassification?: string;
+  lastScanned?: string;
+  whatTheySay?: string;
+  whatWeSee?: string;
+  checkedSources?: string[];
+}
+
 function daysSince(dateStr: string | null): number {
   if (!dateStr) return 0;
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function useScanContext(companyId?: string) {
+  return useQuery({
+    queryKey: ["ghost-job-scan-context", companyId],
+    enabled: !!companyId,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("company_report_sections")
+        .select("content, updated_at")
+        .eq("company_id", companyId!)
+        .eq("section_type", "hiring_scan")
+        .order("updated_at", { ascending: false })
+        .limit(1);
+
+      if (!data?.length) return null;
+
+      const d = data[0].content as Record<string, unknown> | null;
+      if (!d) return null;
+
+      const sc = d.scanContext as Record<string, unknown> | undefined;
+      return {
+        atsDetected: (sc?.atsName as string) || undefined,
+        pageClassification: (sc?.pageType as string) || (d.hiring_status as string) || undefined,
+        lastScanned: data[0].updated_at,
+        whatTheySay: (sc?.brandingClaim as string) || undefined,
+        whatWeSee: (sc?.reality as string) || undefined,
+        checkedSources: (sc?.checkedSources as string[]) || ["Careers page", "ATS endpoint"],
+      } as ScanContext;
+    },
+  });
+}
+
+/** Zero-state component when no active jobs are found */
+function ZeroStateIntelligence({ companyName, scanContext }: { companyName: string; scanContext?: ScanContext | null }) {
+  const hasContext = !!scanContext;
+  const hasComparison = scanContext?.whatTheySay && scanContext?.whatWeSee;
+
+  return (
+    <div className="space-y-3">
+      {/* Intelligence header */}
+      <div className="flex items-start gap-3">
+        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+          <Shield className="w-4 h-4 text-primary" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-foreground">
+            {hasContext && scanContext.pageClassification
+              ? `${scanContext.pageClassification} — 0 Live Requisitions`
+              : "No Active Job Listings Detected"}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+            {hasContext
+              ? `A careers page exists for ${companyName}, but no open positions were found in the applicant tracking system.`
+              : `No active job listings detected for ${companyName}. This may reflect internal hiring, seasonal patterns, or a hiring freeze.`}
+          </p>
+        </div>
+      </div>
+
+      {/* ATS badge */}
+      {scanContext?.atsDetected && (
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-[10px] bg-primary/5 border-primary/20 text-primary">
+            ATS: {scanContext.atsDetected}
+          </Badge>
+          {scanContext.pageClassification && (
+            <Badge variant="outline" className="text-[10px] bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
+              {scanContext.pageClassification}
+            </Badge>
+          )}
+        </div>
+      )}
+
+      {/* What they say vs what we see */}
+      {hasComparison && (
+        <div className="rounded-lg border border-border/40 overflow-hidden">
+          <div className="grid grid-cols-2 divide-x divide-border/40">
+            <div className="p-3 bg-muted/30">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <Eye className="w-3 h-3 text-muted-foreground" />
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">What They Say</span>
+              </div>
+              <p className="text-[11px] text-foreground/80 leading-relaxed italic">{scanContext!.whatTheySay}</p>
+            </div>
+            <div className="p-3 bg-primary/5">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <EyeOff className="w-3 h-3 text-primary" />
+                <span className="text-[10px] font-semibold text-primary uppercase tracking-wider">What We See</span>
+              </div>
+              <p className="text-[11px] text-foreground/80 leading-relaxed">{scanContext!.whatWeSee}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <div className="flex items-center justify-between gap-3 pt-2 border-t border-border/30">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <Search className="w-3 h-3 text-muted-foreground shrink-0" />
+          <span className="text-[10px] text-muted-foreground truncate">
+            Checked: {(scanContext?.checkedSources || ["Careers page"]).join(" · ")}
+            {scanContext?.lastScanned && ` · as of ${new Date(scanContext.lastScanned).toLocaleDateString()}`}
+          </span>
+        </div>
+        <span className="text-[10px] text-primary font-medium whitespace-nowrap flex items-center gap-1 shrink-0 cursor-default">
+          <ExternalLink className="w-3 h-3" />
+          Search LinkedIn for recruiters
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/** Metric row for active jobs analysis */
+function MetricRow({ label, value, icon: Icon, status, detail }: {
+  label: string; value: string; icon: React.ElementType; status: string; detail: string;
+}) {
+  const STATUS_STYLES: Record<string, string> = {
+    warn: "border-destructive/15 bg-destructive/5",
+    caution: "border-[hsl(var(--civic-yellow))]/15 bg-[hsl(var(--civic-yellow))]/5",
+    ok: "border-[hsl(var(--civic-green))]/15 bg-[hsl(var(--civic-green))]/5",
+  };
+  const ICON_COLOR: Record<string, string> = {
+    warn: "text-destructive",
+    caution: "text-[hsl(var(--civic-yellow))]",
+    ok: "text-[hsl(var(--civic-green))]",
+  };
+
+  return (
+    <div className={cn("flex items-start gap-3 p-3 rounded-xl border", STATUS_STYLES[status] || STATUS_STYLES.ok)}>
+      <Icon className={cn("w-4 h-4 mt-0.5 shrink-0", ICON_COLOR[status] || ICON_COLOR.ok)} />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-medium text-foreground">{label}</span>
+          <span className="text-sm font-bold text-foreground">{value}</span>
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-0.5">{detail}</p>
+      </div>
+    </div>
+  );
 }
 
 export function GhostJobDetector({ companyId, companyName }: Props) {
@@ -41,6 +190,8 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
       return (data || []) as JobRow[];
     },
   });
+
+  const { data: scanContext } = useScanContext(companyId);
 
   if (isLoading) {
     return <Card><CardContent className="p-5"><Skeleton className="h-36 w-full" /></CardContent></Card>;
@@ -61,10 +212,7 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-4">
-            <Ghost className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-xs text-muted-foreground">No active job listings detected for {companyName}.</p>
-          </div>
+          <ZeroStateIntelligence companyName={companyName} scanContext={scanContext} />
         </CardContent>
       </Card>
     );
@@ -76,7 +224,6 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
   const staleJobs = activeJobs.filter(j => daysSince(j.posted_at || j.scraped_at) > 60);
   const stalePct = Math.round((staleJobs.length / totalActive) * 100);
 
-  // Detect duplicate/reposted titles
   const titleCounts: Record<string, number> = {};
   for (const j of activeJobs) {
     const normalized = j.title.toLowerCase().trim();
@@ -85,11 +232,9 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
   const repostedTitles = Object.entries(titleCounts).filter(([, c]) => c > 1);
   const repostPct = totalActive > 0 ? Math.round((repostedTitles.reduce((s, [, c]) => s + c, 0) / totalActive) * 100) : 0;
 
-  // Jobs without salary
   const noSalary = activeJobs.filter(j => !j.salary_range);
   const noSalaryPct = Math.round((noSalary.length / totalActive) * 100);
 
-  // Transparency score
   const transparencyScore = Math.max(0, Math.min(100,
     100 - (stalePct * 0.4) - (repostPct * 0.3) - (noSalaryPct * 0.3)
   ));
@@ -98,48 +243,11 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
   const riskColor = riskLevel === "low" ? "text-[hsl(var(--civic-green))]" : riskLevel === "moderate" ? "text-[hsl(var(--civic-yellow))]" : "text-destructive";
 
   const metrics = [
-    {
-      label: "Median Posting Age",
-      value: `${medianAge} days`,
-      icon: Clock,
-      status: medianAge > 60 ? "warn" : medianAge > 30 ? "caution" : "ok",
-      detail: medianAge > 60 ? "Stale listings suggest ghost jobs or hiring freeze" : medianAge > 30 ? "Some listings aging — monitor for staleness" : "Listings are fresh",
-    },
-    {
-      label: "Stale Listings (60+ days)",
-      value: `${stalePct}%`,
-      icon: Ghost,
-      status: stalePct > 30 ? "warn" : stalePct > 15 ? "caution" : "ok",
-      detail: `${staleJobs.length} of ${totalActive} active listings are over 60 days old`,
-    },
-    {
-      label: "Reposted Roles",
-      value: `${repostPct}%`,
-      icon: RefreshCw,
-      status: repostPct > 25 ? "warn" : repostPct > 10 ? "caution" : "ok",
-      detail: repostedTitles.length > 0
-        ? `${repostedTitles.length} role title${repostedTitles.length > 1 ? "s" : ""} posted multiple times`
-        : "No duplicate listings detected",
-    },
-    {
-      label: "No Salary Disclosed",
-      value: `${noSalaryPct}%`,
-      icon: AlertTriangle,
-      status: noSalaryPct > 60 ? "warn" : noSalaryPct > 30 ? "caution" : "ok",
-      detail: `${noSalary.length} of ${totalActive} listings omit salary range`,
-    },
+    { label: "Median Posting Age", value: `${medianAge} days`, icon: Clock, status: medianAge > 60 ? "warn" : medianAge > 30 ? "caution" : "ok", detail: medianAge > 60 ? "Stale listings suggest ghost jobs or hiring freeze" : medianAge > 30 ? "Some listings aging — monitor for staleness" : "Listings are fresh" },
+    { label: "Stale Listings (60+ days)", value: `${stalePct}%`, icon: Ghost, status: stalePct > 30 ? "warn" : stalePct > 15 ? "caution" : "ok", detail: `${staleJobs.length} of ${totalActive} active listings are over 60 days old` },
+    { label: "Reposted Roles", value: `${repostPct}%`, icon: RefreshCw, status: repostPct > 25 ? "warn" : repostPct > 10 ? "caution" : "ok", detail: repostedTitles.length > 0 ? `${repostedTitles.length} role title${repostedTitles.length > 1 ? "s" : ""} posted multiple times` : "No duplicate listings detected" },
+    { label: "No Salary Disclosed", value: `${noSalaryPct}%`, icon: AlertTriangle, status: noSalaryPct > 60 ? "warn" : noSalaryPct > 30 ? "caution" : "ok", detail: `${noSalary.length} of ${totalActive} listings omit salary range` },
   ];
-
-  const STATUS_STYLES = {
-    warn: "border-destructive/15 bg-destructive/5",
-    caution: "border-[hsl(var(--civic-yellow))]/15 bg-[hsl(var(--civic-yellow))]/5",
-    ok: "border-[hsl(var(--civic-green))]/15 bg-[hsl(var(--civic-green))]/5",
-  };
-  const ICON_COLOR = {
-    warn: "text-destructive",
-    caution: "text-[hsl(var(--civic-yellow))]",
-    ok: "text-[hsl(var(--civic-green))]",
-  };
 
   return (
     <Card className="border-border/50">
@@ -159,26 +267,10 @@ export function GhostJobDetector({ companyId, companyName }: Props) {
         </p>
       </CardHeader>
       <CardContent className="space-y-2">
-        {metrics.map(m => {
-          const Icon = m.icon;
-          return (
-            <div
-              key={m.label}
-              className={cn("flex items-start gap-3 p-3 rounded-xl border", STATUS_STYLES[m.status as keyof typeof STATUS_STYLES])}
-            >
-              <Icon className={cn("w-4 h-4 mt-0.5 shrink-0", ICON_COLOR[m.status as keyof typeof ICON_COLOR])} />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-foreground">{m.label}</span>
-                  <span className="text-sm font-bold text-foreground">{m.value}</span>
-                </div>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{m.detail}</p>
-              </div>
-            </div>
-          );
-        })}
+        {metrics.map(m => (
+          <MetricRow key={m.label} {...m} />
+        ))}
 
-        {/* Top stale roles */}
         {staleJobs.length > 0 && (
           <div className="mt-3">
             <h4 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Potentially Ghost Listings</h4>
