@@ -172,7 +172,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                         <span className="text-xs text-muted-foreground hidden sm:block">{t.company.industry}</span>
                       )}
                       {t.company?.civic_footprint_score != null && (
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-xs">
                           {t.company.civic_footprint_score}
                         </Badge>
                       )}
