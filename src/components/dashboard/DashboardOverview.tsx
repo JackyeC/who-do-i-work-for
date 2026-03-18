@@ -273,7 +273,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                         <span className="text-xs font-medium text-foreground">{alert.company_name}</span>
                         <Badge variant="outline" className="text-xs">{alert.signal_category}</Badge>
                       </div>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-1">
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-1">
                         {alert.change_description}
                       </p>
                     </div>
