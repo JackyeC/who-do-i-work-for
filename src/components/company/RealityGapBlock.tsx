@@ -98,11 +98,11 @@ export function RealityGapBlock({ companyId, companyName, updatedAt }: RealityGa
         </div>
         <div className="flex items-center gap-2">
           {hasGaps && (
-            <Badge variant="outline" className="text-[10px] font-mono tracking-wider text-[hsl(var(--civic-yellow))]">
+             <Badge variant="outline" className="text-xs font-mono tracking-wider text-[hsl(var(--civic-yellow))]">
               {gapCount} gap{gapCount !== 1 ? "s" : ""} detected
             </Badge>
           )}
-          <Badge variant="outline" className="text-[10px] font-mono tracking-wider">
+          <Badge variant="outline" className="text-xs font-mono tracking-wider">
             Data: {recency}
           </Badge>
         </div>
