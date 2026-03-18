@@ -48,6 +48,8 @@ export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [] }
   const co = job.companies;
   const isCertified = co?.vetted_status === "certified";
   const isVerified = co?.vetted_status === "verified";
+  const qualitySignal = evaluateJobQuality(job as any);
+  const isEvergreen = hasEvergreenSignals((job as any).description);
 
   const { data: research } = useQuery({
     queryKey: ["job-research-snippet", job.company_id],
@@ -76,8 +78,10 @@ export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [] }
         <div className="flex items-start gap-3">
           <CompanyLogo companyName={co?.name || "Unknown"} logoUrl={co?.logo_url} size="sm" />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground text-sm leading-tight">{job.title}</h3>
-            <div className="flex items-center gap-2 mt-1">
+            <Link to={`/job-board/${job.id}`} className="font-semibold text-foreground text-sm leading-tight hover:text-primary transition-colors">
+              {job.title}
+            </Link>
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
               <Link to={`/company/${co?.slug}`} className="text-xs text-primary hover:underline">
                 {co?.name || "Unknown Company"}
               </Link>
@@ -96,6 +100,10 @@ export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [] }
             <p className="text-[11px] text-muted-foreground mt-0.5">
               {job.location || "Remote"} {job.work_mode ? `· ${job.work_mode}` : ""}
             </p>
+            {/* Quality signal */}
+            <div className="mt-1">
+              <JobQualityBadge signal={qualitySignal} isEvergreen={isEvergreen} />
+            </div>
           </div>
         </div>
 
