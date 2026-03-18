@@ -753,23 +753,193 @@ Deno.serve(async (req) => {
       }
 
       // ═══════════════════════════════════════════════════
-      // LAYER 3: Search fallback
+      // LAYER 2.5: Careers Domain & Web Search Discovery
+      // Fires when jobs === 0 regardless of markdown length
       // ═══════════════════════════════════════════════════
-      if (jobs.length === 0 && allMarkdown.length < 100 && lovableKey) {
+      if (jobs.length === 0 && (firecrawlKey || lovableKey)) {
+        console.log('[job-scrape] Layer 2.5: Multi-surface careers domain discovery...');
+        scanContext.layersChecked.push('careers_subdomain', 'indexed_pages');
+
+        let companyDomain = '';
+        try {
+          const urlObj = new URL(careersUrl.startsWith('http') ? careersUrl : `https://${careersUrl}`);
+          const parts = urlObj.hostname.split('.');
+          companyDomain = parts.length >= 2 ? parts.slice(-2).join('.') : urlObj.hostname;
+        } catch { /* ignore */ }
+
+        const searchQueries = [
+          `"${companyName}" careers site jobs apply`,
+          `"${companyName}" open positions vacancy 2025 2026`,
+        ];
+        if (companyDomain) {
+          searchQueries.push(`site:jobs.${companyDomain} OR site:careers.${companyDomain} jobs`);
+        }
+        searchQueries.push(`"${companyName}" pinpoint OR greenhouse OR lever OR workday OR ashby OR smartrecruiters jobs careers`);
+
+        const { results: discoveryResults } = await resilientSearch(
+          searchQueries, firecrawlKey, lovableKey!, { maxResultsPerQuery: 5 }
+        );
+
+        let discoveredCareersUrl: string | null = null;
+
+        for (const result of discoveryResults) {
+          if (!result.url) continue;
+          const resultUrl = result.url.toLowerCase();
+
+          // Detect careers subdomains
+          if (companyDomain && (
+            resultUrl.includes(`jobs.${companyDomain}`) ||
+            resultUrl.includes(`careers.${companyDomain}`)
+          )) {
+            discoveredCareersUrl = result.url;
+            console.log(`[job-scrape] Layer 2.5: Discovered careers subdomain: ${result.url}`);
+          }
+
+          // Check for ATS URLs in results
+          const resultAts = detectATS(result.url);
+          if (resultAts && !scanContext.atsDetected) {
+            console.log(`[job-scrape] Layer 2.5: Discovered ATS via search: ${resultAts.platform} → ${result.url}`);
+            scanContext.atsDetected = resultAts.platform;
+            scanContext.deeperUrlFound = result.url;
+            scanContext.layersChecked.push('ats_detection');
+            try {
+              const atsJobs = await resultAts.fetcher(result.url);
+              if (atsJobs.length > 0) {
+                jobs = atsJobs;
+                sourceType = 'ats';
+                sourcePlatform = resultAts.platform;
+                scanContext.classification = 'ats_detected_jobs_found';
+                scanContext.explanation = `Active jobs found via ${resultAts.platform} ATS discovered through web search.`;
+                scanContext.confidence = 'medium';
+                break;
+              }
+            } catch { /* continue */ }
+          }
+
+          // Check for ATS links in result content
+          if (jobs.length === 0 && result.markdown) {
+            const contentATS = extractATSUrls(result.markdown);
+            for (const atsLink of contentATS) {
+              if (scanContext.atsDetected) break;
+              scanContext.atsDetected = atsLink.platform;
+              scanContext.deeperUrlFound = atsLink.url;
+              scanContext.layersChecked.push('ats_detection');
+              const atsConfig = detectATS(atsLink.url);
+              if (atsConfig) {
+                try {
+                  const atsJobs = await atsConfig.fetcher(atsLink.url);
+                  if (atsJobs.length > 0) {
+                    jobs = atsJobs;
+                    sourceType = 'ats';
+                    sourcePlatform = atsConfig.platform;
+                    scanContext.classification = 'ats_detected_jobs_found';
+                    scanContext.explanation = `Active jobs found via ${atsConfig.platform} ATS discovered in search results.`;
+                    scanContext.confidence = 'medium';
+                    break;
+                  }
+                } catch { /* continue */ }
+              }
+            }
+          }
+
+          // Accumulate indexed job page content
+          if (jobs.length === 0 && /\/(jobs|vacancy|vacancies|positions|openings|careers)\//i.test(result.url)) {
+            allMarkdown += `\n\n--- INDEXED: ${result.url} ---\n${result.markdown || result.description || ''}`;
+          }
+        }
+
+        // If we found a careers subdomain, try scraping it
+        if (jobs.length === 0 && discoveredCareersUrl && firecrawlKey) {
+          console.log(`[job-scrape] Layer 2.5: Scraping discovered careers domain: ${discoveredCareersUrl}`);
+          try {
+            const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${firecrawlKey}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ url: discoveredCareersUrl, formats: ['markdown', 'html'], onlyMainContent: true, waitFor: 8000 }),
+            });
+            if (scrapeResp.ok) {
+              const scrapeData = await scrapeResp.json();
+              const md = scrapeData.data?.markdown || scrapeData.markdown || '';
+              const html = scrapeData.data?.html || scrapeData.html || '';
+              if (md.length > 50) {
+                allMarkdown += `\n\n--- CAREERS_SUBDOMAIN: ${discoveredCareersUrl} ---\n${md}`;
+                scanContext.deeperUrlFound = discoveredCareersUrl;
+                scanContext.classification = 'careers_site_detected';
+                scanContext.explanation = `Dedicated careers site found at ${discoveredCareersUrl}.`;
+
+                const subdomainATS = extractATSUrls(md + ' ' + html);
+                for (const atsLink of subdomainATS) {
+                  const atsConfig = detectATS(atsLink.url);
+                  if (atsConfig) {
+                    scanContext.atsDetected = atsConfig.platform;
+                    scanContext.deeperUrlFound = atsLink.url;
+                    scanContext.layersChecked.push('ats_detection');
+                    try {
+                      const atsJobs = await atsConfig.fetcher(atsLink.url);
+                      if (atsJobs.length > 0) {
+                        jobs = atsJobs;
+                        sourceType = 'ats';
+                        sourcePlatform = atsConfig.platform;
+                        scanContext.classification = 'ats_detected_jobs_found';
+                        scanContext.explanation = `Active jobs found via ${atsConfig.platform} ATS on careers subdomain ${discoveredCareersUrl}.`;
+                        scanContext.confidence = 'high';
+                        break;
+                      }
+                    } catch { /* continue */ }
+                  }
+                }
+
+                // Try direct ATS detection on the careers subdomain URL
+                if (jobs.length === 0) {
+                  const subdomainAts = detectATS(discoveredCareersUrl);
+                  if (subdomainAts) {
+                    scanContext.atsDetected = subdomainAts.platform;
+                    scanContext.layersChecked.push('ats_detection');
+                    try {
+                      const atsJobs = await subdomainAts.fetcher(discoveredCareersUrl);
+                      if (atsJobs.length > 0) {
+                        jobs = atsJobs;
+                        sourceType = 'ats';
+                        sourcePlatform = subdomainAts.platform;
+                        scanContext.classification = 'ats_detected_jobs_found';
+                        scanContext.explanation = `Active jobs found via ${subdomainAts.platform} at ${discoveredCareersUrl}.`;
+                        scanContext.confidence = 'high';
+                      }
+                    } catch { /* continue */ }
+                  }
+                }
+              }
+            }
+          } catch (e) {
+            console.warn(`[job-scrape] Failed to scrape careers subdomain:`, e);
+          }
+        }
+      }
+
+      // ═══════════════════════════════════════════════════
+      // LAYER 3: Search fallback (no markdown length gate)
+      // ═══════════════════════════════════════════════════
+      if (jobs.length === 0 && lovableKey) {
         console.log('[job-scrape] Layer 3: Search fallback...');
+        if (!scanContext.layersChecked.includes('web_search')) {
+          scanContext.layersChecked.push('web_search');
+        }
         const { results: fallbackResults } = await resilientSearch(
-          [`${companyName} careers jobs openings hiring 2026`],
+          [
+            `${companyName} careers jobs openings hiring 2025 2026`,
+            `"${companyName}" apply now open positions`,
+          ],
           firecrawlKey, lovableKey!
         );
         for (const result of fallbackResults) {
           const md = result.markdown || '';
           if (md.length > 50) allMarkdown += `\n\n--- SEARCH: ${result.url} ---\n${md}`;
 
-          // Check search results for ATS links
           const searchATS = extractATSUrls(md);
           if (searchATS.length > 0 && !scanContext.atsDetected) {
             scanContext.atsDetected = searchATS[0].platform;
             scanContext.deeperUrlFound = searchATS[0].url;
+            scanContext.layersChecked.push('ats_detection');
             const searchAtsConfig = detectATS(searchATS[0].url);
             if (searchAtsConfig) {
               try {
@@ -778,7 +948,7 @@ Deno.serve(async (req) => {
                   jobs = atsJobs;
                   sourceType = 'ats';
                   sourcePlatform = searchAtsConfig.platform;
-                  scanContext.classification = 'live_jobs_page';
+                  scanContext.classification = 'ats_detected_jobs_found';
                   scanContext.explanation = `Live jobs found via ${searchAtsConfig.platform} ATS discovered through web search.`;
                   scanContext.confidence = 'medium';
                   break;
