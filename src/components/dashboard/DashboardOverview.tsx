@@ -169,7 +169,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {t.company?.industry && (
-                        <span className="text-[10px] text-muted-foreground hidden sm:block">{t.company.industry}</span>
+                        <span className="text-xs text-muted-foreground hidden sm:block">{t.company.industry}</span>
                       )}
                       {t.company?.civic_footprint_score != null && (
                         <Badge variant="outline" className="text-[10px]">
