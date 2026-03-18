@@ -109,11 +109,11 @@ export function SmartJobRow({ job, isSelected, matchScore, matchLabel, onClick }
 
         {/* Salary / Pay Transparency */}
         {job.salary_range ? (
-          <Badge variant="outline" className="text-[10px] gap-0.5 py-0 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green)/0.2)]">
+          <Badge variant="outline" className="text-xs gap-0.5 py-0 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green)/0.2)]">
             <DollarSign className="w-2.5 h-2.5" /> {job.salary_range}
           </Badge>
         ) : (
-          <Badge variant="outline" className="text-[10px] gap-0.5 py-0 text-muted-foreground border-dashed">
+          <Badge variant="outline" className="text-xs gap-0.5 py-0 text-muted-foreground border-dashed">
             <DollarSign className="w-2.5 h-2.5" /> No salary posted
           </Badge>
         )}
