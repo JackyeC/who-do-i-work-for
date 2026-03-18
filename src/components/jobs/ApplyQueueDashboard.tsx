@@ -7,16 +7,18 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Loader2, Play, Trash2, ExternalLink, Copy, Check,
   ListTodo, CheckCircle2, AlertCircle, Clock, RotateCcw, Zap, FileDown,
+  Inbox, ArrowRight
 } from "lucide-react";
 import { generateCandidateAdvocacyPdf } from "@/lib/generateCandidateAdvocacyPdf";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const STATUS_CONFIG: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   queued: { label: "Queued", icon: Clock, color: "text-muted-foreground bg-muted border-border" },
-  processing: { label: "Processing", icon: Loader2, color: "text-yellow-600 bg-yellow-50 border-yellow-200" },
-  completed: { label: "Completed", icon: CheckCircle2, color: "text-green-600 bg-green-50 border-green-200" },
+  processing: { label: "Processing", icon: Loader2, color: "text-yellow-600 bg-yellow-50 border-yellow-200 dark:bg-yellow-500/10 dark:border-yellow-500/20" },
+  completed: { label: "Completed", icon: CheckCircle2, color: "text-green-600 bg-green-50 border-green-200 dark:bg-green-500/10 dark:border-green-500/20" },
   failed: { label: "Failed", icon: AlertCircle, color: "text-destructive bg-destructive/5 border-destructive/30" },
 };
 
@@ -44,90 +46,99 @@ function QueueItemCard({
   };
 
   return (
-    <Card className="hover:shadow-sm transition-shadow">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <h4 className="font-medium text-foreground text-sm truncate">{item.job_title}</h4>
-              <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border", config.color)}>
-                <Icon className={cn("w-3 h-3", item.status === "processing" && "animate-spin")} />
-                {config.label}
-              </span>
-            </div>
-            <Link
-              to={`/company/${item.company_name?.toLowerCase().replace(/\s+/g, "-")}`}
-              className="text-xs text-primary hover:underline"
-            >
-              {item.company_name}
-            </Link>
-            <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground">
-              <span>{item.alignment_score}% aligned</span>
-              {item.processed_at && (
-                <span>· Processed {new Date(item.processed_at).toLocaleDateString()}</span>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      layout
+    >
+      <Card className="hover:shadow-sm transition-shadow border-border/60">
+        <CardContent className="p-3.5">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <h4 className="font-medium text-foreground text-sm truncate">{item.job_title}</h4>
+                <span className={cn("inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium border", config.color)}>
+                  <Icon className={cn("w-2.5 h-2.5", item.status === "processing" && "animate-spin")} />
+                  {config.label}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <Link
+                  to={`/company/${item.company_name?.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="text-primary hover:underline font-medium"
+                >
+                  {item.company_name}
+                </Link>
+                <span className="text-muted-foreground">·</span>
+                <span className="text-muted-foreground">{item.alignment_score}% match</span>
+                {item.processed_at && (
+                  <>
+                    <span className="text-muted-foreground">·</span>
+                    <span className="text-muted-foreground">{new Date(item.processed_at).toLocaleDateString()}</span>
+                  </>
+                )}
+              </div>
+              {item.error_message && (
+                <p className="text-[11px] text-destructive mt-1.5 bg-destructive/5 rounded px-2 py-1">{item.error_message}</p>
+              )}
+              {item.generated_payload?.matchingStatement && (
+                <div className="mt-2 bg-muted/40 border border-border/60 rounded p-2 text-[11px] text-foreground/70 line-clamp-2 leading-relaxed">
+                  {item.generated_payload.matchingStatement}
+                </div>
               )}
             </div>
-            {item.error_message && (
-              <p className="text-xs text-destructive mt-1 bg-destructive/5 rounded px-2 py-1">{item.error_message}</p>
-            )}
-            {item.generated_payload?.matchingStatement && (
-              <div className="mt-2 bg-muted/50 border border-border rounded-md p-2 text-xs text-foreground/80 line-clamp-3">
-                {item.generated_payload.matchingStatement}
-              </div>
-            )}
-          </div>
-          <div className="flex flex-col gap-1.5 shrink-0">
-            {item.generated_payload?.matchingStatement && (
-              <Button size="sm" variant="outline" onClick={handleCopy} className="gap-1 text-xs h-7">
-                {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                {copied ? "Copied" : "Copy"}
-              </Button>
-            )}
-            {item.generated_payload?.advocacyData && (
+            <div className="flex items-center gap-1 shrink-0">
+              {item.generated_payload?.matchingStatement && (
+                <Button size="icon" variant="ghost" onClick={handleCopy} className="h-7 w-7">
+                  {copied ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3" />}
+                </Button>
+              )}
+              {item.generated_payload?.advocacyData && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7"
+                  onClick={() => {
+                    const pdf = generateCandidateAdvocacyPdf(item.generated_payload.advocacyData);
+                    const slug = item.company_name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+                    pdf.save(`${slug}-advocacy-dossier.pdf`);
+                  }}
+                >
+                  <FileDown className="w-3 h-3" />
+                </Button>
+              )}
+              {item.application_url && (
+                <Button size="icon" variant="ghost" asChild className="h-7 w-7">
+                  <a href={item.application_url} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </Button>
+              )}
+              {item.status === "failed" && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onRetry(item)}
+                  className="h-7 w-7 text-primary hover:text-primary"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                </Button>
+              )}
               <Button
-                size="sm"
-                variant="outline"
-                className="gap-1 text-xs h-7"
-                onClick={() => {
-                  const pdf = generateCandidateAdvocacyPdf(item.generated_payload.advocacyData);
-                  const slug = item.company_name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-                  pdf.save(`${slug}-advocacy-dossier.pdf`);
-                }}
+                size="icon"
+                variant="ghost"
+                onClick={() => onRemove(item.id)}
+                disabled={removing}
+                className="h-7 w-7 text-muted-foreground hover:text-destructive"
               >
-                <FileDown className="w-3 h-3" /> Dossier
+                <Trash2 className="w-3 h-3" />
               </Button>
-            )}
-            {item.application_url && (
-              <Button size="sm" variant="ghost" asChild className="gap-1 text-xs h-7">
-                <a href={item.application_url} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-3 h-3" /> Apply
-                </a>
-              </Button>
-            )}
-            {item.status === "failed" && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onRetry(item)}
-                className="gap-1 text-xs h-7 text-primary hover:text-primary"
-              >
-                <RotateCcw className="w-3 h-3" />
-                Retry
-              </Button>
-            )}
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => onRemove(item.id)}
-              disabled={removing}
-              className="gap-1 text-xs h-7 text-muted-foreground hover:text-destructive"
-            >
-              <Trash2 className="w-3 h-3" />
-            </Button>
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
 
@@ -147,7 +158,6 @@ export function ApplyQueueDashboard() {
     : queue.filter((i) => i.status === statusFilter);
 
   const handleRetry = (item: any) => {
-    // Remove the failed item and re-add it as queued
     removeFromQueue.mutate(item.id, {
       onSuccess: () => {
         addToQueue.mutate({
@@ -165,84 +175,88 @@ export function ApplyQueueDashboard() {
 
   if (isLoading) {
     return (
-      <div className="space-y-3">
-        {[1, 2, 3].map((i) => <Skeleton key={i} className="h-24 w-full rounded-lg" />)}
+      <div className="space-y-2">
+        {[1, 2, 3].map((i) => <Skeleton key={i} className="h-20 w-full rounded-lg" />)}
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Stats bar */}
-      <div className="flex items-center gap-4 flex-wrap">
-        <div className="flex items-center gap-1.5 text-sm">
-          <ListTodo className="w-4 h-4 text-muted-foreground" />
-          <span className="font-medium">{queuedCount}</span>
-          <span className="text-muted-foreground">queued</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-sm">
-          <CheckCircle2 className="w-4 h-4 text-green-600" />
-          <span className="font-medium">{completedCount}</span>
-          <span className="text-muted-foreground">completed</span>
-        </div>
-        {failedCount > 0 && (
-          <div className="flex items-center gap-1.5 text-sm">
-            <AlertCircle className="w-4 h-4 text-destructive" />
-            <span className="font-medium">{failedCount}</span>
-            <span className="text-muted-foreground">failed</span>
-          </div>
-        )}
-        <div className="ml-auto text-xs text-muted-foreground">
-          {todayCount}/{settings?.max_daily_applications || 5} today
-        </div>
-      </div>
-
-      {/* Filter + Process */}
+    <div className="space-y-3">
+      {/* Compact stats + filter row */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        {queue.length > 0 && (
-          <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
-            <TabsList className="h-8">
-              <TabsTrigger value="all" className="text-xs px-3 h-7">All ({queue.length})</TabsTrigger>
-              <TabsTrigger value="queued" className="text-xs px-3 h-7">Queued ({queuedCount})</TabsTrigger>
-              <TabsTrigger value="completed" className="text-xs px-3 h-7">Done ({completedCount})</TabsTrigger>
-              {failedCount > 0 && (
-                <TabsTrigger value="failed" className="text-xs px-3 h-7">Failed ({failedCount})</TabsTrigger>
-              )}
-            </TabsList>
-          </Tabs>
-        )}
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <ListTodo className="w-3.5 h-3.5" />
+            <strong className="text-foreground">{queuedCount}</strong> queued
+          </span>
+          <span className="flex items-center gap-1">
+            <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+            <strong className="text-foreground">{completedCount}</strong> done
+          </span>
+          {failedCount > 0 && (
+            <span className="flex items-center gap-1">
+              <AlertCircle className="w-3.5 h-3.5 text-destructive" />
+              <strong className="text-foreground">{failedCount}</strong> failed
+            </span>
+          )}
+          <span className="text-[11px] ml-1 px-1.5 py-0.5 rounded bg-muted border border-border">
+            {todayCount}/{settings?.max_daily_applications || 5} today
+          </span>
+        </div>
         {queuedCount > 0 && (
           <Button
             onClick={() => processQueue.mutate()}
             disabled={processQueue.isPending || (settings?.is_paused ?? false)}
-            className="gap-1.5"
             size="sm"
+            className="gap-1.5 h-7 text-xs"
           >
             {processQueue.isPending ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              <Loader2 className="w-3 h-3 animate-spin" />
             ) : (
-              <Play className="w-3.5 h-3.5" />
+              <Play className="w-3 h-3" />
             )}
-            Process {queuedCount} Job{queuedCount !== 1 ? "s" : ""}
+            Process {queuedCount}
           </Button>
         )}
       </div>
 
+      {/* Filter tabs */}
+      {queue.length > 0 && (
+        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+          <TabsList className="h-7 p-0.5">
+            <TabsTrigger value="all" className="text-[11px] px-2.5 h-6">All ({queue.length})</TabsTrigger>
+            <TabsTrigger value="queued" className="text-[11px] px-2.5 h-6">Queued ({queuedCount})</TabsTrigger>
+            <TabsTrigger value="completed" className="text-[11px] px-2.5 h-6">Done ({completedCount})</TabsTrigger>
+            {failedCount > 0 && (
+              <TabsTrigger value="failed" className="text-[11px] px-2.5 h-6">Failed ({failedCount})</TabsTrigger>
+            )}
+          </TabsList>
+        </Tabs>
+      )}
+
       {/* Queue list */}
       {queue.length === 0 ? (
-        <Card>
-          <CardContent className="p-8 text-center">
-            <Zap className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <h3 className="text-sm font-semibold text-foreground mb-1">No jobs in your queue yet</h3>
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
-              Browse <strong>Matched Jobs</strong> and click <strong>"Auto-Apply"</strong> on any job card to add it here. We'll generate a personalized cover letter based on your values profile.
+        <Card className="border-dashed border-border/60">
+          <CardContent className="py-10 text-center">
+            <div className="w-12 h-12 rounded-xl bg-muted border border-border flex items-center justify-center mx-auto mb-4">
+              <Inbox className="w-5 h-5 text-muted-foreground" />
+            </div>
+            <h3 className="text-sm font-semibold text-foreground mb-1">Queue is empty</h3>
+            <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed mb-4">
+              Browse your matched jobs and click <strong>Quick Apply</strong> to add jobs here. AI will generate tailored cover letters for each.
             </p>
+            <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs">
+              <Link to="/dashboard?tab=matches">
+                Browse Matches <ArrowRight className="w-3 h-3" />
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       ) : filteredQueue.length === 0 ? (
         <Card>
-          <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground">No items with this status.</p>
+          <CardContent className="py-6 text-center">
+            <p className="text-xs text-muted-foreground">No items with this status.</p>
           </CardContent>
         </Card>
       ) : (
