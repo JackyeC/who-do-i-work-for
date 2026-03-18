@@ -50,7 +50,7 @@ function StanceRow({ stance }: { stance: { id: string; topic: string; public_pos
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="rounded-lg bg-muted/30 p-3">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1.5">What they say</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1.5">What they say</p>
           <p className="text-sm text-foreground/85 leading-relaxed">{stance.public_position}</p>
         </div>
         <div className="rounded-lg bg-muted/30 p-3">
