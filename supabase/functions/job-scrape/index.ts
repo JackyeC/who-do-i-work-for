@@ -905,6 +905,11 @@ Content:\n${allMarkdown.slice(0, 20000)}`
       updated_at: new Date().toISOString(),
     }, { onConflict: 'company_id,section_type' });
 
+    // Trigger signal engine asynchronously (fire-and-forget)
+    supabase.functions.invoke('generate-company-signals', {
+      body: { companyId },
+    }).catch(err => console.warn('[job-scrape] Signal generation failed:', err));
+
     return new Response(JSON.stringify({
       success: true,
       jobsAdded: jobs.length,

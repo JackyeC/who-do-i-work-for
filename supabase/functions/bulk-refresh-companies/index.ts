@@ -120,6 +120,15 @@ Deno.serve(async (req) => {
         } catch (vErr) {
           console.warn(`[bulk-refresh] Verification failed for ${company.name}:`, vErr);
         }
+
+        // Generate standardized signals
+        try {
+          await supabase.functions.invoke("generate-company-signals", {
+            body: { companyId: company.id },
+          });
+        } catch (sigErr) {
+          console.warn(`[bulk-refresh] Signal generation failed for ${company.name}:`, sigErr);
+        }
       } catch (e) {
         results.push({
           name: company.name,

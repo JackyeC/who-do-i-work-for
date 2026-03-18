@@ -184,6 +184,11 @@ Deno.serve(async (req) => {
       last_scan_attempted: new Date().toISOString(),
     }).eq('id', companyId);
 
+    // Trigger signal engine after scan completes (fire-and-forget)
+    supabase.functions.invoke('generate-company-signals', {
+      body: { companyId },
+    }).catch(err => console.warn('[osint-parallel-scan] Signal generation failed:', err));
+
     console.log(`[osint-parallel-scan] COMPLETE: ${succeeded}/${staleSources.length} succeeded in ${totalDuration}ms`);
 
     return new Response(JSON.stringify({
