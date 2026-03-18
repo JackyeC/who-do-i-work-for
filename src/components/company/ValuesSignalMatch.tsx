@@ -286,8 +286,8 @@ export function ValuesSignalMatch(props: SignalInputs) {
             {aligned.map((m, i) => (
               <li key={i} className="text-sm text-foreground/85 leading-relaxed pl-3 relative before:content-[''] before:absolute before:left-0 before:top-[9px] before:w-1.5 before:h-1.5 before:rounded-full before:bg-[hsl(var(--civic-green))]/40">
                 <span className="font-medium">{m.label}:</span> {m.summary}
-                {m.source && <span className="ml-1.5 text-[10px] text-muted-foreground/70 font-mono">{m.source}</span>}
-                <span className="ml-1.5 text-[10px] text-muted-foreground font-mono">{m.confidence}</span>
+                 {m.source && <span className="ml-1.5 text-xs text-muted-foreground/70 font-mono">{m.source}</span>}
+                <span className="ml-1.5 text-xs text-muted-foreground font-mono">{m.confidence}</span>
               </li>
             ))}
           </ul>
