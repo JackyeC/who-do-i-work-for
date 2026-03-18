@@ -95,7 +95,7 @@ export function InnovationSignals({ companyId, companyName }: InnovationSignalsP
             <div className="flex items-center gap-2 mb-3">
               <Lightbulb className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold text-foreground">Innovation Signals</h3>
-              <Badge variant="outline" className="text-[10px] ml-auto">Patents</Badge>
+              <Badge variant="outline" className="text-xs ml-auto">Patents</Badge>
             </div>
             <EmptyStateExplainer type="jobs" />
             <p className="text-xs text-muted-foreground mt-2">
