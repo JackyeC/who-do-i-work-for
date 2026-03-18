@@ -134,11 +134,11 @@ export function EmptyStateExplainer({ type, className, companyName, scanContext 
       {/* ATS Detection Badge */}
       {scanContext?.atsDetected && (
         <div className="mx-4 mb-3">
-          <Badge variant="outline" className="text-[10px] bg-primary/5 border-primary/20 text-primary">
+          <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
             ATS Detected: {scanContext.atsDetected}
           </Badge>
           {scanContext.pageClassification && (
-            <Badge variant="outline" className="text-[10px] ml-1.5 bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
+            <Badge variant="outline" className="text-xs ml-1.5 bg-[hsl(var(--civic-yellow))]/10 border-[hsl(var(--civic-yellow))]/20 text-[hsl(var(--civic-yellow))]">
               {scanContext.pageClassification}
             </Badge>
           )}
