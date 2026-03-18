@@ -153,7 +153,7 @@ export function CareerPathForecast({ companyName, roleTitle, signals }: CareerPa
               Time to Next Level
             </div>
             <div className="text-xs font-semibold text-foreground">{forecast.promoTimeline}</div>
-            <Badge variant="outline" className="text-[8px] mt-1">
+            <Badge variant="outline" className="text-xs mt-1">
               {forecast.promoConfidence} confidence
             </Badge>
           </div>
