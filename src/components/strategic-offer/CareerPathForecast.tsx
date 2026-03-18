@@ -188,7 +188,7 @@ export function CareerPathForecast({ companyName, roleTitle, signals }: CareerPa
           </div>
         </div>
 
-        <p className="text-[9px] text-muted-foreground border-t border-border pt-2">
+        <p className="text-xs text-muted-foreground border-t border-border pt-2">
           Based on {forecast.signalCount} public workforce signals. This is an educational estimate, not a guarantee of advancement.
         </p>
       </CardContent>

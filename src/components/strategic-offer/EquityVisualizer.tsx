@@ -255,7 +255,7 @@ export function EquityVisualizer() {
                 <p className="text-lg font-display font-bold text-foreground">${totalGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
               </div>
               <div className="p-3 bg-civic-green/5 rounded-xl border border-civic-green/10">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Estimated Net</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Estimated Net</p>
                 <p className="text-lg font-display font-bold text-civic-green">${totalNet.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
               </div>
             </div>

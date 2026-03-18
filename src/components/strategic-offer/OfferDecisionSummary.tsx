@@ -112,7 +112,7 @@ export function OfferDecisionSummary(props: Props) {
                 confidence === "High" ? "text-[hsl(var(--civic-green))]" :
                 confidence === "Medium" ? "text-[hsl(var(--civic-yellow))]" : "text-muted-foreground"
               )}>{confidence}</p>
-              <p className="text-[10px] text-muted-foreground">Confidence</p>
+              <p className="text-xs text-muted-foreground">Confidence</p>
             </div>
           </div>
 
