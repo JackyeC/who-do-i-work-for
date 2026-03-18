@@ -312,7 +312,8 @@ export default function Check() {
           {!selectedCompanyId && !isLoading && (
             <div className="text-center py-10 text-muted-foreground">
               <ShieldCheck className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p className="text-sm">Select your priorities above, then search for a company to begin.</p>
+              <p className="text-sm">Select your priorities above, then search for any company to begin.</p>
+              <p className="text-xs mt-1 text-muted-foreground/70">Don't see a company? Just type the name — we'll research it for you.</p>
             </div>
           )}
 
