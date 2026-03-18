@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CompanyLogo } from "@/components/CompanyLogo";
+import { MatchIndicator } from "@/components/jobs/MatchIndicator";
 import {
   Shield, ShieldCheck, ExternalLink, Sparkles, Network, Eye
 } from "lucide-react";
@@ -37,9 +38,11 @@ interface JobIntegrityCardProps {
       description: string | null;
     };
   };
+  matchCount?: number;
+  matchedCategories?: string[];
 }
 
-export function JobIntegrityCard({ job }: JobIntegrityCardProps) {
+export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [] }: JobIntegrityCardProps) {
   const co = job.companies;
   const isCertified = co?.vetted_status === "certified";
   const isVerified = co?.vetted_status === "verified";
@@ -86,6 +89,7 @@ export function JobIntegrityCard({ job }: JobIntegrityCardProps) {
                   <ShieldCheck className="w-2.5 h-2.5" /> Certified
                 </Badge>
               )}
+              <MatchIndicator matchCount={matchCount} matchedCategories={matchedCategories} />
             </div>
             <p className="text-[11px] text-muted-foreground mt-0.5">
               {job.location || "Remote"} {job.work_mode ? `· ${job.work_mode}` : ""}

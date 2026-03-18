@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { JobIntegrityCard } from "@/components/jobs/JobIntegrityCard";
 import { AskJackyeWidget } from "@/components/jobs/AskJackyeWidget";
+import { PersonalizationBanner } from "@/components/jobs/PersonalizationBanner";
 import { EmptyState } from "@/components/EmptyState";
 import { Loader2, Search, Shield, ShieldCheck, Briefcase } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
@@ -171,6 +172,9 @@ export default function JobIntegrityBoard() {
           </Select>
         </div>
 
+        {/* Personalization Banner */}
+        <PersonalizationBanner />
+
         {/* Results */}
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
@@ -184,9 +188,19 @@ export default function JobIntegrityBoard() {
           />
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
-            {filtered.map((job: any) => (
-              <JobIntegrityCard key={job.id} job={job} />
-            ))}
+            {filtered.map((job: any) => {
+              const prefCategories = getUserPreferenceCategories();
+              const companyCats = alignmentSignals?.[job.company_id];
+              const matchedCats = companyCats ? [...prefCategories].filter(c => companyCats.has(c)) : [];
+              return (
+                <JobIntegrityCard
+                  key={job.id}
+                  job={job}
+                  matchCount={matchedCats.length}
+                  matchedCategories={matchedCats}
+                />
+              );
+            })}
           </div>
         )}
       </main>
