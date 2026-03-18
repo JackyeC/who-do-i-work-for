@@ -173,9 +173,28 @@ export default function CompanyProfile() {
 
   // ─── Full Scan Handler ───
   const handleFullScan = async () => {
-    if (!dbCompany) return;
+    const companyName = dbCompany?.name || company?.name || id?.replace(/-/g, ' ');
+    if (!companyName) {
+      toast({ title: "No company identified", description: "Could not determine company name.", variant: "destructive" });
+      return;
+    }
     setIsScanning(true);
     try {
+      // If company isn't in DB yet, discover it first
+      if (!dbCompany) {
+        toast({ title: "Discovering company…", description: `"${companyName}" isn't in our database yet. Starting discovery scan.` });
+        const { data: discoverData, error: discoverError } = await supabase.functions.invoke("company-research", { body: { companyName } });
+        if (discoverError) throw discoverError;
+        if (discoverData?.success) {
+          const count = Object.values(discoverData.tablesPopulated || {}).reduce((a: number, b: any) => a + (b as number), 0);
+          toast({ title: "Discovery complete", description: `Found ${count} records for ${companyName}. Reloading…` });
+          queryClient.invalidateQueries({ queryKey: ["company-profile", id] });
+        } else {
+          throw new Error(discoverData?.error || "Discovery failed");
+        }
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke("company-research", { body: { companyName: dbCompany.name, enrichExisting: true } });
       if (error) throw error;
       if (data?.success) {
@@ -189,7 +208,7 @@ export default function CompanyProfile() {
       const isProviderError = /insufficient|credits|timeout|non-2xx|502|503|firecrawl|scraping/i.test(msg);
       toast({
         title: isProviderError ? "Live refresh temporarily unavailable" : "Scan issue",
-        description: isProviderError ? "Showing the most recent saved intelligence." : "Something went wrong. Please try again.",
+        description: isProviderError ? "Showing the most recent saved intelligence." : (msg || "Something went wrong. Please try again."),
         variant: isProviderError ? undefined : "destructive",
       });
     } finally { setIsScanning(false); }
