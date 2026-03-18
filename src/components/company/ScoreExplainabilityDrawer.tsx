@@ -153,7 +153,7 @@ export function ScoreExplainabilityDrawer({ companyId, score }: Props) {
           </span>
           {signalCounts && (
             <Badge variant="outline" className={cn(
-              "text-[10px]",
+              "text-xs",
               getConfidenceLabel() === "High" ? "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/20" :
               getConfidenceLabel() === "Medium" ? "bg-[hsl(var(--civic-yellow))]/10 text-[hsl(var(--civic-yellow))] border-[hsl(var(--civic-yellow))]/20" :
               "bg-muted text-muted-foreground"
