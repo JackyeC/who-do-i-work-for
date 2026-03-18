@@ -49,7 +49,7 @@ export function CivicLegalAudit({ flags }: Props) {
         ].map(item => (
           <div key={item.label} className={cn("rounded-xl p-3 text-center", item.bg)}>
             <p className={cn("text-2xl font-display font-bold", item.color)}>{item.count}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{item.label}</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">{item.label}</p>
           </div>
         ))}
       </div>
