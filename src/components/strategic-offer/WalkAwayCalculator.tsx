@@ -110,7 +110,7 @@ export function WalkAwayCalculator({ onComplete, offerSalary }: Props) {
                 </p>
               </div>
               <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Your Safety Line</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Your Safety Line</p>
                 <p className="text-xl font-display font-bold text-primary">
                   ${annualBaseline.toLocaleString()}
                 </p>
