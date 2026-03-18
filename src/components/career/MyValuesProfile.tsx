@@ -164,7 +164,7 @@ export function MyValuesProfile() {
           </div>
           <div className="flex flex-col items-end gap-0.5 shrink-0">
             <Badge variant="outline" className="text-xs">{val}</Badge>
-            <span className={`text-[10px] font-medium ${getPriorityColor(val)}`}>
+            <span className={`text-xs font-medium ${getPriorityColor(val)}`}>
               {getPriorityLabel(val)}
             </span>
           </div>
