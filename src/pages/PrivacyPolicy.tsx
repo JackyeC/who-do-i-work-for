@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { usePageSEO } from "@/hooks/use-page-seo";
 
 const PrivacyPolicy = () => (
   <div className="min-h-screen flex flex-col bg-background">

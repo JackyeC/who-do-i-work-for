@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { motion } from "framer-motion";
 import { CivicFootprintBadge } from "@/components/CivicFootprintBadge";
 import { Input } from "@/components/ui/input";

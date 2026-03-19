@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { Search, Sparkles, Info, HelpCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

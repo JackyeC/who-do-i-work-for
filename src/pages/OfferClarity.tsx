@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { OfferClarityWizard } from "@/components/offer-clarity/OfferClarityWizard";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck } from "lucide-react";

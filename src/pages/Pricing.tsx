@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { CreditPurchaseCard } from "@/components/CreditPurchaseCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

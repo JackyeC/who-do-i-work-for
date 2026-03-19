@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, ClipboardCheck, Building2, Share2, Bookmark,

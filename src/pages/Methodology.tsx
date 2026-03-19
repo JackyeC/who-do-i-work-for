@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TIER_LABELS, TIER_COLORS } from "@/lib/evidenceQualityScore";
