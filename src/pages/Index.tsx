@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { HeroSearch } from "@/components/landing/HeroSearch";
 import { PathfinderTracks } from "@/components/landing/PathfinderTracks";
+import { DemoCompanyProfile } from "@/components/landing/DemoCompanyProfile";
 
 const LiveIntelligenceTicker = lazy(() => import("@/components/landing/LiveIntelligenceTicker").then(m => ({ default: m.LiveIntelligenceTicker })));
 const SocialProofStrip = lazy(() => import("@/components/landing/SocialProofStrip").then(m => ({ default: m.SocialProofStrip })));
@@ -141,35 +142,21 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </div>
         </div>
 
-        {/* Static preview card */}
-        <div>
-          <div className="bg-card border border-border p-6 relative">
-            <div className="absolute -top-2.5 left-4 bg-background px-2 font-mono text-sm uppercase text-primary tracking-widest">
-              Live Intelligence Preview
-            </div>
-            <div className="font-serif text-lg mb-1">Koch Industries</div>
-            <div className="font-mono text-sm tracking-wider uppercase text-muted-foreground mb-4">
-              Employer Clarity Score: 6.2 / 10 · High Scrutiny
-            </div>
-            <div className="grid grid-cols-2 gap-px bg-border border border-border mb-4">
-              {[
-                { label: "Influence Exposure", val: "Significant", color: "text-destructive" },
-                { label: "Lobbying Spend", val: "$5.2M", color: "text-amber-500" },
-                { label: "Hiring Transparency", val: "Moderate", color: "text-amber-500", desktopOnly: true },
-                { label: "Workforce Stability", val: "Stable", color: "text-primary", desktopOnly: true },
-              ].map(m => (
-                <div key={m.label} className={`bg-card p-3 ${m.desktopOnly ? "hidden lg:block" : ""}`}>
-                  <div className="font-mono text-sm uppercase text-muted-foreground mb-1">{m.label}</div>
-                  <div className={`font-data text-lg font-bold ${m.color}`}>{m.val}</div>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <div className="text-sm p-2 border-l-2 border-l-destructive bg-destructive/[0.07] text-foreground">Non-compete clause — unusually broad scope</div>
-              <div className="text-sm p-2 border-l-2 border-l-amber-500 bg-amber-500/[0.07] text-foreground hidden lg:block">Salary offer 8.2% below market median</div>
-              <div className="text-sm p-2 border-l-2 border-l-primary bg-primary/[0.07] text-foreground">Federal contractor — strong job security signal</div>
-            </div>
-          </div>
+        {/* Scroll anchor to demo */}
+        <div className="hidden lg:flex items-center justify-center">
+          <button
+            onClick={() => {
+              const el = document.getElementById("demo-dossier");
+              el?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="border border-border bg-card p-6 text-center hover:border-primary/30 transition-colors group"
+          >
+            <div className="font-mono text-sm tracking-wider uppercase text-primary mb-2">Live Intelligence Preview</div>
+            <div className="text-sm text-muted-foreground mb-3">See what a real employer audit looks like — before you sign up.</div>
+            <span className="font-mono text-xs tracking-wider uppercase text-primary group-hover:underline">
+              Scroll to preview ↓
+            </span>
+          </button>
         </div>
       </section>
 
@@ -188,6 +175,33 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </div>
         </div>
       </div>
+
+      {/* ══════════════════════════════════════════════════════════════════
+          DEMO DOSSIER — Conversion Engine
+      ══════════════════════════════════════════════════════════════════ */}
+      <section id="demo-dossier" className="px-6 lg:px-16 py-20 lg:py-28 bg-card border-y border-border">
+        <div className="max-w-[720px] mx-auto">
+          <div className="text-center mb-10">
+            <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">
+              This is what you won't see on a job board
+            </div>
+            <h2 className="text-2xl lg:text-3xl text-foreground mb-4">
+              Most candidates never see this before they accept.{" "}
+              <span className="text-primary">You should.</span>
+            </h2>
+          </div>
+          <DemoCompanyProfile />
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={() => navigate(user ? "/dashboard" : "/login")}
+              className="bg-primary text-primary-foreground px-8 py-3.5 font-mono text-sm font-semibold tracking-wider uppercase hover:brightness-110 transition-all flex items-center gap-2"
+            >
+              Run this for a company you're considering
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* ══════════════════════════════════════════════════════════════════
           5-TRACK PATHFINDER
