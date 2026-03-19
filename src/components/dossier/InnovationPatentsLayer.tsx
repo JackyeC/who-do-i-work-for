@@ -151,11 +151,6 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
               {scanData?.cached && <Badge variant="outline" className="ml-2 text-micro">Cached</Badge>}
             </div>
           </div>
-          {!scanTriggered && (
-            <Button variant="ghost" size="sm" className="ml-auto gap-1.5 text-xs" onClick={() => setScanTriggered(true)}>
-              <Search className="w-3.5 h-3.5" /> Refresh
-            </Button>
-          )}
         </div>
       )}
 
