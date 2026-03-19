@@ -146,21 +146,24 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             But who's running one on them?
           </h1>
 
-          {/* Line 3 */}
+          {/* Subheadline */}
           <p
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontWeight: 400,
-              fontSize: "18px",
-              color: "hsl(252 14% 52%)",
+              fontSize: "17px",
+              color: "#b8b4a8",
               lineHeight: 1.7,
-              maxWidth: "480px",
+              maxWidth: "520px",
               marginTop: "24px",
+              textAlign: "center",
               opacity: 0,
               animation: "heroFadeIn 0.6s ease 1.6s forwards",
             }}
           >
-            WDIWF does. Answer 7 questions — we'll show you exactly what you need to see.
+            WDIWF surfaces what companies don't put on their careers page — built on FEC filings, SEC reports, BLS wages, OSHA records, and NLRB data.
+            <br />
+            Answer 7 questions and we'll show you exactly what you need to see.
           </p>
 
           {/* CTA */}
