@@ -288,7 +288,19 @@ export default function CompanyDossier() {
         )}
       </DossierLayer>
 
-      <DossierLayer title="Insider Score" subtitle="Leadership network concentration and hiring pattern transparency" icon={Eye} layerNumber={7}>
+      {companyId && (
+        <DossierLayer title="Political Giving & Influence" subtitle="PAC spending, lobbying, institutional links — sourced from FEC & LDA" icon={Landmark} layerNumber={7}>
+          <PoliticalGivingCard companyId={companyId} companyName={company.name} companySlug={company.slug} />
+        </DossierLayer>
+      )}
+
+      {companyId && (
+        <DossierLayer title="Leadership Political Giving" subtitle="Individual executive donation records from FEC public filings" icon={Users} layerNumber={8}>
+          <ExecutiveGivingSection companyId={companyId} companyName={company.name} companySlug={company.slug} />
+        </DossierLayer>
+      )}
+
+      <DossierLayer title="Insider Score" subtitle="Leadership network concentration and hiring pattern transparency" icon={Eye} layerNumber={9}>
         <InsiderScoreBreakdown companyId={companyId!} companyName={company.name} insiderScore={(company as any).insider_score ?? null} />
       </DossierLayer>
 
