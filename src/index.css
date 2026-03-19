@@ -185,8 +185,8 @@
   }
 
   .font-display {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 700;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 800;
   }
 
   /* ── TYPOGRAPHY CLASSES ── */
