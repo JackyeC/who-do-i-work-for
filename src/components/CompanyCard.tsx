@@ -43,7 +43,7 @@ export function CompanyCard({ company }: CompanyCardProps) {
                   ? `PAC: ${formatCurrency(company.totalPacSpending)}`
                   : "No PAC spending"}
               </span>
-              <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">View profile →</span>
+              <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">{ctaCopy} →</span>
             </div>
           </div>
         </CardContent>
