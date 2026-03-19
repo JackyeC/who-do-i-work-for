@@ -241,8 +241,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               },
               {
                 icon: Rocket,
-                title: "The Strike",
-                desc: "Execute your move with precision.",
+                title: "The Alignment",
+                desc: "Execute your move with clarity and advocacy.",
                 signals: ["Purple Squirrel Auto-Apply", "Interview Intelligence Briefs", "Negotiation Coaching", "Offer review & benchmarking"],
               },
             ].map(card => (
