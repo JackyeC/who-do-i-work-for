@@ -33,7 +33,7 @@ const STATUS_BADGE = {
   elevated: "Review Required",
   moderate: "Moderate",
   low: "Low Risk",
-  no_data: "No Data",
+  no_data: "Limited Data",
 };
 
 export function EarlyWarningSignals({ companyId, companyName }: Props) {
