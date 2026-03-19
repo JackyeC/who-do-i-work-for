@@ -12,6 +12,20 @@ import { getUiStatement } from "@/lib/signalPersonalization";
 
 export const MAIN_SECTIONS = [
   {
+    id: "offers",
+    label: "Offers",
+    path: "/check",
+    matchPaths: ["/check", "/offer-check", "/offer-review", "/strategic-offer-review", "/offer-clarity"],
+    subItems: [],
+  },
+  {
+    id: "supporting",
+    label: "What Am I Supporting?",
+    path: "/what-am-i-supporting",
+    matchPaths: ["/what-am-i-supporting"],
+    subItems: [],
+  },
+  {
     id: "dashboard",
     label: "Dashboard",
     path: "/dashboard",
@@ -27,13 +41,6 @@ export const MAIN_SECTIONS = [
     subItems: [],
   },
   {
-    id: "offers",
-    label: "Offers",
-    path: "/check",
-    matchPaths: ["/check", "/offer-check", "/offer-review", "/strategic-offer-review", "/offer-clarity"],
-    subItems: [],
-  },
-  {
     id: "careers",
     label: "Careers",
     path: "/career-intelligence",
@@ -45,7 +52,7 @@ export const MAIN_SECTIONS = [
     id: "tools",
     label: "Tools",
     path: "/site-map",
-    matchPaths: ["/would-you-work-here", "/employer-receipt", "/employer-promise-check", "/what-am-i-supporting", "/follow-the-money", "/compare", "/site-map"],
+    matchPaths: ["/would-you-work-here", "/employer-receipt", "/employer-promise-check", "/follow-the-money", "/compare", "/site-map"],
     subItems: [
       { label: "Would You Work Here?", path: "/would-you-work-here" },
       { label: "Employer Receipt", path: "/employer-receipt" },
