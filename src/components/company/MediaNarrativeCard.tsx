@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Radio, TrendingUp, Minus, TrendingDown, AlertCircle } from "lucide-react";
+import { IntelligenceEmptyState } from "@/components/intelligence/IntelligenceEmptyState";
 
 interface MediaNarrativeCardProps {
   companyId: string;
