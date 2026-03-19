@@ -1,61 +1,46 @@
 
 
-## Executive & Board Member Deduplication Fix
+## Patent Feature Fix: Auto-Load Real USPTO Data
 
-### Summary
-Add deduplication, current-member filtering, smart sorting, empty states, and source notes to all executive/board member display components. Display-layer only — no data pipeline changes.
+### What's Already Done
+- `uspto-scan` edge function (447 lines) already connects to PatentsView API with company name resolution, alias generation, CPC clustering, and signal scoring. This is solid.
+- `InnovationPatentsLayer.tsx` (dossier page) already calls `uspto-scan` but requires a manual click to trigger.
+
+### What's NOT Done (the actual problem)
+- `InnovationSignals.tsx` (company profile page) uses a broken `scan-patents` edge function (Google Patents scraping) with a manual "Scan USPTO Records" button
+- Patent data never auto-loads — users must click a button
+- No `patent-utils.ts` client-side utility exists
+- No ticker integration for notable patent activity
+
+### Plan
+
+**1. Create `src/lib/patent-utils.ts`** — Client-side utility
+- `fetchPatentData(companyName)` that calls the existing `uspto-scan` edge function (not a new direct API call — the edge function already handles aliases, caching, and clustering)
+- `calculateInnovationSignal()` returning high/moderate/low/none with labels and descriptions
+- `getPatentGoogleLink(patentNumber)` for linking to readable patent pages
+
+**2. Rewrite `src/components/company/InnovationSignals.tsx`**
+- Remove the manual "Scan USPTO Records" button entirely
+- Auto-load patent data via `useQuery` calling the `uspto-scan` edge function on mount (no `scanTriggered` state needed)
+- Show skeleton loader with "Checking USPTO records..." during loading
+- Display signal pill (green/amber/gray dot + label), total count, recent filings with Google Patents links
+- Handle edge cases: 0 results with subsidiary note + link to PatentsView search, API timeout with graceful message
+- Add source note: "USPTO PatentsView · Public record" + "View all patents on USPTO →" link
+
+**3. Update `src/components/dossier/InnovationPatentsLayer.tsx`**
+- Remove `scanTriggered` state — auto-load on mount by setting `enabled: true` instead of `enabled: scanTriggered`
+- Keep the existing display (it's already good) but remove the "Check what they're actually building" empty state button
+
+**4. Ticker integration** (lightweight)
+- After patent data loads in `InnovationSignals.tsx`, if notable (100+ total or 5+ in 12 months), insert a ticker item via upsert to `ticker_items` table (if the table exists and company has a DB ID)
 
 ### Files to Change
+- `src/lib/patent-utils.ts` — Create
+- `src/components/company/InnovationSignals.tsx` — Rewrite to auto-load via `uspto-scan`
+- `src/components/dossier/InnovationPatentsLayer.tsx` — Remove manual trigger, auto-load
 
-**1. New utility: `src/lib/executive-utils.ts`**
-Create shared helper functions used across all components:
-- `deduplicatePeople(people)` — normalizes names (lowercase, strip suffixes like Jr/Sr/III), keeps the record with the most filled fields
-- `isCurrentMember(person)` — filters out anyone with `departed_at`, `verification_status === 'former'`, or title containing "Former"
-- `sortExecutives(executives)` — orders by C-suite rank (CEO first, then President, COO, CFO, CHRO, CTO, CMO, CLO, then other C-suite alpha, then SVP/EVP, then VP, then rest)
-- `sortBoardMembers(members)` — Board Chair first, Lead Independent Director second, rest alphabetical by last name
-
-**2. `src/components/company/LeadershipInfluenceSection.tsx`**
-- Import and apply the pipeline: `filter current → deduplicate → sort` on the `executives` prop before rendering
-- Add empty/pending states:
-  - 0 executives: "Executive data pending — sourced from SEC proxy filings"
-  - 1-2 executives: show them + "Additional leadership data pending"
-- Add source note below the executive card: "Leadership data sourced from SEC proxy statements and public disclosures. Found an error? Report it →" linking to `/request-correction`
-- Apply same dedup + sort to `boardMembers` prop (currently only shows count — will need the full board member data passed in)
-- Board empty state: "Board composition data pending — sourced from SEC proxy filings"
-
-**3. `src/pages/CompanyProfile.tsx`** (lines 100-110, 156-160)
-- Remove the inline C-suite regex filter on `dbExecutives` query — move that logic to the shared utility
-- Fetch full board member records (name, title, departed_at, is_independent) instead of just `id, is_independent`
-- Pass full board data to `LeadershipInfluenceSection`
-
-**4. `src/components/policy-intelligence/LeadershipSnapshot.tsx`**
-- Import and apply `deduplicatePeople`, `isCurrentMember`, `sortExecutives`, `sortBoardMembers` to both queries before rendering
-- Add source note below
-
-**5. `src/components/ExecutivePowerNetworkCard.tsx`**
-- Apply dedup to the built `networks` array (already filters `departed_at` in query, so just needs name dedup)
-
-### What stays untouched
-- All database queries, edge functions, scoring, methodology
-- No schema changes needed
-
-### Technical Details
-
-Sort rank map for executives:
-```text
-CEO/Chief Executive Officer     → 0
-President                       → 1
-COO                             → 2
-CFO                             → 3
-CHRO/Chief People Officer       → 4
-CTO                             → 5
-CMO                             → 6
-CLO/General Counsel             → 7
-Other C-suite                   → 8
-SVP/EVP                         → 9
-VP                              → 10
-Other                           → 11
-```
-
-Source note style: `text-[11px] text-[#3d3a4a]` with "Report it →" as a Link to `/request-correction`.
+### What Stays Untouched
+- `supabase/functions/uspto-scan/index.ts` — Already works correctly
+- `supabase/functions/scan-patents/index.ts` — Can remain (unused after this fix)
+- All other data pipeline, methodology, scoring
 
