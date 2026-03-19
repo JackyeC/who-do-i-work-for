@@ -83,7 +83,18 @@ export default function CareerIntelligence() {
         </div>
 
         {/* Employer Dossier Search */}
-        <EmployerDossierSearch onSelect={setSelectedCompany} selectedCompany={selectedCompany} />
+        <EmployerDossierSearch
+          onSelect={(c) => { setSelectedCompany(c); setUnknownCompanyName(null); }}
+          selectedCompany={selectedCompany}
+          onNotFound={(name) => { setUnknownCompanyName(name); setSelectedCompany(null); }}
+        />
+
+        {/* Research trigger for unknown companies */}
+        {unknownCompanyName && !selectedCompany && (
+          <div className="max-w-2xl mx-auto mb-8">
+            <CompanyResearchTrigger companyName={unknownCompanyName} />
+          </div>
+        )}
 
         {/* Dossier Results or Sample Preview */}
         {selectedCompany ? (
@@ -92,11 +103,11 @@ export default function CareerIntelligence() {
             <BeforeYouAcceptBlock company={selectedCompany} />
             <WhatThisMeansForYou company={selectedCompany} />
           </div>
-        ) : (
+        ) : !unknownCompanyName ? (
           <div className="mb-8">
             <SampleDossierPreview />
           </div>
-        )}
+        ) : null}
 
         {/* Deep Dive Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-4xl mx-auto">
