@@ -1,15 +1,17 @@
+import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, DollarSign, Users, Flag, AlertTriangle, FileSearch, Info } from "lucide-react";
+import { ExternalLink, DollarSign, Users, Flag, AlertTriangle, FileSearch, Info, Loader2, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/data/sampleData";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoadingState } from "@/components/LoadingState";
 import { PartyBadge, computeRecipientMix } from "@/components/PartyBadge";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { toast } from "sonner";
 
 interface PACDetailDrawerProps {
   open: boolean;
@@ -21,6 +23,10 @@ interface PACDetailDrawerProps {
 }
 
 export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, totalPACSpending, corporatePACExists }: PACDetailDrawerProps) {
+  const [fetchingFEC, setFetchingFEC] = useState(false);
+  const [fecError, setFecError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
   const { data: partyBreakdown, isLoading: partyLoading } = useQuery({
     queryKey: ["pac-detail-party", companyId],
     queryFn: async () => {
@@ -204,7 +210,7 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
                     Party-Level Breakdown
                   </h3>
                   <p className="text-xs text-muted-foreground mb-3">
-                    We know how {companyName}'s PAC money splits by party, but individual recipient names aren't yet available in our database. You can look them up directly on FEC.gov.
+                    We know how {companyName}'s PAC money splits by party. Pull individual recipient records from FEC to see exactly who gets the money.
                   </p>
                   <div className="space-y-2 mb-3">
                     {partyBreakdown.filter((p: any) => p.amount > 0).map((p: any) => (
@@ -217,14 +223,61 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
                       </div>
                     ))}
                   </div>
-                  <a
-                    href={`https://www.fec.gov/data/disbursements/?data_type=processed&committee_id=&recipient_name=&two_year_transaction_period=2024&min_date=&max_date=&min_amount=&max_amount=&committee_name=${encodeURIComponent(companyName)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
-                  >
-                    <ExternalLink className="w-3 h-3" /> Look up individual recipients on FEC.gov →
-                  </a>
+                  
+                  {fecError && (
+                    <div className="p-2.5 rounded-lg bg-destructive/5 border border-destructive/20 mb-3">
+                      <p className="text-xs text-destructive">{fecError}</p>
+                    </div>
+                  )}
+                  
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      size="sm"
+                      onClick={async () => {
+                        setFetchingFEC(true);
+                        setFecError(null);
+                        try {
+                          const { data, error } = await supabase.functions.invoke('fec-pac-recipients', {
+                            body: { companyId, companyName },
+                          });
+                          if (error) throw error;
+                          if (data?.candidates?.length > 0) {
+                            toast.success(`Found ${data.candidates.length} recipients from FEC records`);
+                            queryClient.invalidateQueries({ queryKey: ["pac-detail-candidates", companyId] });
+                          } else {
+                            setFecError(data?.message || 'No disbursement records found on FEC.gov for this company.');
+                          }
+                        } catch (e) {
+                          console.error('FEC fetch error:', e);
+                          setFecError('FEC data temporarily unavailable — try the direct link below.');
+                        } finally {
+                          setFetchingFEC(false);
+                        }
+                      }}
+                      disabled={fetchingFEC}
+                      className="w-full"
+                    >
+                      {fetchingFEC ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                          Pulling FEC records...
+                        </>
+                      ) : (
+                        <>
+                          <Download className="w-3.5 h-3.5 mr-1.5" />
+                          Pull recipient records from FEC
+                        </>
+                      )}
+                    </Button>
+                    <a
+                      href={`https://www.fec.gov/data/disbursements/?data_type=processed&committee_id=&recipient_name=&two_year_transaction_period=2024&min_date=&max_date=&min_amount=&max_amount=&committee_name=${encodeURIComponent(companyName)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-1.5 text-xs text-primary hover:underline"
+                    >
+                      <ExternalLink className="w-3 h-3" /> Or look up manually on FEC.gov →
+                    </a>
+                  </div>
                 </div>
               )}
 
