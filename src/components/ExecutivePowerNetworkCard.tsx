@@ -167,9 +167,13 @@ export function ExecutivePowerNetworkCard({ companyId, companyName }: Props) {
     }
   });
 
-  if (networks.length === 0 && !executives?.length) return null;
+  // Deduplicate networks by person name
+  const dedupedNetworks = deduplicatePeople(networks);
 
-  const totalConnections = networks.reduce((a, n) => a + n.connections.length, 0);
+  if (dedupedNetworks.length === 0 && !executives?.length) return null;
+
+  const totalConnections = dedupedNetworks.reduce((a, n) => a + n.connections.length, 0);
+  const uniqueOrgs = new Set(dedupedNetworks.flatMap(n => n.connections.map(c => c.name)));
   const uniqueOrgs = new Set(networks.flatMap(n => n.connections.map(c => c.name)));
 
   return (
