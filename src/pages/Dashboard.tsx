@@ -45,6 +45,7 @@ const TAB_TITLES: Record<string, string> = {
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
+  const { hasTakenQuiz } = usePersona();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "overview";
   const queryClient = useQueryClient();
