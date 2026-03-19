@@ -479,12 +479,47 @@ export default function Quiz() {
     setResult(null);
   }, []);
 
-  const copyProfile = useCallback(() => {
+  const copyProfile = useCallback(async () => {
     if (!result) return;
     const name = PERSONA_PROFILES[result.primary].name;
-    navigator.clipboard.writeText(
-      `I'm ${name}. I audit before I apply. wdiwf.jackyeclayton.com`
-    );
+    const shareText = `I'm ${name}. I audit before I apply. wdiwf.jackyeclayton.com/join`;
+
+    const showCopyToast = (message: string) => {
+      let toast = document.getElementById('share-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'share-toast';
+        Object.assign(toast.style, {
+          position: 'fixed', bottom: '32px', left: '50%', transform: 'translateX(-50%)',
+          background: '#f0c040', color: '#0a0a0e', fontFamily: "'DM Sans', sans-serif",
+          fontSize: '13px', fontWeight: '600', padding: '10px 24px', borderRadius: '50px',
+          zIndex: '9999', whiteSpace: 'nowrap', pointerEvents: 'none',
+          transition: 'opacity 0.3s ease', opacity: '0',
+        });
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast!.style.opacity = '0'; }, 2500);
+    };
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      showCopyToast('Copied to clipboard ✓');
+    } catch {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = shareText;
+        Object.assign(ta.style, { position: 'fixed', left: '-9999px', top: '-9999px' });
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showCopyToast('Copied to clipboard ✓');
+      } catch {
+        showCopyToast('Copy this: ' + shareText);
+      }
+    }
   }, [result]);
 
   // Keyboard nav
