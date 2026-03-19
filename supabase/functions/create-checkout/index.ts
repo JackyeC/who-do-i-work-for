@@ -25,6 +25,7 @@ const ONE_TIME_PRICES = new Set([
 // Subscription prices (recurring)
 const SUBSCRIPTION_PRICES = new Set([
   "price_1TCTiJ7Qj0W6UtN9hARvCvgh", // Executive Autopilot $999/yr
+  "price_1TCdD87Qj0W6UtN9NBt8Wtb9", // Scout AI Coach $19/mo
 ]);
 
 serve(async (req) => {
