@@ -45,6 +45,7 @@ import { HighRiskConnectionCard } from "@/components/company/HighRiskConnectionC
 import { StateWomenStatusCard } from "@/components/StateWomenStatusCard";
 import { PolicyScoreCard } from "@/components/policy-intelligence/PolicyScoreCard";
 import { SituationContextBanner } from "@/components/policy-intelligence/SituationContextBanner";
+import { TrustFramingLine } from "@/components/TrustFramingLine";
 
 /* ─── Lens config ─── */
 const LENS_META = {
