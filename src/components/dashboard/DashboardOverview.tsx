@@ -244,60 +244,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
             <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "#7a7590", marginBottom: "12px" }}>
               Based on your Work DNA profile
             </p>
-            {!hasTakenQuiz ? (
-              <div className="py-4">
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#b8b4a8", lineHeight: 1.6, marginBottom: "12px" }}>
-                  Complete your Work DNA profile to see which companies actually match who you are.
-                </p>
-                <Link
-                  to="/quiz"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors"
-                  style={{ color: "#f0c040" }}
-                >
-                  Take the quiz <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            ) : data?.tracked && data.tracked.length > 0 ? (
-              <div className="space-y-1.5">
-                {data.tracked.slice(0, 6).map((t: any) => {
-                  const score = t.company?.civic_footprint_score ?? 0;
-                  const matchLabel = score >= 70 ? "Strong match" : score >= 40 ? "Partial match" : "Values clash";
-                  const matchColor = score >= 70 ? "#47ffb3" : score >= 40 ? "#f0c040" : "#ff4d6d";
-                  const matchBg = score >= 70 ? "rgba(71,255,179,0.1)" : score >= 40 ? "rgba(240,192,64,0.1)" : "rgba(255,77,109,0.1)";
-                  return (
-                    <Link
-                      key={t.id}
-                      to={`/company/${t.company?.slug}`}
-                      className="flex items-center justify-between gap-2 p-2 rounded-lg transition-colors group"
-                      style={{ background: "rgba(255,255,255,0.02)" }}
-                    >
-                      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, color: "#f0ebe0" }}
-                        className="group-hover:text-primary transition-colors truncate"
-                      >
-                        {t.company?.name}
-                      </span>
-                      <span
-                        className="text-xs font-medium shrink-0 rounded-full px-2 py-0.5"
-                        style={{ background: matchBg, color: matchColor }}
-                      >
-                        {matchLabel}
-                      </span>
-                    </Link>
-                  );
-                })}
-                <Link
-                  to="/browse"
-                  className="text-xs font-medium mt-2 flex items-center gap-1 transition-colors"
-                  style={{ color: "#f0c040" }}
-                >
-                  See all aligned companies <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
-            ) : (
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#7a7590" }}>
-                Search for any employer to start tracking alignment.
-              </p>
-            )}
+            <AlignedValuesSearch hasTakenQuiz={hasTakenQuiz} />
           </BriefingCard>
         </motion.div>
       </div>
