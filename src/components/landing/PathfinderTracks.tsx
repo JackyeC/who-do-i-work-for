@@ -34,7 +34,7 @@ const tracks = [
     priceNote: "",
     period: "/mo",
     mode: "subscription" as const,
-    priceId: "price_scout_monthly", // placeholder — will be replaced with real Stripe price
+    priceId: "price_1TCdD87Qj0W6UtN9NBt8Wtb9",
     hook: "Your AI Coach.",
     description: "24/7 values-audit of any job link. Know before you apply.",
     action: "Activate AI Coach",
@@ -53,7 +53,7 @@ const tracks = [
     priceNote: "",
     period: " one-time",
     mode: "payment" as const,
-    priceId: "price_strategist_onetime", // placeholder
+    priceId: "price_1TCdDA7Qj0W6UtN9VPMXRkyY",
     hook: "The Audit.",
     description: "Deep-dive dossier for one specific interview. Walk in prepared.",
     action: "Get My Dossier",
@@ -73,7 +73,7 @@ const tracks = [
     priceNote: "",
     period: " one-time",
     mode: "payment" as const,
-    priceId: "price_partner_onetime", // placeholder
+    priceId: "price_1TCdDB7Qj0W6UtN9VEaLssdN",
     hook: "The Session.",
     description: "45-min 1-on-1 strategy session with Jackye Clayton.",
     action: "Book Your Session",
@@ -92,7 +92,7 @@ const tracks = [
     priceNote: "",
     period: "/year",
     mode: "subscription" as const,
-    priceId: "price_executive_annual", // placeholder
+    priceId: "price_1TCTiJ7Qj0W6UtN9hARvCvgh",
     hook: "The Autopilot.",
     description: "Full search management + Priority access. Your career, on cruise control.",
     action: "Go Executive",
@@ -127,18 +127,7 @@ export function PathfinderTracks() {
       return;
     }
 
-    if (track.name === "The Partner" || track.name === "The Executive") {
-      navigate("/work-with-jackye");
-      return;
-    }
-
-    if (track.name === "The Strategist") {
-      navigate("/work-with-jackye");
-      return;
-    }
-
-    if (!track.priceId || track.priceId.startsWith("price_")) {
-      // Placeholder price IDs — route to interest form
+    if (!track.priceId) {
       navigate("/work-with-jackye");
       return;
     }

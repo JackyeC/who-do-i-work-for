@@ -62,6 +62,24 @@ export const STRIPE_TIERS = {
     label: "Executive Autopilot",
     price: "$999/yr",
   },
+  scout: {
+    price_id: "price_1TCdD87Qj0W6UtN9NBt8Wtb9",
+    product_id: "prod_UAzBIZUsEKJOoC",
+    label: "Scout AI Coach",
+    price: "$19/mo",
+  },
+  strategist: {
+    price_id: "price_1TCdDA7Qj0W6UtN9VPMXRkyY",
+    product_id: "prod_UAzBBIzLrVAXLH",
+    label: "Strategist Dossier",
+    price: "$149",
+  },
+  partner: {
+    price_id: "price_1TCdDB7Qj0W6UtN9VEaLssdN",
+    product_id: "prod_UAzB5EKILjmGlq",
+    label: "Partner Strategy Session",
+    price: "$299",
+  },
 } as const;
 
 export interface PremiumFeatures {
