@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { safeSignalLabel } from "@/utils/signalTextSanitizer";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ValuesEvidenceCard } from "./ValuesEvidenceCard";
 import { InsiderScorePill } from "@/components/InsiderScorePill";
+import { usePersona } from "@/hooks/use-persona";
 import { SIGNAL_DIRECTION_CONFIG, CONFIDENCE_CONFIG } from "@/lib/valuesLenses";
 
 interface Signal {
@@ -52,6 +53,33 @@ interface Props {
 
 export function ValuesCompanyCard({ company, signals, evidence, lensLabel, hasConflict }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const { signalPriority, nepotismFlag, ctaCopy, sectionHeader } = usePersona();
+
+  // Persona-aware signal reordering
+  const sortedSignals = useMemo(() => {
+    if (!signalPriority.length) return signals;
+    const priorityLower = signalPriority.map(s => s.toLowerCase());
+    const insiderFirst = nepotismFlag === "high";
+
+    return [...signals].sort((a, b) => {
+      const labelA = (a.signal_label || a.signal_type || "").toLowerCase();
+      const labelB = (b.signal_label || b.signal_type || "").toLowerCase();
+
+      // If nepotism high, Insider Score related signals first
+      if (insiderFirst) {
+        const aInsider = labelA.includes("insider");
+        const bInsider = labelB.includes("insider");
+        if (aInsider && !bInsider) return -1;
+        if (!aInsider && bInsider) return 1;
+      }
+
+      const aIdx = priorityLower.findIndex(p => labelA.includes(p.toLowerCase().split(" ")[0]));
+      const bIdx = priorityLower.findIndex(p => labelB.includes(p.toLowerCase().split(" ")[0]));
+      const aPri = aIdx >= 0 ? aIdx : 999;
+      const bPri = bIdx >= 0 ? bIdx : 999;
+      return aPri - bPri;
+    });
+  }, [signals, signalPriority, nepotismFlag]);
 
   return (
     <motion.div
@@ -90,7 +118,7 @@ export function ValuesCompanyCard({ company, signals, evidence, lensLabel, hasCo
 
           {/* Signal items */}
           <div className="space-y-2 mb-3">
-            {signals.slice(0, expanded ? signals.length : 3).map((signal) => {
+            {sortedSignals.slice(0, expanded ? sortedSignals.length : 3).map((signal) => {
               const dirConfig = SIGNAL_DIRECTION_CONFIG[signal.signal_direction || "informational_signal"];
               const confKey = signal.confidence_level || signal.confidence || "medium";
               const confConfig = CONFIDENCE_CONFIG[confKey] || CONFIDENCE_CONFIG.medium;
@@ -167,7 +195,7 @@ export function ValuesCompanyCard({ company, signals, evidence, lensLabel, hasCo
             )}
             <Link to={`/company/${company.slug}`}>
               <Button variant="ghost" size="sm" className="gap-1 text-xs">
-                Full Company Snapshot <ExternalLink className="w-3 h-3" />
+                {ctaCopy} <ExternalLink className="w-3 h-3" />
               </Button>
             </Link>
           </div>

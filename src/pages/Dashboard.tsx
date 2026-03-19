@@ -1,5 +1,7 @@
 import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePersona } from "@/hooks/use-persona";
+import { PersonaQuizBanner } from "@/components/PersonaQuizBanner";
 import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
@@ -43,6 +45,7 @@ const TAB_TITLES: Record<string, string> = {
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
+  const { hasTakenQuiz } = usePersona();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "overview";
   const queryClient = useQueryClient();
@@ -158,6 +161,7 @@ export default function Dashboard() {
         </h1>
       </div>
       <div className="flex-1 overflow-y-auto px-6 py-6 max-w-5xl">
+        {!hasTakenQuiz && <PersonaQuizBanner />}
         {showUpsell && <PostPurchaseUpsell onDismiss={dismissUpsell} />}
         {renderContent()}
       </div>

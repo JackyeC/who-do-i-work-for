@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { CivicFootprintBadge } from "@/components/CivicFootprintBadge";
 import { InsiderScorePill } from "@/components/InsiderScorePill";
+import { usePersona } from "@/hooks/use-persona";
 import { formatCurrency, type Company } from "@/data/sampleData";
 import { Building2, ArrowRight } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface CompanyCardProps {
 }
 
 export function CompanyCard({ company }: CompanyCardProps) {
+  const { ctaCopy } = usePersona();
   return (
     <Link to={`/company/${company.id}`}>
       <Card className="group hover:shadow-elevated transition-all duration-200 hover:border-primary/15 cursor-pointer h-full">
@@ -41,7 +43,7 @@ export function CompanyCard({ company }: CompanyCardProps) {
                   ? `PAC: ${formatCurrency(company.totalPacSpending)}`
                   : "No PAC spending"}
               </span>
-              <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">View profile →</span>
+              <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">{ctaCopy} →</span>
             </div>
           </div>
         </CardContent>
