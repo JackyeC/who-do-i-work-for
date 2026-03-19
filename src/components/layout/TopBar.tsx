@@ -435,10 +435,10 @@ export function TopBar() {
             onClick={() => { setMobileMenuOpen(false); handleMyIntelligence(); }}
             className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
           >
-            My Intelligence
+            My Intel
           </button>
           <Link to="/signal-alerts" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
-            Live Signals
+            Signals
           </Link>
           {user ? (
             <Link to="/career-intelligence" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
