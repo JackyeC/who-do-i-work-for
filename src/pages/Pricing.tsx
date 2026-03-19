@@ -1,19 +1,51 @@
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { Helmet } from "react-helmet-async";
-import { Check, Shield, Target, Eye, ArrowRight } from "lucide-react";
+import { Check, Shield, Target, Eye, ArrowRight, Search, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const tiers = [
   {
-    name: "Candidate",
-    price: "Free",
-    period: "",
-    icon: <Eye className="w-5 h-5" style={{ color: "#f0c040" }} />,
+    name: "Free",
+    price: "$0",
+    period: "/month",
+    icon: <Search className="w-5 h-5" style={{ color: "#f0c040" }} />,
     popular: false,
+    cta: "Start Free",
+    ctaLink: "/join",
     features: [
       "Look up any company's integrity score",
       "See red flags before you apply",
-      "Get matched to values-aligned roles",
+      "Limited to 3 lookups/month",
+    ],
+  },
+  {
+    name: "Job Seeker",
+    price: "$29",
+    period: "/month",
+    icon: <Eye className="w-5 h-5" style={{ color: "#f0c040" }} />,
+    popular: false,
+    cta: "Join Waitlist",
+    ctaLink: "/hire",
+    features: [
+      "Auto-apply to up to 10 jobs per month",
+      "Full dossier for every application: company intel, who's there, how to prepare, questions to ask, custom cover letter",
+      "Only applies to companies that pass YOUR integrity threshold",
+      "Weekly status updates on all applications",
+    ],
+  },
+  {
+    name: "Active Seeker",
+    price: "$79",
+    period: "/month",
+    icon: <Zap className="w-5 h-5" style={{ color: "#f0c040" }} />,
+    popular: true,
+    cta: "Join Waitlist",
+    ctaLink: "/hire",
+    features: [
+      "Everything in Job Seeker",
+      "Up to 50 auto-applications per month",
+      "Priority matching to new roles within 24hrs of posting",
+      "Interview prep notes updated as you progress",
     ],
   },
   {
@@ -21,7 +53,9 @@ const tiers = [
     price: "$79",
     period: "/month",
     icon: <Target className="w-5 h-5" style={{ color: "#f0c040" }} />,
-    popular: true,
+    popular: false,
+    cta: "Join Waitlist",
+    ctaLink: "/hire",
     features: [
       "AI-powered value alignment matching",
       "Company integrity pre-screening on every job",
@@ -35,6 +69,8 @@ const tiers = [
     period: "/month",
     icon: <Shield className="w-5 h-5" style={{ color: "#f0c040" }} />,
     popular: false,
+    cta: "Join Waitlist",
+    ctaLink: "/hire",
     features: [
       "Full company integrity audit",
       "Verified badge on all job postings",
