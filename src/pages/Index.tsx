@@ -107,7 +107,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       ══════════════════════════════════════════════════════════════════ */}
       <section
         className="relative flex flex-col items-center justify-center px-6 text-center"
-        style={{ minHeight: "100vh", background: "#0d0c0f" }}
+        style={{ minHeight: "100vh", background: "#0a0a0e" }}
       >
         {/* Grain overlay */}
         <svg className="fixed inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0, opacity: 0.04 }}>
