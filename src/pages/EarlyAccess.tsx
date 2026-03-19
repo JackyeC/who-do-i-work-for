@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSEO } from "@/hooks/use-page-seo";
 
-const LAUNCH_DATE = new Date("2025-04-06");
-const IS_LAUNCHED = new Date() >= LAUNCH_DATE;
+// Launch date removed — /join page always shows the signup form
 const BASE_COUNT = 312;
 
 const PERSONAS = [
