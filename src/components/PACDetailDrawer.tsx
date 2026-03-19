@@ -20,9 +20,10 @@ interface PACDetailDrawerProps {
   companyName: string;
   totalPACSpending: number;
   corporatePACExists: boolean;
+  onExecutiveClick?: (exec: any) => void;
 }
 
-export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, totalPACSpending, corporatePACExists }: PACDetailDrawerProps) {
+export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, totalPACSpending, corporatePACExists, onExecutiveClick }: PACDetailDrawerProps) {
   const [fetchingFEC, setFetchingFEC] = useState(false);
   const [fecError, setFecError] = useState<string | null>(null);
   const queryClient = useQueryClient();
