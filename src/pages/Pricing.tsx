@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { CreditPurchaseCard } from "@/components/CreditPurchaseCard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -89,6 +90,12 @@ const tiers = [
 ];
 
 export default function Pricing() {
+  usePageSEO({
+    title: "Pricing — Career Intelligence Plans",
+    description: "Choose your career intelligence plan. Free, Pro, and Enterprise tiers with offer analysis, employer tracking, and AI-powered career strategy.",
+    path: "/pricing",
+  });
+
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);

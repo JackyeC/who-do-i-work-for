@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import ForceGraph2D, { type ForceGraphMethods } from "react-force-graph-2d";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -835,6 +836,12 @@ const SAMPLE_LINKS: GraphLink[] = [
 // ─── Main Component ───
 
 export default function FollowTheMoney() {
+  usePageSEO({
+    title: "Follow the Money — Corporate Political Influence Map",
+    description: "Interactive influence graph showing corporate PAC donations, lobbying, dark money channels, and revolving door connections to Congress.",
+    path: "/follow-the-money",
+  });
+
   const navigate = useNavigate();
   const graphRef = useRef<ForceGraphMethods>();
   const containerRef = useRef<HTMLDivElement>(null);

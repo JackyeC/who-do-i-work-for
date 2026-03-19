@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,12 @@ function rankBadge(rank: number) {
 }
 
 export default function Rankings() {
+  usePageSEO({
+    title: "Employer Rankings — Civic Footprint Leaderboard",
+    description: "See how companies rank on transparency, governance, stability, and civic footprint. Evidence-based employer rankings from public records.",
+    path: "/rankings",
+  });
+
   const [category, setCategory] = useState<RankingCategory>("overall");
   const [industry, setIndustry] = useState<string>("all");
 

@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, ClipboardCheck, Building2, Share2, Bookmark,
@@ -104,6 +105,12 @@ function OfferCheckSnapshotBlock({ company, sections: reportSections }: { compan
 export default function OfferCheck() {
   const { companyId } = useParams<{ companyId: string }>();
   const navigate = useNavigate();
+
+  usePageSEO({
+    title: "Offer Check — Employer Intelligence Report",
+    description: "Get a comprehensive employer intelligence report before you accept. Leadership stability, layoff history, PAC spending, and career signals.",
+    path: companyId ? `/check/${companyId}` : "/check",
+  });
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();

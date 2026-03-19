@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -90,6 +91,12 @@ const SAMPLE_BILLS = [
 const ISSUE_AREAS = ["All", "Labor Rights", "Climate", "Healthcare", "Consumer Protection", "Immigration", "Civil Rights"];
 
 export default function PolicyHub() {
+  usePageSEO({
+    title: "Policy Intelligence — How Legislation Shapes Careers",
+    description: "Track federal bills and regulations that affect companies, industries, and careers. See workforce impact, affected employers, and career signals.",
+    path: "/policy",
+  });
+
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [selectedIssue, setSelectedIssue] = useState("All");

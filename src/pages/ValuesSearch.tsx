@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { Search, Sparkles, Info, HelpCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,12 @@ const LENS_TO_ISSUE: Record<string, string> = {
 };
 
 export default function ValuesSearch() {
+  usePageSEO({
+    title: "Values Search — Find Employers Aligned with Your Values",
+    description: "Search companies by values: climate action, racial equity, labor rights, LGBTQ+ inclusion, and more. Evidence-based employer alignment signals.",
+    path: "/values-search",
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedLens = searchParams.get("lens") as ValuesLensKey | null;
   const legacyIssue = searchParams.get("issue");

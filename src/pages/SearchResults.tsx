@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { Search, Loader2, Sparkles, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,13 @@ export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const intent = searchParams.get("intent") || "";
+
+  usePageSEO({
+    title: initialQuery ? `Search: ${initialQuery} — Company Results` : "Search Companies",
+    description: `Search employer intelligence database for "${initialQuery}". View civic footprint scores, PAC spending, and career signals.`,
+    path: "/search",
+  });
+
   const [query, setQuery] = useState(initialQuery);
   const [isDiscovering, setIsDiscovering] = useState(false);
   const navigate = useNavigate();

@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { Header } from "@/components/Header";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -105,6 +106,12 @@ const DASHBOARD_SECTIONS = [
 ];
 
 export default function StrategicOfferReview() {
+  usePageSEO({
+    title: "Strategic Offer Review — AI-Powered Offer Analysis",
+    description: "Upload your offer letter for comprehensive AI analysis: compensation benchmarking, red flag detection, equity evaluation, and negotiation strategies.",
+    path: "/strategic-offer-review",
+  });
+
   const { toast } = useToast();
   const { user } = useAuth();
   const [inputMode, setInputMode] = useState<InputMode>(null);

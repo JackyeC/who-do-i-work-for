@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -93,6 +94,12 @@ function AutoApplyGated() {
 }
 
 export default function Jobs() {
+  usePageSEO({
+    title: "Jobs — Values-Aligned Job Listings",
+    description: "Browse job listings with employer transparency signals, company intelligence, and values alignment data. Know before you apply.",
+    path: "/jobs",
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
   const [search, setSearch] = useState("");

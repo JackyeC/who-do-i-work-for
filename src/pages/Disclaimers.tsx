@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { usePageSEO } from "@/hooks/use-page-seo";
 import { ShieldAlert, Bot, Database, UserCheck, Scale, FileText, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -41,7 +42,14 @@ const sections = [
   },
 ];
 
-const Disclaimers = () => (
+const Disclaimers = () => {
+  usePageSEO({
+    title: "Disclaimers & Legal Notices",
+    description: "Legal disclaimers for Who Do I Work For? including educational disclaimer, AI analysis notices, data sources, and limitations.",
+    path: "/disclaimers",
+  });
+
+  return (
   <div className="min-h-screen flex flex-col bg-background">
     <Header />
     <main className="flex-1 max-w-3xl mx-auto px-4 py-16">
@@ -78,6 +86,7 @@ const Disclaimers = () => (
     </main>
     <Footer />
   </div>
-);
+  );
+};
 
 export default Disclaimers;
