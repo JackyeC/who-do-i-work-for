@@ -133,6 +133,8 @@ export function TopBar() {
     <>
       {/* Intelligence Ticker — fixed at top, 36px */}
       <IntelligenceTicker />
+      {/* Spacer for fixed ticker */}
+      <div className="h-[36px]" />
 
       {/* Header */}
       <header className="sticky top-0 z-50 border-b h-[64px] flex items-center px-4 lg:px-6" style={{ background: 'rgba(10,10,14,0.92)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.06)' }}>
