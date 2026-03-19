@@ -130,4 +130,6 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.skill-gap-gigs]
+
+[functions.fec-pac-recipients]
 verify_jwt = false
