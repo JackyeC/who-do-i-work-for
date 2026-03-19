@@ -27,12 +27,15 @@ const stagger = {
   item: { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" as const } } },
 };
 
+const PAGE_SIZE = 50;
+
 export default function Browse() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"name" | "score" | "cis">("score");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDiscovering, setIsDiscovering] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -76,6 +79,7 @@ export default function Browse() {
   const CATEGORY_FILTERS = ["HR Tech", "Big Tech", "Finance", "Defense", "Government Contractors", "Startups", "Healthcare", "Energy", "Retail"];
 
   const filtered = useMemo(() => {
+    setVisibleCount(PAGE_SIZE);
     let list = allCompanies;
     if (selectedIndustry !== "all") list = list.filter((c) => c.industry === selectedIndustry);
     if (selectedCategory !== "all") {
@@ -95,6 +99,9 @@ export default function Browse() {
       return a.name.localeCompare(b.name);
     });
   }, [allCompanies, selectedIndustry, selectedCategory, sortBy, searchQuery]);
+
+  const visibleCompanies = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
 
   return (
     <div className="flex-1">
@@ -272,7 +279,7 @@ export default function Browse() {
             animate="show"
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"
           >
-            {filtered.map((company) => (
+            {visibleCompanies.map((company) => (
               <motion.div key={company.slug} variants={stagger.item}>
                 <Link to={`/company/${company.slug}`}>
                   <Card className="group hover:shadow-md transition-all duration-150 hover:border-primary/20 cursor-pointer h-full border-border/40">
@@ -300,6 +307,22 @@ export default function Browse() {
               </motion.div>
             ))}
           </motion.div>
+        )}
+
+        {/* Show More */}
+        {hasMore && !isLoading && (
+          <div className="text-center mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+              className="gap-2"
+            >
+              Show More
+              <span className="text-xs text-muted-foreground">
+                ({visibleCount} of {filtered.length})
+              </span>
+            </Button>
+          </div>
         )}
       </div>
       </TabsContent>
