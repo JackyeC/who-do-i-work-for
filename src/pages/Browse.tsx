@@ -27,11 +27,15 @@ const stagger = {
   item: { hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" as const } } },
 };
 
+const PAGE_SIZE = 50;
+
 export default function Browse() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"name" | "score" | "cis">("score");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDiscovering, setIsDiscovering] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [isDiscovering, setIsDiscovering] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
