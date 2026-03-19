@@ -254,7 +254,7 @@ export default function CompanyProfile() {
   const subsidies = dbCompany?.subsidies_received ?? company?.subsidiesReceived ?? 0;
 
   // Recruiter integrity check
-  const { data: integrityResult, isLoading: integrityLoading } = useCompanyIntegrity(name || undefined, id);
+  // integrityResult & integrityLoading already declared above early returns
   const recordStatus = (dbCompany as any)?.record_status || "verified";
   const statusInfo = STATUS_LABELS[recordStatus] || STATUS_LABELS.verified;
   const isDiscovering = isResearching;
