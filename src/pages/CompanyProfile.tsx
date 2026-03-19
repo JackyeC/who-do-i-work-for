@@ -248,6 +248,9 @@ export default function CompanyProfile() {
   const lobbyingSpend = dbCompany?.lobbying_spend ?? company?.lobbyingSpend ?? 0;
   const govContracts = dbCompany?.government_contracts ?? company?.governmentContracts ?? 0;
   const subsidies = dbCompany?.subsidies_received ?? company?.subsidiesReceived ?? 0;
+
+  // Recruiter integrity check
+  const { data: integrityResult, isLoading: integrityLoading } = useCompanyIntegrity(name || undefined);
   const recordStatus = (dbCompany as any)?.record_status || "verified";
   const statusInfo = STATUS_LABELS[recordStatus] || STATUS_LABELS.verified;
   const isDiscovering = isResearching;
