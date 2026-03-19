@@ -172,20 +172,18 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 <div className="flex flex-col items-center">
                   <button
                     onClick={() => navigate(hasPersona ? "/dashboard" : "/quiz")}
+                    className="hover-btn"
                     style={{
                       fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "15px",
+                      fontSize: "16px",
                       fontWeight: 600,
                       background: "#f0c040",
                       color: "#0d0c0f",
-                      padding: "15px 40px",
+                      padding: "16px 44px",
                       borderRadius: "50px",
                       border: "none",
                       cursor: "pointer",
-                      transition: "opacity 0.2s, transform 0.2s",
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.opacity = "0.88"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateY(0)"; }}
                   >
                     {hasPersona ? "Continue to my intelligence →" : "Start your audit →"}
                   </button>
