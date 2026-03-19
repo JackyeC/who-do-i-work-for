@@ -1,19 +1,51 @@
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { Helmet } from "react-helmet-async";
-import { Check, Shield, Target, Eye, ArrowRight } from "lucide-react";
+import { Check, Shield, Target, Eye, ArrowRight, Search, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const tiers = [
   {
-    name: "Candidate",
-    price: "Free",
-    period: "",
-    icon: <Eye className="w-5 h-5" style={{ color: "#f0c040" }} />,
+    name: "Free",
+    price: "$0",
+    period: "/month",
+    icon: <Search className="w-5 h-5" style={{ color: "#f0c040" }} />,
     popular: false,
+    cta: "Start Free",
+    ctaLink: "/join",
     features: [
       "Look up any company's integrity score",
       "See red flags before you apply",
-      "Get matched to values-aligned roles",
+      "Limited to 3 lookups/month",
+    ],
+  },
+  {
+    name: "Job Seeker",
+    price: "$29",
+    period: "/month",
+    icon: <Eye className="w-5 h-5" style={{ color: "#f0c040" }} />,
+    popular: false,
+    cta: "Join Waitlist",
+    ctaLink: "/hire",
+    features: [
+      "Auto-apply to up to 10 jobs per month",
+      "Full dossier for every application: company intel, who's there, how to prepare, questions to ask, custom cover letter",
+      "Only applies to companies that pass YOUR integrity threshold",
+      "Weekly status updates on all applications",
+    ],
+  },
+  {
+    name: "Active Seeker",
+    price: "$79",
+    period: "/month",
+    icon: <Zap className="w-5 h-5" style={{ color: "#f0c040" }} />,
+    popular: true,
+    cta: "Join Waitlist",
+    ctaLink: "/hire",
+    features: [
+      "Everything in Job Seeker",
+      "Up to 50 auto-applications per month",
+      "Priority matching to new roles within 24hrs of posting",
+      "Interview prep notes updated as you progress",
     ],
   },
   {
@@ -21,7 +53,9 @@ const tiers = [
     price: "$79",
     period: "/month",
     icon: <Target className="w-5 h-5" style={{ color: "#f0c040" }} />,
-    popular: true,
+    popular: false,
+    cta: "Join Waitlist",
+    ctaLink: "/hire",
     features: [
       "AI-powered value alignment matching",
       "Company integrity pre-screening on every job",
@@ -35,6 +69,8 @@ const tiers = [
     period: "/month",
     icon: <Shield className="w-5 h-5" style={{ color: "#f0c040" }} />,
     popular: false,
+    cta: "Join Waitlist",
+    ctaLink: "/hire",
     features: [
       "Full company integrity audit",
       "Verified badge on all job postings",
@@ -60,7 +96,9 @@ export default function Pricing() {
       mainEntity: {
         "@type": "ItemList",
         itemListElement: [
-          { "@type": "Offer", name: "Candidate", price: "0", priceCurrency: "USD" },
+          { "@type": "Offer", name: "Free", price: "0", priceCurrency: "USD" },
+          { "@type": "Offer", name: "Job Seeker", price: "29", priceCurrency: "USD" },
+          { "@type": "Offer", name: "Active Seeker", price: "79", priceCurrency: "USD" },
           { "@type": "Offer", name: "Recruiter", price: "79", priceCurrency: "USD" },
           { "@type": "Offer", name: "Employer Verified", price: "349", priceCurrency: "USD" },
         ],
@@ -108,91 +146,23 @@ export default function Pricing() {
           Whether you're a candidate, recruiter, or employer — pick the plan that matches how you hire.
         </p>
 
-        {/* Tier Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[960px] w-full">
-          {tiers.map((tier) => (
-            <div
-              key={tier.name}
-              className="rounded-2xl p-7 flex flex-col relative"
-              style={{
-                background: tier.popular
-                  ? "rgba(240,192,64,0.04)"
-                  : "rgba(255,255,255,0.02)",
-                border: tier.popular
-                  ? "1px solid rgba(240,192,64,0.25)"
-                  : "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              {tier.popular && (
-                <span
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-semibold uppercase tracking-[2px] px-4 py-1 rounded-full"
-                  style={{
-                    background: "#f0c040",
-                    color: "#0a0a0e",
-                  }}
-                >
-                  Most Popular
-                </span>
-              )}
+        {/* Candidate Tiers */}
+        <p className="text-xs uppercase tracking-[3px] font-semibold mb-5" style={{ color: "#f0c040" }}>
+          For Candidates
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[960px] w-full mb-12">
+          {tiers.slice(0, 3).map((tier) => (
+            <TierCard key={tier.name} tier={tier} navigate={navigate} />
+          ))}
+        </div>
 
-              {/* Icon */}
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center mb-5"
-                style={{ background: "rgba(240,192,64,0.10)" }}
-              >
-                {tier.icon}
-              </div>
-
-              {/* Name + Price */}
-              <h3
-                className="font-sans font-bold mb-1"
-                style={{ fontSize: "18px", color: "#f0ebe0" }}
-              >
-                {tier.name}
-              </h3>
-              <div className="flex items-baseline gap-1 mb-6">
-                <span
-                  className="font-sans"
-                  style={{ fontSize: "36px", fontWeight: 800, color: "#f0ebe0", letterSpacing: "-2px" }}
-                >
-                  {tier.price}
-                </span>
-                {tier.period && (
-                  <span style={{ fontSize: "14px", color: "#7a7590" }}>
-                    {tier.period}
-                  </span>
-                )}
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-3 flex-1 mb-8">
-                {tier.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2.5">
-                    <Check
-                      className="w-4 h-4 shrink-0 mt-0.5"
-                      style={{ color: "#f0c040" }}
-                    />
-                    <span style={{ fontSize: "14px", color: "#b8b4a8", lineHeight: 1.5 }}>
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
-              <button
-                onClick={() => navigate("/hire")}
-                className="w-full h-12 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
-                style={{
-                  background: tier.popular ? "#f0c040" : "rgba(255,255,255,0.06)",
-                  color: tier.popular ? "#0a0a0e" : "#f0ebe0",
-                  border: tier.popular ? "none" : "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
-                Join Waitlist
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+        {/* Employer / Recruiter Tiers */}
+        <p className="text-xs uppercase tracking-[3px] font-semibold mb-5" style={{ color: "#f0c040" }}>
+          For Recruiters & Employers
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[640px] w-full">
+          {tiers.slice(3).map((tier) => (
+            <TierCard key={tier.name} tier={tier} navigate={navigate} />
           ))}
         </div>
 
@@ -204,6 +174,55 @@ export default function Pricing() {
           All plans include access to verified federal data sources. No long-term contracts.
         </p>
       </div>
+    </div>
+  );
+}
+
+function TierCard({ tier, navigate }: { tier: typeof tiers[number]; navigate: (path: string) => void }) {
+  return (
+    <div
+      className="rounded-2xl p-7 flex flex-col relative"
+      style={{
+        background: tier.popular ? "rgba(240,192,64,0.04)" : "rgba(255,255,255,0.02)",
+        border: tier.popular ? "1px solid rgba(240,192,64,0.25)" : "1px solid rgba(255,255,255,0.08)",
+      }}
+    >
+      {tier.popular && (
+        <span
+          className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-semibold uppercase tracking-[2px] px-4 py-1 rounded-full"
+          style={{ background: "#f0c040", color: "#0a0a0e" }}
+        >
+          Most Popular
+        </span>
+      )}
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(240,192,64,0.10)" }}>
+        {tier.icon}
+      </div>
+      <h3 className="font-sans font-bold mb-1" style={{ fontSize: "18px", color: "#f0ebe0" }}>{tier.name}</h3>
+      <div className="flex items-baseline gap-1 mb-6">
+        <span className="font-sans" style={{ fontSize: "36px", fontWeight: 800, color: "#f0ebe0", letterSpacing: "-2px" }}>{tier.price}</span>
+        {tier.period && <span style={{ fontSize: "14px", color: "#7a7590" }}>{tier.period}</span>}
+      </div>
+      <ul className="space-y-3 flex-1 mb-8">
+        {tier.features.map((feature) => (
+          <li key={feature} className="flex items-start gap-2.5">
+            <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#f0c040" }} />
+            <span style={{ fontSize: "14px", color: "#b8b4a8", lineHeight: 1.5 }}>{feature}</span>
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={() => navigate(tier.ctaLink)}
+        className="w-full h-12 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
+        style={{
+          background: tier.popular ? "#f0c040" : "rgba(255,255,255,0.06)",
+          color: tier.popular ? "#0a0a0e" : "#f0ebe0",
+          border: tier.popular ? "none" : "1px solid rgba(255,255,255,0.1)",
+        }}
+      >
+        {tier.cta}
+        <ArrowRight className="w-4 h-4" />
+      </button>
     </div>
   );
 }
