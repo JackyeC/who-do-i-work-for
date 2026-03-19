@@ -186,7 +186,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                       fontSize: "16px",
                       fontWeight: 600,
                       background: "#f0c040",
-                      color: "#0d0c0f",
+                      color: "#0a0a0e",
                       padding: "16px 44px",
                       borderRadius: "50px",
                       border: "none",
