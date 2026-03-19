@@ -141,13 +141,17 @@ serve(async (req) => {
     let dataSource = "ai_inference";
 
     if (CONGRESS_API_KEY) {
-      const legislators = await getLegislators();
-      const bioguideId = resolveBioguideId(legislators, candidate_name, state);
+      try {
+        const legislators = await getLegislators();
+        const bioguideId = resolveBioguideId(legislators, candidate_name, state);
 
-      if (bioguideId) {
-        console.log(`[voting-summary] Found bioguide: ${bioguideId}`);
-        congressData = await fetchCongressData(bioguideId, CONGRESS_API_KEY);
-        if (congressData) dataSource = "congress.gov";
+        if (bioguideId) {
+          console.log(`[voting-summary] Found bioguide: ${bioguideId}`);
+          congressData = await fetchCongressData(bioguideId, CONGRESS_API_KEY);
+          if (congressData) dataSource = "congress.gov";
+        }
+      } catch (err: any) {
+        console.warn("[voting-summary] Congress data lookup failed, falling back to AI inference:", err.message);
       }
     }
 
