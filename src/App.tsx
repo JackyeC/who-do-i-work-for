@@ -155,9 +155,9 @@ const App = () => (
                   <Route path="/policy/:id" element={<PolicyDetail />} />
                   <Route path="/economy" element={<EconomyDashboard />} />
                   <Route path="/follow-the-money" element={<FollowTheMoney />} />
-                  <Route path="/company/:id" element={<CompanyProfile />} />
-                  <Route path="/company/:id/influence" element={<InfluenceGraph />} />
-                  <Route path="/dossier/:id" element={<CompanyDossier />} />
+                  <Route path="/company/:id" element={<ProtectedRoute><CompanyProfile /></ProtectedRoute>} />
+                  <Route path="/company/:id/influence" element={<ProtectedRoute><InfluenceGraph /></ProtectedRoute>} />
+                  <Route path="/dossier/:id" element={<ProtectedRoute><CompanyDossier /></ProtectedRoute>} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/search" element={<SearchResults />} />
                   <Route path="/browse" element={<Browse />} />
