@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { HeroSearch } from "@/components/landing/HeroSearch";
 import { PathfinderTracks } from "@/components/landing/PathfinderTracks";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 const LiveIntelligenceTicker = lazy(() => import("@/components/landing/LiveIntelligenceTicker").then(m => ({ default: m.LiveIntelligenceTicker })));
 const SocialProofStrip = lazy(() => import("@/components/landing/SocialProofStrip").then(m => ({ default: m.SocialProofStrip })));
