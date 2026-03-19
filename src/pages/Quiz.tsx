@@ -616,7 +616,7 @@ export default function Quiz() {
                   disabled={!canAdvance}
                   style={{
                     background: canAdvance ? "#f0c040" : "rgba(240,192,64,0.25)",
-                    color: "#0d0c0f",
+                    color: "#0a0a0e",
                     borderRadius: 50,
                     padding: "14px 36px",
                     fontSize: 14,
