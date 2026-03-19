@@ -104,13 +104,9 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
   const signals = scanData?.signals;
   const hasData = displayTotal > 0 || displayClusters.length > 0;
 
-  if (!scanTriggered && !hasData) {
+  if (!hasData && !isLoading && !error) {
     return (
-      <IntelligenceEmptyState category="patents" state="before">
-        <Button variant="outline" size="sm" onClick={() => setScanTriggered(true)} className="gap-2">
-          <Search className="w-4 h-4" /> Check what they're actually building
-        </Button>
-      </IntelligenceEmptyState>
+      <IntelligenceEmptyState category="patents" state="after" />
     );
   }
 
