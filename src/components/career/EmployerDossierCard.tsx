@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { ConfidenceBadge, scoreToConfidence } from "@/components/ConfidenceBadge";
+import { InsiderScorePill } from "@/components/InsiderScorePill";
 import type { CompanyResult } from "./EmployerDossierSearch";
 
 function getRiskLevel(company: CompanyResult) {
