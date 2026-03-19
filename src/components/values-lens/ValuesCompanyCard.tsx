@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ValuesEvidenceCard } from "./ValuesEvidenceCard";
+import { InsiderScorePill } from "@/components/InsiderScorePill";
 import { SIGNAL_DIRECTION_CONFIG, CONFIDENCE_CONFIG } from "@/lib/valuesLenses";
 
 interface Signal {
