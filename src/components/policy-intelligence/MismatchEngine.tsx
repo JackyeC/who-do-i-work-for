@@ -40,11 +40,7 @@ export function MismatchEngine({ stances, darkMoney, tradeAssociations, companyN
   const sortedStances = [...conflicts, ...mixed, ...aligned];
 
   if (sortedStances.length === 0 && darkMoney.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground text-sm">
-        No public stance or spending data available for mismatch analysis.
-      </div>
-    );
+    return <IntelligenceEmptyState category="mismatch" state="after" />;
   }
 
   return (

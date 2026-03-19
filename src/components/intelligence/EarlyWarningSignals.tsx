@@ -152,7 +152,7 @@ export function EarlyWarningSignals({ companyId, companyName }: Props) {
     label: "Compensation Position",
     icon: DollarSign,
     status: "no_data",
-    detail: "Compare offered salaries against BLS benchmarks using Offer Check",
+    detail: "We checked public pay disclosures — no indexed compensation data found. Use Offer Check to compare against BLS benchmarks.",
     source: "BLS OES, company postings",
   });
 

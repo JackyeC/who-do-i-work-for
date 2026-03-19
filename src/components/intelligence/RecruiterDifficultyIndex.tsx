@@ -162,7 +162,7 @@ export function RecruiterDifficultyIndex({ companyId, companyName }: Props) {
     : warnCount > 0 ? 6 : 5;
   signals.push({
     label: "Talent Brand",
-    value: warnCount > 0 ? `${warnCount} WARN notice${warnCount !== 1 ? "s" : ""}` : totalSentiment ? `${positiveSentiment}/${totalSentiment} positive` : "No data",
+    value: warnCount > 0 ? `${warnCount} WARN notice${warnCount !== 1 ? "s" : ""}` : totalSentiment ? `${positiveSentiment}/${totalSentiment} positive` : "Limited data",
     severity: getSeverity(brandScore),
     icon: ThumbsUp,
     weight: 0.25,

@@ -250,12 +250,7 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
 
       {/* No results after scan */}
       {scanTriggered && !isLoading && displayTotal === 0 && (
-        <div className="text-center py-6 rounded-lg bg-muted/20">
-          <Lightbulb className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
-          <p className="text-caption text-muted-foreground">
-            No patents found for {companyName}.
-          </p>
-        </div>
+        <IntelligenceEmptyState category="patents" state="after" />
       )}
     </div>
   );
