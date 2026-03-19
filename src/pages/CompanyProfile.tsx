@@ -20,6 +20,8 @@ import { ValuesSignalMatch } from "@/components/company/ValuesSignalMatch";
 import { RealityGapBlock } from "@/components/company/RealityGapBlock";
 import { DecisionCheckpointBeforeSign } from "@/components/company/DecisionCheckpointBeforeSign";
 import { InnovationSignals } from "@/components/company/InnovationSignals";
+import { RecruiterIntegrityCard, RecruiterIntegrityCardSkeleton } from "@/components/company/RecruiterIntegrityCard";
+import { useCompanyIntegrity } from "@/hooks/use-company-integrity";
 import { LeadershipInfluenceSection } from "@/components/company/LeadershipInfluenceSection";
 import { WhatToWatch } from "@/components/company/WhatToWatch";
 import { WhatToAsk } from "@/components/company/WhatToAsk";
