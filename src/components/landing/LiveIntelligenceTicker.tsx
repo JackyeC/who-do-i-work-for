@@ -53,22 +53,22 @@ export function LiveIntelligenceTicker() {
   ];
 
   return (
-    <div className="bg-primary text-primary-foreground overflow-hidden whitespace-nowrap h-[28px] flex items-center border-b border-primary/80">
-      <div className="flex items-center gap-2 px-3 shrink-0 border-r border-primary-foreground/20">
-        <Radio className="w-3 h-3 animate-pulse" />
-        <span className="font-mono text-[9px] font-bold tracking-widest uppercase">LIVE</span>
+    <div className="bg-background overflow-hidden whitespace-nowrap h-[36px] flex items-center" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+      <div className="flex items-center gap-2 px-3 shrink-0" style={{ borderRight: '1px solid rgba(255,255,255,0.1)' }}>
+        <Radio className="w-3 h-3 animate-pulse text-primary" />
+        <span className="font-sans text-eyebrow">LIVE</span>
       </div>
       <div className="inline-block animate-ticker">
         {tickerItems.map((t, i) => (
           <span key={i} className="px-8">
-            <span className="font-mono text-[10px] font-medium tracking-wider">{t}</span>
-            <span className="opacity-40 px-4">|</span>
+            <span className="font-sans text-ticker">{t}</span>
+            <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
           </span>
         ))}
         {tickerItems.slice(0, 3).map((t, i) => (
           <span key={`dup-${i}`} className="px-8">
-            <span className="font-mono text-[10px] font-medium tracking-wider">{t}</span>
-            <span className="opacity-40 px-4">|</span>
+            <span className="font-sans text-ticker">{t}</span>
+            <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
           </span>
         ))}
       </div>
