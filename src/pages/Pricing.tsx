@@ -177,3 +177,52 @@ export default function Pricing() {
     </div>
   );
 }
+
+function TierCard({ tier, navigate }: { tier: typeof tiers[number]; navigate: (path: string) => void }) {
+  return (
+    <div
+      className="rounded-2xl p-7 flex flex-col relative"
+      style={{
+        background: tier.popular ? "rgba(240,192,64,0.04)" : "rgba(255,255,255,0.02)",
+        border: tier.popular ? "1px solid rgba(240,192,64,0.25)" : "1px solid rgba(255,255,255,0.08)",
+      }}
+    >
+      {tier.popular && (
+        <span
+          className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-semibold uppercase tracking-[2px] px-4 py-1 rounded-full"
+          style={{ background: "#f0c040", color: "#0a0a0e" }}
+        >
+          Most Popular
+        </span>
+      )}
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{ background: "rgba(240,192,64,0.10)" }}>
+        {tier.icon}
+      </div>
+      <h3 className="font-sans font-bold mb-1" style={{ fontSize: "18px", color: "#f0ebe0" }}>{tier.name}</h3>
+      <div className="flex items-baseline gap-1 mb-6">
+        <span className="font-sans" style={{ fontSize: "36px", fontWeight: 800, color: "#f0ebe0", letterSpacing: "-2px" }}>{tier.price}</span>
+        {tier.period && <span style={{ fontSize: "14px", color: "#7a7590" }}>{tier.period}</span>}
+      </div>
+      <ul className="space-y-3 flex-1 mb-8">
+        {tier.features.map((feature) => (
+          <li key={feature} className="flex items-start gap-2.5">
+            <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#f0c040" }} />
+            <span style={{ fontSize: "14px", color: "#b8b4a8", lineHeight: 1.5 }}>{feature}</span>
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={() => navigate(tier.ctaLink)}
+        className="w-full h-12 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
+        style={{
+          background: tier.popular ? "#f0c040" : "rgba(255,255,255,0.06)",
+          color: tier.popular ? "#0a0a0e" : "#f0ebe0",
+          border: tier.popular ? "none" : "1px solid rgba(255,255,255,0.1)",
+        }}
+      >
+        {tier.cta}
+        <ArrowRight className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
