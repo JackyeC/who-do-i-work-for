@@ -79,6 +79,7 @@ export default function Browse() {
   const CATEGORY_FILTERS = ["HR Tech", "Big Tech", "Finance", "Defense", "Government Contractors", "Startups", "Healthcare", "Energy", "Retail"];
 
   const filtered = useMemo(() => {
+    setVisibleCount(PAGE_SIZE);
     let list = allCompanies;
     if (selectedIndustry !== "all") list = list.filter((c) => c.industry === selectedIndustry);
     if (selectedCategory !== "all") {
@@ -98,6 +99,9 @@ export default function Browse() {
       return a.name.localeCompare(b.name);
     });
   }, [allCompanies, selectedIndustry, selectedCategory, sortBy, searchQuery]);
+
+  const visibleCompanies = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
 
   return (
     <div className="flex-1">
