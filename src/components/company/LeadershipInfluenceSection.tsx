@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Users, User, Briefcase, DollarSign, ArrowRightLeft,
-  EyeOff, Shield, ChevronRight, Vote
+  EyeOff, Shield, ChevronRight, Vote, Flag
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatCurrency } from "@/data/sampleData";
