@@ -552,7 +552,7 @@ export default function Quiz() {
               {/* Question text */}
               <h2
                 style={{
-                  fontFamily: "'Playfair Display', serif",
+                  fontFamily: "'DM Sans', sans-serif",
                   fontWeight: 600,
                   fontSize: "clamp(24px, 4vw, 36px)",
                   color: "#f0ebe0",
@@ -771,7 +771,7 @@ function SliderInput({
       <p
         className="text-center mt-6"
         style={{
-          fontFamily: "'Playfair Display', serif",
+          fontFamily: "'DM Sans', sans-serif",
           fontStyle: "italic",
           fontSize: 18,
           color: "#f0c040",
@@ -831,7 +831,7 @@ function ResultsScreen({
       {/* Primary persona name */}
       <h1
         style={{
-          fontFamily: "'Playfair Display', serif",
+          fontFamily: "'DM Sans', sans-serif",
           fontWeight: 700,
           fontSize: "clamp(38px, 7vw, 58px)",
           color: "#f0ebe0",
