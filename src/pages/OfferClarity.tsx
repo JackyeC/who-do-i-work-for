@@ -7,6 +7,12 @@ import { ShieldCheck } from "lucide-react";
 import { PremiumGate } from "@/components/PremiumGate";
 
 export default function OfferClarity() {
+  usePageSEO({
+    title: "Offer Clarity — Decode Your Job Offer",
+    description: "Step-by-step guided analysis of your job offer. Understand compensation, benefits, equity, and hidden clauses before you sign.",
+    path: "/offer-clarity",
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />

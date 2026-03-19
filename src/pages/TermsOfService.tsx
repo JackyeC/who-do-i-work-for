@@ -2,7 +2,14 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { usePageSEO } from "@/hooks/use-page-seo";
 
-const TermsOfService = () => (
+const TermsOfService = () => {
+  usePageSEO({
+    title: "Terms of Service",
+    description: "Terms of Service for Who Do I Work For? career intelligence platform. Usage terms, disclaimers, and acceptable use policies.",
+    path: "/terms",
+  });
+
+  return (
   <div className="min-h-screen flex flex-col bg-background">
     <Header />
     <main className="flex-1 max-w-3xl mx-auto px-4 py-16">

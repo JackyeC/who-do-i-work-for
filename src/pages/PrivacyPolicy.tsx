@@ -2,7 +2,14 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { usePageSEO } from "@/hooks/use-page-seo";
 
-const PrivacyPolicy = () => (
+const PrivacyPolicy = () => {
+  usePageSEO({
+    title: "Privacy Policy",
+    description: "How Who Do I Work For? collects, uses, and protects your personal information. Google OAuth, usage data, and your privacy rights.",
+    path: "/privacy",
+  });
+
+  return (
   <div className="min-h-screen flex flex-col bg-background">
     <Header />
     <main className="flex-1 max-w-3xl mx-auto px-4 py-16">

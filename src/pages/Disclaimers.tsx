@@ -42,7 +42,14 @@ const sections = [
   },
 ];
 
-const Disclaimers = () => (
+const Disclaimers = () => {
+  usePageSEO({
+    title: "Disclaimers & Legal Notices",
+    description: "Legal disclaimers for Who Do I Work For? including educational disclaimer, AI analysis notices, data sources, and limitations.",
+    path: "/disclaimers",
+  });
+
+  return (
   <div className="min-h-screen flex flex-col bg-background">
     <Header />
     <main className="flex-1 max-w-3xl mx-auto px-4 py-16">

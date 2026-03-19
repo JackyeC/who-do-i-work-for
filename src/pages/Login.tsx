@@ -14,6 +14,12 @@ import { useEffect, useState } from "react";
 import { Shield, ArrowRight, Mail, Loader2, Sparkles } from "lucide-react";
 
 export default function Login() {
+  usePageSEO({
+    title: "Sign In — Career Intelligence Access",
+    description: "Sign in to access your career intelligence dashboard, tracked companies, saved offer checks, and personalized employer alerts.",
+    path: "/login",
+  });
+
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();

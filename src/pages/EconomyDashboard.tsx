@@ -50,6 +50,12 @@ const FEDERAL_SPENDING = [
 ];
 
 export default function EconomyDashboard() {
+  usePageSEO({
+    title: "Economy Dashboard — Macro Signals & Industry Trends",
+    description: "Real-time economic indicators: Fed rate, unemployment, GDP growth, industry trends, and federal spending data that affect your career decisions.",
+    path: "/economy",
+  });
+
   const [searchParams] = useSearchParams();
   const activeView = searchParams.get("view") || "overview";
 

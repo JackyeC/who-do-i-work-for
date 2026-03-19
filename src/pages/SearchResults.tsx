@@ -14,6 +14,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SearchResults() {
+  usePageSEO({
+    title: initialQuery ? `Search: ${initialQuery} — Company Results` : "Search Companies",
+    description: `Search employer intelligence database for "${initialQuery}". View civic footprint scores, PAC spending, and career signals.`,
+    path: "/search",
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const intent = searchParams.get("intent") || "";

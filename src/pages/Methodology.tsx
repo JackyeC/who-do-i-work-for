@@ -7,6 +7,12 @@ import { TIER_LABELS, TIER_COLORS } from "@/lib/evidenceQualityScore";
 import type { SourceTier } from "@/lib/evidenceQualityScore";
 
 export default function Methodology() {
+  usePageSEO({
+    title: "Methodology — How We Verify Company Intelligence",
+    description: "Our evidence quality framework: tiered source verification, confidence ratings, and transparent methodology for all employer intelligence data.",
+    path: "/methodology",
+  });
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />

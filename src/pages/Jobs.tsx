@@ -94,6 +94,12 @@ function AutoApplyGated() {
 }
 
 export default function Jobs() {
+  usePageSEO({
+    title: "Jobs — Values-Aligned Job Listings",
+    description: "Browse job listings with employer transparency signals, company intelligence, and values alignment data. Know before you apply.",
+    path: "/jobs",
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
   const [search, setSearch] = useState("");

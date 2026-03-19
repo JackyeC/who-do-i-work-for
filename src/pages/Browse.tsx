@@ -31,6 +31,12 @@ const stagger = {
 const PAGE_SIZE = 50;
 
 export default function Browse() {
+  usePageSEO({
+    title: "Browse Companies — Employer Intelligence Directory",
+    description: "Browse 200+ employer profiles with civic footprint scores, PAC spending, lobbying data, and career intelligence. Filter by industry and category.",
+    path: "/browse",
+  });
+
   const [selectedIndustry, setSelectedIndustry] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"name" | "score" | "cis">("score");

@@ -90,6 +90,12 @@ const tiers = [
 ];
 
 export default function Pricing() {
+  usePageSEO({
+    title: "Pricing — Career Intelligence Plans",
+    description: "Choose your career intelligence plan. Free, Pro, and Enterprise tiers with offer analysis, employer tracking, and AI-powered career strategy.",
+    path: "/pricing",
+  });
+
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loadingTier, setLoadingTier] = useState<string | null>(null);

@@ -836,6 +836,12 @@ const SAMPLE_LINKS: GraphLink[] = [
 // ─── Main Component ───
 
 export default function FollowTheMoney() {
+  usePageSEO({
+    title: "Follow the Money — Corporate Political Influence Map",
+    description: "Interactive influence graph showing corporate PAC donations, lobbying, dark money channels, and revolving door connections to Congress.",
+    path: "/follow-the-money",
+  });
+
   const navigate = useNavigate();
   const graphRef = useRef<ForceGraphMethods>();
   const containerRef = useRef<HTMLDivElement>(null);

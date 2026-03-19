@@ -106,6 +106,12 @@ const DASHBOARD_SECTIONS = [
 ];
 
 export default function StrategicOfferReview() {
+  usePageSEO({
+    title: "Strategic Offer Review — AI-Powered Offer Analysis",
+    description: "Upload your offer letter for comprehensive AI analysis: compensation benchmarking, red flag detection, equity evaluation, and negotiation strategies.",
+    path: "/strategic-offer-review",
+  });
+
   const { toast } = useToast();
   const { user } = useAuth();
   const [inputMode, setInputMode] = useState<InputMode>(null);

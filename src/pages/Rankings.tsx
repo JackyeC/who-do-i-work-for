@@ -29,6 +29,12 @@ function rankBadge(rank: number) {
 }
 
 export default function Rankings() {
+  usePageSEO({
+    title: "Employer Rankings — Civic Footprint Leaderboard",
+    description: "See how companies rank on transparency, governance, stability, and civic footprint. Evidence-based employer rankings from public records.",
+    path: "/rankings",
+  });
+
   const [category, setCategory] = useState<RankingCategory>("overall");
   const [industry, setIndustry] = useState<string>("all");
 
