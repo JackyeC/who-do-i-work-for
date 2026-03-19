@@ -945,8 +945,8 @@ function ResultsScreen({
 
       {/* CTA buttons */}
       <div
-        className="flex flex-wrap items-center justify-center gap-3 mt-10"
-        style={{ animation: "quizFadeUp 0.6s ease 0.95s both" }}
+        className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 w-full sm:w-auto"
+        style={{ animation: "quizFadeUp 0.6s ease 0.95s both", paddingBottom: 48 }}
       >
         <a
           href="/dashboard"
