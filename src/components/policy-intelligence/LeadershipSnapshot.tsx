@@ -63,6 +63,7 @@ export function LeadershipSnapshot({ companyId, companyName }: Props) {
                   <div>
                     <p className="text-sm font-medium text-foreground">{exec.name}</p>
                     <p className="text-xs text-muted-foreground">{exec.title}</p>
+                    <FreshnessLabel lastVerifiedAt={(exec as any).last_verified_at} />
                   </div>
                   {exec.total_donations > 0 && (
                     <Badge variant="outline" className="text-xs font-mono">
