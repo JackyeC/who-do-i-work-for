@@ -22,7 +22,7 @@ import { UserProfileForm } from "@/components/jobs/UserProfileForm";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";
 import { JobAlertPreferences } from "@/components/jobs/JobAlertPreferences";
 import { AskJackyeWidget } from "@/components/jobs/AskJackyeWidget";
-import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAutoApplySubscription, STRIPE_TIERS } from "@/hooks/use-premium";
@@ -311,7 +311,7 @@ export default function Jobs() {
     }, 300);
   }, []);
 
-  const sentinelRef = useInfiniteScroll(loadMore, hasMore, loadingMore);
+  
 
   const companiesWithJobs = useMemo(() => {
     if (!filtered) return 0;
@@ -680,18 +680,25 @@ export default function Jobs() {
                     })}
                   </div>
 
-                  {/* Infinite scroll sentinel + loading skeletons */}
-                  {hasMore && (
-                    <div ref={sentinelRef} className="space-y-2 mt-2">
-                      {loadingMore && Array.from({ length: 3 }).map((_, i) => (
-                        <JobCardSkeleton key={`load-${i}`} />
-                      ))}
-                    </div>
-                  )}
+                  {/* Pagination controls */}
                   {!isLoading && filtered.length > 0 && (
-                    <p className="text-center text-xs text-muted-foreground mt-4">
-                      Showing {Math.min(visibleCount, filtered.length)} of {filtered.length} jobs
-                    </p>
+                    <div className="flex flex-col items-center gap-3 mt-6">
+                      <p className="text-xs text-muted-foreground">
+                        Showing {Math.min(visibleCount, filtered.length)} of {filtered.length} jobs
+                      </p>
+                      {hasMore && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={loadMore}
+                          disabled={loadingMore}
+                          className="gap-2"
+                        >
+                          {loadingMore ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                          Show More Jobs
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
