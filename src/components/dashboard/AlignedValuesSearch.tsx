@@ -8,15 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
-/* ── Sample companies shown when search is focused but empty ── */
-const SAMPLE_COMPANIES = [
-  { id: "sample-1", name: "Patagonia", slug: "patagonia", industry: "Retail / Apparel", civic_footprint_score: 88, category_tags: ["Climate", "Worker Rights"], narrative_gap: false },
-  { id: "sample-2", name: "Ben & Jerry's", slug: "ben-jerrys", industry: "Food & Beverage", civic_footprint_score: 82, category_tags: ["Social Justice", "Climate"], narrative_gap: false },
-  { id: "sample-3", name: "Salesforce", slug: "salesforce", industry: "Technology", civic_footprint_score: 71, category_tags: ["Equality", "Education"], narrative_gap: true },
-  { id: "sample-4", name: "Warby Parker", slug: "warby-parker", industry: "Retail / Eyewear", civic_footprint_score: 76, category_tags: ["Health Equity", "B Corp"], narrative_gap: false },
-  { id: "sample-5", name: "Seventh Generation", slug: "seventh-generation", industry: "Consumer Goods", civic_footprint_score: 79, category_tags: ["Climate", "Community"], narrative_gap: false },
-];
-
 interface CompanyResult {
   id: string;
   name: string;
@@ -43,6 +34,24 @@ export function AlignedValuesSearch({ hasTakenQuiz }: { hasTakenQuiz: boolean })
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [trackedIds, setTrackedIds] = useState<Set<string>>(new Set());
+
+  // Suggested companies (top-scoring from DB, shown when focused but no query)
+  const { data: suggestedCompanies } = useQuery({
+    queryKey: ["aligned-suggestions"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("companies")
+        .select("id, name, slug, industry, civic_footprint_score, category_tags, insider_score")
+        .order("civic_footprint_score", { ascending: false })
+        .limit(5);
+      return (data || []).map((c: any) => ({
+        ...c,
+        category_tags: c.category_tags || [],
+        narrative_gap: (c.insider_score ?? 0) > 60,
+      })) as CompanyResult[];
+    },
+    staleTime: 5 * 60_000,
+  });
 
   // Search DB companies
   const { data: dbResults } = useQuery({
@@ -100,7 +109,7 @@ export function AlignedValuesSearch({ hasTakenQuiz }: { hasTakenQuiz: boolean })
   const showSuggestions = focused && query.trim().length < 2;
   const results: CompanyResult[] = useMemo(() => {
     if (query.trim().length >= 2 && dbResults) return dbResults;
-    if (showSuggestions) return SAMPLE_COMPANIES;
+    if (showSuggestions) return suggestedCompanies || [];
     return [];
   }, [query, dbResults, showSuggestions]);
 
