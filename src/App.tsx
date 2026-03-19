@@ -230,6 +230,7 @@ const App = () => (
                   <Route path="/early-access" element={<Navigate to="/join" replace />} />
                   <Route path="/decision-engine" element={<DecisionEngine />} />
                   <Route path="/hire" element={<Hire />} />
+                  <Route path="/dossier" element={<SampleDossier />} />
                   <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
