@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { getOGImageUrl } from "@/lib/social-share";
 import {
-  Building2, Lightbulb, Network, Landmark,
+  Building2, Lightbulb, Network, Landmark, Eye,
   Sparkles, Users, Heart, Loader2, ShoppingCart,
   BarChart3, TrendingUp, User, Megaphone, Target, AlertTriangle,
 } from "lucide-react";
@@ -28,6 +28,7 @@ import { InnovationPatentsLayer } from "@/components/dossier/InnovationPatentsLa
 import { EcosystemSubcontractorsLayer } from "@/components/dossier/EcosystemSubcontractorsLayer";
 import { InfluencePolicyLayer } from "@/components/dossier/InfluencePolicyLayer";
 import { InstitutionalDNACard } from "@/components/dossier/InstitutionalDNACard";
+import { InsiderScoreBreakdown } from "@/components/dossier/InsiderScoreBreakdown";
 import { PatternsSynthesisLayer } from "@/components/dossier/PatternsSynthesisLayer";
 import { TalentContextLayer } from "@/components/dossier/TalentContextLayer";
 import { ValuesSignalsLayer } from "@/components/dossier/ValuesSignalsLayer";
@@ -283,7 +284,11 @@ export default function CompanyDossier() {
         )}
       </DossierLayer>
 
-      <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
+      <DossierLayer title="Insider Score" subtitle="Leadership network concentration and hiring pattern transparency" icon={Eye} layerNumber={7}>
+        <InsiderScoreBreakdown companyId={companyId!} companyName={company.name} insiderScore={(company as any).insider_score ?? null} />
+      </DossierLayer>
+
+      <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={8}>
         <PatternsSynthesisLayer patterns={[]} companyName={company.name} />
       </DossierLayer>
     </>

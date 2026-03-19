@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { CompanyLogo } from "@/components/CompanyLogo";
+import { InsiderScorePill } from "@/components/InsiderScorePill";
 import type { TrackedCompany } from "@/hooks/use-tracked-companies";
 
 interface TrackedCompanyCardProps {
@@ -36,6 +37,7 @@ export function TrackedCompanyCard({ tracked, onUntrack, isUntracking }: Tracked
           <div className="text-lg font-bold font-mono text-primary">{score}</div>
           <div className="text-micro text-muted-foreground">Influence</div>
         </div>
+        <InsiderScorePill score={(company as any).insider_score ?? null} />
 
         <Button
           size="sm"
