@@ -73,7 +73,7 @@ const tracks = [
     priceNote: "",
     period: " one-time",
     mode: "payment" as const,
-    priceId: "price_partner_onetime", // placeholder
+    priceId: "price_1TCdDB7Qj0W6UtN9VEaLssdN",
     hook: "The Session.",
     description: "45-min 1-on-1 strategy session with Jackye Clayton.",
     action: "Book Your Session",
