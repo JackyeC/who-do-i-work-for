@@ -203,6 +203,7 @@ export default function CompanyDossier() {
       </div>
 
       {/* Situation-Aware Context Banner */}
+      <TrustFramingLine />
       <SituationContextBanner companyName={company.name} />
 
       {/* Score gauges */}
