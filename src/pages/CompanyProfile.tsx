@@ -458,7 +458,55 @@ export default function CompanyProfile() {
           )}
 
           {/* ═══════════════════════════════════════════════════════
-              2.7 DECISION CHECKPOINT — "Before You Sign"
+              6. REALITY GAP ANALYSIS
+             ═══════════════════════════════════════════════════════ */}
+          {dbCompanyId && (
+            <RealityGapBlock
+              companyId={dbCompanyId}
+              companyName={name}
+              updatedAt={dbCompany?.updated_at}
+            />
+          )}
+
+          {/* ═══════════════════════════════════════════════════════
+              7. WHAT TO WATCH
+             ═══════════════════════════════════════════════════════ */}
+          <WhatToWatch
+            companyName={name}
+            hasLayoffSignals={false}
+            hasWarnNotices={false}
+            hasPayEquity={!!tiPayEquity}
+            hasBenefitsData={!!tiBenefits}
+            hasAiHrSignals={!!tiAiHr}
+            hasSentimentData={!!tiSentiment}
+            hasJobPostings={false}
+            executiveCount={dbExecutives?.length || 0}
+            revolvingDoorCount={dbRevolvingDoor?.length || 0}
+            totalPacSpending={totalPac}
+            lobbyingSpend={lobbyingSpend}
+            darkMoneyCount={dbDarkMoney?.length || 0}
+          />
+
+          {/* ═══════════════════════════════════════════════════════
+              8. WHAT TO ASK
+             ═══════════════════════════════════════════════════════ */}
+          <WhatToAsk
+            companyName={name}
+            hasLayoffSignals={false}
+            hasWarnNotices={false}
+            hasPayEquity={!!tiPayEquity}
+            hasBenefitsData={!!tiBenefits}
+            hasAiHrSignals={!!tiAiHr}
+            hasSentimentData={!!tiSentiment}
+            executiveCount={dbExecutives?.length || 0}
+            revolvingDoorCount={dbRevolvingDoor?.length || 0}
+            totalPacSpending={totalPac}
+            lobbyingSpend={lobbyingSpend}
+            darkMoneyCount={dbDarkMoney?.length || 0}
+          />
+
+          {/* ═══════════════════════════════════════════════════════
+              DECISION CHECKPOINT — "Before You Sign"
              ═══════════════════════════════════════════════════════ */}
           <DecisionCheckpointBeforeSign
             companyName={name}
@@ -478,12 +526,12 @@ export default function CompanyProfile() {
           />
 
           {/* ═══════════════════════════════════════════════════════
-              3. HOW TO READ THIS
+              HOW TO READ THIS
              ═══════════════════════════════════════════════════════ */}
           <HowToReadThis />
 
           {/* ═══════════════════════════════════════════════════════
-              4. UPGRADE MOMENT
+              UPGRADE MOMENT
              ═══════════════════════════════════════════════════════ */}
           <UpgradeMoment companyName={name} />
 
