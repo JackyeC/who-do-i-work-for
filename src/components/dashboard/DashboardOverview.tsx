@@ -386,6 +386,7 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
             </BriefingCard>
           </motion.div>
         )}
+      </div>
 
       {/* ═══ SECTION 4 — Companies You're Watching ═══ */}
       <motion.div {...anim(0.22)}>
