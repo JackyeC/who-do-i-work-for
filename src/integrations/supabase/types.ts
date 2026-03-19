@@ -9774,6 +9774,24 @@ export type Database = {
           },
         ]
       }
+      waitlist: {
+        Row: {
+          created_at: string
+          email: string
+          role: Database["public"]["Enums"]["waitlist_role"]
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          role: Database["public"]["Enums"]["waitlist_role"]
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          role?: Database["public"]["Enums"]["waitlist_role"]
+        }
+        Relationships: []
+      }
       warn_sync_log: {
         Row: {
           created_at: string
@@ -10133,6 +10151,7 @@ export type Database = {
         | "testimony_or_deposition"
         | "media_report_with_document_basis"
         | "no_confirmed_company_level_evidence"
+      waitlist_role: "candidate" | "recruiter" | "employer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -10320,6 +10339,7 @@ export const Constants = {
         "media_report_with_document_basis",
         "no_confirmed_company_level_evidence",
       ],
+      waitlist_role: ["candidate", "recruiter", "employer"],
     },
   },
 } as const
