@@ -279,7 +279,7 @@ export default function Browse() {
             animate="show"
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"
           >
-            {filtered.map((company) => (
+            {visibleCompanies.map((company) => (
               <motion.div key={company.slug} variants={stagger.item}>
                 <Link to={`/company/${company.slug}`}>
                   <Card className="group hover:shadow-md transition-all duration-150 hover:border-primary/20 cursor-pointer h-full border-border/40">
@@ -307,6 +307,22 @@ export default function Browse() {
               </motion.div>
             ))}
           </motion.div>
+        )}
+
+        {/* Show More */}
+        {hasMore && !isLoading && (
+          <div className="text-center mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+              className="gap-2"
+            >
+              Show More
+              <span className="text-xs text-muted-foreground">
+                ({visibleCount} of {filtered.length})
+              </span>
+            </Button>
+          </div>
         )}
       </div>
       </TabsContent>
