@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Lightbulb, ExternalLink, Loader2, Search, Cpu, FlaskConical, Cog, BarChart3, Lock, TrendingUp, TrendingDown, Minus, Shield } from "lucide-react";
+import { Lightbulb, ExternalLink, Loader2, Cpu, FlaskConical, Cog, BarChart3, Lock, TrendingUp, TrendingDown, Minus, Shield } from "lucide-react";
 import { IntelligenceEmptyState } from "@/components/intelligence/IntelligenceEmptyState";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -77,8 +76,6 @@ function trendLabel(trend: string) {
 }
 
 export function InnovationPatentsLayer({ totalPatents, clusters, companyName, companyId, unlocked = true }: InnovationPatentsProps) {
-  const [scanTriggered, setScanTriggered] = useState(false);
-
   const { data: scanData, isLoading, error } = useQuery({
     queryKey: ["uspto-scan", companyName, companyId],
     queryFn: async () => {
@@ -95,8 +92,9 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
         totalResults: number;
       };
     },
-    enabled: scanTriggered,
+    enabled: !!companyName,
     staleTime: 1000 * 60 * 60,
+    retry: 1,
   });
 
   const displayClusters = scanData?.clusters || clusters;
@@ -105,13 +103,9 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
   const signals = scanData?.signals;
   const hasData = displayTotal > 0 || displayClusters.length > 0;
 
-  if (!scanTriggered && !hasData) {
+  if (!hasData && !isLoading && !error) {
     return (
-      <IntelligenceEmptyState category="patents" state="before">
-        <Button variant="outline" size="sm" onClick={() => setScanTriggered(true)} className="gap-2">
-          <Search className="w-4 h-4" /> Check what they're actually building
-        </Button>
-      </IntelligenceEmptyState>
+      <IntelligenceEmptyState category="patents" state="after" />
     );
   }
 
@@ -129,9 +123,6 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
       <div className="text-center py-8">
         <Lightbulb className="w-8 h-8 text-destructive/40 mx-auto mb-3" />
         <p className="text-caption text-muted-foreground">Unable to load patent data. Try again later.</p>
-        <Button variant="outline" size="sm" className="mt-3 gap-2" onClick={() => setScanTriggered(true)}>
-          <Search className="w-4 h-4" /> Retry
-        </Button>
       </div>
     );
   }
@@ -159,11 +150,6 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
               {scanData?.cached && <Badge variant="outline" className="ml-2 text-micro">Cached</Badge>}
             </div>
           </div>
-          {!scanTriggered && (
-            <Button variant="ghost" size="sm" className="ml-auto gap-1.5 text-xs" onClick={() => setScanTriggered(true)}>
-              <Search className="w-3.5 h-3.5" /> Refresh
-            </Button>
-          )}
         </div>
       )}
 
@@ -249,7 +235,7 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
       )}
 
       {/* No results after scan */}
-      {scanTriggered && !isLoading && displayTotal === 0 && (
+      {!isLoading && displayTotal === 0 && (
         <IntelligenceEmptyState category="patents" state="after" />
       )}
     </div>
