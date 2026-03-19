@@ -107,18 +107,11 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
 
   if (!scanTriggered && !hasData) {
     return (
-      <div className="text-center py-8">
-        <Lightbulb className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
-        <p className="text-caption text-muted-foreground mb-4">
-          No patent data loaded yet for {companyName}.
-        </p>
+      <IntelligenceEmptyState category="patents" state="before">
         <Button variant="outline" size="sm" onClick={() => setScanTriggered(true)} className="gap-2">
-          <Search className="w-4 h-4" /> Scan USPTO Records
+          <Search className="w-4 h-4" /> Check what they're actually building
         </Button>
-        <p className="text-micro text-muted-foreground mt-2">
-          Queries PatentsView (USPTO) · Results cached for 7 days
-        </p>
-      </div>
+      </IntelligenceEmptyState>
     );
   }
 
