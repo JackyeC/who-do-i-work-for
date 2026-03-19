@@ -309,12 +309,26 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
               From Jackye
             </h3>
             <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "#7a7590", marginBottom: "12px" }}>
-              Monday Momentum newsletter
+              Insights & resources
             </p>
-            <div className="py-4 text-center">
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", color: "#b8b4a8", lineHeight: 1.6, marginBottom: "12px" }}>
-                Jackye's Monday Momentum newsletter coming to your dashboard soon.
-              </p>
+            <div className="space-y-3">
+              <a
+                href="https://www.linkedin.com/learning/human-resources-writing-an-effective-job-description/why-job-descriptions-matter"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg p-3 transition-colors"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+              >
+                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "10px", fontWeight: 700, color: "#f0c040", letterSpacing: "0.5px" }}>
+                  01
+                </span>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "13px", fontWeight: 600, color: "#f0ebe0", marginTop: "4px", lineHeight: 1.4 }}>
+                  Writing an Effective Job Description
+                </p>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "#7a7590", marginTop: "2px" }}>
+                  LinkedIn Learning · Course
+                </p>
+              </a>
               <a
                 href="https://www.linkedin.com/in/jackyeclayton/"
                 target="_blank"
