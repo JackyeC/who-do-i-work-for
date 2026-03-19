@@ -43,7 +43,7 @@ interface Evidence {
 }
 
 interface Props {
-  company: { id: string; name: string; slug: string; industry: string; state: string };
+  company: { id: string; name: string; slug: string; industry: string; state: string; insider_score?: number | null };
   signals: Signal[];
   evidence: Evidence[];
   lensLabel: string;
