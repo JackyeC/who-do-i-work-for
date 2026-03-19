@@ -11,6 +11,7 @@ interface CompanyCardProps {
 }
 
 export function CompanyCard({ company }: CompanyCardProps) {
+  const { ctaCopy } = usePersona();
   return (
     <Link to={`/company/${company.id}`}>
       <Card className="group hover:shadow-elevated transition-all duration-200 hover:border-primary/15 cursor-pointer h-full">
