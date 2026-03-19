@@ -209,71 +209,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-          CHOOSE YOUR TRACK — Investigator vs Executive
+          5-TRACK PATHFINDER
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="px-6 lg:px-16 py-24 lg:py-32 max-w-[960px] mx-auto w-full">
-        <div className="text-center mb-14">
-          <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">Choose Your Track</div>
-          <h2 className="text-2xl lg:text-3xl text-foreground mb-3">
-            One audit. Or total autopilot.
-          </h2>
-          <p className="text-muted-foreground text-base max-w-[520px] mx-auto">
-            Whether you need intelligence on a single company or want us hunting for your next move year-round.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border">
-          {/* The Investigator */}
-          <div className="bg-card p-8 lg:p-10 flex flex-col">
-            <div className="font-mono text-xs tracking-[0.2em] uppercase text-primary mb-2">The Investigator</div>
-            <div className="font-serif text-xl text-foreground mb-2">One-Off Deep Dive</div>
-            <div className="text-sm text-muted-foreground italic mb-6">"I have an interview or an offer."</div>
-            <ul className="space-y-2.5 mb-8 flex-1">
-              {["Deep-Dive Company Audit", "Reality Gap Analysis", "Negotiation Script", "Red flag detection", "Salary benchmarking"].map(f => (
-                <li key={f} className="flex items-start gap-2 text-sm text-foreground">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" strokeWidth={2} />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <div className="font-data text-3xl font-bold text-foreground mb-1">$275</div>
-            <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-6">One-time · Instant access</div>
-            <button
-              onClick={() => handleCheckout(STRIPE_TIERS.single_job_credit.price_id)}
-              disabled={checkoutLoading === STRIPE_TIERS.single_job_credit.price_id}
-              className="w-full bg-card border border-primary text-primary px-6 py-3 font-mono text-sm font-semibold tracking-wider uppercase hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-50"
-            >
-              {checkoutLoading === STRIPE_TIERS.single_job_credit.price_id ? "Loading..." : "Buy One Audit — $275"}
-            </button>
-          </div>
-
-          {/* The Executive */}
-          <div className="bg-card p-8 lg:p-10 flex flex-col relative">
-            <div className="absolute top-4 right-4 bg-primary text-primary-foreground font-mono text-[9px] tracking-wider uppercase px-2 py-1">
-              Best Value
-            </div>
-            <div className="font-mono text-xs tracking-[0.2em] uppercase text-primary mb-2">The Executive</div>
-            <div className="font-serif text-xl text-foreground mb-2">Yearly Autopilot</div>
-            <div className="text-sm text-muted-foreground italic mb-6">"I want to be hunted."</div>
-            <ul className="space-y-2.5 mb-8 flex-1">
-              {["5-Year Career Map", "Purple Squirrel Auto-Apply", "1-on-1 Strategy Sessions with Jackye", "Unlimited company audits", "Priority intelligence alerts", "DNA Calibration engine"].map(f => (
-                <li key={f} className="flex items-start gap-2 text-sm text-foreground">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" strokeWidth={2} />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <div className="font-data text-3xl font-bold text-foreground mb-1">$999<span className="text-lg font-normal text-muted-foreground">/yr</span></div>
-            <div className="font-mono text-xs tracking-wider uppercase text-muted-foreground mb-6">Billed annually · Cancel anytime</div>
-            <button
-              onClick={() => handleCheckout(STRIPE_TIERS.executive_autopilot.price_id)}
-              disabled={checkoutLoading === STRIPE_TIERS.executive_autopilot.price_id}
-              className="w-full bg-primary text-primary-foreground px-6 py-3 font-mono text-sm font-semibold tracking-wider uppercase hover:brightness-110 transition-all disabled:opacity-50"
-            >
-              {checkoutLoading === STRIPE_TIERS.executive_autopilot.price_id ? "Loading..." : "Go on Autopilot — $999/yr"}
-            </button>
-          </div>
-        </div>
-      </section>
+      <PathfinderTracks />
 
       {/* ══════════════════════════════════════════════════════════════════
           WHAT YOU GET — Three Value Cards
