@@ -127,7 +127,18 @@ export function PathfinderTracks() {
       return;
     }
 
-    if (track.name === "The Partner") {
+    if (track.name === "The Partner" || track.name === "The Executive") {
+      navigate("/work-with-jackye");
+      return;
+    }
+
+    if (track.name === "The Strategist") {
+      navigate("/work-with-jackye");
+      return;
+    }
+
+    if (!track.priceId || track.priceId.startsWith("price_")) {
+      // Placeholder price IDs — route to interest form
       navigate("/work-with-jackye");
       return;
     }
