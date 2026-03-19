@@ -109,13 +109,6 @@ export function WhatToWatch({
       });
     }
 
-    if (!hasJobPostings) {
-      items.push({
-        icon: Eye,
-        signal: "No active job postings detected — may indicate hiring freeze or unlisted roles.",
-        severity: "info",
-      });
-    }
 
     // Always include at least one
     if (items.length === 0) {
