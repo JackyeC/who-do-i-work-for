@@ -1,5 +1,7 @@
 import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePersona } from "@/hooks/use-persona";
+import { PersonaQuizBanner } from "@/components/PersonaQuizBanner";
 import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
