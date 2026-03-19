@@ -23,6 +23,10 @@ interface PACDetailDrawerProps {
 }
 
 export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, totalPACSpending, corporatePACExists }: PACDetailDrawerProps) {
+  const [fetchingFEC, setFetchingFEC] = useState(false);
+  const [fecError, setFecError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
   const { data: partyBreakdown, isLoading: partyLoading } = useQuery({
     queryKey: ["pac-detail-party", companyId],
     queryFn: async () => {
