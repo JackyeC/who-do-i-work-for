@@ -7,10 +7,8 @@ import { Search, LogIn, LogOut, Menu, X, Shield, ChevronDown, Lock, Compass, Bar
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PersonaChip } from "@/components/PersonaChip";
 import { usePersona } from "@/hooks/use-persona";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
 import { SignupModal } from "@/components/SignupModal";
-import { getUiStatement } from "@/lib/signalPersonalization";
+import { IntelligenceTicker } from "@/components/layout/IntelligenceTicker";
 
 /* ── MAIN_SECTIONS — kept for ContextSidebar compatibility ── */
 export const MAIN_SECTIONS = [
