@@ -124,9 +124,6 @@ export function InnovationPatentsLayer({ totalPatents, clusters, companyName, co
       <div className="text-center py-8">
         <Lightbulb className="w-8 h-8 text-destructive/40 mx-auto mb-3" />
         <p className="text-caption text-muted-foreground">Unable to load patent data. Try again later.</p>
-        <Button variant="outline" size="sm" className="mt-3 gap-2" onClick={() => setScanTriggered(true)}>
-          <Search className="w-4 h-4" /> Retry
-        </Button>
       </div>
     );
   }
