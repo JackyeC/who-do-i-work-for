@@ -240,18 +240,18 @@ export function TopBar() {
   return (
     <>
       {/* Ticker Bar */}
-      <div className="bg-primary text-primary-foreground overflow-hidden whitespace-nowrap h-[30px] flex items-center">
+      <div className="bg-background overflow-hidden whitespace-nowrap h-[36px] flex items-center border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
         <div className="inline-block animate-ticker">
           {finalTickerItems.map((t, i) => (
             <span key={i} className="px-8">
-              <span className="font-mono text-xs font-medium tracking-wider" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
-              <span className="opacity-50 px-4">|</span>
+              <span className="font-sans text-ticker" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
+              <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
             </span>
           ))}
           {finalTickerItems.slice(0, 2).map((t, i) => (
             <span key={`dup-${i}`} className="px-8">
-              <span className="font-mono text-xs font-medium tracking-wider" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
-              <span className="opacity-50 px-4">|</span>
+              <span className="font-sans text-ticker" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
+              <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
             </span>
           ))}
         </div>
