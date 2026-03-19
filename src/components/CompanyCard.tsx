@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { CivicFootprintBadge } from "@/components/CivicFootprintBadge";
+import { InsiderScorePill } from "@/components/InsiderScorePill";
 import { formatCurrency, type Company } from "@/data/sampleData";
 import { Building2, ArrowRight } from "lucide-react";
 
