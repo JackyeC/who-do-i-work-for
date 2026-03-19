@@ -297,8 +297,18 @@
 
   /* ── TICKER ANIMATION ── */
   @keyframes ticker-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .ticker-track {
+    display: flex;
+    animation: ticker-scroll var(--ticker-duration, 90s) linear infinite;
+    width: max-content;
+  }
+
+  .ticker-track:hover {
+    animation-play-state: paused;
   }
 
   .animate-ticker {

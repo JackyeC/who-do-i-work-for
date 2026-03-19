@@ -99,6 +99,7 @@ const DecisionEngine = lazy(() => import("./pages/DecisionEngine"));
 const Welcome = lazy(() => import("./pages/Welcome"));
 const Quiz = lazy(() => import("./pages/Quiz"));
 const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
+const AdminTicker = lazy(() => import("./pages/AdminTicker"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -199,6 +200,7 @@ const App = () => (
                   <Route path="/admin/reports" element={<AdminRoute><ReportsList /></AdminRoute>} />
                   <Route path="/admin/reports/:id" element={<AdminRoute><ReportEditor /></AdminRoute>} />
                   <Route path="/founder-console" element={<AdminRoute><FounderConsole /></AdminRoute>} />
+                  <Route path="/admin/ticker" element={<AdminRoute><AdminTicker /></AdminRoute>} />
                   <Route path="/recruiting" element={<RecruitingIntelligence />} />
                   <Route path="/employer/verification-pending" element={<ProtectedRoute><EmployerVerificationPending /></ProtectedRoute>} />
                   <Route path="/for-employers" element={<ForEmployers />} />
