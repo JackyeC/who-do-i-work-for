@@ -1,46 +1,46 @@
 
 
-## Patent Feature Fix: Auto-Load Real USPTO Data
+## Plan: Add `/companies` — Mission-Driven Organizations Directory
 
-### What's Already Done
-- `uspto-scan` edge function (447 lines) already connects to PatentsView API with company name resolution, alias generation, CPC clustering, and signal scoring. This is solid.
-- `InnovationPatentsLayer.tsx` (dossier page) already calls `uspto-scan` but requires a manual click to trigger.
+### What We're Building
+A new public page at `/companies` showcasing verified mission-driven organizations with rich filtering, company cards with verification badges and Reality Check scores, and a CTA to claim profiles.
 
-### What's NOT Done (the actual problem)
-- `InnovationSignals.tsx` (company profile page) uses a broken `scan-patents` edge function (Google Patents scraping) with a manual "Scan USPTO Records" button
-- Patent data never auto-loads — users must click a button
-- No `patent-utils.ts` client-side utility exists
-- No ticker integration for notable patent activity
+### Changes
 
-### Plan
+**1. Create `src/pages/Companies.tsx`**
 
-**1. Create `src/lib/patent-utils.ts`** — Client-side utility
-- `fetchPatentData(companyName)` that calls the existing `uspto-scan` edge function (not a new direct API call — the edge function already handles aliases, caching, and clustering)
-- `calculateInnovationSignal()` returning high/moderate/low/none with labels and descriptions
-- `getPatentGoogleLink(patentNumber)` for linking to readable patent pages
+New page with:
 
-**2. Rewrite `src/components/company/InnovationSignals.tsx`**
-- Remove the manual "Scan USPTO Records" button entirely
-- Auto-load patent data via `useQuery` calling the `uspto-scan` edge function on mount (no `scanTriggered` state needed)
-- Show skeleton loader with "Checking USPTO records..." during loading
-- Display signal pill (green/amber/gray dot + label), total count, recent filings with Google Patents links
-- Handle edge cases: 0 results with subsidiary note + link to PatentsView search, API timeout with graceful message
-- Add source note: "USPTO PatentsView · Public record" + "View all patents on USPTO →" link
+- **SEO**: `usePageSEO` with title "Organizations Walking the Talk" and JSON-LD CollectionPage schema.
+- **Hero section**: Headline "Organizations walking the talk." / Subheadline "Every org here has been verified against public data. No bias. Just receipts."
+- **CTA banner**: "Is your organization here? Claim your profile." linking to `/for-employers`.
+- **Search bar** with text input filtering by name/mission.
+- **Filter bar** using existing Select/multi-select components:
+  - Mission Category (multi-select via popover with checkboxes): Climate, Health Equity, Education, Civic/Policy, Veterans, Faith-Based, Community/Social, Economic Justice, LGBTQ Rights, Disability Rights, Rural Development, Other
+  - Verification Status: All / Verified Only
+  - Organization Type: Nonprofit / B Corp / Social Enterprise / For-Purpose
+  - Location: All / Remote-friendly / Northeast / Southeast / Midwest / West / Southwest
+  - Company Size: All / Under 50 / 50-200 / 200-1000 / 1000+
+- **Company cards grid** (responsive 1/2/3 columns), each card showing:
+  - Logo placeholder (colored circle with initial)
+  - Organization name
+  - Mission statement (one-line truncated)
+  - Mission Category tags (Badge components)
+  - Reality Check Score (colored badge: green >70, yellow 50-70, red <50)
+  - Verification badges: B Corp / 501c3 / Mission Verified (small shield icons)
+  - "Open Roles: X" button
+  - Narrative Gap amber flag icon if detected
+- **Sample data**: Hardcoded array of ~8 mission-driven organizations as placeholders (matching the categories above), since no dedicated database table exists yet. This makes the page look complete immediately.
+- **Empty/filtered state**: "No organizations match your filters."
 
-**3. Update `src/components/dossier/InnovationPatentsLayer.tsx`**
-- Remove `scanTriggered` state — auto-load on mount by setting `enabled: true` instead of `enabled: scanTriggered`
-- Keep the existing display (it's already good) but remove the "Check what they're actually building" empty state button
+**2. Update `src/App.tsx`**
 
-**4. Ticker integration** (lightweight)
-- After patent data loads in `InnovationSignals.tsx`, if notable (100+ total or 5+ in 12 months), insert a ticker item via upsert to `ticker_items` table (if the table exists and company has a DB ID)
+- Add lazy import: `const Companies = lazy(() => import("./pages/Companies"));`
+- Add route: `<Route path="/companies" element={<Companies />} />`
 
-### Files to Change
-- `src/lib/patent-utils.ts` — Create
-- `src/components/company/InnovationSignals.tsx` — Rewrite to auto-load via `uspto-scan`
-- `src/components/dossier/InnovationPatentsLayer.tsx` — Remove manual trigger, auto-load
-
-### What Stays Untouched
-- `supabase/functions/uspto-scan/index.ts` — Already works correctly
-- `supabase/functions/scan-patents/index.ts` — Can remain (unused after this fix)
-- All other data pipeline, methodology, scoring
+### Technical Notes
+- Follows existing patterns from `Browse.tsx` and `NonProfitDirectory.tsx` for card layout and styling.
+- Uses existing UI primitives: `Card`, `Badge`, `Button`, `Input`, `Select`.
+- Multi-select for Mission Category will use a Popover with Checkbox list (similar pattern to other filter UIs in the app).
+- No database changes needed — sample data hardcoded for now, ready to swap for API/DB query later.
 
