@@ -131,23 +131,8 @@ export function TopBar() {
 
   return (
     <>
-      {/* Ticker Bar */}
-      <div className="bg-background overflow-hidden whitespace-nowrap h-[36px] flex items-center border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-        <div className="inline-block animate-ticker">
-          {finalTickerItems.map((t, i) => (
-            <span key={i} className="px-8">
-              <span className="font-sans text-ticker" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
-              <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
-            </span>
-          ))}
-          {finalTickerItems.slice(0, 2).map((t, i) => (
-            <span key={`dup-${i}`} className="px-8">
-              <span className="font-sans text-ticker" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
-              <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Intelligence Ticker — fixed at top, 36px */}
+      <IntelligenceTicker />
 
       {/* Header */}
       <header className="sticky top-0 z-50 border-b h-[64px] flex items-center px-4 lg:px-6" style={{ background: 'rgba(10,10,14,0.92)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.06)' }}>
