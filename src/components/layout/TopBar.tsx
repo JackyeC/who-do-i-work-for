@@ -240,42 +240,42 @@ export function TopBar() {
   return (
     <>
       {/* Ticker Bar */}
-      <div className="bg-primary text-primary-foreground overflow-hidden whitespace-nowrap h-[30px] flex items-center">
+      <div className="bg-background overflow-hidden whitespace-nowrap h-[36px] flex items-center border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
         <div className="inline-block animate-ticker">
           {finalTickerItems.map((t, i) => (
             <span key={i} className="px-8">
-              <span className="font-mono text-xs font-medium tracking-wider" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
-              <span className="opacity-50 px-4">|</span>
+              <span className="font-sans text-ticker" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
+              <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
             </span>
           ))}
           {finalTickerItems.slice(0, 2).map((t, i) => (
             <span key={`dup-${i}`} className="px-8">
-              <span className="font-mono text-xs font-medium tracking-wider" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
-              <span className="opacity-50 px-4">|</span>
+              <span className="font-sans text-ticker" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
+              <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
             </span>
           ))}
         </div>
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card border-b border-border h-[56px] flex items-center px-4 lg:px-6">
+      <header className="sticky top-0 z-50 border-b h-[64px] flex items-center px-4 lg:px-6" style={{ background: 'rgba(10,10,14,0.92)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.06)' }}>
         {/* Brand */}
         <Link to="/" className="flex flex-col shrink-0 mr-4">
-          <span className="font-serif text-sm text-primary leading-none whitespace-nowrap flex items-center gap-1.5">
+          <span className="font-serif text-foreground leading-none whitespace-nowrap flex items-center gap-1.5" style={{ fontSize: '20px', fontWeight: 700 }}>
             Who Do I Work For?
-            <span className="font-mono text-[9px] tracking-wider uppercase px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-sm leading-none">Beta</span>
+            <span className="font-sans text-[11px] tracking-wider uppercase px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-sm leading-none font-semibold">Beta</span>
           </span>
-          <span className="font-mono text-[10px] uppercase text-muted-foreground tracking-[0.2em] whitespace-nowrap">Career Intelligence Platform</span>
+          <span className="font-sans text-eyebrow text-muted-foreground whitespace-nowrap mt-0.5">Career Intelligence Platform</span>
         </Link>
 
         {/* ── Audit search bar (always visible, most prominent) ── */}
-        <form onSubmit={handleSearch} className="hidden sm:flex items-center bg-muted/40 border border-border rounded-full px-3 py-1.5 w-[200px] lg:w-[240px] mr-2 shrink-0">
+        <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded-full px-3 py-2 w-[200px] lg:w-[260px] mr-3 shrink-0" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}>
           <Search className="w-3.5 h-3.5 text-primary mr-2 shrink-0" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Audit a company..."
-            className="bg-transparent border-none outline-none text-foreground font-mono text-xs w-full placeholder:text-muted-foreground"
+            className="bg-transparent border-none outline-none text-foreground font-sans text-nav w-full placeholder:text-muted-foreground"
           />
         </form>
 
@@ -285,37 +285,32 @@ export function TopBar() {
             const requiresAuth = (item as any).auth && !user;
             const active = item.matchPaths.some(p => location.pathname.startsWith(p));
             const Icon = item.icon;
+            const navClass = "font-sans text-nav px-3 h-full flex items-center border-b-2 transition-colors gap-1.5 whitespace-nowrap";
             return (
               <div key={item.id} className="h-full">
                 {requiresAuth ? (
                   <button
                     onClick={() => setSignupModalOpen(true)}
-                    className="font-mono text-xs tracking-wider uppercase px-3 h-full flex items-center border-b-2 border-transparent text-muted-foreground hover:text-foreground transition-colors gap-1.5 whitespace-nowrap"
+                    className={cn(navClass, "border-transparent text-muted-foreground hover:text-foreground")}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-4 h-4" />
                     {item.label}
-                    <Lock className="w-2.5 h-2.5 opacity-50" />
+                    <Lock className="w-3 h-3 opacity-50" />
                   </button>
                 ) : item.onClick ? (
                   <button
                     onClick={item.onClick}
-                    className={cn(
-                      "font-mono text-xs tracking-wider uppercase px-3 h-full flex items-center border-b-2 transition-colors gap-1.5 whitespace-nowrap",
-                      active ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
-                    )}
+                    className={cn(navClass, active ? "text-foreground border-primary" : "text-muted-foreground border-transparent hover:text-foreground")}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-4 h-4" />
                     {item.label}
                   </button>
                 ) : (
                   <Link
                     to={item.path!}
-                    className={cn(
-                      "font-mono text-xs tracking-wider uppercase px-3 h-full flex items-center border-b-2 transition-colors gap-1.5 whitespace-nowrap",
-                      active ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
-                    )}
+                    className={cn(navClass, active ? "text-foreground border-primary" : "text-muted-foreground border-transparent hover:text-foreground")}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-4 h-4" />
                     {item.label}
                   </Link>
                 )}
@@ -327,18 +322,18 @@ export function TopBar() {
           <div className="relative h-full group">
             <button
               className={cn(
-                "font-mono text-xs tracking-wider uppercase px-3 h-full flex items-center border-b-2 transition-colors gap-1 whitespace-nowrap",
-                isMoreActive ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
+                "font-sans text-nav px-3 h-full flex items-center border-b-2 transition-colors gap-1 whitespace-nowrap",
+                isMoreActive ? "text-foreground border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
               )}
             >
-              More <ChevronDown className="w-2.5 h-2.5" />
+              More <ChevronDown className="w-3 h-3" />
             </button>
-            <div className="absolute top-full left-0 hidden group-hover:block bg-card border border-border shadow-lg min-w-[200px] z-50">
+            <div className="absolute top-full left-0 hidden group-hover:block border min-w-[220px] z-50 py-1" style={{ background: 'hsl(252 25% 8%)', borderColor: 'rgba(255,255,255,0.1)' }}>
               {SECONDARY_NAV.map(sub => (
                 <Link
                   key={sub.path}
                   to={sub.path}
-                  className="block px-4 py-2.5 font-mono text-xs tracking-wider text-muted-foreground hover:text-primary hover:bg-primary/[0.04] transition-colors whitespace-nowrap"
+                  className="block px-4 py-2.5 font-sans text-nav text-muted-foreground hover:text-foreground hover:bg-accent/30 transition-colors whitespace-nowrap"
                 >
                   {sub.label}
                 </Link>
@@ -352,7 +347,7 @@ export function TopBar() {
           {isDemoSafe && (
             <button
               onClick={canToggle ? toggleDemoSafe : undefined}
-              className="hidden lg:flex items-center gap-1.5 font-mono text-[9px] tracking-wider uppercase px-2 py-1 border border-civic-green/60 text-civic-green bg-civic-green/10 cursor-pointer hover:bg-civic-green/20 transition-colors whitespace-nowrap"
+              className="hidden lg:flex items-center gap-1.5 font-sans text-caption tracking-wider uppercase px-2 py-1 border border-civic-green/60 text-civic-green bg-civic-green/10 cursor-pointer hover:bg-civic-green/20 transition-colors whitespace-nowrap"
               title="Demo Safe Mode"
             >
               <Shield className="w-3 h-3" />
@@ -360,7 +355,7 @@ export function TopBar() {
             </button>
           )}
           {user && !isDemoSafe && (
-            <div className="hidden lg:flex font-mono text-[9px] tracking-wider uppercase px-2 py-1 border border-primary/40 text-primary whitespace-nowrap">
+            <div className="hidden lg:flex font-sans text-caption tracking-wider uppercase px-2 py-1 border border-primary/40 text-primary whitespace-nowrap">
               Pro
             </div>
           )}
@@ -371,8 +366,7 @@ export function TopBar() {
           ) : (
             <Link
               to="/quiz"
-              className="hidden sm:inline-flex whitespace-nowrap"
-              style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "#f0c040" }}
+              className="hidden sm:inline-flex whitespace-nowrap font-sans text-label text-primary hover-btn"
             >
               Get your lens →
             </Link>
@@ -383,17 +377,17 @@ export function TopBar() {
           {user ? (
             <button
               onClick={signOut}
-              className="font-mono text-[10px] tracking-wider text-muted-foreground hover:text-foreground flex items-center gap-1.5 whitespace-nowrap"
+              className="font-sans text-caption text-muted-foreground hover:text-foreground flex items-center gap-1.5 whitespace-nowrap transition-colors"
             >
-              <LogOut className="w-3 h-3" />
+              <LogOut className="w-3.5 h-3.5" />
               <span className="hidden lg:inline">Sign Out</span>
             </button>
           ) : (
             <Link
               to="/login"
-              className="bg-primary text-primary-foreground px-4 py-1.5 font-mono text-[10px] font-semibold tracking-wider uppercase hover:brightness-110 transition-all flex items-center gap-1.5 whitespace-nowrap"
+              className="bg-primary text-primary-foreground px-5 py-2 font-sans text-btn rounded-full hover:brightness-110 transition-all flex items-center gap-1.5 whitespace-nowrap"
             >
-              <LogIn className="w-3 h-3" />
+              <LogIn className="w-3.5 h-3.5" />
               Sign In
             </Link>
           )}
@@ -412,36 +406,36 @@ export function TopBar() {
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-border bg-card py-2 px-4 space-y-1">
           {/* Mobile search */}
-          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }} className="flex items-center bg-muted/40 border border-border rounded-full px-3 py-2 mb-2">
+          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }} className="flex items-center border rounded-full px-3 py-2.5 mb-2" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}>
             <Search className="w-3.5 h-3.5 text-primary mr-2 shrink-0" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Audit a company..."
-              className="bg-transparent border-none outline-none text-foreground font-mono text-xs w-full placeholder:text-muted-foreground"
+              className="bg-transparent border-none outline-none text-foreground font-sans text-body w-full placeholder:text-muted-foreground"
             />
           </form>
 
           {/* Primary */}
           <button
             onClick={() => { setMobileMenuOpen(false); handleMyIntelligence(); }}
-            className="block w-full text-left px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors"
+            className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
           >
             My Intelligence
           </button>
-          <Link to="/signal-alerts" className="block px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/signal-alerts" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
             Live Signals
           </Link>
           {user ? (
-            <Link to="/career-intelligence" className="block px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/career-intelligence" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
               Career Map
             </Link>
           ) : (
             <button
               onClick={() => { setMobileMenuOpen(false); setSignupModalOpen(true); }}
-              className="block w-full text-left px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground"
+              className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground"
             >
-              Career Map <Lock className="w-2.5 h-2.5 inline opacity-50 ml-1" />
+              Career Map <Lock className="w-3 h-3 inline opacity-50 ml-1" />
             </button>
           )}
 
@@ -453,7 +447,7 @@ export function TopBar() {
             <Link
               key={sub.path}
               to={sub.path}
-              className="block px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors"
+              className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
             >
               {sub.label}
             </Link>

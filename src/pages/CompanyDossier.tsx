@@ -184,7 +184,7 @@ export default function CompanyDossier() {
         <CompanyLogo companyName={company.name} logoUrl={company.logo_url} size="lg" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-heading-2 font-bold text-foreground truncate">{company.name}</h1>
+            <h1 className="text-h1 truncate">{company.name}</h1>
             {isTracked && (
               <Badge className="bg-primary/10 text-primary text-xs">Tracked</Badge>
             )}

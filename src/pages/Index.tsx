@@ -57,21 +57,21 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
       {/* ── Site Header ── */}
       <header className="px-6 lg:px-16 py-4 max-w-[1100px] mx-auto w-full flex items-center justify-between">
-        <Link to="/" className="font-mono text-sm tracking-wider text-foreground font-semibold uppercase">
+        <Link to="/" className="font-serif text-foreground" style={{ fontSize: '20px', fontWeight: 700 }}>
           WDIWF
         </Link>
         <nav className="hidden md:flex items-center gap-4">
           {!authLoading && (
             user ? (
-              <Button size="sm" variant="outline" onClick={() => navigate("/dashboard")} className="font-mono text-xs tracking-wider uppercase">
+              <Button size="sm" variant="outline" onClick={() => navigate("/dashboard")} className="font-sans text-btn">
                 Dashboard
               </Button>
             ) : (
               <>
-                <button onClick={() => navigate("/login")} className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors">
+                <button onClick={() => navigate("/login")} className="font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
                   Sign in
                 </button>
-                <Button size="sm" onClick={() => navigate("/login")} className="font-mono text-xs tracking-wider uppercase">
+                <Button size="sm" onClick={() => navigate("/login")} className="font-sans text-btn rounded-full px-5">
                   Get started
                 </Button>
               </>
@@ -120,12 +120,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <div className="relative z-[1] flex flex-col items-center">
           {/* Line 1 */}
           <h1
+            className="text-display"
             style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 700,
-              fontSize: "clamp(28px, 5vw, 52px)",
               color: "#f0ebe0",
-              lineHeight: 1.15,
               animation: "heroFadeIn 0.8s ease forwards",
             }}
           >
@@ -134,12 +131,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
           {/* Line 2 — delayed */}
           <h1
+            className="text-display"
             style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 700,
-              fontSize: "clamp(28px, 5vw, 52px)",
               color: "#f0c040",
-              lineHeight: 1.15,
               opacity: 0,
               animation: "heroFadeIn 0.6s ease 0.9s forwards",
             }}
@@ -152,11 +146,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             style={{
               fontFamily: "'DM Sans', sans-serif",
               fontWeight: 400,
-              fontSize: "17px",
-              color: "#7a7590",
-              lineHeight: 1.6,
-              maxWidth: "460px",
-              marginTop: "20px",
+              fontSize: "18px",
+              color: "hsl(252 14% 52%)",
+              lineHeight: 1.7,
+              maxWidth: "480px",
+              marginTop: "24px",
               opacity: 0,
               animation: "heroFadeIn 0.6s ease 1.6s forwards",
             }}
@@ -178,20 +172,18 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 <div className="flex flex-col items-center">
                   <button
                     onClick={() => navigate(hasPersona ? "/dashboard" : "/quiz")}
+                    className="hover-btn"
                     style={{
                       fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "15px",
+                      fontSize: "16px",
                       fontWeight: 600,
                       background: "#f0c040",
                       color: "#0d0c0f",
-                      padding: "15px 40px",
+                      padding: "16px 44px",
                       borderRadius: "50px",
                       border: "none",
                       cursor: "pointer",
-                      transition: "opacity 0.2s, transform 0.2s",
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.opacity = "0.88"; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.opacity = "1"; e.currentTarget.style.transform = "translateY(0)"; }}
                   >
                     {hasPersona ? "Continue to my intelligence →" : "Start your audit →"}
                   </button>
