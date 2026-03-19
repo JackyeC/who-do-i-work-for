@@ -28,6 +28,7 @@ export default function CareerIntelligence() {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "upload");
   const [selectedCompany, setSelectedCompany] = useState<CompanyResult | null>(null);
+  const [unknownCompanyName, setUnknownCompanyName] = useState<string | null>(null);
 
   // Auto-create a career profile for every authenticated user
   useEffect(() => {
