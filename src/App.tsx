@@ -96,6 +96,7 @@ const CorporateAlignment = lazy(() => import("./pages/CorporateAlignment"));
 const PolicyIntelligence = lazy(() => import("./pages/PolicyIntelligence"));
 const NegotiationSimulator = lazy(() => import("./pages/NegotiationSimulator"));
 const DecisionEngine = lazy(() => import("./pages/DecisionEngine"));
+const Hire = lazy(() => import("./pages/Hire"));
 const Welcome = lazy(() => import("./pages/Welcome"));
 const Quiz = lazy(() => import("./pages/Quiz"));
 const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
@@ -226,6 +227,7 @@ const App = () => (
                   <Route path="/join" element={<EarlyAccess />} />
                   <Route path="/early-access" element={<Navigate to="/join" replace />} />
                   <Route path="/decision-engine" element={<DecisionEngine />} />
+                  <Route path="/hire" element={<Hire />} />
                   <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
