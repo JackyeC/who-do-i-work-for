@@ -103,6 +103,7 @@ const Welcome = lazy(() => import("./pages/Welcome"));
 const Quiz = lazy(() => import("./pages/Quiz"));
 const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
 const AdminTicker = lazy(() => import("./pages/AdminTicker"));
+const About = lazy(() => import("./pages/About"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -172,6 +173,7 @@ const App = () => (
                   <Route path="/terms" element={<TermsOfService />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
                   <Route path="/disclaimers" element={<Disclaimers />} />
+                  <Route path="/about" element={<About />} />
                   <Route path="/examples" element={<Examples />} />
                   <Route path="/signals" element={<SignalFeed />} />
                   <Route path="/workforce-brief" element={<WorkforceBrief />} />

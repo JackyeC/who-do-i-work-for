@@ -47,8 +47,15 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         </nav>
       </div>
 
-      {/* Row 2 — Copyright */}
-      <p style={{ fontSize: 12, fontWeight: 400, color: '#3d3a4a', lineHeight: 1.5 }}>
+      {/* Row 2 — Neutrality statement */}
+      <p style={{ fontSize: 11, fontWeight: 400, color: 'hsl(var(--muted-foreground))', lineHeight: 1.6, maxWidth: 640 }}>
+        WDIWF does not evaluate the content of your mission. We evaluate whether you're living it.
+        Every mission category is verified the same way — against public data, not our opinion.
+        We don't have a bias. We have receipts.
+      </p>
+
+      {/* Row 3 — Copyright */}
+      <p style={{ fontSize: 11, fontWeight: 400, color: '#3d3a4a', lineHeight: 1.5 }}>
         © {new Date().getFullYear()} Who Do I Work For? — Public records only. We connect the dots; you make the call.
       </p>
     </footer>
