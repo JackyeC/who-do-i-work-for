@@ -253,6 +253,20 @@ Keep it factual and under 300 words. Note that this summary is based on publicly
   } catch (error: unknown) {
     console.error("Voting summary error:", error);
     const message = error instanceof Error ? error.message : "Unknown error";
+
+    if (message.includes("legislators-current.json") || message.includes("ETIMEDOUT")) {
+      return new Response(JSON.stringify({
+        summary: "Legislative source timeout: showing fallback summary mode. Please retry in a moment for enhanced Congress-sourced details.",
+        data_source: "ai_inference",
+        bioguide_id: false,
+        committees: [],
+        sponsored_bills_count: 0,
+        policy_areas: [],
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
