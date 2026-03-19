@@ -27,6 +27,8 @@ import { MarketsSegmentsLayer } from "@/components/dossier/MarketsSegmentsLayer"
 import { InnovationPatentsLayer } from "@/components/dossier/InnovationPatentsLayer";
 import { EcosystemSubcontractorsLayer } from "@/components/dossier/EcosystemSubcontractorsLayer";
 import { InfluencePolicyLayer } from "@/components/dossier/InfluencePolicyLayer";
+import { PoliticalGivingCard } from "@/components/giving/PoliticalGivingCard";
+import { ExecutiveGivingSection } from "@/components/giving/ExecutiveGivingCard";
 import { InstitutionalDNACard } from "@/components/dossier/InstitutionalDNACard";
 import { InsiderScoreBreakdown } from "@/components/dossier/InsiderScoreBreakdown";
 import { PatternsSynthesisLayer } from "@/components/dossier/PatternsSynthesisLayer";
