@@ -180,7 +180,7 @@ const App = () => (
                   <Route path="/job-board" element={<JobIntegrityBoard />} />
                   <Route path="/job-board/:id" element={<JobDetailPage />} />
                   <Route path="/request-correction" element={<RequestCorrection />} />
-                  <Route path="/offer-check/:companyId" element={<OfferCheck />} />
+                  <Route path="/offer-check/:companyId" element={<ProtectedRoute><OfferCheck /></ProtectedRoute>} />
                   <Route path="/strategic-offer-review" element={<StrategicOfferReview />} />
                   <Route path="/offer-review/:companyId" element={<ProtectedRoute><OfferReview /></ProtectedRoute>} />
                   <Route path="/offer-review-direct" element={<ProtectedRoute><OfferReviewDirect /></ProtectedRoute>} />
