@@ -406,36 +406,36 @@ export function TopBar() {
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-border bg-card py-2 px-4 space-y-1">
           {/* Mobile search */}
-          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }} className="flex items-center bg-muted/40 border border-border rounded-full px-3 py-2 mb-2">
+          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }} className="flex items-center border rounded-full px-3 py-2.5 mb-2" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}>
             <Search className="w-3.5 h-3.5 text-primary mr-2 shrink-0" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Audit a company..."
-              className="bg-transparent border-none outline-none text-foreground font-mono text-xs w-full placeholder:text-muted-foreground"
+              className="bg-transparent border-none outline-none text-foreground font-sans text-body w-full placeholder:text-muted-foreground"
             />
           </form>
 
           {/* Primary */}
           <button
             onClick={() => { setMobileMenuOpen(false); handleMyIntelligence(); }}
-            className="block w-full text-left px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors"
+            className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
           >
             My Intelligence
           </button>
-          <Link to="/signal-alerts" className="block px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/signal-alerts" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
             Live Signals
           </Link>
           {user ? (
-            <Link to="/career-intelligence" className="block px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/career-intelligence" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
               Career Map
             </Link>
           ) : (
             <button
               onClick={() => { setMobileMenuOpen(false); setSignupModalOpen(true); }}
-              className="block w-full text-left px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground"
+              className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground"
             >
-              Career Map <Lock className="w-2.5 h-2.5 inline opacity-50 ml-1" />
+              Career Map <Lock className="w-3 h-3 inline opacity-50 ml-1" />
             </button>
           )}
 
@@ -447,7 +447,7 @@ export function TopBar() {
             <Link
               key={sub.path}
               to={sub.path}
-              className="block px-3 py-2.5 font-mono text-[11px] tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors"
+              className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
             >
               {sub.label}
             </Link>

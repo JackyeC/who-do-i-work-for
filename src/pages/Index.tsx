@@ -57,21 +57,21 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
       {/* ── Site Header ── */}
       <header className="px-6 lg:px-16 py-4 max-w-[1100px] mx-auto w-full flex items-center justify-between">
-        <Link to="/" className="font-mono text-sm tracking-wider text-foreground font-semibold uppercase">
+        <Link to="/" className="font-serif text-foreground" style={{ fontSize: '20px', fontWeight: 700 }}>
           WDIWF
         </Link>
         <nav className="hidden md:flex items-center gap-4">
           {!authLoading && (
             user ? (
-              <Button size="sm" variant="outline" onClick={() => navigate("/dashboard")} className="font-mono text-xs tracking-wider uppercase">
+              <Button size="sm" variant="outline" onClick={() => navigate("/dashboard")} className="font-sans text-btn">
                 Dashboard
               </Button>
             ) : (
               <>
-                <button onClick={() => navigate("/login")} className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors">
+                <button onClick={() => navigate("/login")} className="font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
                   Sign in
                 </button>
-                <Button size="sm" onClick={() => navigate("/login")} className="font-mono text-xs tracking-wider uppercase">
+                <Button size="sm" onClick={() => navigate("/login")} className="font-sans text-btn rounded-full px-5">
                   Get started
                 </Button>
               </>
