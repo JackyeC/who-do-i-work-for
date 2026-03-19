@@ -131,18 +131,12 @@ function ZeroStateIntelligence({ companyName, scanContext }: { companyName: stri
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between gap-3 pt-2 border-t border-border/30">
-        <div className="flex items-center gap-1.5 min-w-0">
+      <div className="flex items-center gap-1.5 pt-2 border-t border-border/30">
           <Search className="w-3 h-3 text-muted-foreground shrink-0" />
           <span className="text-xs text-muted-foreground truncate">
-            Checked: {(scanContext?.checkedSources || ["Careers page"]).join(" · ")}
+            Sources: {(scanContext?.checkedSources || ["Careers page"]).filter(s => !s.includes("ATS endpoint") && !s.includes("LinkedIn")).join(" · ")}
             {scanContext?.lastScanned && ` · as of ${new Date(scanContext.lastScanned).toLocaleDateString()}`}
           </span>
-        </div>
-        <span className="text-xs text-primary font-medium whitespace-nowrap flex items-center gap-1 shrink-0 cursor-default">
-          <ExternalLink className="w-3 h-3" />
-          Search LinkedIn for recruiters
-        </span>
       </div>
     </div>
   );

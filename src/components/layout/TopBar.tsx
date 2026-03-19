@@ -239,10 +239,10 @@ export function TopBar() {
             <PersonaChip />
           ) : (
             <Link
-              to="/quiz"
+              to="/join"
               className="hidden sm:inline-flex whitespace-nowrap font-sans text-label text-primary hover-btn"
             >
-              Get your lens →
+              Get early access →
             </Link>
           )}
 
