@@ -36,7 +36,6 @@ export default function Browse() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isDiscovering, setIsDiscovering] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [isDiscovering, setIsDiscovering] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
