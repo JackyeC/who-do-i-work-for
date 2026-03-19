@@ -552,7 +552,7 @@ export default function Quiz() {
               {/* Question text */}
               <h2
                 style={{
-                  fontFamily: "'Playfair Display', serif",
+                  fontFamily: "'DM Sans', sans-serif",
                   fontWeight: 600,
                   fontSize: "clamp(24px, 4vw, 36px)",
                   color: "#f0ebe0",
