@@ -217,8 +217,8 @@ export function TopBar() {
 
   /* Primary nav items (desktop) */
   const PRIMARY_NAV = [
-    { id: "intelligence", label: "My Intelligence", icon: BarChart3, onClick: handleMyIntelligence, matchPaths: ["/dashboard"] },
-    { id: "signals", label: "Live Signals", icon: Radio, path: "/signal-alerts", matchPaths: ["/signal-alerts"] },
+    { id: "intelligence", label: "My Intel", icon: BarChart3, onClick: handleMyIntelligence, matchPaths: ["/dashboard"] },
+    { id: "signals", label: "Signals", icon: Radio, path: "/signal-alerts", matchPaths: ["/signal-alerts"] },
     { id: "career-map", label: "Career Map", icon: Compass, path: "/career-intelligence", matchPaths: ["/career-intelligence", "/career-map"], auth: true },
   ];
 
@@ -260,12 +260,10 @@ export function TopBar() {
       {/* Header */}
       <header className="sticky top-0 z-50 border-b h-[64px] flex items-center px-4 lg:px-6" style={{ background: 'rgba(10,10,14,0.92)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.06)' }}>
         {/* Brand */}
-        <Link to="/" className="flex flex-col shrink-0 mr-4">
-          <span className="font-sans text-foreground leading-none whitespace-nowrap flex items-center gap-1.5" style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.5px' }}>
+        <Link to="/" className="flex items-center shrink-0 mr-4">
+          <span className="font-sans text-foreground leading-none whitespace-nowrap" style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.5px' }}>
             Who Do I Work For?
-            <span className="font-sans text-[11px] tracking-wider uppercase px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-sm leading-none font-semibold">Beta</span>
           </span>
-          <span className="font-sans text-eyebrow text-muted-foreground whitespace-nowrap mt-0.5">Career Intelligence Platform</span>
         </Link>
 
         {/* ── Audit search bar (always visible, most prominent) ── */}
@@ -326,7 +324,7 @@ export function TopBar() {
                 isMoreActive ? "text-foreground border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
               )}
             >
-              More <ChevronDown className="w-3 h-3" />
+              ··· <ChevronDown className="w-3 h-3" />
             </button>
             <div className="absolute top-full left-0 hidden group-hover:block border min-w-[220px] z-50 py-1" style={{ background: 'hsl(252 25% 8%)', borderColor: 'rgba(255,255,255,0.1)' }}>
               {SECONDARY_NAV.map(sub => (
@@ -392,6 +390,22 @@ export function TopBar() {
             </Link>
           )}
 
+          {/* Audit CTA */}
+          <Link
+            to="/browse"
+            className="hidden sm:inline-flex items-center whitespace-nowrap font-sans transition-all hover:brightness-110"
+            style={{
+              background: '#f0c040',
+              color: '#0a0a0e',
+              borderRadius: '50px',
+              padding: '8px 20px',
+              fontSize: '14px',
+              fontWeight: 600,
+            }}
+          >
+            Audit →
+          </Link>
+
           {/* Mobile hamburger */}
           <button
             className="md:hidden p-2 text-muted-foreground hover:text-foreground"
@@ -421,10 +435,10 @@ export function TopBar() {
             onClick={() => { setMobileMenuOpen(false); handleMyIntelligence(); }}
             className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
           >
-            My Intelligence
+            My Intel
           </button>
           <Link to="/signal-alerts" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
-            Live Signals
+            Signals
           </Link>
           {user ? (
             <Link to="/career-intelligence" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">

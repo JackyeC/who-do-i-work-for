@@ -37,7 +37,7 @@ export function PersonaChip() {
           border: "1px solid rgba(240,192,64,0.3)",
         }}
       >
-        Viewing as: {personaName}
+        {personaName}
       </button>
 
       {open && (
