@@ -161,6 +161,7 @@ export default function Dashboard() {
         </h1>
       </div>
       <div className="flex-1 overflow-y-auto px-6 py-6 max-w-5xl">
+        {!hasTakenQuiz && <PersonaQuizBanner />}
         {showUpsell && <PostPurchaseUpsell onDismiss={dismissUpsell} />}
         {renderContent()}
       </div>

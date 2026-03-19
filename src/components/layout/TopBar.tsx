@@ -258,6 +258,7 @@ export function TopBar() {
             </div>
           )}
 
+          <PersonaChip />
           <ThemeToggle />
 
           {user ? (
