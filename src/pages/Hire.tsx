@@ -17,6 +17,38 @@ export default function Hire() {
     path: "/hire",
   });
 
+  const markSignedUp = () => {
+    try {
+      localStorage.setItem("wdiwf_signed_up", "true");
+    } catch (storageError) {
+      console.warn("Could not persist signup state:", storageError);
+    }
+  };
+
+  const queueLocalSignupFallback = (emailValue: string, referralSource: string) => {
+    try {
+      const existing = localStorage.getItem("wdiwf_pending_signups");
+      const queue = existing ? JSON.parse(existing) : [];
+
+      if (!Array.isArray(queue)) return false;
+      if (!queue.some((entry) => entry?.email === emailValue)) {
+        queue.push({
+          email: emailValue,
+          first_name: "Recruiter",
+          persona: "I recruit or hire",
+          referral_source: referralSource,
+          created_at: new Date().toISOString(),
+        });
+        localStorage.setItem("wdiwf_pending_signups", JSON.stringify(queue));
+      }
+
+      return true;
+    } catch (storageError) {
+      console.warn("Could not queue local signup fallback:", storageError);
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -30,6 +62,11 @@ export default function Hire() {
     const isDuplicateError = (code?: string | null, message?: string | null, details?: string | null) =>
       code === "23505" || `${message ?? ""} ${details ?? ""}`.toLowerCase().includes("duplicate key");
 
+    const completeSignup = () => {
+      setSubmitted(true);
+      markSignedUp();
+    };
+
     try {
       const { error: primaryError } = await supabase
         .from("early_access_signups")
@@ -41,12 +78,7 @@ export default function Hire() {
         });
 
       if (!primaryError || isDuplicateError(primaryError.code, primaryError.message, primaryError.details)) {
-        setSubmitted(true);
-        try {
-          localStorage.setItem("wdiwf_signed_up", "true");
-        } catch (storageError) {
-          console.warn("Could not persist signup state:", storageError);
-        }
+        completeSignup();
         return;
       }
 
@@ -57,19 +89,28 @@ export default function Hire() {
         .insert({ email: normalizedEmail, source: referralSource });
 
       if (!fallbackError || isDuplicateError(fallbackError.code, fallbackError.message, fallbackError.details)) {
-        setSubmitted(true);
-        try {
-          localStorage.setItem("wdiwf_signed_up", "true");
-        } catch (storageError) {
-          console.warn("Could not persist signup state:", storageError);
-        }
+        completeSignup();
         return;
       }
 
       console.error("Hire signup fallback insert error:", fallbackError.code, fallbackError.message, fallbackError.details);
+
+      if (queueLocalSignupFallback(normalizedEmail, referralSource)) {
+        console.warn("Signup saved locally due to backend error.");
+        completeSignup();
+        return;
+      }
+
       setError("Something went wrong. Please try again.");
     } catch (unexpectedError) {
       console.error("Hire signup unexpected error:", unexpectedError);
+
+      if (queueLocalSignupFallback(normalizedEmail, referralSource)) {
+        console.warn("Signup saved locally due to unexpected error.");
+        completeSignup();
+        return;
+      }
+
       setError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
