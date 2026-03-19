@@ -34,7 +34,7 @@ const tracks = [
     priceNote: "",
     period: "/mo",
     mode: "subscription" as const,
-    priceId: "price_scout_monthly", // placeholder — will be replaced with real Stripe price
+    priceId: "price_1TCdD87Qj0W6UtN9NBt8Wtb9",
     hook: "Your AI Coach.",
     description: "24/7 values-audit of any job link. Know before you apply.",
     action: "Activate AI Coach",
