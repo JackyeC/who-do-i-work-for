@@ -22,7 +22,7 @@ import { UserProfileForm } from "@/components/jobs/UserProfileForm";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";
 import { JobAlertPreferences } from "@/components/jobs/JobAlertPreferences";
 import { AskJackyeWidget } from "@/components/jobs/AskJackyeWidget";
-import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAutoApplySubscription, STRIPE_TIERS } from "@/hooks/use-premium";
