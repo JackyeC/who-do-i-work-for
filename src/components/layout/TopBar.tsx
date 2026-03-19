@@ -226,13 +226,13 @@ export function TopBar() {
         <div className="inline-block animate-ticker">
           {finalTickerItems.map((t, i) => (
             <span key={i} className="px-8">
-              <span className="font-mono text-xs font-medium tracking-wider">{t}</span>
+              <span className="font-mono text-xs font-medium tracking-wider" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
               <span className="opacity-50 px-4">|</span>
             </span>
           ))}
           {finalTickerItems.slice(0, 2).map((t, i) => (
             <span key={`dup-${i}`} className="px-8">
-              <span className="font-mono text-xs font-medium tracking-wider">{t}</span>
+              <span className="font-mono text-xs font-medium tracking-wider" style={t.color ? { color: t.color } : undefined}>{t.text}</span>
               <span className="opacity-50 px-4">|</span>
             </span>
           ))}
