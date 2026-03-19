@@ -101,10 +101,7 @@ export default function CompanyProfile() {
     queryKey: ["company-executives", dbCompanyId],
     queryFn: async () => {
       const { data } = await supabase.from("company_executives").select("*").eq("company_id", dbCompanyId!).order("total_donations", { ascending: false });
-      if (!data) return [];
-      const CSUITE_RE = /\b(CEO|CFO|COO|CTO|CIO|CISO|CMO|CPO|CLO|CDO|CSO|CHRO|CAO|CRO|CCO|CHAIRMAN|CHAIRWOMAN|CHAIR|PRESIDENT|VICE\s*PRESIDENT|VP|SVP|EVP|MANAGING\s*DIRECTOR|GENERAL\s*COUNSEL|PARTNER|FOUNDER|CO-?FOUNDER|OWNER|DIRECTOR|CHIEF|HEAD|EXECUTIVE|BOARD\s*MEMBER|TREASURER|SECRETARY|GENERAL\s*MANAGER|PRINCIPAL)\b/i;
-      const filtered = data.filter(e => CSUITE_RE.test(e.title || ""));
-      return filtered.length > 0 ? filtered : data.slice(0, 5);
+      return data || [];
     },
     enabled: !!dbCompanyId, refetchInterval: pollInterval,
   });
@@ -154,8 +151,8 @@ export default function CompanyProfile() {
   const { data: tiPayEquity } = useQuery({ queryKey: ["ti-pay", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("pay_equity_signals" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
   const { data: tiSentiment } = useQuery({ queryKey: ["ti-sentiment", dbCompanyId], queryFn: async () => { const { count } = await supabase.from("company_worker_sentiment" as any).select("id", { count: "exact", head: true }).eq("company_id", dbCompanyId!); return (count || 0) > 0; }, enabled: !!dbCompanyId });
   const { data: dbBoardMembers } = useQuery({
-    queryKey: ["board-members-count", dbCompanyId],
-    queryFn: async () => { const { data } = await (supabase as any).from("board_members").select("id, is_independent").eq("company_id", dbCompanyId!); return data || []; },
+    queryKey: ["board-members-full", dbCompanyId],
+    queryFn: async () => { const { data } = await (supabase as any).from("board_members").select("id, name, title, is_independent, departed_at, verification_status, bio, committees, previous_company, start_year, photo_url, source").eq("company_id", dbCompanyId!); return data || []; },
     enabled: !!dbCompanyId,
   });
 

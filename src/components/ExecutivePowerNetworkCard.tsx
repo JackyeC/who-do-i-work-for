@@ -1,9 +1,11 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Network, Building2, Landmark, Users, ExternalLink, Briefcase, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { deduplicatePeople } from "@/lib/executive-utils";
 
 interface Props {
   companyId?: string;
@@ -165,10 +167,14 @@ export function ExecutivePowerNetworkCard({ companyId, companyName }: Props) {
     }
   });
 
-  if (networks.length === 0 && !executives?.length) return null;
+  // Deduplicate networks by person name
+  const dedupedNetworks = deduplicatePeople(networks);
 
-  const totalConnections = networks.reduce((a, n) => a + n.connections.length, 0);
-  const uniqueOrgs = new Set(networks.flatMap(n => n.connections.map(c => c.name)));
+  if (dedupedNetworks.length === 0 && !executives?.length) return null;
+
+  const totalConnections = dedupedNetworks.reduce((a, n) => a + n.connections.length, 0);
+  const uniqueOrgs = new Set(dedupedNetworks.flatMap(n => n.connections.map(c => c.name)));
+  
 
   return (
     <Card>
@@ -184,11 +190,11 @@ export function ExecutivePowerNetworkCard({ companyId, companyName }: Props) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {networks.length === 0 && (
+        {dedupedNetworks.length === 0 && (
           <p className="text-sm text-muted-foreground">No executive network connections detected yet. This updates as more intelligence is gathered.</p>
         )}
 
-        {networks.slice(0, 6).map((net, i) => (
+        {dedupedNetworks.slice(0, 6).map((net, i) => (
           <div key={i} className="rounded-lg border border-border/60 p-3 space-y-2">
             {/* Executive header */}
             <div className="flex items-center justify-between">
@@ -221,8 +227,8 @@ export function ExecutivePowerNetworkCard({ companyId, companyName }: Props) {
           </div>
         ))}
 
-        {networks.length > 6 && (
-          <p className="text-xs text-muted-foreground text-center">+ {networks.length - 6} more executives with connections</p>
+        {dedupedNetworks.length > 6 && (
+          <p className="text-xs text-muted-foreground text-center">+ {dedupedNetworks.length - 6} more executives with connections</p>
         )}
 
         <p className="text-[10px] text-muted-foreground">
