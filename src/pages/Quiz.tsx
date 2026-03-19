@@ -673,7 +673,7 @@ export default function Quiz() {
         {/* Results screen */}
         <div
           className="flex flex-col items-center justify-center px-6"
-          style={{ width: "100vw", minHeight: "100vh" }}
+          style={{ width: "100vw", minHeight: "calc(100vh - 100px)", paddingTop: 100 }}
         >
           {result && <ResultsScreen result={result} onReset={reset} onCopy={copyProfile} />}
         </div>
