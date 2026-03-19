@@ -258,24 +258,24 @@ export function TopBar() {
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card border-b border-border h-[56px] flex items-center px-4 lg:px-6">
+      <header className="sticky top-0 z-50 border-b h-[64px] flex items-center px-4 lg:px-6" style={{ background: 'rgba(10,10,14,0.92)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.06)' }}>
         {/* Brand */}
         <Link to="/" className="flex flex-col shrink-0 mr-4">
-          <span className="font-serif text-sm text-primary leading-none whitespace-nowrap flex items-center gap-1.5">
+          <span className="font-serif text-foreground leading-none whitespace-nowrap flex items-center gap-1.5" style={{ fontSize: '20px', fontWeight: 700 }}>
             Who Do I Work For?
-            <span className="font-mono text-[9px] tracking-wider uppercase px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-sm leading-none">Beta</span>
+            <span className="font-sans text-[11px] tracking-wider uppercase px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-sm leading-none font-semibold">Beta</span>
           </span>
-          <span className="font-mono text-[10px] uppercase text-muted-foreground tracking-[0.2em] whitespace-nowrap">Career Intelligence Platform</span>
+          <span className="font-sans text-eyebrow text-muted-foreground whitespace-nowrap mt-0.5">Career Intelligence Platform</span>
         </Link>
 
         {/* ── Audit search bar (always visible, most prominent) ── */}
-        <form onSubmit={handleSearch} className="hidden sm:flex items-center bg-muted/40 border border-border rounded-full px-3 py-1.5 w-[200px] lg:w-[240px] mr-2 shrink-0">
+        <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded-full px-3 py-2 w-[200px] lg:w-[260px] mr-3 shrink-0" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}>
           <Search className="w-3.5 h-3.5 text-primary mr-2 shrink-0" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Audit a company..."
-            className="bg-transparent border-none outline-none text-foreground font-mono text-xs w-full placeholder:text-muted-foreground"
+            className="bg-transparent border-none outline-none text-foreground font-sans text-nav w-full placeholder:text-muted-foreground"
           />
         </form>
 
