@@ -285,37 +285,32 @@ export function TopBar() {
             const requiresAuth = (item as any).auth && !user;
             const active = item.matchPaths.some(p => location.pathname.startsWith(p));
             const Icon = item.icon;
+            const navClass = "font-sans text-nav px-3 h-full flex items-center border-b-2 transition-colors gap-1.5 whitespace-nowrap";
             return (
               <div key={item.id} className="h-full">
                 {requiresAuth ? (
                   <button
                     onClick={() => setSignupModalOpen(true)}
-                    className="font-mono text-xs tracking-wider uppercase px-3 h-full flex items-center border-b-2 border-transparent text-muted-foreground hover:text-foreground transition-colors gap-1.5 whitespace-nowrap"
+                    className={cn(navClass, "border-transparent text-muted-foreground hover:text-foreground")}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-4 h-4" />
                     {item.label}
-                    <Lock className="w-2.5 h-2.5 opacity-50" />
+                    <Lock className="w-3 h-3 opacity-50" />
                   </button>
                 ) : item.onClick ? (
                   <button
                     onClick={item.onClick}
-                    className={cn(
-                      "font-mono text-xs tracking-wider uppercase px-3 h-full flex items-center border-b-2 transition-colors gap-1.5 whitespace-nowrap",
-                      active ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
-                    )}
+                    className={cn(navClass, active ? "text-foreground border-primary" : "text-muted-foreground border-transparent hover:text-foreground")}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-4 h-4" />
                     {item.label}
                   </button>
                 ) : (
                   <Link
                     to={item.path!}
-                    className={cn(
-                      "font-mono text-xs tracking-wider uppercase px-3 h-full flex items-center border-b-2 transition-colors gap-1.5 whitespace-nowrap",
-                      active ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
-                    )}
+                    className={cn(navClass, active ? "text-foreground border-primary" : "text-muted-foreground border-transparent hover:text-foreground")}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-4 h-4" />
                     {item.label}
                   </Link>
                 )}
@@ -327,18 +322,18 @@ export function TopBar() {
           <div className="relative h-full group">
             <button
               className={cn(
-                "font-mono text-xs tracking-wider uppercase px-3 h-full flex items-center border-b-2 transition-colors gap-1 whitespace-nowrap",
-                isMoreActive ? "text-primary border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
+                "font-sans text-nav px-3 h-full flex items-center border-b-2 transition-colors gap-1 whitespace-nowrap",
+                isMoreActive ? "text-foreground border-primary" : "text-muted-foreground border-transparent hover:text-foreground"
               )}
             >
-              More <ChevronDown className="w-2.5 h-2.5" />
+              More <ChevronDown className="w-3 h-3" />
             </button>
-            <div className="absolute top-full left-0 hidden group-hover:block bg-card border border-border shadow-lg min-w-[200px] z-50">
+            <div className="absolute top-full left-0 hidden group-hover:block border min-w-[220px] z-50 py-1" style={{ background: 'hsl(252 25% 8%)', borderColor: 'rgba(255,255,255,0.1)' }}>
               {SECONDARY_NAV.map(sub => (
                 <Link
                   key={sub.path}
                   to={sub.path}
-                  className="block px-4 py-2.5 font-mono text-xs tracking-wider text-muted-foreground hover:text-primary hover:bg-primary/[0.04] transition-colors whitespace-nowrap"
+                  className="block px-4 py-2.5 font-sans text-nav text-muted-foreground hover:text-foreground hover:bg-accent/30 transition-colors whitespace-nowrap"
                 >
                   {sub.label}
                 </Link>
