@@ -118,7 +118,7 @@ export function ValuesCompanyCard({ company, signals, evidence, lensLabel, hasCo
 
           {/* Signal items */}
           <div className="space-y-2 mb-3">
-            {signals.slice(0, expanded ? signals.length : 3).map((signal) => {
+            {sortedSignals.slice(0, expanded ? sortedSignals.length : 3).map((signal) => {
               const dirConfig = SIGNAL_DIRECTION_CONFIG[signal.signal_direction || "informational_signal"];
               const confKey = signal.confidence_level || signal.confidence || "medium";
               const confConfig = CONFIDENCE_CONFIG[confKey] || CONFIDENCE_CONFIG.medium;
