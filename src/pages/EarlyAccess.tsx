@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSEO } from "@/hooks/use-page-seo";
 
-const LAUNCH_DATE = new Date("2025-04-06");
-const IS_LAUNCHED = new Date() >= LAUNCH_DATE;
+// Launch date removed — /join page always shows the signup form
 const BASE_COUNT = 312;
 
 const PERSONAS = [
@@ -111,10 +110,7 @@ export default function EarlyAccess() {
     );
   };
 
-  if (IS_LAUNCHED) {
-    window.location.href = "/quiz";
-    return null;
-  }
+  // /join always shows the signup form — no redirect
 
   return (
     <div
@@ -226,14 +222,12 @@ export default function EarlyAccess() {
                   Explore WDIWF now →
                 </a>
                 <br />
-                <a
-                  href="https://www.linkedin.com/in/jackyeclayton/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ fontSize: 14, color: "#7a7590", textDecoration: "none" }}
+                <button
+                  onClick={handleShare}
+                  style={{ fontSize: 14, color: "#7a7590", textDecoration: "none", background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
                 >
-                  Follow Jackye on LinkedIn →
-                </a>
+                  Copy share link →
+                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>

@@ -34,8 +34,8 @@ const INTERPRETATIONS: Record<string, IntelligenceSignalData> = {
     whatTheySay: "\"Join our growing team\" — career branding is active.",
     whatWeSee: "0 active postings found in the applicant tracking system.",
     intelligence: "Corporate roles may be filled internally, on seasonal freeze, or the careers page is an evergreen marketing asset.",
-    suggestedAction: "Search LinkedIn for company recruiters to find unlisted pipeline opportunities.",
-    checkedSources: ["Careers landing page", "ATS endpoint (Workday/Greenhouse/Lever)"],
+    suggestedAction: "Check the company's careers page directly or set a watch alert for new postings.",
+    checkedSources: ["Careers landing page"],
   },
   court_records: {
     title: "No Public Court Filings Found",

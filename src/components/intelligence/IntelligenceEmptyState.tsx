@@ -57,7 +57,7 @@ const SIGNAL_MESSAGES: Record<SignalCategory, IntelligenceMessages> = {
   jobs: {
     beforeScan: "Job patterns reveal hiring reality vs hiring marketing.",
     noData: "No active job listings detected across tracked sources. This may indicate a hiring pause, internal hiring, or limited public recruiting.",
-    checkedSources: ["Careers page", "ATS endpoint", "LinkedIn"],
+    checkedSources: ["Careers page"],
   },
   lobbying: {
     beforeScan: "Lobbying expenditures reveal which policies a company is trying to shape.",
