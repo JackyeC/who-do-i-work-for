@@ -86,6 +86,7 @@ const Disclaimers = () => {
     </main>
     <Footer />
   </div>
-);
+  );
+};
 
 export default Disclaimers;
