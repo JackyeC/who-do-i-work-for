@@ -33,7 +33,7 @@ export function LeadershipSnapshot({ companyId, companyName }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("board_members")
-        .select("name, title, is_independent, departed_at, verification_status")
+        .select("name, title, is_independent, departed_at, verification_status, last_verified_at")
         .eq("company_id", companyId)
         .limit(12);
       return data || [];
