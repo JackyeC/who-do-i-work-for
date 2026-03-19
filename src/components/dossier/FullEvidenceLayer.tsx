@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IntelligenceEmptyState } from "@/components/intelligence/IntelligenceEmptyState";
 import { FileText, ExternalLink, DollarSign, Megaphone, Landmark, Lightbulb, Network, Globe, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";

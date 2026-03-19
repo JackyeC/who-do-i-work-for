@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IntelligenceEmptyState } from "@/components/intelligence/IntelligenceEmptyState";
 import { AlertTriangle, ExternalLink, Shield, CheckCircle2, HelpCircle, ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
