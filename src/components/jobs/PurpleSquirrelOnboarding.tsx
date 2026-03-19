@@ -75,8 +75,8 @@ export function PurpleSquirrelOnboarding({ onComplete }: PurpleSquirrelOnboardin
     }
   };
 
-  const handleLaunch = () => {
-    // Save parameters to localStorage for now
+  const handleLaunch = async () => {
+    // Save parameters to localStorage
     const params = {
       dna: dnaValues,
       targetTitles,
@@ -95,7 +95,50 @@ export function PurpleSquirrelOnboarding({ onComplete }: PurpleSquirrelOnboardin
       is_paused: false,
     });
 
-    onComplete();
+    // POST to external API
+    setSubmitting(true);
+    try {
+      const flexVal = dnaValues.flexibility ?? 50;
+      const locationPref = flexVal > 70 ? "remote" : flexVal >= 30 ? "hybrid" : "onsite";
+      const salaryMin = minComp ? Number(minComp) : 80000;
+      const salaryMax = minComp ? Math.round(Number(minComp) * 1.5) : 150000;
+      const sortedValues = [...DNA_DIALS]
+        .sort((a, b) => (dnaValues[b.id] ?? 50) - (dnaValues[a.id] ?? 50))
+        .map(d => d.label);
+
+      const res = await fetch("https://wdiwf-integrity-api.onrender.com/api/candidates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user?.email ?? "",
+          target_roles: targetTitles,
+          industries: targetCompanies,
+          location_preference: locationPref,
+          salary_min: salaryMin,
+          salary_max: salaryMax,
+          values: sortedValues,
+          integrity_threshold: dnaLockThreshold,
+          narrative_gap_filter: true,
+          mission_alignment: true,
+          work_orientation: (dnaValues.values ?? 50) / 100,
+        }),
+      });
+
+      if (!res.ok) throw new Error("API error");
+
+      toast({
+        title: "Your agent is active",
+        description: "Check your dashboard for updates.",
+      });
+    } catch {
+      toast({
+        title: "We saved your preferences",
+        description: "Our team will activate your agent within 24 hours.",
+      });
+    } finally {
+      setSubmitting(false);
+      onComplete();
+    }
   };
 
   const canProceed = () => {
