@@ -97,6 +97,7 @@ const PolicyIntelligence = lazy(() => import("./pages/PolicyIntelligence"));
 const NegotiationSimulator = lazy(() => import("./pages/NegotiationSimulator"));
 const DecisionEngine = lazy(() => import("./pages/DecisionEngine"));
 const Welcome = lazy(() => import("./pages/Welcome"));
+const Quiz = lazy(() => import("./pages/Quiz"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -218,6 +219,7 @@ const App = () => (
                   <Route path="/alignment/:slug" element={<CorporateAlignment />} />
                   <Route path="/policy-intelligence" element={<PolicyIntelligence />} />
                   <Route path="/negotiation-simulator" element={<NegotiationSimulator />} />
+                  <Route path="/quiz" element={<Quiz />} />
                   <Route path="/decision-engine" element={<DecisionEngine />} />
                   <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
