@@ -179,6 +179,15 @@ export function LeadershipInfluenceSection({
                         {formatCurrency(exec.total_donations)}
                       </Badge>
                     )}
+                    <Link
+                      to={`/request-correction?company=${encodeURIComponent(companyName)}&person=${encodeURIComponent(exec.name)}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-[11px] text-[#3d3a4a] hover:text-primary transition-colors flex items-center gap-0.5"
+                      style={{ fontFamily: "'DM Sans', sans-serif" }}
+                      title="Report incorrect data"
+                    >
+                      <Flag className="w-3 h-3" />
+                    </Link>
                     <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                   </div>
                 </button>
