@@ -235,13 +235,11 @@ IMPORTANT RULES:
     const userContent: any[] = [];
 
     if (useDirectFile) {
-      // Send the raw file as base64 inline_data for Gemini to read directly
+      // Send the raw file as base64 via image_url data-URI (supported by Gemini for PDFs/docs)
       userContent.push({
-        type: "file",
-        file: {
-          filename: filename,
-          content_type: getMimeType(filename),
-          data: fileBase64,
+        type: "image_url",
+        image_url: {
+          url: `data:${getMimeType(filename)};base64,${fileBase64}`,
         },
       });
       userContent.push({
