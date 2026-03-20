@@ -331,6 +331,7 @@ export default function AutoApply() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(INITIAL);
   const [done, setDone] = useState(false);
+  const [showKit, setShowKit] = useState(false);
 
   usePageSEO({
     title: "Apply When It Counts™ — WDIWF",
