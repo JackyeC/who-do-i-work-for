@@ -79,10 +79,12 @@ function MetaRow({ icon, children }: { icon: React.ReactNode; children: React.Re
 }
 
 export default function SampleDossier() {
+  const [activeView, setActiveView] = useState<"dossier" | "interview-kit">("dossier");
+
   usePageSEO({
     title: "Sample Application Dossier — WDIWF",
     description:
-      "See what candidates receive when the WDIWF Job Search Agent applies on their behalf. Company intel, values match, and interview prep in one dossier.",
+      "You deserve to know exactly who you work for. See what candidates receive when the WDIWF Job Search Agent applies on their behalf.",
     path: "/dossier",
   });
 
