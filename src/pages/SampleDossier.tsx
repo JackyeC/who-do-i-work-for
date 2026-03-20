@@ -290,6 +290,7 @@ export default function SampleDossier() {
             </p>
           </div>
         </div>
+        )}
       </div>
     </div>
   );
