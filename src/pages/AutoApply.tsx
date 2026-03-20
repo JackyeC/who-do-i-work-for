@@ -316,7 +316,7 @@ function DualSlider({
 /* ══════════════════════════════════════════════════════════════════ */
 
 const STEP_META = [
-  { label: "Your Dream Job", icon: Briefcase },
+  { label: "Your Aligned Role", icon: Briefcase },
   { label: "Your Values", icon: Heart },
   { label: "Non-Negotiables", icon: ShieldAlert },
   { label: "Upload Resume", icon: FileText },
