@@ -293,18 +293,12 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/*
           HOW IT WORKS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="px-6 lg:px-16 py-24" style={{ background: "#0a0a0e" }}>
+      <section className="px-6 lg:px-16 py-24 bg-background">
         <div className="max-w-[900px] mx-auto">
-          <p
-            className="text-xs uppercase tracking-[3px] font-semibold text-center mb-3"
-            style={{ color: "#f0c040" }}
-          >
+          <p className="text-xs uppercase tracking-[3px] font-semibold text-center mb-3 text-primary">
             How It Works
           </p>
-          <h2
-            className="font-sans text-center leading-[1.1] mb-16"
-            style={{ fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 800, letterSpacing: "-2px", color: "#f0ebe0" }}
-          >
+          <h2 className="font-sans text-center leading-[1.1] mb-16 text-display text-foreground">
             Four steps. Full transparency.
           </h2>
 
@@ -333,33 +327,15 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             ].map((item) => (
               <div
                 key={item.step}
-                className="rounded-2xl p-7"
-                style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
+                className="rounded-2xl p-7 bg-muted/30 border border-border"
               >
-                <span
-                  className="inline-block font-sans mb-4"
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    color: "#f0c040",
-                    letterSpacing: "1px",
-                  }}
-                >
+                <span className="inline-block font-sans mb-4 text-caption font-bold text-primary tracking-wider">
                   STEP {item.step}
                 </span>
-                <h3
-                  className="font-sans font-bold mb-3"
-                  style={{ fontSize: "17px", color: "#f0ebe0", lineHeight: 1.3 }}
-                >
+                <h3 className="font-sans font-bold mb-3 text-heading-3 text-foreground">
                   {item.title}
                 </h3>
-                <p
-                  className="font-sans"
-                  style={{ fontSize: "14px", color: "#9994a8", lineHeight: 1.65 }}
-                >
+                <p className="font-sans text-sm text-muted-foreground leading-relaxed">
                   {item.body}
                 </p>
               </div>
