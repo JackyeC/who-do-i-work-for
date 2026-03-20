@@ -175,7 +175,7 @@ export function LeadershipInfluenceSection({
           )}
           <button
             onClick={(e) => { e.stopPropagation(); setReportingPerson(reportingPerson === exec.name ? null : exec.name); }}
-            className="text-[11px] text-[#3d3a4a] hover:text-primary transition-colors flex items-center gap-0.5"
+            className="text-[11px] text-muted-foreground hover:text-primary transition-colors flex items-center gap-0.5"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
             title="Report incorrect data"
           >
