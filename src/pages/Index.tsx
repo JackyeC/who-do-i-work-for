@@ -284,10 +284,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             </div>
           </div>
 
-          <p
-            className="text-center mt-8 font-sans"
-            style={{ fontSize: "14px", color: "#7a7590", letterSpacing: "1px" }}
-          >
+          <p className="text-center mt-8 font-sans text-sm text-muted-foreground tracking-wider">
             No bias. Just receipts.
           </p>
         </div>
