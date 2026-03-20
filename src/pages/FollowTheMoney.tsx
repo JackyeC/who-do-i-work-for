@@ -1480,7 +1480,7 @@ export default function FollowTheMoney() {
           {/* Legend */}
           <div className="absolute bottom-3 left-3 z-10 flex flex-wrap gap-1.5">
             {Object.entries(GROUP_COLORS).map(([group, color]) => (
-              <div key={group} className="flex items-center gap-1.5 text-[9px] text-white/60 bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full">
+              <div key={group} className="flex items-center gap-1.5 text-[9px] text-muted-foreground bg-background/60 backdrop-blur-sm px-2 py-1 rounded-full">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
                 {group}
               </div>
