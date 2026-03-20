@@ -6,11 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Building2, ShieldCheck, TrendingUp, Users, Star, Landmark,
   AlertTriangle, CheckCircle2, XCircle, MessageCircle, FileText,
-  Eye, ChevronDown, ArrowRight, Sparkles, Route, Check,
+  Eye, ChevronDown, ArrowRight, Sparkles, Route, Check, Lock,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { SignedIn, SignedOut, useAuth as useClerkAuth } from "@clerk/clerk-react";
 
 /* ── Types ── */
 
