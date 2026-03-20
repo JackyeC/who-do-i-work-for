@@ -265,7 +265,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 onClick={() => navigate("/auto-apply")}
                 className="w-full rounded-full gap-2"
               >
-                Find Your Match <ArrowRight className="w-4 h-4" />
+                Find Your Alignment <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
 
