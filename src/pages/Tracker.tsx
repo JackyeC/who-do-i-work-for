@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { usePageSEO } from "@/hooks/use-page-seo";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  Plus, Briefcase, Users, Gift, Archive, GripVertical, Building2, Shield, Calendar,
+  Plus, Briefcase, Users, Gift, Archive, GripVertical, Building2, Calendar, Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 type Status = "applied" | "interviewing" | "offer" | "archived";
 
@@ -22,28 +23,28 @@ interface TrackerApp {
   status: Status;
   appliedDate: string;
   integrityScore: number;
-  notes?: string;
+  notes: string;
 }
 
 const INITIAL_APPS: TrackerApp[] = [
-  { id: "1", company: "Patagonia", role: "Senior Product Manager", status: "interviewing", appliedDate: "Mar 12", integrityScore: 92 },
-  { id: "2", company: "Khan Academy", role: "Curriculum Designer", status: "applied", appliedDate: "Mar 14", integrityScore: 96 },
-  { id: "3", company: "Salesforce", role: "ML Engineer — Responsible AI", status: "applied", appliedDate: "Mar 10", integrityScore: 78 },
-  { id: "4", company: "Mercy Corps", role: "Program Officer", status: "offer", appliedDate: "Feb 28", integrityScore: 85 },
-  { id: "5", company: "Stripe", role: "Product Analytics Lead", status: "interviewing", appliedDate: "Mar 8", integrityScore: 88 },
-  { id: "6", company: "Mozilla", role: "Staff Engineer — Privacy", status: "archived", appliedDate: "Feb 15", integrityScore: 91 },
-  { id: "7", company: "Warby Parker", role: "Brand Strategist", status: "applied", appliedDate: "Mar 16", integrityScore: 83 },
+  { id: "1", company: "Patagonia", role: "Senior Product Manager", status: "applied", appliedDate: "Mar 14, 2026", integrityScore: 92, notes: "Strong mission alignment — B Corp certified" },
+  { id: "2", company: "Khan Academy", role: "Curriculum Designer", status: "applied", appliedDate: "Mar 16, 2026", integrityScore: 96, notes: "Non-profit, education-first culture" },
+  { id: "3", company: "Costco", role: "Regional Operations Lead", status: "applied", appliedDate: "Mar 12, 2026", integrityScore: 84, notes: "Above-industry wages, low turnover" },
 ];
 
-const COLUMNS: { status: Status; label: string; icon: typeof Briefcase; color: string }[] = [
-  { status: "applied", label: "Applied", icon: Briefcase, color: "text-blue-500" },
-  { status: "interviewing", label: "Interviewing", icon: Users, color: "text-amber-500" },
-  { status: "offer", label: "Offer", icon: Gift, color: "text-emerald-500" },
-  { status: "archived", label: "Archived", icon: Archive, color: "text-muted-foreground" },
+const COLUMNS: { status: Status; label: string; icon: typeof Briefcase; accent: string }[] = [
+  { status: "applied", label: "Applied", icon: Briefcase, accent: "text-[hsl(var(--civic-blue))]" },
+  { status: "interviewing", label: "Interviewing", icon: Users, accent: "text-[hsl(var(--civic-gold))]" },
+  { status: "offer", label: "Offer", icon: Gift, accent: "text-[hsl(var(--civic-green))]" },
+  { status: "archived", label: "Archived", icon: Archive, accent: "text-muted-foreground" },
 ];
 
 function IntegrityDot({ score }: { score: number }) {
-  const color = score >= 85 ? "bg-emerald-500" : score >= 65 ? "bg-amber-500" : "bg-red-500";
+  const color = score >= 85
+    ? "bg-[hsl(var(--civic-green))]"
+    : score >= 65
+      ? "bg-[hsl(var(--civic-gold))]"
+      : "bg-[hsl(var(--civic-red))]";
   return (
     <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
       <span className={cn("w-2 h-2 rounded-full", color)} />
@@ -55,37 +56,32 @@ function IntegrityDot({ score }: { score: number }) {
 export default function Tracker() {
   const [apps, setApps] = useState<TrackerApp[]>(INITIAL_APPS);
   const [modalOpen, setModalOpen] = useState(false);
-  const [newCompany, setNewCompany] = useState("");
-  const [newRole, setNewRole] = useState("");
   const [draggedId, setDraggedId] = useState<string | null>(null);
-
-  usePageSEO({
-    title: "Application Tracker — WDIWF",
-    description: "Track your job applications from applied to offer with integrity scores.",
-    path: "/tracker",
-  });
+  const [form, setForm] = useState({ company: "", role: "", date: "", notes: "", score: "" });
 
   const counts = {
-    applied: apps.filter(a => a.status === "applied").length,
+    total: apps.length,
     interviewing: apps.filter(a => a.status === "interviewing").length,
     offer: apps.filter(a => a.status === "offer").length,
-    total: apps.length,
   };
 
   const handleAdd = () => {
-    if (!newCompany.trim() || !newRole.trim()) return;
+    if (!form.company.trim() || !form.role.trim()) return;
     const app: TrackerApp = {
       id: crypto.randomUUID(),
-      company: newCompany.trim(),
-      role: newRole.trim(),
+      company: form.company.trim(),
+      role: form.role.trim(),
       status: "applied",
-      appliedDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-      integrityScore: Math.floor(Math.random() * 30 + 65),
+      appliedDate: form.date
+        ? new Date(form.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+        : new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      integrityScore: form.score ? Math.min(100, Math.max(0, parseInt(form.score))) : 0,
+      notes: form.notes.trim(),
     };
     setApps(prev => [app, ...prev]);
-    setNewCompany("");
-    setNewRole("");
+    setForm({ company: "", role: "", date: "", notes: "", score: "" });
     setModalOpen(false);
+    toast.success("Application added to tracker");
   };
 
   const handleDrop = (status: Status) => {
@@ -94,6 +90,8 @@ export default function Tracker() {
     setDraggedId(null);
   };
 
+  const update = (key: string, value: string) => setForm(p => ({ ...p, [key]: value }));
+
   return (
     <>
       <Helmet><title>Application Tracker — WDIWF</title></Helmet>
@@ -101,8 +99,12 @@ export default function Tracker() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">Application Tracker</h1>
-            <p className="text-sm text-muted-foreground mt-1">Drag cards between columns to update status.</p>
+            <h1 className="text-2xl font-extrabold text-foreground tracking-tight font-display">
+              Application Tracker
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Drag cards between columns to update status.
+            </p>
           </div>
           <Dialog open={modalOpen} onOpenChange={setModalOpen}>
             <DialogTrigger asChild>
@@ -115,24 +117,45 @@ export default function Tracker() {
                 <DialogTitle>Add Application</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-2">
-                <Input placeholder="Company name" value={newCompany} onChange={e => setNewCompany(e.target.value)} />
-                <Input placeholder="Role / Job title" value={newRole} onChange={e => setNewRole(e.target.value)} />
-                <Button onClick={handleAdd} className="w-full">Add to Applied</Button>
+                <div>
+                  <Label>Company</Label>
+                  <Input placeholder="e.g. Patagonia" value={form.company} onChange={e => update("company", e.target.value)} className="mt-1" />
+                </div>
+                <div>
+                  <Label>Role</Label>
+                  <Input placeholder="e.g. Product Manager" value={form.role} onChange={e => update("role", e.target.value)} className="mt-1" />
+                </div>
+                <div>
+                  <Label>Date Applied</Label>
+                  <Input type="date" value={form.date} onChange={e => update("date", e.target.value)} className="mt-1" />
+                </div>
+                <div>
+                  <Label>Integrity Score (0–100)</Label>
+                  <Input type="number" min={0} max={100} placeholder="e.g. 85" value={form.score} onChange={e => update("score", e.target.value)} className="mt-1" />
+                </div>
+                <div>
+                  <Label>Notes</Label>
+                  <Textarea placeholder="Optional notes..." value={form.notes} onChange={e => update("notes", e.target.value)} className="mt-1" rows={3} />
+                </div>
+                <Button onClick={handleAdd} className="w-full" disabled={!form.company.trim() || !form.role.trim()}>
+                  Add to Applied
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
         </div>
 
-        {/* Summary bar */}
+        {/* Summary row */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="grid grid-cols-3 gap-3 mb-8"
         >
           {[
-            { label: "Total", value: counts.total, icon: Briefcase, accent: "text-foreground" },
-            { label: "Applied", value: counts.applied, icon: Briefcase, accent: "text-blue-500" },
-            { label: "Interviews", value: counts.interviewing, icon: Users, accent: "text-amber-500" },
-            { label: "Offers", value: counts.offer, icon: Gift, accent: "text-emerald-500" },
+            { label: "Total Applications", value: counts.total, icon: Briefcase, accent: "text-foreground" },
+            { label: "Active Interviews", value: counts.interviewing, icon: Users, accent: "text-[hsl(var(--civic-gold))]" },
+            { label: "Offers Received", value: counts.offer, icon: Gift, accent: "text-[hsl(var(--civic-green))]" },
           ].map(s => (
             <Card key={s.label} className="border-border/40">
               <CardContent className="p-4 flex items-center gap-3">
@@ -155,15 +178,19 @@ export default function Tracker() {
                 key={col.status}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: ci * 0.06, duration: 0.4 }}
+                transition={{ delay: ci * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="rounded-xl border border-border/40 bg-card/50 p-3 min-h-[320px]"
                 onDragOver={e => e.preventDefault()}
                 onDrop={() => handleDrop(col.status)}
               >
                 <div className="flex items-center gap-2 mb-3 px-1">
-                  <col.icon className={cn("w-4 h-4", col.color)} />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{col.label}</span>
-                  <Badge variant="secondary" className="ml-auto text-[10px] tabular-nums">{colApps.length}</Badge>
+                  <col.icon className={cn("w-4 h-4", col.accent)} />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {col.label}
+                  </span>
+                  <Badge variant="secondary" className="ml-auto text-[10px] tabular-nums">
+                    {colApps.length}
+                  </Badge>
                 </div>
                 <div className="space-y-2">
                   {colApps.map(app => (
@@ -186,11 +213,14 @@ export default function Tracker() {
                           </div>
                           <GripVertical className="w-4 h-4 text-muted-foreground/40 shrink-0 mt-0.5" />
                         </div>
+                        {app.notes && (
+                          <p className="text-[11px] text-muted-foreground/70 leading-relaxed line-clamp-2">{app.notes}</p>
+                        )}
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] text-muted-foreground flex items-center gap-1">
                             <Calendar className="w-3 h-3" /> {app.appliedDate}
                           </span>
-                          <IntegrityDot score={app.integrityScore} />
+                          {app.integrityScore > 0 && <IntegrityDot score={app.integrityScore} />}
                         </div>
                       </CardContent>
                     </Card>
