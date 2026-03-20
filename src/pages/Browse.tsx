@@ -58,7 +58,7 @@ export default function Browse() {
   const [sortBy, setSortBy] = useState<"name" | "score" | "cis">("score");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDiscovering, setIsDiscovering] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const { toast } = useToast();
 
