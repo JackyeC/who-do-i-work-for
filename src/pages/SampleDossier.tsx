@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import {
@@ -14,7 +15,9 @@ import {
   MapPin,
   Calendar,
   DollarSign,
+  BookOpen,
 } from "lucide-react";
+import { InterviewKit } from "@/components/interview/InterviewKit";
 
 const amber = "#f0c040";
 const cream = "#f0ebe0";
@@ -76,10 +79,12 @@ function MetaRow({ icon, children }: { icon: React.ReactNode; children: React.Re
 }
 
 export default function SampleDossier() {
+  const [activeView, setActiveView] = useState<"dossier" | "interview-kit">("dossier");
+
   usePageSEO({
     title: "Sample Application Dossier — WDIWF",
     description:
-      "See what candidates receive when the WDIWF Job Search Agent applies on their behalf. Company intel, values match, and interview prep in one dossier.",
+      "You deserve to know exactly who you work for. See what candidates receive when the WDIWF Job Search Agent applies on their behalf.",
     path: "/dossier",
   });
 
@@ -108,11 +113,39 @@ export default function SampleDossier() {
         >
           Your Application Dossier
         </h1>
-        <p className="text-center mb-10" style={{ fontSize: 15, color: dimmed }}>
+        <p className="text-center mb-8" style={{ fontSize: 15, color: dimmed }}>
           Prepared by your WDIWF Job Search Agent
         </p>
 
-        {/* Dossier document */}
+        {/* View toggle — Dossier vs Interview Kit */}
+        <div className="flex gap-1 p-1 rounded-xl mb-10 w-full max-w-[400px]" style={{ background: "rgba(255,255,255,0.04)", border: cardBorder }}>
+          {[
+            { key: "dossier" as const, label: "Dossier", icon: FileText },
+            { key: "interview-kit" as const, label: "Interview Kit", icon: BookOpen },
+          ].map((t) => {
+            const Icon = t.icon;
+            const active = activeView === t.key;
+            return (
+              <button
+                key={t.key}
+                onClick={() => setActiveView(t.key)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-all"
+                style={{
+                  background: active ? accentBg : "transparent",
+                  color: active ? amber : dimmed,
+                  border: active ? accentBorder : "1px solid transparent",
+                }}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {activeView === "interview-kit" ? (
+          <InterviewKit />
+        ) : (
         <div className="w-full max-w-[640px] space-y-5">
           {/* ── Application header card ── */}
           <div
@@ -257,6 +290,7 @@ export default function SampleDossier() {
             </p>
           </div>
         </div>
+        )}
       </div>
     </div>
   );
