@@ -1,4 +1,5 @@
 import { SignedIn, SignedOut, RedirectToSignIn, useAuth as useClerkAuth } from "@clerk/clerk-react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCareerWaitlist } from "@/hooks/use-career-waitlist";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -10,8 +11,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isLoaded } = useClerkAuth();
+  const location = useLocation();
+  const isDossierRoute = location.pathname.startsWith("/dossier");
 
   if (!isLoaded) return null;
+  if (isDossierRoute) return <>{children}</>;
 
   return (
     <>
