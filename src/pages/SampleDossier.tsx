@@ -113,10 +113,39 @@ export default function SampleDossier() {
         >
           Your Application Dossier
         </h1>
-        <p className="text-center mb-10" style={{ fontSize: 15, color: dimmed }}>
+        <p className="text-center mb-8" style={{ fontSize: 15, color: dimmed }}>
           Prepared by your WDIWF Job Search Agent
         </p>
 
+        {/* View toggle — Dossier vs Interview Kit */}
+        <div className="flex gap-1 p-1 rounded-xl mb-10 w-full max-w-[400px]" style={{ background: "rgba(255,255,255,0.04)", border: cardBorder }}>
+          {[
+            { key: "dossier" as const, label: "Dossier", icon: FileText },
+            { key: "interview-kit" as const, label: "Interview Kit", icon: BookOpen },
+          ].map((t) => {
+            const Icon = t.icon;
+            const active = activeView === t.key;
+            return (
+              <button
+                key={t.key}
+                onClick={() => setActiveView(t.key)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-all"
+                style={{
+                  background: active ? accentBg : "transparent",
+                  color: active ? amber : dimmed,
+                  border: active ? accentBorder : "1px solid transparent",
+                }}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {activeView === "interview-kit" ? (
+          <InterviewKit />
+        ) : (
         {/* Dossier document */}
         <div className="w-full max-w-[640px] space-y-5">
           {/* ── Application header card ── */}
