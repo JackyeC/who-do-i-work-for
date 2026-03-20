@@ -249,7 +249,7 @@ const App = () => (
                   <Route path="/decision-engine" element={<DecisionEngine />} />
                   <Route path="/hire" element={<Hire />} />
                   <Route path="/dossier" element={<SampleDossier />} />
-                  <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
+                  <Route path="/welcome" element={<Welcome />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
