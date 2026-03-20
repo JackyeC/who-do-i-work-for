@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDemoSafeMode } from "@/contexts/DemoSafeModeContext";
 import { cn } from "@/lib/utils";
-import { Search, LogIn, LogOut, Menu, X, Shield, ChevronDown, Lock, Compass, BarChart3, Radio } from "lucide-react";
+import { Search, Menu, X, Shield, ChevronDown, Lock, Compass, BarChart3, Radio } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PersonaChip } from "@/components/PersonaChip";
 import { usePersona } from "@/hooks/use-persona";
