@@ -54,7 +54,7 @@ export function DreamJobWidget() {
         });
       } else {
         toast({
-          title: "Dream job mapped! ✨",
+          title: "Aligned role mapped! ✨",
           description: `${result.companyName} is already in our system. Check their profile for the full intelligence report.`,
         });
       }
