@@ -80,7 +80,7 @@ export function TopBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
-  const { isLoaded: clerkLoaded } = useClerkAuth();
+  const { isLoaded } = useClerkAuth();
   const { isDemoSafe, toggleDemoSafe, canToggle } = useDemoSafeMode();
   const { hasTakenQuiz } = usePersona();
 
@@ -105,6 +105,8 @@ export function TopBar() {
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname, location.search]);
+
+  if (!isLoaded) return null;
 
   if (location.pathname === "/") return null;
 
@@ -251,7 +253,7 @@ export function TopBar() {
 
           <ThemeToggle />
 
-          {clerkLoaded && (
+          {isLoaded && (
             <>
               <SignedIn>
                 <UserButton afterSignOutUrl="/" />
