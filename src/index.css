@@ -6,15 +6,84 @@
 
 @layer base {
   :root {
-    /* Force dark color scheme */
-    color-scheme: dark;
+    color-scheme: light;
 
     /* ── NAV OFFSET ── */
     --ticker-height: 36px;
     --nav-height: 64px;
     --nav-offset: 100px;
 
-    /* ── BACKGROUNDS ── */
+    /* ── LIGHT MODE ── */
+    --background: 40 20% 97%;            /* #f7f5f0 warm white */
+    --foreground: 240 20% 12%;           /* #1a1a22 near-black */
+
+    --card: 0 0% 100%;                   /* pure white */
+    --card-foreground: 240 20% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 20% 12%;
+
+    /* ── AMBER PRIMARY (shared) ── */
+    --primary: 43 85% 50%;               /* slightly deeper amber for light bg */
+    --primary-foreground: 0 0% 100%;     /* white text on amber */
+
+    --secondary: 40 15% 92%;
+    --secondary-foreground: 240 20% 12%;
+
+    --muted: 40 15% 92%;
+    --muted-foreground: 240 10% 42%;     /* #636370 */
+
+    --accent: 43 30% 90%;
+    --accent-foreground: 43 85% 40%;
+
+    --destructive: 348 85% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 12% 86%;
+    --input: 40 12% 86%;
+    --ring: 43 85% 50%;
+
+    --radius: 12px;
+
+    /* ── SIGNAL TOKENS ── */
+    --civic-red: 348 85% 50%;
+    --civic-yellow: 43 85% 50%;
+    --civic-green: 157 70% 38%;
+    --civic-blue: 213 75% 48%;
+    --civic-navy: 240 20% 20%;
+    --civic-slate: 240 10% 42%;
+    --civic-surface: 40 15% 95%;
+
+    --civic-gold: 43 85% 50%;
+    --civic-gold-muted: 43 55% 40%;
+    --civic-gold-light: 43 70% 60%;
+
+    /* ── SURFACE TOKENS ── */
+    --surface-elevated: 0 0% 100%;
+    --surface-sunken: 40 15% 94%;
+    --surface-2: 40 15% 95%;
+    --border-2: 40 12% 82%;
+
+    /* ── SIDEBAR ── */
+    --sidebar-background: 40 15% 96%;
+    --sidebar-foreground: 240 20% 12%;
+    --sidebar-primary: 43 85% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 43 30% 90%;
+    --sidebar-accent-foreground: 43 85% 40%;
+    --sidebar-border: 40 12% 86%;
+    --sidebar-ring: 43 85% 50%;
+
+    /* ── NAV GLASS (themeable) ── */
+    --nav-glass-bg: 40 20% 97% / 0.92;
+    --nav-glass-border: 240 20% 12% / 0.06;
+    --nav-input-bg: 240 20% 12% / 0.04;
+    --nav-input-border: 240 20% 12% / 0.1;
+  }
+
+  .dark {
+    color-scheme: dark;
+
     --background: 240 27% 4%;           /* #0a0a0e */
     --foreground: 40 30% 92%;           /* #f0ebe0 */
 
@@ -24,7 +93,6 @@
     --popover: 252 25% 8%;
     --popover-foreground: 40 30% 92%;
 
-    /* ── AMBER PRIMARY ── */
     --primary: 43 85% 59%;              /* #f0c040 */
     --primary-foreground: 240 27% 4%;   /* dark text on amber */
 
@@ -44,67 +112,6 @@
     --input: 252 18% 12%;
     --ring: 43 85% 59%;
 
-    --radius: 12px;
-
-    /* ── SIGNAL TOKENS ── */
-    --civic-red: 348 90% 65%;           /* #ff4d6d */
-    --civic-yellow: 43 85% 59%;         /* #f0c040 */
-    --civic-green: 157 100% 64%;        /* #47ffb3 */
-    --civic-blue: 213 88% 73%;          /* #7eb8f7 */
-    --civic-navy: 252 30% 12%;
-    --civic-slate: 252 14% 52%;
-    --civic-surface: 252 25% 8%;
-
-    /* Amber accent (replacing violet) */
-    --civic-gold: 43 85% 59%;
-    --civic-gold-muted: 43 60% 45%;
-    --civic-gold-light: 43 75% 70%;
-
-    /* ── SURFACE TOKENS ── */
-    --surface-elevated: 255 22% 10%;    /* #1c1a27 */
-    --surface-sunken: 240 27% 3%;
-    --surface-2: 252 20% 10%;
-    --border-2: 252 18% 16%;
-
-    /* ── SIDEBAR ── */
-    --sidebar-background: 252 25% 6%;
-    --sidebar-foreground: 40 30% 92%;
-    --sidebar-primary: 43 85% 59%;
-    --sidebar-primary-foreground: 240 27% 4%;
-    --sidebar-accent: 43 40% 12%;
-    --sidebar-accent-foreground: 43 85% 59%;
-    --sidebar-border: 252 18% 12%;
-    --sidebar-ring: 43 85% 59%;
-  }
-
-  /* Override light mode — always dark */
-  @media (prefers-color-scheme: light) {
-    :root {
-      color-scheme: dark;
-    }
-  }
-
-  /* Keep .dark class for compatibility but values are identical */
-  .dark {
-    --background: 240 27% 4%;
-    --foreground: 40 30% 92%;
-    --card: 252 25% 8%;
-    --card-foreground: 40 30% 92%;
-    --popover: 252 25% 8%;
-    --popover-foreground: 40 30% 92%;
-    --primary: 43 85% 59%;
-    --primary-foreground: 240 27% 4%;
-    --secondary: 252 20% 10%;
-    --secondary-foreground: 40 30% 92%;
-    --muted: 252 20% 10%;
-    --muted-foreground: 252 14% 52%;
-    --accent: 43 40% 12%;
-    --accent-foreground: 43 85% 59%;
-    --destructive: 348 90% 65%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 252 18% 12%;
-    --input: 252 18% 12%;
-    --ring: 43 85% 59%;
     --civic-red: 348 90% 65%;
     --civic-yellow: 43 85% 59%;
     --civic-green: 157 100% 64%;
@@ -112,13 +119,16 @@
     --civic-navy: 252 30% 12%;
     --civic-slate: 252 14% 52%;
     --civic-surface: 252 25% 8%;
+
     --civic-gold: 43 85% 59%;
     --civic-gold-muted: 43 60% 45%;
     --civic-gold-light: 43 75% 70%;
+
     --surface-elevated: 255 22% 10%;
     --surface-sunken: 240 27% 3%;
     --surface-2: 252 20% 10%;
     --border-2: 252 18% 16%;
+
     --sidebar-background: 252 25% 6%;
     --sidebar-foreground: 40 30% 92%;
     --sidebar-primary: 43 85% 59%;
@@ -127,6 +137,11 @@
     --sidebar-accent-foreground: 43 85% 59%;
     --sidebar-border: 252 18% 12%;
     --sidebar-ring: 43 85% 59%;
+
+    --nav-glass-bg: 240 27% 4% / 0.92;
+    --nav-glass-border: 0 0% 100% / 0.06;
+    --nav-input-bg: 0 0% 100% / 0.04;
+    --nav-input-border: 0 0% 100% / 0.1;
   }
 }
 

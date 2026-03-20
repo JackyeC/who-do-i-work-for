@@ -135,7 +135,7 @@ export function TopBar() {
       {/* Intelligence Ticker — fixed at top, 36px */}
       <IntelligenceTicker />
       {/* Header — fixed below ticker */}
-      <header className="fixed top-[36px] left-0 right-0 z-50 border-b h-[64px] flex items-center px-4 lg:px-6" style={{ background: 'rgba(10,10,14,0.92)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.06)' }}>
+      <header className="fixed top-[36px] left-0 right-0 z-50 border-b border-border h-[64px] flex items-center px-4 lg:px-6 bg-background/[0.92] backdrop-blur-[20px]">
         {/* Brand */}
         <Link to="/" className="flex items-center shrink-0 mr-4">
           <span className="font-sans text-foreground leading-none whitespace-nowrap" style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.5px' }}>
@@ -144,7 +144,7 @@ export function TopBar() {
         </Link>
 
         {/* ── Audit search bar (always visible, most prominent) ── */}
-        <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded-full px-3 py-2 w-[200px] lg:w-[260px] mr-3 shrink-0" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}>
+        <form onSubmit={handleSearch} className="hidden sm:flex items-center border border-border rounded-full px-3 py-2 w-[200px] lg:w-[260px] mr-3 shrink-0 bg-muted/30">
           <Search className="w-3.5 h-3.5 text-primary mr-2 shrink-0" />
           <input
             value={searchQuery}
@@ -203,7 +203,7 @@ export function TopBar() {
             >
               ··· <ChevronDown className="w-3 h-3" />
             </button>
-            <div className="absolute top-full left-0 hidden group-hover:block border min-w-[220px] z-50 py-1" style={{ background: 'hsl(252 25% 8%)', borderColor: 'rgba(255,255,255,0.1)' }}>
+            <div className="absolute top-full left-0 hidden group-hover:block border border-border min-w-[220px] z-50 py-1 bg-popover rounded-md shadow-lg">
               {SECONDARY_NAV.map(sub => (
                 <Link
                   key={sub.path}
@@ -270,15 +270,7 @@ export function TopBar() {
           {/* Audit CTA */}
           <Link
             to="/browse"
-            className="hidden sm:inline-flex items-center whitespace-nowrap font-sans transition-all hover:brightness-110"
-            style={{
-              background: '#f0c040',
-              color: '#0a0a0e',
-              borderRadius: '50px',
-              padding: '8px 20px',
-              fontSize: '14px',
-              fontWeight: 600,
-            }}
+            className="hidden sm:inline-flex items-center whitespace-nowrap font-sans transition-all hover:brightness-110 bg-primary text-primary-foreground rounded-full px-5 py-2 text-btn"
           >
             Audit →
           </Link>
@@ -297,7 +289,7 @@ export function TopBar() {
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-border bg-card py-2 px-4 space-y-1">
           {/* Mobile search */}
-          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }} className="flex items-center border rounded-full px-3 py-2.5 mb-2" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}>
+          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }} className="flex items-center border border-border rounded-full px-3 py-2.5 mb-2 bg-muted/30">
             <Search className="w-3.5 h-3.5 text-primary mr-2 shrink-0" />
             <input
               value={searchQuery}

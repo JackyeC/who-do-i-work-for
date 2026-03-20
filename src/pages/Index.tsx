@@ -107,8 +107,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           HERO — "The Flip Moment"
       ══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative flex flex-col items-center justify-center px-6 text-center"
-        style={{ minHeight: "100vh", background: "#0a0a0e" }}
+        className="relative flex flex-col items-center justify-center px-6 text-center min-h-screen bg-background"
       >
         {/* Grain overlay */}
         <svg className="fixed inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0, opacity: 0.04 }}>
@@ -126,26 +125,19 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
           {/* Headline */}
           <h1
-            className="text-display"
-            style={{
-              color: "#f0ebe0",
-              animation: "heroFadeIn 0.8s ease forwards",
-            }}
+            className="text-display text-foreground"
+            style={{ animation: "heroFadeIn 0.8s ease forwards" }}
           >
             The recruiting platform that audits the company first.
           </h1>
 
           {/* Subheadline */}
           <p
+            className="font-sans text-muted-foreground text-center max-w-[580px]"
             style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 400,
               fontSize: "17px",
-              color: "#b8b4a8",
               lineHeight: 1.7,
-              maxWidth: "580px",
               marginTop: "24px",
-              textAlign: "center",
               opacity: 0,
               animation: "heroFadeIn 0.6s ease 0.9s forwards",
             }}
@@ -168,49 +160,21 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 <div className="flex flex-col items-center">
                   <button
                     onClick={() => navigate(hasPersona ? "/dashboard" : "/quiz")}
-                    className="hover-btn"
-                    style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "16px",
-                      fontWeight: 600,
-                      background: "#f0c040",
-                      color: "#0a0a0e",
-                      padding: "16px 44px",
-                      borderRadius: "50px",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
+                    className="hover-btn bg-primary text-primary-foreground font-sans text-base font-semibold px-11 py-4 rounded-full border-none cursor-pointer"
                   >
                     {hasPersona ? "Continue to my intelligence →" : "Start your audit →"}
                   </button>
                   {hasPersona && (
                     <button
                       onClick={() => navigate("/quiz")}
-                      style={{
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: "12px",
-                        color: "#7a7590",
-                        marginTop: "8px",
-                        cursor: "pointer",
-                        background: "none",
-                        border: "none",
-                      }}
+                      className="font-sans text-xs text-muted-foreground mt-2 cursor-pointer bg-transparent border-none"
                     >
                       Or retake the quiz →
                     </button>
                    )}
                   <Link
                     to="/join"
-                    style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "13px",
-                      color: "#7a7590",
-                      marginTop: "10px",
-                      textDecoration: "none",
-                      display: "inline-block",
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-                    onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+                    className="font-sans text-caption text-muted-foreground mt-2.5 inline-block hover:underline"
                   >
                     Launching April 6 — get early access →
                   </Link>
@@ -230,45 +194,32 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           >
             {[
               {
-                icon: <Shield className="w-5 h-5" style={{ color: "#f0c040" }} />,
+                icon: <Shield className="w-5 h-5 text-primary" />,
                 title: "Company Integrity Score",
                 body: "We audit culture, turnover, leadership stability, and Glassdoor trajectory before any candidate sees the job.",
               },
               {
-                icon: <Target className="w-5 h-5" style={{ color: "#f0c040" }} />,
+                icon: <Target className="w-5 h-5 text-primary" />,
                 title: "Value Alignment Matching",
                 body: "Skills get you in the door. Values keep you there. Our AI matches on both.",
               },
               {
-                icon: <Eye className="w-5 h-5" style={{ color: "#f0c040" }} />,
+                icon: <Eye className="w-5 h-5 text-primary" />,
                 title: "Candidate Intelligence",
                 body: "Job seekers see exactly what they're walking into — so only the right people apply.",
               },
             ].map((card) => (
               <div
                 key={card.title}
-                className="rounded-2xl p-6 text-left"
-                style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
+                className="rounded-2xl p-6 text-left bg-muted/30 border border-border"
               >
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
-                  style={{ background: "rgba(240,192,64,0.10)" }}
-                >
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 bg-primary/10">
                   {card.icon}
                 </div>
-                <h3
-                  className="font-sans font-semibold mb-2"
-                  style={{ fontSize: "15px", color: "#f0ebe0" }}
-                >
+                <h3 className="font-sans font-semibold mb-2 text-[15px] text-foreground">
                   {card.title}
                 </h3>
-                <p
-                  className="font-sans"
-                  style={{ fontSize: "13px", color: "#9994a8", lineHeight: 1.6 }}
-                >
+                <p className="font-sans text-caption text-muted-foreground leading-relaxed">
                   {card.body}
                 </p>
               </div>
@@ -280,21 +231,14 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ══════════════════════════════════════════════════════════════════
           TWO-SIDED PLATFORM PATHS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="px-6 lg:px-16 py-20" style={{ background: "#0a0a0e" }}>
+      <section className="px-6 lg:px-16 py-20 bg-background">
         <div className="max-w-[900px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* For Candidates */}
             <div
-              className="rounded-2xl p-8 text-left flex flex-col"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
+              className="rounded-2xl p-8 text-left flex flex-col bg-muted/30 border border-border"
             >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
-                style={{ background: "rgba(240,192,64,0.10)" }}
-              >
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-primary/10">
                 <Crosshair className="w-6 h-6 text-primary" />
               </div>
               <p className="text-xs uppercase tracking-[2px] font-semibold text-primary mb-3">
@@ -316,16 +260,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
             {/* For Organizations */}
             <div
-              className="rounded-2xl p-8 text-left flex flex-col"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
+              className="rounded-2xl p-8 text-left flex flex-col bg-muted/30 border border-border"
             >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
-                style={{ background: "rgba(240,192,64,0.10)" }}
-              >
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-primary/10">
                 <Shield className="w-6 h-6 text-primary" />
               </div>
               <p className="text-xs uppercase tracking-[2px] font-semibold text-primary mb-3">
@@ -347,10 +284,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             </div>
           </div>
 
-          <p
-            className="text-center mt-8 font-sans"
-            style={{ fontSize: "14px", color: "#7a7590", letterSpacing: "1px" }}
-          >
+          <p className="text-center mt-8 font-sans text-sm text-muted-foreground tracking-wider">
             No bias. Just receipts.
           </p>
         </div>
@@ -359,18 +293,12 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/*
           HOW IT WORKS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="px-6 lg:px-16 py-24" style={{ background: "#0a0a0e" }}>
+      <section className="px-6 lg:px-16 py-24 bg-background">
         <div className="max-w-[900px] mx-auto">
-          <p
-            className="text-xs uppercase tracking-[3px] font-semibold text-center mb-3"
-            style={{ color: "#f0c040" }}
-          >
+          <p className="text-xs uppercase tracking-[3px] font-semibold text-center mb-3 text-primary">
             How It Works
           </p>
-          <h2
-            className="font-sans text-center leading-[1.1] mb-16"
-            style={{ fontSize: "clamp(24px, 4vw, 40px)", fontWeight: 800, letterSpacing: "-2px", color: "#f0ebe0" }}
-          >
+          <h2 className="font-sans text-center leading-[1.1] mb-16 text-display text-foreground">
             Four steps. Full transparency.
           </h2>
 
@@ -399,33 +327,15 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             ].map((item) => (
               <div
                 key={item.step}
-                className="rounded-2xl p-7"
-                style={{
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
+                className="rounded-2xl p-7 bg-muted/30 border border-border"
               >
-                <span
-                  className="inline-block font-sans mb-4"
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    color: "#f0c040",
-                    letterSpacing: "1px",
-                  }}
-                >
+                <span className="inline-block font-sans mb-4 text-caption font-bold text-primary tracking-wider">
                   STEP {item.step}
                 </span>
-                <h3
-                  className="font-sans font-bold mb-3"
-                  style={{ fontSize: "17px", color: "#f0ebe0", lineHeight: 1.3 }}
-                >
+                <h3 className="font-sans font-bold mb-3 text-heading-3 text-foreground">
                   {item.title}
                 </h3>
-                <p
-                  className="font-sans"
-                  style={{ fontSize: "14px", color: "#9994a8", lineHeight: 1.65 }}
-                >
+                <p className="font-sans text-sm text-muted-foreground leading-relaxed">
                   {item.body}
                 </p>
               </div>
@@ -435,17 +345,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       </section>
 
       <section className="px-6 lg:px-16 py-16 max-w-[700px] mx-auto w-full text-center">
-        <div
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "11px",
-            fontWeight: 500,
-            letterSpacing: "2px",
-            textTransform: "uppercase",
-            color: "#7a7590",
-            marginBottom: "12px",
-          }}
-        >
+        <div className="font-sans text-micro uppercase text-muted-foreground mb-3">
           Or scan a company directly
         </div>
         <div id="hero-search-anchor">
@@ -475,15 +375,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             ))}
           </div>
         </div>
-        <p style={{
-          fontSize: '12px',
-          fontWeight: 400,
-          color: '#3d3a4a',
-          textAlign: 'center',
-          lineHeight: 1.6,
-          maxWidth: '600px',
-          margin: '16px auto 0',
-        }}>
+        <p className="text-xs text-muted-foreground/50 text-center leading-relaxed max-w-[600px] mx-auto mt-4">
           Built on public records: FEC filings · SEC EDGAR · USAspending.gov · BLS wage data · OSHA · NLRB · Senate Lobbying Disclosures · ProPublica · OpenSecrets · CourtListener
         </p>
       </div>
