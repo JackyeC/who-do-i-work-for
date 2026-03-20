@@ -160,18 +160,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 <div className="flex flex-col items-center">
                   <button
                     onClick={() => navigate(hasPersona ? "/dashboard" : "/quiz")}
-                    className="hover-btn"
-                    style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "16px",
-                      fontWeight: 600,
-                      background: "#f0c040",
-                      color: "#0a0a0e",
-                      padding: "16px 44px",
-                      borderRadius: "50px",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
+                    className="hover-btn bg-primary text-primary-foreground font-sans text-base font-semibold px-11 py-4 rounded-full border-none cursor-pointer"
                   >
                     {hasPersona ? "Continue to my intelligence →" : "Start your audit →"}
                   </button>
