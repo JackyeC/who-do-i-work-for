@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { motion } from "framer-motion";
@@ -12,6 +12,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, ArrowRight, Search, TrendingUp, SortAsc, Sparkles, Loader2, Landmark } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
 import { LoadingState } from "@/components/LoadingState";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { NonProfitDirectory } from "@/components/browse/NonProfitDirectory";
@@ -49,7 +58,7 @@ export default function Browse() {
   const [sortBy, setSortBy] = useState<"name" | "score" | "cis">("score");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDiscovering, setIsDiscovering] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -93,7 +102,7 @@ export default function Browse() {
   const CATEGORY_FILTERS = ["HR Tech", "Big Tech", "Finance", "Defense", "Government Contractors", "Startups", "Healthcare", "Energy", "Retail"];
 
   const filtered = useMemo(() => {
-    setVisibleCount(PAGE_SIZE);
+    setCurrentPage(1);
     let list = allCompanies;
     if (selectedIndustry !== "all") list = list.filter((c) => c.industry === selectedIndustry);
     if (selectedCategory !== "all") {
@@ -114,8 +123,27 @@ export default function Browse() {
     });
   }, [allCompanies, selectedIndustry, selectedCategory, sortBy, searchQuery]);
 
-  const visibleCompanies = filtered.slice(0, visibleCount);
-  const hasMore = visibleCount < filtered.length;
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const visibleCompanies = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  const goToPage = useCallback((page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const getPageNumbers = () => {
+    const pages: (number | "ellipsis")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("ellipsis");
+      for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push("ellipsis");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
 
   return (
     <div className="flex-1">
@@ -323,19 +351,45 @@ export default function Browse() {
           </motion.div>
         )}
 
-        {/* Show More */}
-        {hasMore && !isLoading && (
-          <div className="text-center mt-6">
-            <Button
-              variant="outline"
-              onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-              className="gap-2"
-            >
-              Show More
-              <span className="text-xs text-muted-foreground">
-                ({visibleCount} of {filtered.length})
-              </span>
-            </Button>
+        {/* Pagination */}
+        {totalPages > 1 && !isLoading && (
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => currentPage > 1 && goToPage(currentPage - 1)}
+                    className={currentPage <= 1 ? "pointer-events-none opacity-40" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+                {getPageNumbers().map((p, i) =>
+                  p === "ellipsis" ? (
+                    <PaginationItem key={`e${i}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem key={p}>
+                      <PaginationLink
+                        isActive={p === currentPage}
+                        onClick={() => goToPage(p)}
+                        className="cursor-pointer"
+                      >
+                        {p}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => currentPage < totalPages && goToPage(currentPage + 1)}
+                    className={currentPage >= totalPages ? "pointer-events-none opacity-40" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+            <p className="text-xs text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </p>
           </div>
         )}
       </div>
