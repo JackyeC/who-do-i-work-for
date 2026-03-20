@@ -144,7 +144,7 @@ export function TopBar() {
         </Link>
 
         {/* ── Audit search bar (always visible, most prominent) ── */}
-        <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded-full px-3 py-2 w-[200px] lg:w-[260px] mr-3 shrink-0" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}>
+        <form onSubmit={handleSearch} className="hidden sm:flex items-center border border-border rounded-full px-3 py-2 w-[200px] lg:w-[260px] mr-3 shrink-0 bg-muted/30">
           <Search className="w-3.5 h-3.5 text-primary mr-2 shrink-0" />
           <input
             value={searchQuery}
