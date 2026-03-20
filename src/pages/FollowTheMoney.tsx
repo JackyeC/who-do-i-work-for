@@ -1501,9 +1501,9 @@ export default function FollowTheMoney() {
           {!loading && graphData.nodes.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center z-10">
               <div className="text-center max-w-sm">
-                <Globe className="w-10 h-10 text-white/20 mx-auto mb-3" />
-                <h3 className="text-sm font-semibold text-white/60 mb-1">No connections match your filters</h3>
-                <p className="text-xs text-white/40 mb-3">Try broadening your filters or searching for a different company.</p>
+                <Globe className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                <h3 className="text-sm font-semibold text-muted-foreground mb-1">No connections match your filters</h3>
+                <p className="text-xs text-muted-foreground/60 mb-3">Try broadening your filters or searching for a different company.</p>
                 <Button variant="outline" size="sm" onClick={resetGraph} className="gap-1.5">
                   <RotateCcw className="w-3 h-3" /> Reset Filters
                 </Button>
