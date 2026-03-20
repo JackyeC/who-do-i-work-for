@@ -17,40 +17,49 @@ import { Button } from "@/components/ui/button";
 import {
   Briefcase, Heart, Route, Users, LayoutDashboard,
   Settings, User, Zap, Bell, ClipboardCheck, LogOut,
-  Home, Compass, Building2, Network
+  Home, Compass, Building2, Network, FileText, MessageSquare,
+  Inbox, Bookmark, PenTool, Mic,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navGroups = [
   {
-    label: "Overview",
+    label: "Align",
     items: [
       { id: "overview", label: "Dashboard", icon: Home },
+      { id: "link:/jobs-feed", label: "Jobs Feed", icon: Briefcase },
+      { id: "values", label: "My Values", icon: Heart },
       { id: "tracked", label: "Tracked Companies", icon: Building2 },
     ],
   },
   {
-    label: "Career Intelligence",
+    label: "Apply",
     items: [
-      { id: "matches", label: "Matched Jobs", icon: Briefcase },
-      { id: "values", label: "My Values", icon: Heart },
-      { id: "how", label: "How Do I Get There?", icon: Route },
-      { id: "outreach", label: "Outreach", icon: Users },
-      { id: "relationships", label: "Relationship Intel", icon: Network },
+      { id: "auto-apply", label: "Apply When It Counts™", icon: Zap },
+      { id: "tracker", label: "Application Tracker", icon: LayoutDashboard },
+      { id: "link:/saved", label: "Saved", icon: Bookmark },
     ],
   },
   {
-    label: "Applications",
+    label: "Prepare",
     items: [
-      { id: "tracker", label: "Application Tracker", icon: LayoutDashboard },
-      { id: "auto-apply", label: "Auto-Apply", icon: Zap },
-      { id: "offers", label: "Offer Checks", icon: ClipboardCheck },
+      { id: "link:/resume", label: "Resume Optimizer", icon: FileText },
+      { id: "link:/cover-letter", label: "Cover Letter", icon: PenTool },
+      { id: "link:/mock-interview", label: "Mock Interview", icon: Mic },
+      { id: "matches", label: "Interview Kits", icon: ClipboardCheck },
+    ],
+  },
+  {
+    label: "Activity",
+    items: [
+      { id: "link:/inbox", label: "Inbox", icon: Inbox },
+      { id: "how", label: "Dossier History", icon: Route },
+      { id: "alerts", label: "Signal Alerts", icon: Bell },
     ],
   },
   {
     label: "Settings",
     items: [
-      { id: "alerts", label: "Signal Alerts", icon: Bell },
       { id: "preferences", label: "Preferences", icon: Settings },
       { id: "profile", label: "Profile", icon: User },
     ],
