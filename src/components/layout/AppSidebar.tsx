@@ -22,6 +22,7 @@ import {
   Megaphone, Users, Target, CreditCard,
   LayoutDashboard, Zap, Bell, Settings, User, ClipboardCheck,
   LogIn, LogOut, Compass, Flame, Shield,
+  Bookmark, Inbox, MessageSquare, Columns3, FileEdit, Mic,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
