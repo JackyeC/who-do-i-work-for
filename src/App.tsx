@@ -203,6 +203,8 @@ const App = () => (
                   <Route path="/mock-interview" element={<ProtectedRoute><MockInterviewPage /></ProtectedRoute>} />
                   <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
                   <Route path="/saved" element={<ProtectedRoute><SavedPage /></ProtectedRoute>} />
+                  <Route path="/tracker" element={<ProtectedRoute><TrackerPage /></ProtectedRoute>} />
+                  <Route path="/apply-kit" element={<ProtectedRoute><ApplyKitPage /></ProtectedRoute>} />
                   <Route path="/job-board" element={<JobIntegrityBoard />} />
                   <Route path="/job-board/:id" element={<JobDetailPage />} />
                   <Route path="/request-correction" element={<RequestCorrection />} />
