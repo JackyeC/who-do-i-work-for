@@ -7,7 +7,7 @@ const About = () => {
   usePageSEO({
     title: "About WDIWF — Who Do I Work For?",
     description:
-      "Learn how WDIWF verifies employers against public records. No bias — just receipts.",
+      "You deserve to know exactly who you work for. Learn how WDIWF verifies employers against public records. No bias — just receipts.",
     path: "/about",
   });
 
