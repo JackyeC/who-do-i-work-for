@@ -80,6 +80,14 @@ export default function CompanyDossier() {
   const isTracked = companyId ? isCompanyTracked(companyId) : false;
   const { data: eeocCases } = useEEOCByCompanyName(company?.name);
 
+  const seoCompanyName = company?.name ?? "Company";
+  usePageSEO({
+    title: `Should I Work at ${seoCompanyName}? Career Risk Report`,
+    description: `Should you work at ${seoCompanyName}? See the Career Risk Score: leadership stability, layoff history, pay vs. industry benchmarks, and political activity.`,
+    path: `/company/${id}`,
+    image: getOGImageUrl({ type: "company", companyA: seoCompanyName }),
+  });
+
   const { data: executives } = useQuery({
     queryKey: ["dossier-executives", companyId],
     queryFn: async () => {
@@ -169,13 +177,6 @@ export default function CompanyDossier() {
   const hasFullAccess = isTracked;
   const LensMeta = LENS_META[lens];
   const LensIcon = LensMeta.icon;
-
-  usePageSEO({
-    title: `Should I Work at ${company.name}? Career Risk Report`,
-    description: `Should you work at ${company.name}? See the Career Risk Score: leadership stability, layoff history, pay vs. industry benchmarks, and political activity.`,
-    path: `/company/${id}`,
-    image: getOGImageUrl({ type: "company", companyA: company.name }),
-  });
 
   /* ─── Shared overview (always visible) ─── */
   const overviewContent = (
