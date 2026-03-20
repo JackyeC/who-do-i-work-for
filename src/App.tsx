@@ -114,6 +114,7 @@ const InboxPage = lazy(() => import("./pages/Inbox"));
 const SavedPage = lazy(() => import("./pages/Saved"));
 const TrackerPage = lazy(() => import("./pages/Tracker"));
 const ApplyKitPage = lazy(() => import("./pages/ApplyKit"));
+const DossierCoachingGuide = lazy(() => import("./pages/DossierCoachingGuide"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -175,6 +176,7 @@ const App = () => (
                   <Route path="/company/:id" element={<ProtectedRoute><CompanyProfile /></ProtectedRoute>} />
                   <Route path="/company/:id/influence" element={<ProtectedRoute><InfluenceGraph /></ProtectedRoute>} />
                   <Route path="/dossier/:id" element={<ProtectedRoute><CompanyDossier /></ProtectedRoute>} />
+                  <Route path="/dossier/guide/:slug" element={<ProtectedRoute><DossierCoachingGuide /></ProtectedRoute>} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/search" element={<SearchResults />} />
                   <Route path="/browse" element={<Browse />} />
