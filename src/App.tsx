@@ -112,6 +112,8 @@ const CoverLetterOptimizer = lazy(() => import("./pages/CoverLetterOptimizer"));
 const MockInterviewPage = lazy(() => import("./pages/MockInterview"));
 const InboxPage = lazy(() => import("./pages/Inbox"));
 const SavedPage = lazy(() => import("./pages/Saved"));
+const TrackerPage = lazy(() => import("./pages/Tracker"));
+const ApplyKitPage = lazy(() => import("./pages/ApplyKit"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
