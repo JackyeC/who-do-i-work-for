@@ -338,6 +338,11 @@ export default function AutoApply() {
     path: "/auto-apply",
   });
 
+  const update = useCallback(
+    <K extends keyof FormData>(key: K, val: FormData[K]) => setForm((f) => ({ ...f, [key]: val })),
+    []
+  );
+
   // Public preview for logged-out users
   if (!loading && !user) {
     return (
@@ -391,11 +396,6 @@ export default function AutoApply() {
       </div>
     );
   }
-
-  const update = useCallback(
-    <K extends keyof FormData>(key: K, val: FormData[K]) => setForm((f) => ({ ...f, [key]: val })),
-    []
-  );
 
   const next = () => {
     if (step < 3) setStep(step + 1);
