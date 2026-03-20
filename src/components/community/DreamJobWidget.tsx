@@ -114,7 +114,7 @@ export function DreamJobWidget() {
     <div className="p-6 lg:p-8 border border-border bg-card rounded-xl space-y-5">
       <div>
         <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-primary mb-2">Where Do You Belong?</div>
-        <h3 className="font-serif text-xl text-foreground mb-1">Manifest Your Dream Job</h3>
+        <h3 className="font-serif text-xl text-foreground mb-1">Map Your Aligned Role</h3>
         <p className="text-sm text-muted-foreground">
           Tell us where you want to be — and we'll get the receipts before you get the offer.
         </p>
