@@ -10,23 +10,29 @@ export function ThemeToggle() {
   });
 
   useEffect(() => {
+    const root = document.documentElement;
     if (dark) {
-      document.documentElement.classList.add("dark");
+      root.classList.add("dark");
+      root.style.colorScheme = "dark";
       localStorage.setItem("theme", "dark");
     } else {
-      document.documentElement.classList.remove("dark");
+      root.classList.remove("dark");
+      root.style.colorScheme = "light";
       localStorage.setItem("theme", "light");
     }
   }, [dark]);
 
-  // Init on mount — default dark
+  // Init on mount
   useEffect(() => {
     const saved = localStorage.getItem("theme");
+    const root = document.documentElement;
     if (saved === "light") {
-      document.documentElement.classList.remove("dark");
+      root.classList.remove("dark");
+      root.style.colorScheme = "light";
       setDark(false);
     } else {
-      document.documentElement.classList.add("dark");
+      root.classList.add("dark");
+      root.style.colorScheme = "dark";
       setDark(true);
     }
   }, []);
