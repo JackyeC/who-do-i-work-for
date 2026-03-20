@@ -106,6 +106,12 @@ const AdminTicker = lazy(() => import("./pages/AdminTicker"));
 const About = lazy(() => import("./pages/About"));
 const Companies = lazy(() => import("./pages/Companies"));
 const Talent = lazy(() => import("./pages/Talent"));
+const JobsFeed = lazy(() => import("./pages/JobsFeed"));
+const ResumeOptimizer = lazy(() => import("./pages/ResumeOptimizer"));
+const CoverLetterOptimizer = lazy(() => import("./pages/CoverLetterOptimizer"));
+const MockInterviewPage = lazy(() => import("./pages/MockInterview"));
+const InboxPage = lazy(() => import("./pages/Inbox"));
+const SavedPage = lazy(() => import("./pages/Saved"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -189,6 +195,12 @@ const App = () => (
                   <Route path="/representative/:name" element={<ProtectedRoute><RepresentativeProfile /></ProtectedRoute>} />
                   <Route path="/add-company" element={<AddCompany />} />
                   <Route path="/jobs" element={<Jobs />} />
+                  <Route path="/jobs-feed" element={<ProtectedRoute><JobsFeed /></ProtectedRoute>} />
+                  <Route path="/resume" element={<ProtectedRoute><ResumeOptimizer /></ProtectedRoute>} />
+                  <Route path="/cover-letter" element={<ProtectedRoute><CoverLetterOptimizer /></ProtectedRoute>} />
+                  <Route path="/mock-interview" element={<ProtectedRoute><MockInterviewPage /></ProtectedRoute>} />
+                  <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
+                  <Route path="/saved" element={<ProtectedRoute><SavedPage /></ProtectedRoute>} />
                   <Route path="/job-board" element={<JobIntegrityBoard />} />
                   <Route path="/job-board/:id" element={<JobDetailPage />} />
                   <Route path="/request-correction" element={<RequestCorrection />} />
