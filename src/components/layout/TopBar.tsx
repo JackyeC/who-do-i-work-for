@@ -289,7 +289,7 @@ export function TopBar() {
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-border bg-card py-2 px-4 space-y-1">
           {/* Mobile search */}
-          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }} className="flex items-center border rounded-full px-3 py-2.5 mb-2" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.1)' }}>
+          <form onSubmit={(e) => { handleSearch(e); setMobileMenuOpen(false); }} className="flex items-center border border-border rounded-full px-3 py-2.5 mb-2 bg-muted/30">
             <Search className="w-3.5 h-3.5 text-primary mr-2 shrink-0" />
             <input
               value={searchQuery}
