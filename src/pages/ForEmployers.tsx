@@ -154,9 +154,7 @@ export default function ForEmployers() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+    <main className="flex-1">
         {/* Hero */}
         <section className="px-6 lg:px-16 pt-24 pb-12 max-w-[960px] mx-auto text-center">
           <Badge variant="secondary" className="mb-4 text-xs font-mono uppercase tracking-wider">
