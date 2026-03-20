@@ -18,7 +18,7 @@ export function DreamJobWidget() {
   const submitMutation = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Sign in to manifest your dream job");
+      if (!user) throw new Error("Sign in to map your aligned role");
 
       const slug = dreamCompany.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       const { data: existing } = await supabase
