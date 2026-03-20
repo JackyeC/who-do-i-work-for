@@ -80,6 +80,7 @@ export function TopBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { isLoaded: clerkLoaded } = useClerkAuth();
   const { isDemoSafe, toggleDemoSafe, canToggle } = useDemoSafeMode();
   const { hasTakenQuiz } = usePersona();
 
