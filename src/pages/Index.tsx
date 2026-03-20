@@ -231,7 +231,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ══════════════════════════════════════════════════════════════════
           TWO-SIDED PLATFORM PATHS
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="px-6 lg:px-16 py-20" style={{ background: "#0a0a0e" }}>
+      <section className="px-6 lg:px-16 py-20 bg-background">
         <div className="max-w-[900px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* For Candidates */}
