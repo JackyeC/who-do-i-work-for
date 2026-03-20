@@ -195,6 +195,12 @@ const App = () => (
                   <Route path="/representative/:name" element={<ProtectedRoute><RepresentativeProfile /></ProtectedRoute>} />
                   <Route path="/add-company" element={<AddCompany />} />
                   <Route path="/jobs" element={<Jobs />} />
+                  <Route path="/jobs-feed" element={<ProtectedRoute><JobsFeed /></ProtectedRoute>} />
+                  <Route path="/resume" element={<ProtectedRoute><ResumeOptimizer /></ProtectedRoute>} />
+                  <Route path="/cover-letter" element={<ProtectedRoute><CoverLetterOptimizer /></ProtectedRoute>} />
+                  <Route path="/mock-interview" element={<ProtectedRoute><MockInterviewPage /></ProtectedRoute>} />
+                  <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
+                  <Route path="/saved" element={<ProtectedRoute><SavedPage /></ProtectedRoute>} />
                   <Route path="/job-board" element={<JobIntegrityBoard />} />
                   <Route path="/job-board/:id" element={<JobDetailPage />} />
                   <Route path="/request-correction" element={<RequestCorrection />} />
