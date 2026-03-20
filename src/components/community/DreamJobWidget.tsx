@@ -104,7 +104,7 @@ export function DreamJobWidget() {
           <Shield className="w-2.5 h-2.5" /> No judgment, just receipts.
         </p>
         <Button variant="link" size="sm" className="px-0" onClick={() => { setSubmitted(false); setDreamRole(""); setDreamCompany(""); }}>
-          Map another dream job →
+          Map another aligned role →
         </Button>
       </div>
     );
