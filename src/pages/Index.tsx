@@ -50,7 +50,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
     if (!rivalries) loadRivalries().then(setRivalries);
   };
 
-
+  if (!isLoaded) return null;
 
   return (
     <div ref={ref} className="flex flex-col min-h-screen bg-background">
