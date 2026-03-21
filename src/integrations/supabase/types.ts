@@ -296,6 +296,39 @@ export type Database = {
           },
         ]
       }
+      audit_requests: {
+        Row: {
+          company_name: string
+          company_url: string | null
+          created_at: string
+          email: string
+          id: string
+          role_title: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          company_name: string
+          company_url?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          role_title?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          company_name?: string
+          company_url?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          role_title?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       auto_apply_settings: {
         Row: {
           created_at: string

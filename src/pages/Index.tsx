@@ -192,7 +192,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                     onClick={() => navigate(hasPersona ? "/dashboard" : "/quiz")}
                     className="hover-btn bg-primary text-primary-foreground font-sans text-base font-semibold px-11 py-4 rounded-full border-none cursor-pointer"
                   >
-                    {hasPersona ? "Continue to my intelligence →" : "Start your audit →"}
+                    {hasPersona ? "Continue to my intelligence →" : "Start your career scan →"}
                   </button>
                   {hasPersona && (
                     <button
@@ -226,7 +226,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               {
                 icon: <Shield className="w-5 h-5 text-primary" />,
                 title: "Company Integrity Score",
-                body: "We audit culture, turnover, leadership stability, and Glassdoor trajectory before any candidate sees the job.",
+                body: "We scan culture, turnover, leadership stability, and workplace signals from public sources before any candidate sees the job.",
               },
               {
                 icon: <Target className="w-5 h-5 text-primary" />,
@@ -336,8 +336,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             {[
               {
                 step: "01",
-                title: "Company gets audited",
-                body: "We pull public signals — Glassdoor trajectory, leadership turnover, workforce stability, public legal and civic record.",
+                title: "Company gets scanned",
+                body: "We pull public signals — leadership turnover, workforce stability, civic record, and workplace sentiment. Don't see a company? Request it and we'll add it to the queue.",
               },
               {
                 step: "02",
@@ -674,7 +674,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           You deserve to know exactly who you work for.
         </h2>
         <p className="text-base text-muted-foreground max-w-[480px] mx-auto mb-10 leading-relaxed">
-          Stop applying blind. Start auditing your career with intelligence.
+          Stop applying blind. Start scanning employers with intelligence.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
