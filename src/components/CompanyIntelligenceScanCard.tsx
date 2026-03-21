@@ -194,6 +194,28 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
     }
   };
 
+  // ─── Scan recency guard ───
+  const scanCompletedAt = latestScan?.completed_at || latestScan?.created_at;
+  const scanIsRecent = scanCompletedAt && (Date.now() - new Date(scanCompletedAt).getTime()) < 24 * 60 * 60 * 1000;
+  const scanIsComplete = latestScan?.scan_status?.startsWith('completed');
+
+  const timeAgoLabel = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+  };
+
+  const handleScanClick = useCallback(() => {
+    if (scanIsRecent && scanIsComplete) {
+      setShowRescanConfirm(true);
+    } else {
+      runScan();
+    }
+  }, [scanIsRecent, scanIsComplete]);
+
   const moduleStatuses = (latestScan?.module_statuses || {}) as Record<string, any>;
   const totalModules = Object.keys(MODULE_LABELS).length;
 
@@ -222,6 +244,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   const errorLogEntries = (latestScan?.error_log || []) as any[];
 
   return (
+    <>
     <Card className="border-2 border-primary/20 bg-primary/[0.02]">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
@@ -231,7 +254,13 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
           </CardTitle>
           <div className="flex items-center gap-2">
             {overallStatusBadge()}
-            <Button onClick={() => runScan()} disabled={isScanning} size="sm" className="gap-2">
+            {scanCompletedAt && scanIsComplete && (
+              <span className="text-[10px] font-mono text-muted-foreground flex items-center gap-1">
+                <Clock className="w-2.5 h-2.5" />
+                {timeAgoLabel(scanCompletedAt)}
+              </span>
+            )}
+            <Button onClick={handleScanClick} disabled={isScanning} size="sm" className="gap-2">
               {isScanning ? (
                 <><Loader2 className="w-4 h-4 animate-spin" />Scanning...</>
               ) : latestScan ? (
