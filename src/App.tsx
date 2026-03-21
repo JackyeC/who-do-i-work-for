@@ -222,6 +222,8 @@ const App = () => (
                   <Route path="/offer-review-direct" element={<ProtectedRoute><OfferReviewDirect /></ProtectedRoute>} />
                   <Route path="/compare-offer-checks" element={<CompareOfferChecks />} />
                   <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                  <Route path="/briefing" element={<ProtectedRoute><BriefingPage /></ProtectedRoute>} />
+                  <Route path="/news-setup" element={<ProtectedRoute><NewsOnboarding /></ProtectedRoute>} />
                   <Route path="/career-map" element={<ProtectedRoute><CareerMap /></ProtectedRoute>} />
                   <Route path="/job-dashboard" element={<ProtectedRoute><JobDashboard /></ProtectedRoute>} />
                   <Route path="/my-offer-checks" element={<ProtectedRoute><MyOfferChecks /></ProtectedRoute>} />
