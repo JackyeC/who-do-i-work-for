@@ -11,12 +11,18 @@ import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isLoaded } = useClerkWithFallback();
+  const { isLoaded, isFallback } = useClerkWithFallback();
   const location = useLocation();
   const isDossierRoute = /^\/dossier(?:\/|$)/.test(location.pathname);
 
   if (!isLoaded) return null;
   if (isDossierRoute) return <>{children}</>;
+
+  // When Clerk failed to load (fallback mode), render content directly
+  // instead of using Clerk's <SignedIn>/<SignedOut> wrappers
+  if (isFallback) {
+    return <ProtectedRouteInner>{children}</ProtectedRouteInner>;
+  }
 
   return (
     <>
