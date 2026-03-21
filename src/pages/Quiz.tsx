@@ -949,7 +949,7 @@ function ResultsScreen({
         style={{ animation: "quizFadeUp 0.6s ease 0.95s both", paddingBottom: 48 }}
       >
         <a
-          href="/dashboard"
+          href="/dossier"
           style={{
             background: "#f0c040",
             color: "#0a0a0e",
