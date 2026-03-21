@@ -1,6 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ContentProtector } from "@/components/ContentProtector";
 import { useParams, Link } from "react-router-dom";
+import { CompanyZeroState } from "@/components/CompanyZeroState";
+import { AuditRequestForm } from "@/components/AuditRequestForm";
 import { useQuery } from "@tanstack/react-query";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { getOGImageUrl } from "@/lib/social-share";
@@ -178,6 +180,9 @@ export default function CompanyDossier() {
   const LensMeta = LENS_META[lens];
   const LensIcon = LensMeta.icon;
 
+  const insightText = (company as any).jackye_insight || company.description;
+  const isZeroState = influenceScore === 0 && !insightText && (company.total_pac_spending ?? 0) === 0 && (company.lobbying_spend ?? 0) === 0;
+
   /* ─── Shared overview (always visible) ─── */
   const overviewContent = (
     <>
@@ -216,6 +221,29 @@ export default function CompanyDossier() {
         <InfluenceGauge value={0} label="Stability Score" />
         <InfluenceGauge value={0} label="Attraction Score" />
       </div>
+
+      {/* Jackye's Read — coaching insight */}
+      {insightText && (
+        <div className="rounded-none border border-primary/30 bg-primary/[0.03] p-5 space-y-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-primary font-semibold">
+              JACKYE'S READ
+            </span>
+          </div>
+          <p className="text-sm text-foreground/90 leading-relaxed italic">
+            "{insightText}"
+          </p>
+        </div>
+      )}
+
+      {/* Zero-state fallback */}
+      {isZeroState && (
+        <div className="space-y-4">
+          <CompanyZeroState companyName={company.name} />
+          <AuditRequestForm companyName={company.name} />
+        </div>
+      )}
 
       {/* Layer 1: Basics — always shown */}
       <DossierLayer title="Basics" subtitle="Products, markets, segments, and company overview" icon={Building2} layerNumber={1} defaultOpen>
