@@ -1,51 +1,43 @@
 
 
-# Fix Company Dossier Page — Full Functionality
+# Fix Company Dossier Page — Remaining Issues
 
-## What's Actually Wrong
+## Issues Found
 
-After investigation, the page is **not static** — it already has extensive data connections and interactive components. The real issues are:
-
-1. **Build error blocking deployment**: `check-subscription/index.ts` uses `npm:@supabase/supabase-js@2.57.2` which fails Deno's module resolution. This blocks all edge functions from deploying.
-
-2. **No Jackye's Insight shown on company profile**: The `jackye_insight` field exists in the DB (populated for 45+ companies) but CompanyProfile.tsx never renders it.
-
-3. **No issue signals shown for newly seeded companies**: The 03-issue-signals.sql and 04-public-stances.sql weren't fully imported yet (only Amazon, Tesla, Walmart have signals from prior data; 47 new companies have zero).
-
-4. **MAC Cosmetics specifically** has zero data (score 0, no insight, no signals) — it's a bare skeleton entry.
-
-5. **Missing "no data" fallback on company profile**: When a company has no signals, scores, or insights, the page shows sections with empty content but no clear "we don't have receipts yet" message or audit request flow.
+1. **Slug typo**: MAC Cosmetics stored as `mac-costmetics` instead of `mac-cosmetics`
+2. **No fallback state on CompanyDossier page**: The no-data fallback was only added to `CompanyProfile.tsx`, not `CompanyDossier.tsx` — which is the actual public-facing dossier page at `/dossier/:id`
+3. **3-second blank loading** while Clerk times out before content renders
+4. **CompanyProfile page is login-gated**: `/company/:id` is behind `ProtectedRoute`, so unauthenticated users never see it. The public route is `/dossier/:id`
+5. **No Jackye's Insight on the dossier page** even though it was added to CompanyProfile
+6. **Remaining data seeding incomplete**: 310 issue signals and all public stances still pending
 
 ## Plan
 
-### Step 1: Fix build error in `check-subscription/index.ts`
-- Replace `import { createClient } from "npm:@supabase/supabase-js@2.57.2"` with `import { createClient } from "https://esm.sh/@supabase/supabase-js@2"`
-- Replace `import { serve } from "https://deno.land/std@0.190.0/http/server.ts"` + `serve(...)` with `Deno.serve(...)`
+### Step 1: Fix the slug typo in database
+- Update `mac-costmetics` → `mac-cosmetics` via migration
 
-### Step 2: Add Jackye's Insight to CompanyProfile
-- After the header card, render the `jackye_insight` field from `dbCompany` as a styled coaching block (similar to how JobDetailPage renders it under "Strategic Context")
-- Also show `description` if `jackye_insight` is absent
+### Step 2: Add no-data fallback to CompanyDossier.tsx
+- When a company has all scores at 0, no signals, and no insight, show the "We don't have receipts on this company yet" block with:
+  - CompanyZeroState scan button
+  - AuditRequestForm fallback
+- Place this after the overview/basics layer, before the paywall layers
 
-### Step 3: Add "No Data" fallback state
-- When a company has no meaningful data (no signals, no PAC, no lobbying, score = 0), show a clear fallback block:
-  - "We don't have receipts on this company yet."
-  - Request Audit button → links to the existing audit request flow
-  - Show the scan button prominently
+### Step 3: Add Jackye's Insight to CompanyDossier.tsx
+- Render `jackye_insight` (or `description`) as a styled coaching block inside the overview content, matching what was done in CompanyProfile
 
-### Step 4: Seed remaining data (issue signals + public stances)
-- Insert the remaining issue signals and public stances from the uploaded SQL files for the newly seeded companies
-- This will populate the "What We're Seeing" signals and "Reality Gap" sections
+### Step 4: Seed remaining issue signals and public stances
+- Insert the remaining 310 issue signals from the uploaded SQL
+- Insert public stances data, working around the `gap` column constraint
 
-### Step 5: Make all buttons functional with fallbacks
-- Ensure the "Run Full Company Scan" button works (already does — just blocked by build error)
-- For any action button that isn't ready, add `disabled` state with tooltip explaining why
+### Step 5: (Optional) Reduce Clerk timeout impact
+- Consider showing a skeleton/placeholder immediately instead of a blank spinner during the 3-second Clerk timeout on public dossier pages
 
 ## Technical Details
 
 **Files to modify:**
-- `supabase/functions/check-subscription/index.ts` — fix imports (build error)
-- `src/pages/CompanyProfile.tsx` — add Jackye's Insight block + no-data fallback
-- Database inserts for issue_signals and public_stances data
+- Database migration: fix `mac-costmetics` slug
+- `src/pages/CompanyDossier.tsx` — add Jackye's Insight block + no-data fallback state
+- Database inserts for remaining issue_signals and company_public_stances
 
-**No new tables or schema changes needed.** All data structures already exist.
+**No schema changes needed.**
 
