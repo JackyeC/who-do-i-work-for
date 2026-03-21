@@ -2,7 +2,8 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useCompanyIntelligence } from "@/hooks/use-company-intelligence";
 import { motion } from "framer-motion";
-import { Building2, ArrowLeft, EyeOff, Loader2, Sparkles, Search, Scan, ExternalLink, MessageSquareWarning, FileSearch } from "lucide-react";
+import { Building2, ArrowLeft, EyeOff, Loader2, Sparkles, Search, Scan, ExternalLink, FileSearch } from "lucide-react";
+import { JackyesInsightBlock } from "@/components/company/JackyesInsightBlock";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { ShareableScorecard } from "@/components/ShareableScorecard";
@@ -370,21 +371,10 @@ export default function CompanyProfile() {
           {/* ═══════════════════════════════════════════════════════
               JACKYE'S INSIGHT / DESCRIPTION
              ═══════════════════════════════════════════════════════ */}
-          {(dbCompany?.jackye_insight || (dbCompany as any)?.description) && (
-            <Card className="mb-6 border-primary/20 bg-primary/[0.03]">
-              <CardContent className="p-5">
-                <div className="flex items-start gap-3">
-                  <MessageSquareWarning className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                  <div>
-                    <h3 className="text-sm font-bold text-foreground mb-1.5">Jackye's Read</h3>
-                    <p className="text-sm text-foreground/85 leading-relaxed">
-                      {dbCompany?.jackye_insight || (dbCompany as any)?.description}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          <JackyesInsightBlock
+            insight={dbCompany?.jackye_insight}
+            description={(dbCompany as any)?.description}
+          />
 
           {/* ═══════════════════════════════════════════════════════
               NO-DATA FALLBACK

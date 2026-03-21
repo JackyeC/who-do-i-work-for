@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { ContentProtector } from "@/components/ContentProtector";
 import { useParams, Link } from "react-router-dom";
 import { CompanyZeroState } from "@/components/CompanyZeroState";
-import { AuditRequestForm } from "@/components/AuditRequestForm";
 import { useQuery } from "@tanstack/react-query";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { getOGImageUrl } from "@/lib/social-share";
@@ -14,6 +13,9 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { JackyesInsightBlock } from "@/components/company/JackyesInsightBlock";
+import { AuditRequestForm } from "@/components/AuditRequestForm";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DossierLayer, TransparencyDisclaimer } from "@/components/dossier/DossierLayout";
 import { DossierProtector } from "@/components/dossier/DossierProtector";
 import { InfluenceGauge } from "@/components/dossier/InfluenceGauge";
@@ -117,6 +119,24 @@ export default function CompanyDossier() {
     enabled: !!companyId,
   });
 
+  const { data: issueSignals } = useQuery({
+    queryKey: ["dossier-issue-signals", companyId],
+    queryFn: async () => {
+      const { data } = await (supabase as any).from("issue_signals").select("issue_category, signal_type, description, amount, confidence_score, source_url").eq("entity_id", companyId!);
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
+  const { data: publicStances } = useQuery({
+    queryKey: ["dossier-public-stances", companyId],
+    queryFn: async () => {
+      const { data } = await supabase.from("company_public_stances").select("*").eq("company_id", companyId!);
+      return data || [];
+    },
+    enabled: !!companyId,
+  });
+
   const politicalGiving = useMemo(() => {
     if (!executives) return [];
     return executives
@@ -157,9 +177,46 @@ export default function CompanyDossier() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
+        <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
+          {/* Company header skeleton */}
+          <div className="flex items-center gap-5 mb-6">
+            <Skeleton className="w-16 h-16 rounded-xl" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-7 w-48" />
+              <Skeleton className="h-4 w-64" />
+            </div>
+            <Skeleton className="h-9 w-28 rounded-lg" />
+          </div>
+
+          {/* Lens indicator skeleton */}
+          <Skeleton className="h-10 w-full rounded-xl mb-6" />
+
+          {/* Score gauges skeleton */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 p-6 rounded-2xl border border-border/40 bg-card">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <Skeleton className="w-20 h-20 rounded-full" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            ))}
+          </div>
+
+          {/* Content layers skeleton */}
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="mb-4 rounded-2xl border border-border/40 bg-card p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Skeleton className="w-5 h-5 rounded" />
+                <Skeleton className="h-5 w-40" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            </div>
+          ))}
+        </main>
+        <Footer />
       </div>
     );
   }
@@ -222,20 +279,11 @@ export default function CompanyDossier() {
         <InfluenceGauge value={0} label="Attraction Score" />
       </div>
 
-      {/* Jackye's Read — coaching insight */}
-      {insightText && (
-        <div className="rounded-none border border-primary/30 bg-primary/[0.03] p-5 space-y-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-primary font-semibold">
-              JACKYE'S READ
-            </span>
-          </div>
-          <p className="text-sm text-foreground/90 leading-relaxed italic">
-            "{insightText}"
-          </p>
-        </div>
-      )}
+      {/* Jackye's Insight — shared component */}
+      <JackyesInsightBlock
+        insight={company.jackye_insight}
+        description={(company as any)?.description}
+      />
 
       {/* Zero-state fallback */}
       {isZeroState && (
