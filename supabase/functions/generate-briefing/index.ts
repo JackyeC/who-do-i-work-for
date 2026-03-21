@@ -73,7 +73,7 @@ async function generateBatchBriefings(supabase: any) {
 
   for (const user of users || []) {
     try {
-      const effectiveUserId = user.user_id || user.id?.toString();
+      const effectiveUserId = user.id;
       await buildBriefingForUser(supabase, effectiveUserId, user);
       generated++;
     } catch (err) {
