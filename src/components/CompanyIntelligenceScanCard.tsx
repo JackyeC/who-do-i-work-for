@@ -1,9 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+  AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Radar, Loader2, CheckCircle2, XCircle, AlertTriangle, Clock,
   Search, RefreshCw, CircleSlash, SkipForward, Lock, ArrowRight
@@ -82,6 +87,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   const [isScanning, setIsScanning] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [scanLimitReached, setScanLimitReached] = useState(false);
+  const [showRescanConfirm, setShowRescanConfirm] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -188,6 +194,28 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
     }
   };
 
+  // ─── Scan recency guard ───
+  const scanCompletedAt = latestScan?.completed_at || latestScan?.created_at;
+  const scanIsRecent = scanCompletedAt && (Date.now() - new Date(scanCompletedAt).getTime()) < 24 * 60 * 60 * 1000;
+  const scanIsComplete = latestScan?.scan_status?.startsWith('completed');
+
+  const timeAgoLabel = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+  };
+
+  const handleScanClick = useCallback(() => {
+    if (scanIsRecent && scanIsComplete) {
+      setShowRescanConfirm(true);
+    } else {
+      runScan();
+    }
+  }, [scanIsRecent, scanIsComplete]);
+
   const moduleStatuses = (latestScan?.module_statuses || {}) as Record<string, any>;
   const totalModules = Object.keys(MODULE_LABELS).length;
 
@@ -216,6 +244,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
   const errorLogEntries = (latestScan?.error_log || []) as any[];
 
   return (
+    <>
     <Card className="border-2 border-primary/20 bg-primary/[0.02]">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
@@ -225,7 +254,13 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
           </CardTitle>
           <div className="flex items-center gap-2">
             {overallStatusBadge()}
-            <Button onClick={() => runScan()} disabled={isScanning} size="sm" className="gap-2">
+            {scanCompletedAt && scanIsComplete && (
+              <span className="text-[10px] font-mono text-muted-foreground flex items-center gap-1">
+                <Clock className="w-2.5 h-2.5" />
+                {timeAgoLabel(scanCompletedAt)}
+              </span>
+            )}
+            <Button onClick={handleScanClick} disabled={isScanning} size="sm" className="gap-2">
               {isScanning ? (
                 <><Loader2 className="w-4 h-4 animate-spin" />Scanning...</>
               ) : latestScan ? (
@@ -421,5 +456,23 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
         }}
       />
     </Card>
+
+    <AlertDialog open={showRescanConfirm} onOpenChange={setShowRescanConfirm}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Re-scan {companyName}?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This company was already scanned {scanCompletedAt ? timeAgoLabel(scanCompletedAt) : 'recently'}.
+            Intelligence data is already populated. Re-scanning will count against your daily limit.
+            Only re-scan if you believe new public filings have been released.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Keep Current Data</AlertDialogCancel>
+          <AlertDialogAction onClick={() => runScan(true)}>Re-scan Anyway</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
