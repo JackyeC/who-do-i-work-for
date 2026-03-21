@@ -1481,7 +1481,7 @@ export default function FollowTheMoney() {
           className={cn(
             "relative overflow-hidden transition-all",
             graphExpanded ? "flex-1" : "flex-1 lg:flex-[2]",
-            "bg-[#0B0F1A]"
+            "bg-[#0F0F18]"
           )}
           style={{ minHeight: graphExpanded ? 600 : 420 }}
         >
