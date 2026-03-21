@@ -1,43 +1,51 @@
 
 
-## Monthly/Annual Billing Toggle for Pathfinder Tracks
+# Fix Company Dossier Page — Full Functionality
 
-### What changes
+## What's Actually Wrong
 
-**Single file:** `src/components/landing/PathfinderTracks.tsx`
+After investigation, the page is **not static** — it already has extensive data connections and interactive components. The real issues are:
 
-### Implementation
+1. **Build error blocking deployment**: `check-subscription/index.ts` uses `npm:@supabase/supabase-js@2.57.2` which fails Deno's module resolution. This blocks all edge functions from deploying.
 
-1. **Add `isAnnual` state** (default `false` for Monthly)
+2. **No Jackye's Insight shown on company profile**: The `jackye_insight` field exists in the DB (populated for 45+ companies) but CompanyProfile.tsx never renders it.
 
-2. **Add annual pricing data to tracks:**
-   - Track 2 (Scout): `annualPrice: "$15"`, `annualPeriod: "/mo"`, `annualPriceNote: "billed annually"`, `annualPriceId: "price_..."` (use same priceId for now, or a placeholder — user will need to create the annual Stripe price)
-   - Track 5 (Executive): `annualPrice: "$799"`, `annualPeriod: "/year"`, `annualPriceId: "price_..."`
-   - Tracks 1, 3, 4 (free/one-time): no annual variant — render unchanged
+3. **No issue signals shown for newly seeded companies**: The 03-issue-signals.sql and 04-public-stances.sql weren't fully imported yet (only Amazon, Tesla, Walmart have signals from prior data; 47 new companies have zero).
 
-3. **Billing toggle UI** — placed between the header text and the grid:
-   - Two labels: "Monthly" and "Annual"
-   - A pill/switch toggle between them
-   - "Save 20%" badge next to "Annual" in gold (`#EBAD0C` / `text-primary`)
-   - Style: `font-mono text-xs tracking-wider uppercase`, gold highlight on active state, muted on inactive
+4. **MAC Cosmetics specifically** has zero data (score 0, no insight, no signals) — it's a bare skeleton entry.
 
-4. **Price display logic** — in each track card's price section:
-   - If `isAnnual` and track has `annualPrice`: show annual price with a strikethrough on the original monthly price
-   - If not annual or track has no annual variant: show original price unchanged
+5. **Missing "no data" fallback on company profile**: When a company has no signals, scores, or insights, the page shows sections with empty content but no clear "we don't have receipts yet" message or audit request flow.
 
-5. **Checkout logic** — `handleTrackAction` updated to pass `annualPriceId` when `isAnnual` is active (for subscription tracks only)
+## Plan
 
-### Visual structure of toggle
+### Step 1: Fix build error in `check-subscription/index.ts`
+- Replace `import { createClient } from "npm:@supabase/supabase-js@2.57.2"` with `import { createClient } from "https://esm.sh/@supabase/supabase-js@2"`
+- Replace `import { serve } from "https://deno.land/std@0.190.0/http/server.ts"` + `serve(...)` with `Deno.serve(...)`
 
-```text
-        [ Monthly ]  ●────○  [ Annual  Save 20% ]
-```
+### Step 2: Add Jackye's Insight to CompanyProfile
+- After the header card, render the `jackye_insight` field from `dbCompany` as a styled coaching block (similar to how JobDetailPage renders it under "Strategic Context")
+- Also show `description` if `jackye_insight` is absent
 
-Centered below the subtitle, using the gold/dark theme. Active side gets `bg-primary text-primary-foreground` pill styling, inactive gets `text-muted-foreground`.
+### Step 3: Add "No Data" fallback state
+- When a company has no meaningful data (no signals, no PAC, no lobbying, score = 0), show a clear fallback block:
+  - "We don't have receipts on this company yet."
+  - Request Audit button → links to the existing audit request flow
+  - Show the scan button prominently
 
-### Technical notes
+### Step 4: Seed remaining data (issue signals + public stances)
+- Insert the remaining issue signals and public stances from the uploaded SQL files for the newly seeded companies
+- This will populate the "What We're Seeing" signals and "Reality Gap" sections
 
-- No new files, no database changes, no new dependencies
-- Annual Stripe price IDs will need to be created in Stripe and updated in the code — I'll add placeholder IDs with a comment
-- One-time payment tracks (Strategist, Partner) are unaffected by the toggle
+### Step 5: Make all buttons functional with fallbacks
+- Ensure the "Run Full Company Scan" button works (already does — just blocked by build error)
+- For any action button that isn't ready, add `disabled` state with tooltip explaining why
+
+## Technical Details
+
+**Files to modify:**
+- `supabase/functions/check-subscription/index.ts` — fix imports (build error)
+- `src/pages/CompanyProfile.tsx` — add Jackye's Insight block + no-data fallback
+- Database inserts for issue_signals and public_stances data
+
+**No new tables or schema changes needed.** All data structures already exist.
 
