@@ -302,6 +302,11 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
                             <span>{c.state}{c.district ? `-${c.district}` : ""}</span>
                             <Badge variant="outline" className="text-[10px]">{c.donation_type}</Badge>
                           </div>
+                          {c.flagged && c.flag_reason && (
+                            <p className="mt-1 text-[10px] text-destructive/80 leading-snug">
+                              ⚑ {c.flag_reason}
+                            </p>
+                          )}
                         </div>
                         <span className="text-sm font-semibold text-foreground shrink-0 ml-2">{formatCurrency(c.amount)}</span>
                       </div>
