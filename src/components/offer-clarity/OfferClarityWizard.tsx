@@ -170,7 +170,7 @@ export function OfferClarityWizard() {
                     className="pl-9"
                   />
                 </div>
-                {companyResults.length > 0 && (
+                {(companyResults.length > 0 || (searchedCompany && !searchingCompany && offerData.companyName.trim().length >= 2)) && !offerData.companyId && (
                   <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg overflow-hidden">
                     {companyResults.map(c => (
                       <button
@@ -182,6 +182,22 @@ export function OfferClarityWizard() {
                         <span className="text-xs text-muted-foreground">{c.industry} · {c.state}</span>
                       </button>
                     ))}
+                    {searchedCompany && (
+                      <button
+                        onClick={handleAddNewCompany}
+                        disabled={creatingCompany}
+                        className="w-full text-left px-4 py-2.5 hover:bg-accent transition-colors flex items-center gap-2 border-t border-border text-primary"
+                      >
+                        {creatingCompany ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Building2 className="w-3.5 h-3.5" />
+                        )}
+                        <span className="text-sm font-medium">
+                          {creatingCompany ? "Adding..." : `Add "${offerData.companyName.trim()}" as new company`}
+                        </span>
+                      </button>
+                    )}
                   </div>
                 )}
                 {offerData.companyId && (
