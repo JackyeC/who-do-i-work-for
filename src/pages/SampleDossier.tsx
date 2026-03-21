@@ -132,7 +132,6 @@ export default function SampleDossier() {
             selectedCompany={null}
           />
         </div>
-        </p>
 
         {/* View toggle — Dossier vs Interview Kit */}
         <div className="flex gap-1 p-1 rounded-xl mb-10 w-full max-w-[400px]" style={{ background: "rgba(255,255,255,0.04)", border: cardBorder }}>
