@@ -93,6 +93,10 @@ export function calculateInnovationSignal(
 
 export function getPatentGoogleLink(patentNumber: string): string {
   const clean = patentNumber.replace(/[^a-zA-Z0-9]/g, "");
+  // If already has a country prefix (US, EP, WO, etc.), use as-is
+  if (/^[A-Z]{2}/.test(clean)) {
+    return `https://patents.google.com/patent/${clean}`;
+  }
   return `https://patents.google.com/patent/US${clean}`;
 }
 

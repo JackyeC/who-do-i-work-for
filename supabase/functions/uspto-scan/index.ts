@@ -6,142 +6,147 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-// ── Company Resolver ──────────────────────────────────────────────────
+// ── Company Name Helpers ──────────────────────────────────────────────
 
 function normalizeCompanyName(name: string): string {
   return name
     .toLowerCase()
-    .replace(/[.,'"!?()]/g, '')
+    .replace(/[.,'\"!?()]/g, '')
     .replace(/\b(inc|llc|ltd|corp|co|company|corporation|incorporated|limited|plc|lp|group|holdings)\b/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function generateAliases(companyName: string, parentCompany?: string | null): string[] {
-  const aliases = new Set<string>();
-  aliases.add(companyName);
-  aliases.add(normalizeCompanyName(companyName));
+function generateSearchQueries(companyName: string, parentCompany?: string | null): string[] {
+  const queries = new Set<string>();
+  queries.add(companyName);
 
-  // Common suffixes
   const base = normalizeCompanyName(companyName);
   if (base !== companyName.toLowerCase()) {
-    aliases.add(base);
+    queries.add(base);
   }
 
   // Add with common suffixes
-  for (const suffix of ['Inc', 'LLC', 'Corp', 'Corporation', 'Ltd']) {
-    aliases.add(`${base} ${suffix}`.trim());
+  for (const suffix of ['Inc', 'Inc.', 'LLC', 'Corp', 'Corporation']) {
+    queries.add(`${base} ${suffix}`.trim());
   }
 
   if (parentCompany) {
-    aliases.add(parentCompany);
-    aliases.add(normalizeCompanyName(parentCompany));
+    queries.add(parentCompany);
+    queries.add(normalizeCompanyName(parentCompany));
   }
 
-  return [...aliases].filter(a => a.length > 1);
+  return [...queries].filter(a => a.length > 1).slice(0, 5);
 }
 
-// ── PatentsView API Connector ─────────────────────────────────────────
+// ── Google Patents XHR API ────────────────────────────────────────────
+// Uses the publicly accessible Google Patents search endpoint
+// Returns structured JSON with patent data, no API key needed
 
-interface PatentsViewPatent {
-  patent_id: string;
-  patent_number: string;
-  patent_title: string;
-  patent_date: string;
-  patent_firstnamed_assignee_id: string;
-  assignees?: Array<{
-    assignee_organization: string;
-    assignee_id: string;
-  }>;
-  inventors?: Array<{
-    inventor_first_name: string;
-    inventor_last_name: string;
-  }>;
-  cpcs?: Array<{
-    cpc_group_id: string;
-    cpc_category: string;
-  }>;
-  application?: Array<{
-    app_number: string;
-    app_date: string;
-  }>;
+interface GooglePatentResult {
+  title: string;
+  publication_number: string;
+  filing_date?: string;
+  grant_date?: string;
+  publication_date?: string;
+  assignees: string[];
+  inventors: string[];
+  snippet?: string;
 }
 
-async function queryPatentsView(aliases: string[]): Promise<PatentsViewPatent[]> {
-  const allPatents: PatentsViewPatent[] = [];
-
-  for (const alias of aliases.slice(0, 5)) {
-    try {
-      // PatentsView API v1 — query by assignee organization
-      const query = {
-        q: { _contains: { assignee_organization: alias } },
-        f: [
-          "patent_id", "patent_number", "patent_title", "patent_date",
-          "assignee_organization", "assignee_id",
-          "inventor_first_name", "inventor_last_name",
-          "cpc_group_id", "cpc_category",
-          "app_number", "app_date"
-        ],
-        o: { per_page: 100, page: 1 },
-        s: [{ patent_date: "desc" }]
-      };
-
-      const response = await fetch("https://api.patentsview.org/patents/query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(query),
-      });
-
-      if (!response.ok) {
-        console.warn(`PatentsView query failed for "${alias}": ${response.status}`);
-        continue;
-      }
-
-      const data = await response.json();
-      if (data.patents) {
-        allPatents.push(...data.patents);
-      }
-    } catch (err) {
-      console.warn(`PatentsView error for "${alias}":`, err);
-    }
-  }
-
-  // Deduplicate by patent_number
-  const seen = new Set<string>();
-  return allPatents.filter(p => {
-    const key = p.patent_number || p.patent_id;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
-// ── Fallback: Google Patents scrape (if PatentsView is down) ──────────
-
-async function fallbackGooglePatents(companyName: string): Promise<{ titles: string[]; count: number }> {
+async function queryGooglePatents(
+  companyName: string,
+  page: number = 0,
+  perPage: number = 10
+): Promise<{ patents: GooglePatentResult[]; totalResults: number }> {
   try {
-    const query = encodeURIComponent(`"${companyName}"`);
-    const response = await fetch(`https://patents.google.com/?q=${query}&oq=${query}`, {
+    // Build the Google Patents XHR query URL
+    // assignee: search targets the assignee field specifically
+    const query = encodeURIComponent(`assignee:${companyName}`);
+    const oq = encodeURIComponent(`assignee:${companyName}`);
+    const url = `https://patents.google.com/xhr/query?url=q%3D${query}%26num%3D${perPage}%26page%3D${page}%26oq%3D${oq}&exp=&tags=`;
+
+    const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'text/html',
+        'User-Agent': 'Mozilla/5.0 (compatible; WDIWF-IntelligenceBot/1.0)',
+        'Accept': 'application/json',
       },
     });
-    const html = await response.text();
-    const titleRegex = /<span class="style-scope search-result-item" id="htmlContent">(.*?)<\/span>/g;
-    const countRegex = /About ([\d,]+) results/;
-    const titles: string[] = [];
-    let match;
-    while ((match = titleRegex.exec(html)) !== null && titles.length < 20) {
-      const title = match[1].replace(/<[^>]*>/g, '').trim();
-      if (title && title.length > 5) titles.push(title);
+
+    if (!response.ok) {
+      console.warn(`Google Patents query failed: ${response.status}`);
+      return { patents: [], totalResults: 0 };
     }
-    const countMatch = countRegex.exec(html);
-    const count = countMatch ? parseInt(countMatch[1].replace(/,/g, '')) : titles.length;
-    return { titles, count };
-  } catch {
-    return { titles: [], count: 0 };
+
+    const data = await response.json();
+    const results = data?.results;
+    if (!results) return { patents: [], totalResults: 0 };
+
+    const totalResults = results.total_num_results || 0;
+    const clusters = results.cluster || [];
+
+    const patents: GooglePatentResult[] = [];
+    for (const cluster of clusters) {
+      const resultList = cluster?.result || [];
+      for (const item of resultList) {
+        const pat = item?.patent;
+        if (!pat) continue;
+
+        // Clean HTML from title
+        const title = (pat.title || '')
+          .replace(/<[^>]*>/g, '')
+          .replace(/&[a-z]+;/g, (m: string) => {
+            const entities: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&apos;': "'", '&hel': '...' };
+            return entities[m] || m;
+          })
+          .trim();
+
+        patents.push({
+          title,
+          publication_number: pat.publication_number || '',
+          filing_date: pat.filing_date || undefined,
+          grant_date: pat.grant_date || undefined,
+          publication_date: pat.publication_date || undefined,
+          assignees: (pat.assignee || []).map((a: any) => a.name || '').filter(Boolean),
+          inventors: (pat.inventor || []).map((i: any) => i.name || '').filter(Boolean),
+          snippet: (pat.snippet || '').replace(/<[^>]*>/g, '').trim() || undefined,
+        });
+      }
+    }
+
+    return { patents, totalResults };
+  } catch (err) {
+    console.warn(`Google Patents error for "${companyName}":`, err);
+    return { patents: [], totalResults: 0 };
   }
+}
+
+// ── Multi-query search ────────────────────────────────────────────────
+
+async function searchAllAliases(queries: string[]): Promise<{ patents: GooglePatentResult[]; totalResults: number }> {
+  let bestResult = { patents: [] as GooglePatentResult[], totalResults: 0 };
+
+  for (const query of queries) {
+    const result = await queryGooglePatents(query, 0, 25);
+    if (result.totalResults > bestResult.totalResults) {
+      bestResult = result;
+    }
+    // If we found a good result, don't burn more queries
+    if (bestResult.totalResults >= 10) break;
+
+    // Brief pause to avoid rate limiting
+    await new Promise(r => setTimeout(r, 500));
+  }
+
+  // Deduplicate by publication_number
+  const seen = new Set<string>();
+  bestResult.patents = bestResult.patents.filter(p => {
+    if (seen.has(p.publication_number)) return false;
+    seen.add(p.publication_number);
+    return true;
+  });
+
+  return bestResult;
 }
 
 // ── Signal Computation ────────────────────────────────────────────────
@@ -159,78 +164,60 @@ interface IpSignals {
   top_cpc_categories: string[];
 }
 
-function computeSignals(patents: PatentsViewPatent[]): IpSignals {
+function computeSignals(patents: GooglePatentResult[], totalResults: number): IpSignals {
   const now = new Date();
   const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
   const threeYearsAgo = new Date(now.getFullYear() - 3, now.getMonth(), now.getDate());
-  const fiveYearsAgo = new Date(now.getFullYear() - 5, now.getMonth(), now.getDate());
 
-  const patents12m = patents.filter(p => p.patent_date && new Date(p.patent_date) >= oneYearAgo);
-  const patents36m = patents.filter(p => p.patent_date && new Date(p.patent_date) >= threeYearsAgo);
-  const patentsOlder = patents.filter(p => {
-    if (!p.patent_date) return false;
-    const d = new Date(p.patent_date);
-    return d >= fiveYearsAgo && d < threeYearsAgo;
+  const patents12m = patents.filter(p => {
+    const d = p.grant_date || p.filing_date || p.publication_date;
+    return d && new Date(d) >= oneYearAgo;
+  });
+  const patents36m = patents.filter(p => {
+    const d = p.grant_date || p.filing_date || p.publication_date;
+    return d && new Date(d) >= threeYearsAgo;
   });
 
-  // Patent trend: compare last 12m vs average of prior 24m
   const count12m = patents12m.length;
-  const countPrior24m = patents36m.length - count12m;
+  const count36m = patents36m.length;
+  const countPrior24m = count36m - count12m;
   const avgPrior12m = countPrior24m / 2;
 
   let patent_trend = 'unknown';
-  if (patents.length > 0) {
+  if (totalResults > 0) {
     if (avgPrior12m === 0 && count12m > 0) patent_trend = 'rising';
     else if (count12m > avgPrior12m * 1.2) patent_trend = 'rising';
     else if (count12m < avgPrior12m * 0.8) patent_trend = 'declining';
     else patent_trend = 'flat';
   }
 
-  // CPC categories
-  const cpcCounts: Record<string, number> = {};
-  for (const p of patents) {
-    if (p.cpcs) {
-      for (const cpc of p.cpcs) {
-        const cat = cpc.cpc_category || cpc.cpc_group_id?.substring(0, 4) || 'Unknown';
-        cpcCounts[cat] = (cpcCounts[cat] || 0) + 1;
-      }
-    }
-  }
-  const topCpc = Object.entries(cpcCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 6)
-    .map(([k]) => k);
-
-  // Innovation score: blend of count, recency, breadth
-  const countScore = Math.min(count12m / 20, 1) * 40;
-  const breadthScore = Math.min(topCpc.length / 5, 1) * 30;
-  const recencyScore = count12m > 0 ? 30 : (patents36m.length > 0 ? 15 : 0);
-  const innovation_signal_score = Math.round(countScore + breadthScore + recencyScore);
-
-  // IP complexity: number of distinct CPC categories
-  const ip_complexity_score = Math.min(Object.keys(cpcCounts).length * 10, 100);
+  // Innovation score
+  const countScore = Math.min(totalResults / 100, 1) * 40;
+  const recencyScore = count12m > 0 ? 30 : (count36m > 0 ? 15 : 0);
+  const volumeScore = Math.min(count36m / 10, 1) * 30;
+  const innovation_signal_score = Math.round(countScore + recencyScore + volumeScore);
 
   return {
     patent_count_12m: count12m,
-    patent_count_36m: patents36m.length,
+    patent_count_36m: count36m,
     patent_trend,
-    trademark_count_12m: 0, // V1: trademarks filled separately
+    trademark_count_12m: 0,
     trademark_trend: 'unknown',
     ownership_change_flag: false,
     innovation_signal_score,
     expansion_signal_score: 0,
-    ip_complexity_score,
-    top_cpc_categories: topCpc,
+    ip_complexity_score: 0,
+    top_cpc_categories: [],
   };
 }
 
-// ── AI Categorization (reuse existing pattern) ────────────────────────
+// ── AI Clustering ─────────────────────────────────────────────────────
 
-async function categorizePatents(companyName: string, patents: PatentsViewPatent[]): Promise<Array<{ theme: string; count: number; examples: string[] }>> {
+async function categorizePatents(companyName: string, patents: GooglePatentResult[]): Promise<Array<{ theme: string; count: number; examples: string[] }>> {
   const apiKey = Deno.env.get("LOVABLE_API_KEY");
   if (!apiKey || patents.length === 0) return [];
 
-  const titles = patents.slice(0, 30).map(p => p.patent_title).filter(Boolean);
+  const titles = patents.slice(0, 30).map(p => p.title).filter(Boolean);
   if (titles.length === 0) return [];
 
   try {
@@ -284,7 +271,7 @@ serve(async (req) => {
       });
     }
 
-    console.log(`USPTO scan starting for: ${companyName} (${companyId || 'no id'})`);
+    console.log(`Patent scan starting for: ${companyName} (${companyId || 'no id'})`);
 
     // Check cache — skip if scanned in last 7 days
     if (companyId) {
@@ -299,7 +286,6 @@ serve(async (req) => {
         const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         if (scannedAt > sevenDaysAgo) {
           console.log("Returning cached IP signals");
-          // Still fetch clusters + top patents from DB
           const { data: cachedPatents } = await db
             .from('patent_records')
             .select('title, patent_number, grant_date, cpc_codes')
@@ -308,10 +294,17 @@ serve(async (req) => {
             .limit(30);
 
           const clusters = await categorizePatents(companyName, (cachedPatents || []).map(p => ({
-            patent_id: '', patent_number: p.patent_number || '', patent_title: p.title || '',
-            patent_date: p.grant_date || '', patent_firstnamed_assignee_id: '',
-            cpcs: Array.isArray(p.cpc_codes) ? p.cpc_codes : [],
+            title: p.title || '',
+            publication_number: p.patent_number || '',
+            grant_date: p.grant_date || undefined,
+            assignees: [],
+            inventors: [],
           })));
+
+          // Use the larger of cached count or stored count
+          const cachedCount = cachedPatents?.length || 0;
+          const storedCount = existing.patent_count_36m || 0;
+          const totalResults = Math.max(cachedCount, storedCount, existing.innovation_signal_score > 0 ? 1 : 0);
 
           return new Response(JSON.stringify({
             cached: true,
@@ -319,87 +312,47 @@ serve(async (req) => {
             clusters,
             topPatents: (cachedPatents || []).slice(0, 10).map(p => ({
               title: p.title,
-              url: p.patent_number ? `https://patents.google.com/patent/US${p.patent_number}` : null,
+              url: p.patent_number ? `https://patents.google.com/patent/${p.patent_number}` : null,
+              patent_number: p.patent_number,
             })),
-            totalResults: (cachedPatents?.length || 0) > 0 ? Math.max(cachedPatents!.length, existing.patent_count_36m || 0) : (existing.patent_count_36m || 0),
+            totalResults,
           }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
         }
       }
     }
 
-    // Create scan job
-    let jobId: string | null = null;
-    if (companyId) {
-      const { data: job } = await db.from('ip_scan_jobs').insert({
-        company_id: companyId,
-        job_type: 'on_demand',
-        status: 'running',
-        started_at: new Date().toISOString(),
-      }).select('id').single();
-      jobId = job?.id || null;
-    }
-
-    // Resolve aliases
+    // Resolve search queries (company name + aliases)
     const parentCompany = companyId
       ? (await db.from('companies').select('parent_company').eq('id', companyId).single()).data?.parent_company
       : null;
-    const aliases = generateAliases(companyName, parentCompany);
+    const searchQueries = generateSearchQueries(companyName, parentCompany);
 
-    // Store aliases
-    if (companyId) {
-      for (const alias of aliases) {
-        await db.from('company_aliases').upsert({
-          company_id: companyId,
-          alias_name: alias,
-          alias_type: alias === companyName ? 'canonical' : 'fuzzy',
-          confidence: alias === companyName ? 1.0 : 0.7,
-        }, { onConflict: 'company_id,alias_name' }).select();
-      }
-    }
+    // Query Google Patents (primary source — free, no API key, real-time)
+    const { patents, totalResults } = await searchAllAliases(searchQueries);
 
-    // Query PatentsView
-    let patents = await queryPatentsView(aliases);
-    let usedFallback = false;
+    console.log(`Google Patents: ${totalResults} total results, ${patents.length} detailed`);
 
-    // Fallback to Google Patents if PatentsView returns nothing
-    if (patents.length === 0) {
-      console.log("PatentsView returned no results, trying Google Patents fallback");
-      const fallback = await fallbackGooglePatents(companyName);
-      usedFallback = true;
-
-      if (fallback.titles.length > 0) {
-        // Convert fallback to pseudo-patent format for clustering
-        patents = fallback.titles.map((title, i) => ({
-          patent_id: `fallback-${i}`,
-          patent_number: '',
-          patent_title: title,
-          patent_date: '',
-          patent_firstnamed_assignee_id: '',
-        }));
-      }
-    }
-
-    // Store patent records
-    if (companyId && patents.length > 0 && !usedFallback) {
+    // Store patent records in DB
+    if (companyId && patents.length > 0) {
       for (const p of patents.slice(0, 100)) {
         await db.from('patent_records').upsert({
           company_id: companyId,
-          patent_number: p.patent_number,
-          source_record_id: p.patent_id,
-          title: p.patent_title,
-          grant_date: p.patent_date || null,
-          assignee_name: p.assignees?.[0]?.assignee_organization || null,
-          assignee_normalized: normalizeCompanyName(p.assignees?.[0]?.assignee_organization || companyName),
-          inventor_count: p.inventors?.length || 0,
-          cpc_codes: p.cpcs || [],
-          application_number: p.application?.[0]?.app_number || null,
-          filing_date: p.application?.[0]?.app_date || null,
+          patent_number: p.publication_number,
+          source_record_id: p.publication_number,
+          title: p.title,
+          grant_date: p.grant_date || p.filing_date || null,
+          assignee_name: p.assignees[0] || null,
+          assignee_normalized: normalizeCompanyName(p.assignees[0] || companyName),
+          inventor_count: p.inventors.length,
+          cpc_codes: [],
+          application_number: null,
+          filing_date: p.filing_date || null,
         }, { onConflict: 'company_id,patent_number' }).select();
       }
     }
 
     // Compute signals
-    const signals = computeSignals(patents);
+    const signals = computeSignals(patents, totalResults);
 
     // Store signals
     if (companyId) {
@@ -415,31 +368,34 @@ serve(async (req) => {
     // AI clustering
     const clusters = await categorizePatents(companyName, patents);
 
-    // Complete job
-    if (jobId) {
-      await db.from('ip_scan_jobs').update({
-        status: 'complete',
-        finished_at: new Date().toISOString(),
-      }).eq('id', jobId);
+    // Ticker update for notable patent portfolios
+    if (companyId && totalResults >= 50) {
+      await db.from('ticker_items' as any).upsert({
+        company_name: companyName,
+        message: `${totalResults.toLocaleString()} patents on record — active IP portfolio`,
+        source_tag: "Google Patents",
+        item_type: "innovation",
+        is_hidden: false,
+      } as any, { onConflict: 'company_name,item_type' as any }).then(() => {});
     }
 
     const topPatents = patents.slice(0, 10).map(p => ({
-      title: p.patent_title,
-      url: p.patent_number ? `https://patents.google.com/patent/US${p.patent_number}` : null,
+      title: p.title,
+      url: p.publication_number ? `https://patents.google.com/patent/${p.publication_number}` : null,
+      patent_number: p.publication_number,
     }));
 
     return new Response(JSON.stringify({
       cached: false,
-      usedFallback,
       signals,
       clusters,
       topPatents,
-      totalResults: patents.length,
-      aliasesUsed: aliases.length,
+      totalResults,
+      aliasesUsed: searchQueries.length,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
   } catch (error) {
-    console.error("USPTO scan error:", error);
+    console.error("Patent scan error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
