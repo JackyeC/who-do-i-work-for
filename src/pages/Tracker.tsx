@@ -71,7 +71,7 @@ export default function Tracker() {
       id: crypto.randomUUID(),
       company: form.company.trim(),
       role: form.role.trim(),
-      status: "applied",
+      status: "researching",
       appliedDate: form.date
         ? new Date(form.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
         : new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
