@@ -336,8 +336,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             {[
               {
                 step: "01",
-                title: "Company gets audited",
-                body: "We pull public signals — Glassdoor trajectory, leadership turnover, workforce stability, public legal and civic record.",
+                title: "Company gets scanned",
+                body: "We pull public signals — leadership turnover, workforce stability, civic record, and workplace sentiment. Don't see a company? Request it and we'll add it to the queue.",
               },
               {
                 step: "02",
