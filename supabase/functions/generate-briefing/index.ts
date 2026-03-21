@@ -56,7 +56,7 @@ async function generateBatchBriefings(supabase: any) {
   // Get all users with onboarding complete who don't have today's briefing
   const { data: users, error: userError } = await supabase
     .from("profiles")
-    .select("id, user_id, user_values, industries, interests, location_state")
+    .select("id, user_values, industries, interests, location_state")
     .eq("news_onboarding_complete", true)
     .or(`last_briefing_date.is.null,last_briefing_date.lt.${today}`);
 
@@ -73,7 +73,7 @@ async function generateBatchBriefings(supabase: any) {
 
   for (const user of users || []) {
     try {
-      const effectiveUserId = user.user_id || user.id?.toString();
+      const effectiveUserId = user.id;
       await buildBriefingForUser(supabase, effectiveUserId, user);
       generated++;
     } catch (err) {
@@ -117,8 +117,8 @@ async function generateUserBriefing(supabase: any, userId: string) {
   // Fetch user profile
   const { data: user } = await supabase
     .from("profiles")
-    .select("id, user_id, user_values, industries, interests, location_state")
-    .or(`id.eq.${userId},user_id.eq.${userId}`)
+    .select("id, user_values, industries, interests, location_state")
+    .eq("id", userId)
     .maybeSingle();
 
   if (!user) {
@@ -182,7 +182,7 @@ async function buildBriefingForUser(supabase: any, userId: string, userProfile: 
   await supabase
     .from("profiles")
     .update({ last_briefing_date: today })
-    .or(`id.eq.${userId},user_id.eq.${userId}`);
+    .eq("id", userId);
 }
 
 // ============================================================
