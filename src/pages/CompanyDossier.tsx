@@ -9,6 +9,7 @@ import {
   Building2, Lightbulb, Network, Landmark, Eye,
   Sparkles, Users, Heart, Loader2, ShoppingCart,
   BarChart3, TrendingUp, User, Megaphone, Target, AlertTriangle,
+  FileSearch, Scan, Search,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -52,6 +53,11 @@ import { StateWomenStatusCard } from "@/components/StateWomenStatusCard";
 import { PolicyScoreCard } from "@/components/policy-intelligence/PolicyScoreCard";
 import { SituationContextBanner } from "@/components/policy-intelligence/SituationContextBanner";
 import { TrustFramingLine } from "@/components/TrustFramingLine";
+import { JackyesInsightBlock } from "@/components/company/JackyesInsightBlock";
+import { CompanyZeroState } from "@/components/CompanyZeroState";
+import { AuditRequestForm } from "@/components/AuditRequestForm";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 /* ─── Lens config ─── */
 const LENS_META = {
@@ -237,8 +243,15 @@ export default function CompanyDossier() {
   const LensMeta = LENS_META[lens];
   const LensIcon = LensMeta.icon;
 
-  const insightText = (company as any).jackye_insight || company.description;
-  const isZeroState = influenceScore === 0 && !insightText && (company.total_pac_spending ?? 0) === 0 && (company.lobbying_spend ?? 0) === 0;
+  // No-data detection: all scores zero, no insight, no signals, no stances
+  const hasNoData =
+    influenceScore === 0 &&
+    !company.jackye_insight &&
+    !(company as any).description &&
+    (company.total_pac_spending ?? 0) === 0 &&
+    (company.lobbying_spend ?? 0) === 0 &&
+    (issueSignals?.length || 0) === 0 &&
+    (publicStances?.length || 0) === 0;
 
   /* ─── Shared overview (always visible) ─── */
   const overviewContent = (
@@ -280,17 +293,23 @@ export default function CompanyDossier() {
       </div>
 
       {/* Jackye's Insight — shared component */}
-      <JackyesInsightBlock
-        insight={company.jackye_insight}
-        description={(company as any)?.description}
-      />
+      <JackyesInsightBlock insight={company.jackye_insight} description={(company as any)?.description} />
 
-      {/* Zero-state fallback */}
-      {isZeroState && (
-        <div className="space-y-4">
-          <CompanyZeroState companyName={company.name} />
-          <AuditRequestForm companyName={company.name} />
-        </div>
+      {/* No-data fallback */}
+      {hasNoData && (
+        <Card className="mb-6 border-dashed border-border/60 bg-muted/20">
+          <CardContent className="p-6 text-center">
+            <FileSearch className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+            <h3 className="text-base font-semibold text-foreground mb-1">We don't have receipts on this company yet.</h3>
+            <p className="text-sm text-muted-foreground mb-4 max-w-md mx-auto">
+              Our research team hasn't completed a full scan. You can request one or run an automated scan now.
+            </p>
+            <div className="flex flex-col items-center gap-4">
+              <CompanyZeroState companyName={company.name} />
+              <AuditRequestForm companyName={company.name} />
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Layer 1: Basics — always shown */}
