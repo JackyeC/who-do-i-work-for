@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
-type Status = "applied" | "interviewing" | "offer" | "archived";
+type Status = "researching" | "applied" | "interviewing" | "offer_rejected";
 
 interface TrackerApp {
   id: string;
