@@ -117,6 +117,8 @@ const ApplyKitPage = lazy(() => import("./pages/ApplyKit"));
 const DossierCoachingGuide = lazy(() => import("./pages/DossierCoachingGuide"));
 const InterviewDossier = lazy(() => import("./pages/InterviewDossier"));
 const RecruiterBrief = lazy(() => import("./pages/RecruiterBrief"));
+const BriefingPage = lazy(() => import("./pages/BriefingPage"));
+const NewsOnboarding = lazy(() => import("./components/NewsOnboarding"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
