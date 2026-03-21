@@ -46,9 +46,12 @@ export function OfferClarityWizard() {
   // Company search
   const [companyResults, setCompanyResults] = useState<any[]>([]);
   const [searchingCompany, setSearchingCompany] = useState(false);
+  const [searchedCompany, setSearchedCompany] = useState(false);
+  const [creatingCompany, setCreatingCompany] = useState(false);
 
   const searchCompany = async (name: string) => {
-    setOfferData(d => ({ ...d, companyName: name }));
+    setOfferData(d => ({ ...d, companyName: name, companyId: undefined }));
+    setSearchedCompany(false);
     if (name.length < 2) { setCompanyResults([]); return; }
     setSearchingCompany(true);
     const { data } = await supabase
@@ -58,11 +61,36 @@ export function OfferClarityWizard() {
       .limit(5);
     setCompanyResults(data || []);
     setSearchingCompany(false);
+    setSearchedCompany(true);
   };
 
   const selectCompany = (c: any) => {
     setOfferData(d => ({ ...d, companyName: c.name, companyId: c.id }));
     setCompanyResults([]);
+    setSearchedCompany(false);
+  };
+
+  const handleAddNewCompany = async () => {
+    const name = offerData.companyName.trim();
+    if (!name) return;
+    setCreatingCompany(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("company-discover", {
+        body: { companyName: name, searchQuery: name },
+      });
+      if (error) throw error;
+      if (data?.companyId) {
+        setOfferData(d => ({ ...d, companyName: data.identity?.name || name, companyId: data.companyId }));
+        setCompanyResults([]);
+        setSearchedCompany(false);
+        toast({ title: "Company added", description: `"${data.identity?.name || name}" is now being scanned.` });
+      }
+    } catch (e: any) {
+      console.error("Add company failed:", e);
+      toast({ title: "Failed to add company", description: e.message, variant: "destructive" });
+    } finally {
+      setCreatingCompany(false);
+    }
   };
 
   const update = (field: keyof OfferData, value: string) =>
@@ -142,7 +170,7 @@ export function OfferClarityWizard() {
                     className="pl-9"
                   />
                 </div>
-                {companyResults.length > 0 && (
+                {(companyResults.length > 0 || (searchedCompany && !searchingCompany && offerData.companyName.trim().length >= 2)) && !offerData.companyId && (
                   <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg overflow-hidden">
                     {companyResults.map(c => (
                       <button
@@ -154,6 +182,22 @@ export function OfferClarityWizard() {
                         <span className="text-xs text-muted-foreground">{c.industry} · {c.state}</span>
                       </button>
                     ))}
+                    {searchedCompany && (
+                      <button
+                        onClick={handleAddNewCompany}
+                        disabled={creatingCompany}
+                        className="w-full text-left px-4 py-2.5 hover:bg-accent transition-colors flex items-center gap-2 border-t border-border text-primary"
+                      >
+                        {creatingCompany ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Building2 className="w-3.5 h-3.5" />
+                        )}
+                        <span className="text-sm font-medium">
+                          {creatingCompany ? "Adding..." : `Add "${offerData.companyName.trim()}" as new company`}
+                        </span>
+                      </button>
+                    )}
                   </div>
                 )}
                 {offerData.companyId && (
