@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 
 export function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { isLoaded } = useClerkAuth();
+  const { isLoaded } = useClerkWithFallback();
   const { user, loading } = useAuth();
   const { isAdmin, isOwner, isLoading } = useUserRole();
 

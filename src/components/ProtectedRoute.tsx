@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isLoaded } = useClerkAuth();
+  const { isLoaded } = useClerkWithFallback();
   const location = useLocation();
   const isDossierRoute = /^\/dossier(?:\/|$)/.test(location.pathname);
 

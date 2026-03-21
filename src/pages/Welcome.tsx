@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { usePageSEO } from "@/hooks/use-page-seo";
 
 export default function Welcome() {
-  const { isLoaded } = useClerkAuth();
+  const { isLoaded } = useClerkWithFallback();
   const navigate = useNavigate();
 
   usePageSEO({

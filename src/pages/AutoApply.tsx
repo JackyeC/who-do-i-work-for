@@ -326,7 +326,7 @@ const STEP_META = [
 ];
 
 export default function AutoApply() {
-  const { isLoaded, isSignedIn } = useClerkAuth();
+  const { isLoaded, isSignedIn } = useClerkWithFallback();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(INITIAL);
