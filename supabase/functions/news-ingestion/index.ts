@@ -1,161 +1,398 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+// ============================================================
+// WDIWF Edge Function: news-ingestion
+// Fetches world-of-work news from external API + internal signals
+// Deploy: supabase functions deploy news-ingestion
+// ============================================================
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+// --- CONFIGURE YOUR NEWS API HERE ---
+// Option A: NewsMesh ($29/mo) — recommended for value
+// Option B: Mediastack ($25/mo) — simpler, less enrichment
+// Option C: NewsAPI.org ($449/mo) — most comprehensive
+// Option D: NewsData.io (free tier, 200 credits/day)
+const NEWS_API_KEY = Deno.env.get("NEWS_API_KEY") || "";
+const NEWS_API_PROVIDER = Deno.env.get("NEWS_API_PROVIDER") || "newsdata"; // 'newsmesh' | 'mediastack' | 'newsapi' | 'newsdata'
+
+// Topics that map to WDIWF's world-of-work focus
+const SEARCH_QUERIES = [
+  "workplace diversity equity inclusion",
+  "corporate layoffs restructuring",
+  "pay equity salary transparency",
+  "remote work return to office",
+  "AI hiring discrimination employment",
+  "labor union NLRB worker rights",
+  "corporate lobbying PAC spending",
+  "OSHA workplace safety",
+  "EEOC discrimination lawsuit",
+  "whistleblower corporate fraud",
+  "DEI programs corporate",
+  "government contractor ethics",
+];
+
+// Map keywords to WDIWF value tags
+const VALUE_TAG_RULES: Record<string, string[]> = {
+  "diversity|equity|inclusion|dei|discrimination": ["Diversity & Inclusion"],
+  "pay equity|salary|compensation|wage": ["Pay Equity"],
+  "environment|climate|sustainability|esg": ["Environmental Sustainability"],
+  "union|labor|worker|nlrb|strike": ["Worker Rights"],
+  "ai hiring|algorithm|bias|automated": ["Ethical AI"],
+  "transparency|disclose|whistleblower|audit": ["Transparency"],
+  "community|local|impact|philanthropy": ["Community Impact"],
+  "mental health|wellness|burnout|wellbeing": ["Mental Health Support"],
+  "remote work|hybrid|work from home|flexible": ["Remote Work"],
+  "anti-discrimination|eeoc|civil rights": ["Anti-Discrimination"],
+  "whistleblower|retaliation|reporting": ["Whistleblower Protection"],
+  "lobbying|pac|political|donation": ["Fair Lobbying"],
+  "privacy|data protection|surveillance": ["Data Privacy"],
+  "veteran|military|service member": ["Veteran Support"],
+  "disability|ada|accessible|accommodation": ["Disability Inclusion"],
 };
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+const CATEGORY_RULES: Record<string, string> = {
+  "layoff|restructuring|job cuts|rif|downsizing": "layoffs",
+  "dei|diversity|equity|inclusion": "dei",
+  "remote work|return to office|hybrid|wfh": "workplace",
+  "policy|legislation|bill|act|regulation|eeoc|osha": "policy",
+  "lobbying|pac|political|donation|campaign": "wdiwf_intel",
+  "industry|market|earnings|ipo|merger|acquisition": "industry",
+};
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const newsApiKey = Deno.env.get("NEWS_API_KEY");
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
+const INDUSTRY_TAG_RULES: Record<string, string[]> = {
+  "tech|software|google|meta|microsoft|apple|amazon": ["Technology"],
+  "bank|finance|goldman|jpmorgan|wall street": ["Finance"],
+  "hospital|health|pharma|medical": ["Healthcare"],
+  "defense|military|lockheed|raytheon|boeing": ["Defense"],
+  "hr tech|workday|greenhouse|lever|ats": ["HR Tech"],
+  "oil|gas|energy|solar|wind": ["Energy"],
+  "retail|walmart|target|costco|store": ["Retail"],
+  "media|news|entertainment|streaming": ["Media"],
+  "education|school|university|college": ["Education"],
+  "government|federal|state|agency": ["Government"],
+};
 
+// Known WDIWF company slugs for cross-referencing
+const COMPANY_SLUG_MAP: Record<string, string> = {
+  "google": "google", "alphabet": "google",
+  "amazon": "amazon", "meta": "meta", "facebook": "meta",
+  "apple": "apple", "microsoft": "microsoft",
+  "tesla": "tesla", "walmart": "walmart",
+  "salesforce": "salesforce", "deloitte": "deloitte",
+  "lockheed martin": "lockheed-martin", "boeing": "boeing",
+  "raytheon": "raytheon", "palantir": "palantir",
+  "costco": "costco", "target": "target",
+  "jpmorgan": "jpmorgan", "goldman sachs": "goldman-sachs",
+  "wells fargo": "wells-fargo", "disney": "disney",
+  "starbucks": "starbucks", "nike": "nike",
+  "uber": "uber", "lyft": "lyft",
+  // Add more as your companies table grows
+};
+
+serve(async (req: Request) => {
   try {
-    const inserted: string[] = [];
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // === SOURCE 1: Convert existing work_news into personalized_news ===
-    const { data: workNews } = await supabase
-      .from("work_news")
-      .select("id, headline, source_name, source_url, category, is_controversy, themes, published_at, jackye_take")
-      .order("published_at", { ascending: false })
-      .limit(30);
+    const newsItems = [];
 
-    if (workNews && workNews.length > 0) {
-      for (const item of workNews) {
-        // Check if already imported
-        const { data: existing } = await supabase
-          .from("personalized_news")
-          .select("id")
-          .eq("source", "wdiwf_intel")
-          .eq("title", item.headline)
-          .maybeSingle();
+    // === SOURCE 1: External News API ===
+    if (NEWS_API_KEY) {
+      const externalNews = await fetchExternalNews();
+      newsItems.push(...externalNews);
+    }
 
-        if (existing) continue;
+    // === SOURCE 2: WDIWF Internal Signals ===
+    // Convert recent company_signal_scans into news-format items
+    const internalNews = await fetchInternalSignals(supabase);
+    newsItems.push(...internalNews);
 
-        const categoryMap: Record<string, string> = {
-          labor: "workplace",
-          regulation: "policy",
-          dei: "dei",
-          layoffs: "layoffs",
-          technology: "ai_hiring",
-          culture: "workplace",
-          compensation: "industry",
-        };
+    // === SOURCE 3: Recent ticker_items (already curated) ===
+    const tickerNews = await fetchTickerAsNews(supabase);
+    newsItems.push(...tickerNews);
 
-        const valueTags: string[] = [];
-        const cat = (item.category || "").toLowerCase();
-        if (cat.includes("dei") || cat.includes("diversity")) valueTags.push("Diversity & Inclusion");
-        if (cat.includes("comp") || cat.includes("pay")) valueTags.push("Pay Equity");
-        if (cat.includes("labor") || cat.includes("union")) valueTags.push("Worker Rights");
-        if (cat.includes("ai") || cat.includes("tech")) valueTags.push("Ethical AI");
-        if (item.is_controversy) valueTags.push("Transparency");
+    // Deduplicate by title similarity
+    const uniqueNews = deduplicateNews(newsItems);
 
-        const { error } = await supabase.from("personalized_news").insert({
-          title: item.headline,
-          summary: item.jackye_take || `${item.headline} — via ${item.source_name || "WDIWF Intel"}`,
-          source: "wdiwf_intel",
-          source_url: item.source_url,
-          category: categoryMap[cat] || "workplace",
-          tags: item.themes || [],
-          value_tags: valueTags,
-          industry_tags: [],
-          location_tags: [],
-          company_slugs: [],
-          importance_score: item.is_controversy ? 0.9 : 0.6,
-          published_at: item.published_at || new Date().toISOString(),
-          is_active: true,
+    // Upsert into personalized_news
+    if (uniqueNews.length > 0) {
+      const { error } = await supabase
+        .from("personalized_news")
+        .upsert(uniqueNews, { 
+          onConflict: "title",
+          ignoreDuplicates: true 
         });
 
-        if (!error) inserted.push(item.headline);
+      if (error) {
+        console.error("Insert error:", error);
       }
     }
 
-    // === SOURCE 2: External news API (if configured) ===
-    if (newsApiKey) {
-      const queries = [
-        "hiring OR layoffs OR workplace",
-        "DEI OR diversity OR pay equity",
-        "labor rights OR union OR NLRB",
-      ];
-
-      for (const q of queries) {
-        try {
-          const url = `https://newsdata.io/api/1/latest?apikey=${newsApiKey}&q=${encodeURIComponent(q)}&language=en&size=5`;
-          const res = await fetch(url);
-          if (!res.ok) continue;
-          const json = await res.json();
-
-          for (const article of json.results || []) {
-            const { data: existing } = await supabase
-              .from("personalized_news")
-              .select("id")
-              .eq("title", article.title)
-              .maybeSingle();
-
-            if (existing) continue;
-
-            // Auto-categorize
-            const title = (article.title || "").toLowerCase();
-            let category = "industry";
-            if (title.includes("layoff") || title.includes("cut")) category = "layoffs";
-            else if (title.includes("dei") || title.includes("diversity")) category = "dei";
-            else if (title.includes("policy") || title.includes("regulation") || title.includes("law")) category = "policy";
-            else if (title.includes("remote") || title.includes("hybrid")) category = "remote_work";
-            else if (title.includes("ai") || title.includes("artificial")) category = "ai_hiring";
-            else if (title.includes("workplace") || title.includes("culture")) category = "workplace";
-
-            const valueTags: string[] = [];
-            if (title.includes("dei") || title.includes("diversity")) valueTags.push("Diversity & Inclusion");
-            if (title.includes("pay") || title.includes("salary") || title.includes("wage")) valueTags.push("Pay Equity");
-            if (title.includes("union") || title.includes("labor") || title.includes("worker")) valueTags.push("Worker Rights");
-            if (title.includes("ai") || title.includes("algorithm")) valueTags.push("Ethical AI");
-            if (title.includes("climate") || title.includes("environment")) valueTags.push("Environmental Sustainability");
-
-            const { error } = await supabase.from("personalized_news").insert({
-              title: article.title,
-              summary: article.description || article.title,
-              source: article.source_name || article.source_id || "External",
-              source_url: article.link,
-              category,
-              tags: article.keywords || [],
-              value_tags: valueTags,
-              industry_tags: [],
-              location_tags: [],
-              company_slugs: [],
-              importance_score: 0.5,
-              published_at: article.pubDate || new Date().toISOString(),
-              is_active: true,
-            });
-
-            if (!error) inserted.push(article.title);
-          }
-        } catch (e) {
-          console.error("News API query error:", e);
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        inserted: uniqueNews.length,
+        sources: {
+          external: newsItems.filter(n => n.source !== "WDIWF Intelligence" && n.source !== "WDIWF Ticker").length,
+          internal: newsItems.filter(n => n.source === "WDIWF Intelligence").length,
+          ticker: newsItems.filter(n => n.source === "WDIWF Ticker").length,
         }
-      }
-    }
-
-    // === Cleanup: deactivate old news ===
-    await supabase
-      .from("personalized_news")
-      .update({ is_active: false })
-      .lt("published_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-      .eq("is_active", true);
-
-    return new Response(
-      JSON.stringify({ success: true, inserted_count: inserted.length, items: inserted.slice(0, 10) }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      }),
+      { headers: { "Content-Type": "application/json" }, status: 200 }
     );
-  } catch (error) {
-    console.error("News ingestion error:", error);
+  } catch (err) {
+    console.error("News ingestion error:", err);
     return new Response(
-      JSON.stringify({ success: false, error: String(error) }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: err.message }),
+      { headers: { "Content-Type": "application/json" }, status: 500 }
     );
   }
 });
+
+// === EXTERNAL NEWS FETCHER ===
+async function fetchExternalNews() {
+  const items: any[] = [];
+
+  for (const query of SEARCH_QUERIES.slice(0, 6)) {
+    // Rotate through queries to stay within rate limits
+    try {
+      let articles: any[] = [];
+
+      if (NEWS_API_PROVIDER === "newsdata") {
+        // NewsData.io (free tier available)
+        const url = `https://newsdata.io/api/1/latest?apikey=${NEWS_API_KEY}&q=${encodeURIComponent(query)}&language=en&category=business,politics&size=5`;
+        const res = await fetch(url);
+        const data = await res.json();
+        articles = (data.results || []).map((a: any) => ({
+          title: a.title,
+          summary: a.description || a.content?.slice(0, 300) || "",
+          source: a.source_name || a.source_id || "External",
+          source_url: a.link,
+          published_at: a.pubDate || new Date().toISOString(),
+        }));
+      } else if (NEWS_API_PROVIDER === "newsmesh") {
+        // NewsMesh ($29/mo)
+        const url = `https://api.newsmesh.co/v1/search?q=${encodeURIComponent(query)}&language=en&limit=5`;
+        const res = await fetch(url, {
+          headers: { "Authorization": `Bearer ${NEWS_API_KEY}` },
+        });
+        const data = await res.json();
+        articles = (data.articles || []).map((a: any) => ({
+          title: a.title,
+          summary: a.description || a.content?.slice(0, 300) || "",
+          source: a.source?.name || "External",
+          source_url: a.url,
+          published_at: a.published_at || new Date().toISOString(),
+        }));
+      } else if (NEWS_API_PROVIDER === "mediastack") {
+        // Mediastack ($25/mo)
+        const url = `http://api.mediastack.com/v1/news?access_key=${NEWS_API_KEY}&keywords=${encodeURIComponent(query)}&languages=en&limit=5&categories=business,general`;
+        const res = await fetch(url);
+        const data = await res.json();
+        articles = (data.data || []).map((a: any) => ({
+          title: a.title,
+          summary: a.description || "",
+          source: a.source || "External",
+          source_url: a.url,
+          published_at: a.published_at || new Date().toISOString(),
+        }));
+      }
+
+      for (const article of articles) {
+        if (!article.title || !article.summary) continue;
+        
+        const titleLower = article.title.toLowerCase();
+        const textLower = (article.title + " " + article.summary).toLowerCase();
+
+        items.push({
+          title: article.title,
+          summary: article.summary.slice(0, 500),
+          source: article.source,
+          source_url: article.source_url,
+          category: categorizeText(textLower),
+          tags: extractTags(textLower),
+          value_tags: extractValueTags(textLower),
+          industry_tags: extractIndustryTags(textLower),
+          location_tags: extractLocationTags(textLower),
+          company_slugs: extractCompanySlugs(textLower),
+          importance_score: 0.5,
+          published_at: article.published_at,
+          fetched_at: new Date().toISOString(),
+          is_active: true,
+        });
+      }
+
+      // Rate limit courtesy: small delay between queries
+      await new Promise(r => setTimeout(r, 500));
+    } catch (err) {
+      console.error(`Error fetching query "${query}":`, err);
+    }
+  }
+
+  return items;
+}
+
+// === INTERNAL SIGNALS → NEWS ===
+async function fetchInternalSignals(supabase: any) {
+  const items: any[] = [];
+
+  // Get recent signal scans (last 24 hours) with high confidence
+  const { data: signals } = await supabase
+    .from("company_signal_scans")
+    .select("signal_category, signal_type, signal_value, confidence_level, summary, direction, company_id")
+    .gte("scan_timestamp", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+    .in("confidence_level", ["High", "Very High"])
+    .order("scan_timestamp", { ascending: false })
+    .limit(20);
+
+  if (!signals || signals.length === 0) return items;
+
+  // Get company names for these signals
+  const companyIds = [...new Set(signals.map((s: any) => s.company_id))];
+  const { data: companies } = await supabase
+    .from("companies")
+    .select("id, name, slug")
+    .in("id", companyIds);
+
+  const companyMap = (companies || []).reduce((acc: any, c: any) => {
+    acc[c.id] = c;
+    return acc;
+  }, {});
+
+  for (const signal of signals) {
+    const company = companyMap[signal.company_id];
+    if (!company || !signal.summary) continue;
+
+    const title = `${company.name}: ${signal.signal_type.replace(/_/g, " ")} — ${signal.direction === "positive" ? "Positive Signal" : signal.direction === "negative" ? "Red Flag" : "Update"}`;
+
+    items.push({
+      title,
+      summary: signal.summary,
+      source: "WDIWF Intelligence",
+      source_url: `https://wdiwf.jackyeclayton.com/company/${company.slug}`,
+      category: "wdiwf_intel",
+      tags: [signal.signal_category, signal.signal_type, company.name.toLowerCase()],
+      value_tags: extractValueTags(signal.signal_type + " " + signal.summary),
+      industry_tags: [],
+      location_tags: [],
+      company_slugs: [company.slug],
+      importance_score: signal.confidence_level === "Very High" ? 0.9 : 0.7,
+      published_at: new Date().toISOString(),
+      fetched_at: new Date().toISOString(),
+      is_active: true,
+    });
+  }
+
+  return items;
+}
+
+// === TICKER → NEWS ===
+async function fetchTickerAsNews(supabase: any) {
+  const items: any[] = [];
+
+  // Get recent ticker items not yet in personalized_news
+  const { data: tickers } = await supabase
+    .from("ticker_items")
+    .select("id, company_name, message, source_tag, item_type, created_at")
+    .eq("is_hidden", false)
+    .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+    .order("created_at", { ascending: false })
+    .limit(20);
+
+  for (const ticker of tickers || []) {
+    const textLower = (ticker.company_name + " " + ticker.message).toLowerCase();
+
+    items.push({
+      title: `${ticker.company_name}: ${ticker.message}`,
+      summary: ticker.message,
+      source: "WDIWF Ticker",
+      source_url: `https://wdiwf.jackyeclayton.com`,
+      category: "wdiwf_intel",
+      tags: [ticker.source_tag, ticker.company_name?.toLowerCase()].filter(Boolean),
+      value_tags: extractValueTags(textLower),
+      industry_tags: extractIndustryTags(textLower),
+      location_tags: [],
+      company_slugs: extractCompanySlugs(textLower),
+      importance_score: ticker.item_type === "score_update" ? 0.8 : 0.6,
+      published_at: ticker.created_at,
+      fetched_at: new Date().toISOString(),
+      is_active: true,
+    });
+  }
+
+  return items;
+}
+
+// === TAGGING HELPERS ===
+function categorizeText(text: string): string {
+  for (const [pattern, category] of Object.entries(CATEGORY_RULES)) {
+    const regex = new RegExp(pattern, "i");
+    if (regex.test(text)) return category;
+  }
+  return "industry";
+}
+
+function extractValueTags(text: string): string[] {
+  const tags: string[] = [];
+  for (const [pattern, values] of Object.entries(VALUE_TAG_RULES)) {
+    const regex = new RegExp(pattern, "i");
+    if (regex.test(text)) tags.push(...values);
+  }
+  return [...new Set(tags)];
+}
+
+function extractIndustryTags(text: string): string[] {
+  const tags: string[] = [];
+  for (const [pattern, industries] of Object.entries(INDUSTRY_TAG_RULES)) {
+    const regex = new RegExp(pattern, "i");
+    if (regex.test(text)) tags.push(...industries);
+  }
+  return [...new Set(tags)];
+}
+
+function extractLocationTags(text: string): string[] {
+  const states: Record<string, string> = {
+    "texas": "Texas", "california": "California", "new york": "New York",
+    "florida": "Florida", "illinois": "Illinois", "washington": "Washington",
+    "georgia": "Georgia", "ohio": "Ohio", "pennsylvania": "Pennsylvania",
+    "virginia": "Virginia", "massachusetts": "Massachusetts",
+    "colorado": "Colorado", "arizona": "Arizona", "michigan": "Michigan",
+    "north carolina": "North Carolina", "oregon": "Oregon",
+  };
+  const tags: string[] = [];
+  for (const [key, value] of Object.entries(states)) {
+    if (text.includes(key)) tags.push(value);
+  }
+  return tags;
+}
+
+function extractCompanySlugs(text: string): string[] {
+  const slugs: string[] = [];
+  for (const [keyword, slug] of Object.entries(COMPANY_SLUG_MAP)) {
+    if (text.includes(keyword.toLowerCase())) slugs.push(slug);
+  }
+  return [...new Set(slugs)];
+}
+
+function extractTags(text: string): string[] {
+  const keywords = [
+    "layoffs", "dei", "remote work", "rto", "union", "strike",
+    "lawsuit", "eeoc", "osha", "nlrb", "whistleblower", "pac",
+    "lobbying", "sec", "contract", "merger", "acquisition",
+    "ai hiring", "pay equity", "transparency",
+  ];
+  return keywords.filter(k => text.includes(k));
+}
+
+function deduplicateNews(items: any[]): any[] {
+  const seen = new Set<string>();
+  return items.filter(item => {
+    // Normalize title for dedup
+    const key = item.title.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
