@@ -157,6 +157,8 @@ const App = () => (
               <Suspense fallback={<RouteLoader />}>
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/interview" element={<InterviewDossier />} />
+                  <Route path="/recruiter" element={<RecruiterBrief />} />
                   <Route path="/ask-jackye" element={<AskJackye />} />
                   <Route path="/reality-check" element={<ProtectedRoute><RealityCheck /></ProtectedRoute>} />
                   <Route path="/would-you-work-here" element={<WouldYouWorkHere />} />
