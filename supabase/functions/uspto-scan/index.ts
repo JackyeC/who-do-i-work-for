@@ -18,25 +18,37 @@ function normalizeCompanyName(name: string): string {
 }
 
 function generateSearchQueries(companyName: string, parentCompany?: string | null): string[] {
-  const queries = new Set<string>();
-  queries.add(companyName);
+  const queries: string[] = [];
+  const seen = new Set<string>();
+  
+  const add = (q: string) => {
+    const key = q.toLowerCase().trim();
+    if (key.length > 1 && !seen.has(key)) {
+      seen.add(key);
+      queries.push(q.trim());
+    }
+  };
 
   const base = normalizeCompanyName(companyName);
-  if (base !== companyName.toLowerCase()) {
-    queries.add(base);
-  }
-
-  // Add with common suffixes
-  for (const suffix of ['Inc', 'Inc.', 'LLC', 'Corp', 'Corporation']) {
-    queries.add(`${base} ${suffix}`.trim());
+  
+  // IMPORTANT: Search clean base name FIRST — raw names with commas/periods
+  // break Google Patents assignee: queries and return garbage results
+  add(base);  // "lyft" — most reliable
+  add(`${base} Inc`);  // "lyft Inc" — catches formal filings
+  
+  // Only add the raw name if it doesn't contain problematic characters
+  if (!/[,.]/.test(companyName)) {
+    add(companyName);
   }
 
   if (parentCompany) {
-    queries.add(parentCompany);
-    queries.add(normalizeCompanyName(parentCompany));
+    add(normalizeCompanyName(parentCompany));
+    if (!/[,.]/.test(parentCompany)) {
+      add(parentCompany);
+    }
   }
 
-  return [...queries].filter(a => a.length > 1).slice(0, 5);
+  return queries.slice(0, 5);
 }
 
 // ── Google Patents XHR API ────────────────────────────────────────────
@@ -132,6 +144,15 @@ async function searchAllAliases(queries: string[]): Promise<{ patents: GooglePat
 
   for (const query of queries) {
     const result = await queryGooglePatents(query, 0, 25);
+    
+    // Sanity check: if totalResults is wildly high (>50K) relative to patents returned,
+    // the query probably matched too broadly (e.g., comma in name broke the filter)
+    const isBogus = result.totalResults > 50000 && result.patents.length < 25;
+    if (isBogus) {
+      console.warn(`[patent-scan] Skipping bogus result for "${query}" — ${result.totalResults} total but only ${result.patents.length} actual patents`);
+      continue;
+    }
+    
     if (result.totalResults > bestResult.totalResults) {
       bestResult = result;
     }
