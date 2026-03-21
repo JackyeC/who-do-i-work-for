@@ -180,6 +180,10 @@ export default function CompanyDossier() {
   const LensMeta = LENS_META[lens];
   const LensIcon = LensMeta.icon;
 
+  const insightText = (company as any).jackye_insight || company.description;
+  const isZeroState = influenceScore === 0 && !insightText && (company.total_pac_spending ?? 0) === 0 && (company.lobbying_spend ?? 0) === 0;
+  const LensIcon = LensMeta.icon;
+
   /* ─── Shared overview (always visible) ─── */
   const overviewContent = (
     <>
