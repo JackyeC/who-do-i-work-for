@@ -29,8 +29,6 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const { user, loading: authLoading } = useAuth();
   const { isLoaded } = useClerkWithFallback();
 
-  if (!isLoaded || authLoading) return null;
-
   const [rivalries, setRivalries] = useState<any[] | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -52,7 +50,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
     if (!rivalries) loadRivalries().then(setRivalries);
   };
 
-  if (!isLoaded) return null;
+  if (!isLoaded || authLoading) return null;
 
   return (
     <div ref={ref} className="flex flex-col min-h-screen bg-background">
