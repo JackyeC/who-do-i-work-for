@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { EmployerDossierSearch } from "@/components/career/EmployerDossierSearch";
+import type { CompanyResult } from "@/components/career/EmployerDossierSearch";
 import {
   Shield,
   CheckCircle2,
