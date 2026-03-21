@@ -34,14 +34,14 @@ Deno.serve(async (req: Request) => {
     } else {
       return new Response(
         JSON.stringify({ error: "Provide mode='batch' or mode='single' with user_id" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
   } catch (err) {
     console.error("Briefing generation error:", err);
     return new Response(
       JSON.stringify({ error: err.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
@@ -64,7 +64,7 @@ async function generateBatchBriefings(supabase: any) {
     console.error("Error fetching users:", userError);
     return new Response(
       JSON.stringify({ error: userError.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 
@@ -91,7 +91,7 @@ async function generateBatchBriefings(supabase: any) {
       failed,
       total_users: (users || []).length 
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
 }
 
@@ -124,7 +124,7 @@ async function generateUserBriefing(supabase: any, userId: string) {
   if (!user) {
     return new Response(
       JSON.stringify({ error: "User not found" }),
-      { status: 404, headers: { "Content-Type": "application/json" } }
+      { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 
@@ -224,7 +224,7 @@ async function fetchFullBriefing(supabase: any, userId: string, date: string) {
   if (!briefing) {
     return new Response(
       JSON.stringify({ error: "Briefing not found" }),
-      { status: 404, headers: { "Content-Type": "application/json" } }
+      { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 
@@ -256,7 +256,7 @@ async function fetchFullBriefing(supabase: any, userId: string, date: string) {
       news: orderedNews,
       companies: companies || [],
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
 }
 

@@ -139,13 +139,13 @@ Deno.serve(async (req: Request) => {
           ticker: newsItems.filter(n => n.source === "WDIWF Ticker").length,
         }
       }),
-      { headers: { "Content-Type": "application/json" }, status: 200 }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (err) {
     console.error("News ingestion error:", err);
     return new Response(
       JSON.stringify({ error: err.message }),
-      { headers: { "Content-Type": "application/json" }, status: 500 }
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
     );
   }
 });
