@@ -33,7 +33,7 @@ export function IntelligenceTicker() {
               {item.company_name && (
                 <>
                   <Link
-                    to={`/company/${item.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}
+                    to={`/dossier/${item.company_slug || item.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}
                     className="font-sans text-ticker font-bold text-foreground hover:text-primary transition-colors cursor-pointer"
                     onClick={(e) => e.stopPropagation()}
                   >

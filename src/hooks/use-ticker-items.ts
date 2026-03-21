@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 export interface TickerItem {
   id: string;
   company_name: string | null;
+  company_slug: string | null;
   message: string;
   source_tag: string | null;
   item_type: string;
@@ -34,17 +35,32 @@ export function useTickerItems() {
   return useQuery({
     queryKey: ["ticker-items"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("ticker_items")
-        .select("id, company_name, message, source_tag, item_type, is_pinned, created_at")
-        .eq("is_hidden", false)
-        .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
-        .order("is_pinned", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(50);
+      const [tickerRes, slugRes] = await Promise.all([
+        (supabase as any)
+          .from("ticker_items")
+          .select("id, company_name, message, source_tag, item_type, is_pinned, created_at")
+          .eq("is_hidden", false)
+          .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
+          .order("is_pinned", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(50),
+        supabase
+          .from("companies")
+          .select("name, slug")
+          .limit(1000),
+      ]);
 
-      if (error) throw error;
-      return (data as TickerItem[]) ?? [];
+      if (tickerRes.error) throw tickerRes.error;
+
+      const slugMap = new Map<string, string>();
+      (slugRes.data || []).forEach((c: any) => {
+        slugMap.set(c.name, c.slug);
+      });
+
+      return ((tickerRes.data as any[]) ?? []).map((item): TickerItem => ({
+        ...item,
+        company_slug: item.company_name ? (slugMap.get(item.company_name) || null) : null,
+      }));
     },
     staleTime: 60_000,
     refetchInterval: 120_000,
