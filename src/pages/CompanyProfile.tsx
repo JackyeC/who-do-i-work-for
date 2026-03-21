@@ -411,6 +411,7 @@ export default function CompanyProfile() {
             </Card>
           )}
 
+          {/* ═══════════════════════════════════════════════════════
               1. INSIDER BRIEF
              ═══════════════════════════════════════════════════════ */}
           <InsiderBriefSection
