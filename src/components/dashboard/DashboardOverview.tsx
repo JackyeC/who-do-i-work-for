@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { usePersona, PERSONA_NAMES, type PersonaId } from "@/hooks/use-persona";
 import { useDashboardBriefing } from "@/hooks/use-dashboard-briefing";
-import { useGNews } from "@/hooks/use-gnews";
+import DailyBriefingCard from "@/components/DailyBriefingCard";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, ArrowRight, ExternalLink } from "lucide-react";
