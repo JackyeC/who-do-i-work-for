@@ -49,13 +49,8 @@ function scoreColor(score: number): string {
   return "#ff4d6d";
 }
 
-/* ── News source badge color ── */
-function sourceBadgeColor(source: string): string {
-  const s = (source || "").toLowerCase();
-  if (s.includes("nlrb")) return "#ff6b35";
-  if (s.includes("osha")) return "#f0c040";
-  return "#7eb8f7";
-}
+
+
 
 /* ── Skeleton shimmer ── */
 function Skeleton({ className = "" }: { className?: string }) {
