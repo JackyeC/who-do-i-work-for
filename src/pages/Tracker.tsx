@@ -27,7 +27,7 @@ interface TrackerApp {
 }
 
 const INITIAL_APPS: TrackerApp[] = [
-  { id: "1", company: "Patagonia", role: "Senior Product Manager", status: "applied", appliedDate: "Mar 14, 2026", integrityScore: 92, notes: "Strong mission alignment — B Corp certified" },
+  { id: "1", company: "Patagonia", role: "Senior Product Manager", status: "researching", appliedDate: "Mar 14, 2026", integrityScore: 92, notes: "Strong mission alignment — B Corp certified" },
   { id: "2", company: "Khan Academy", role: "Curriculum Designer", status: "applied", appliedDate: "Mar 16, 2026", integrityScore: 96, notes: "Non-profit, education-first culture" },
   { id: "3", company: "Costco", role: "Regional Operations Lead", status: "applied", appliedDate: "Mar 12, 2026", integrityScore: 84, notes: "Above-industry wages, low turnover" },
 ];
