@@ -1,6 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Radio } from "lucide-react";
+import { Link } from "react-router-dom";
+
+interface TickerEntry {
+  label: string;
+  message: string;
+  slug: string | null;
+}
 
 export function LiveIntelligenceTicker() {
   const { data: updates } = useQuery({
@@ -10,35 +17,36 @@ export function LiveIntelligenceTicker() {
       const [companyRes, signalRes] = await Promise.all([
         supabase
           .from("companies")
-          .select("name, updated_at, record_status")
+          .select("name, slug, updated_at, record_status")
           .in("record_status", ["verified", "active"])
           .order("updated_at", { ascending: false })
           .limit(12),
         (supabase as any)
           .from("institutional_alignment_signals")
-          .select("institution_name, person_name, company_id, companies!inner(name)")
+          .select("institution_name, person_name, company_id, companies!inner(name, slug)")
           .order("created_at", { ascending: false })
           .limit(6),
       ]);
 
-      const items: string[] = [];
+      const items: TickerEntry[] = [];
 
       // Company updates
       (companyRes.data || []).slice(0, 6).forEach((c: any) => {
-        items.push(`${c.name}: Intelligence Updated`);
+        items.push({ label: c.name, message: "Intelligence Updated", slug: c.slug || null });
       });
 
       // Institutional signals
       (signalRes.data || []).forEach((s: any) => {
         const companyName = s.companies?.name || "Unknown";
-        items.push(`${companyName}: New Institutional Link Found — ${s.institution_name}`);
+        const companySlug = s.companies?.slug || null;
+        items.push({ label: companyName, message: `New Institutional Link Found — ${s.institution_name}`, slug: companySlug });
       });
 
       // Fallbacks
       if (items.length < 4) {
-        items.push("PLATFORM: Live intelligence scanning active");
-        items.push("METHODOLOGY: All signals sourced from public filings");
-        items.push("2026 EDGE: Heritage vs. Progressive alignment now live");
+        items.push({ label: "PLATFORM", message: "Live intelligence scanning active", slug: null });
+        items.push({ label: "METHODOLOGY", message: "All signals sourced from public filings", slug: null });
+        items.push({ label: "2026 EDGE", message: "Heritage vs. Progressive alignment now live", slug: null });
       }
 
       return items;
@@ -47,10 +55,28 @@ export function LiveIntelligenceTicker() {
     refetchInterval: 300_000,
   });
 
-  const tickerItems = updates || [
-    "PLATFORM: Live intelligence scanning active",
-    "METHODOLOGY: All signals sourced from public filings",
+  const tickerItems: TickerEntry[] = updates || [
+    { label: "PLATFORM", message: "Live intelligence scanning active", slug: null },
+    { label: "METHODOLOGY", message: "All signals sourced from public filings", slug: null },
   ];
+
+  const renderItem = (t: TickerEntry, key: string) => (
+    <span key={key} className="px-8 inline-flex items-center">
+      {t.slug ? (
+        <Link
+          to={`/company/${t.slug}`}
+          className="font-sans text-ticker font-bold text-foreground hover:text-primary transition-colors cursor-pointer"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {t.label}
+        </Link>
+      ) : (
+        <span className="font-sans text-ticker font-bold">{t.label}</span>
+      )}
+      <span className="font-sans text-ticker text-muted-foreground">: {t.message}</span>
+      <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
+    </span>
+  );
 
   return (
     <div className="bg-background overflow-hidden whitespace-nowrap h-[36px] flex items-center" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
@@ -59,18 +85,8 @@ export function LiveIntelligenceTicker() {
         <span className="font-sans text-eyebrow">LIVE</span>
       </div>
       <div className="inline-block animate-ticker">
-        {tickerItems.map((t, i) => (
-          <span key={i} className="px-8">
-            <span className="font-sans text-ticker">{t}</span>
-            <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
-          </span>
-        ))}
-        {tickerItems.slice(0, 3).map((t, i) => (
-          <span key={`dup-${i}`} className="px-8">
-            <span className="font-sans text-ticker">{t}</span>
-            <span className="px-4" style={{ color: 'hsl(43 85% 59% / 0.5)' }}>·</span>
-          </span>
-        ))}
+        {tickerItems.map((t, i) => renderItem(t, `item-${i}`))}
+        {tickerItems.slice(0, 3).map((t, i) => renderItem(t, `dup-${i}`))}
       </div>
     </div>
   );

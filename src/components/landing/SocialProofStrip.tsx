@@ -1,12 +1,12 @@
 import { SectionReveal } from "@/components/landing/SectionReveal";
 
-const platforms = [
-  "LinkedIn Learning",
-  "HR Tech Conference",
-  "Recruiting Daily",
-  "SHRM",
-  "TAtech",
-  "ERE Media",
+const platforms: { label: string; url: string }[] = [
+  { label: "LinkedIn Learning", url: "https://www.linkedin.com/learning/" },
+  { label: "HR Tech Conference", url: "https://www.hrtechnologyconference.com/" },
+  { label: "Recruiting Daily", url: "https://recruitingdaily.com/" },
+  { label: "SHRM", url: "https://www.shrm.org/" },
+  { label: "TAtech", url: "https://www.tatech.org/" },
+  { label: "ERE Media", url: "https://www.ere.net/" },
 ];
 
 const pillars = [
@@ -26,13 +26,16 @@ export function SocialProofStrip() {
               Featured In
             </span>
             <div className="flex items-center justify-center gap-6 lg:gap-10 flex-wrap">
-              {platforms.map((name) => (
-                <span
-                  key={name}
-                  className="font-mono text-sm tracking-wider uppercase text-muted-foreground/40 hover:text-muted-foreground transition-colors cursor-default select-none"
+              {platforms.map((p) => (
+                <a
+                  key={p.label}
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-sm tracking-wider uppercase text-muted-foreground/40 hover:text-primary transition-colors"
                 >
-                  {name}
-                </span>
+                  {p.label}
+                </a>
               ))}
             </div>
           </div>

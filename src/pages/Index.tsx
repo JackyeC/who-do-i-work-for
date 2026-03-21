@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, forwardRef } from "react";
+import { useState, useEffect, lazy, Suspense, forwardRef } from "react";
 import jackyeHeadshotSm from "@/assets/jackye-headshot-sm.webp";
 import { useNavigate, Link } from "react-router-dom";
 import { Shield, ArrowRight, ArrowLeftRight, Zap, Search, Eye, Target, Brain, Rocket, CheckCircle2, Menu, X, Crosshair } from "lucide-react";
@@ -21,7 +21,14 @@ const SectionReveal = lazy(() => import("@/components/landing/SectionReveal").th
 
 const loadRivalries = () => import("@/data/rivalries2026").then(m => m.rivalries2026);
 
-const TRUST_SOURCES = ["FEC Filings", "USASpending.gov", "SEC EDGAR", "Senate Lobbying", "BLS Wage Data", "OpenSecrets"];
+const TRUST_SOURCES: { label: string; url: string }[] = [
+  { label: "FEC Filings", url: "https://www.fec.gov/data/" },
+  { label: "USASpending.gov", url: "https://www.usaspending.gov/" },
+  { label: "SEC EDGAR", url: "https://www.sec.gov/edgar" },
+  { label: "Senate Lobbying", url: "https://lda.senate.gov/system/public/" },
+  { label: "BLS Wage Data", url: "https://www.bls.gov/oes/" },
+  { label: "OpenSecrets", url: "https://www.opensecrets.org/" },
+];
 const STATIC_COMPANY_COUNT = 850;
 
 const Index = forwardRef<HTMLDivElement>((_, ref) => {
@@ -46,9 +53,10 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
     },
   });
 
-  const loadRivalriesOnce = () => {
-    if (!rivalries) loadRivalries().then(setRivalries);
-  };
+  // Load rivalries eagerly instead of on hover (so mobile users see them too)
+  useEffect(() => {
+    loadRivalries().then(setRivalries);
+  }, []);
 
   if (!isLoaded || authLoading) return null;
 
@@ -401,7 +409,15 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </div>
           <div className="flex items-center gap-4 flex-wrap">
             {TRUST_SOURCES.map((src) => (
-              <span key={src} className="font-mono text-sm tracking-wider uppercase text-muted-foreground/70">{src}</span>
+              <a
+                key={src.label}
+                href={src.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-sm tracking-wider uppercase text-muted-foreground/70 hover:text-primary transition-colors"
+              >
+                {src.label}
+              </a>
             ))}
           </div>
         </div>
@@ -595,7 +611,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ── Rivalries Teaser ── */}
       <Suspense fallback={null}>
         <SectionReveal>
-          <section className="px-6 lg:px-16 py-16 lg:py-20 max-w-[960px] mx-auto w-full" onMouseEnter={loadRivalriesOnce}>
+          <section className="px-6 lg:px-16 py-16 lg:py-20 max-w-[960px] mx-auto w-full">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <div className="flex items-center gap-2 mb-1">

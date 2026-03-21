@@ -130,15 +130,24 @@ const PANELS: PanelConfig[] = [
     icon: RadioTower,
     queryKey: "panel-risk",
     queryFn: async () => {
+      // Companies with lowest civic scores that also have notable lobbying —
+      // different from "High Lobbying" which just sorts by spend.
       const { data } = await supabase.from("companies").select(FIELDS)
         .in("record_status", VISIBLE_STATUSES)
-        .or("lobbying_spend.gt.1000000,total_pac_spending.gt.500000")
-        .order("lobbying_spend", { ascending: false }).limit(10);
+        .not("lobbying_spend", "is", null)
+        .lt("civic_footprint_score", 5)
+        .order("civic_footprint_score", { ascending: true }).limit(10);
       return (data as any[] || []) as PanelCompany[];
     },
-    metric: (c) => fmt(c.lobbying_spend),
+    metric: (c) => `${c.civic_footprint_score}/10`,
   },
 ];
+
+function isValidCompany(c: PanelCompany): boolean {
+  if (!c.name || !c.slug) return false;
+  const lower = c.name.toLowerCase().trim();
+  return lower !== "unknown" && lower !== "n/a" && lower !== "" && lower !== "null";
+}
 
 function IntelligencePanel({ panel }: { panel: PanelConfig }) {
   const { data: companies, isLoading } = useQuery({
@@ -148,6 +157,7 @@ function IntelligencePanel({ panel }: { panel: PanelConfig }) {
   });
 
   const Icon = panel.icon;
+  const validCompanies = companies?.filter(isValidCompany) ?? [];
 
   return (
     <div className="bg-card border border-border">
@@ -165,8 +175,8 @@ function IntelligencePanel({ panel }: { panel: PanelConfig }) {
               <div className="h-3.5 w-12 bg-muted/50 animate-pulse rounded" />
             </div>
           ))
-        ) : companies?.length ? (
-          companies.map((c, i) => (
+        ) : validCompanies.length ? (
+          validCompanies.map((c, i) => (
             <Link
               key={c.id}
               to={`/company/${c.slug}`}
