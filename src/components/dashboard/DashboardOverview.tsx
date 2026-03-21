@@ -92,7 +92,6 @@ export function DashboardOverview({ onNavigate }: DashboardOverviewProps) {
   const { user } = useAuth();
   const { persona, personaName, hasTakenQuiz } = usePersona();
   const { data, isLoading } = useDashboardBriefing();
-  const { data: gnewsArticles } = useGNews();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
