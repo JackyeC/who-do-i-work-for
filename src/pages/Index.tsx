@@ -192,7 +192,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                     onClick={() => navigate(hasPersona ? "/dashboard" : "/quiz")}
                     className="hover-btn bg-primary text-primary-foreground font-sans text-base font-semibold px-11 py-4 rounded-full border-none cursor-pointer"
                   >
-                    {hasPersona ? "Continue to my intelligence →" : "Start your audit →"}
+                    {hasPersona ? "Continue to my intelligence →" : "Start your career scan →"}
                   </button>
                   {hasPersona && (
                     <button
