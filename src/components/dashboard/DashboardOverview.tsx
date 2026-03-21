@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Search, ArrowRight, ExternalLink } from "lucide-react";
 import { useState } from "react";
-import { formatDistanceToNow } from "date-fns";
+
 import { AlignedValuesSearch } from "./AlignedValuesSearch";
 
 interface DashboardOverviewProps {
