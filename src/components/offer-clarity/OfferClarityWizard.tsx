@@ -91,9 +91,12 @@ export function OfferClarityWizard() {
   }, []);
 
   const searchCompany = async (name: string) => {
-    setOfferData(d => ({ ...d, companyName: name, companyId: undefined }));
+    setOfferData(d => ({ ...d, companyName: name, companyId: undefined, unknownCompanyMeta: undefined }));
     setSearchedCompany(false);
+    setCompanyLookupStatus(null);
     if (name.length < 2) { setCompanyResults([]); return; }
+    setSearchingCompany(true);
+    scheduleCompanyCheck(name);
     setSearchingCompany(true);
     const { data } = await supabase
       .from("companies")
