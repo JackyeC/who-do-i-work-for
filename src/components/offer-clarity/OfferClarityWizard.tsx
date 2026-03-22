@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { OfferClarityDashboard, type OfferClarityReport } from "./OfferClarityDashboard";
+import { UnknownCompanyPrompt, type UnknownCompanyMeta } from "./UnknownCompanyPrompt";
 
 interface OfferData {
   roleTitle: string;
@@ -23,6 +24,7 @@ interface OfferData {
   additionalDetails: string;
   companyName: string;
   companyId?: string;
+  unknownCompanyMeta?: UnknownCompanyMeta;
 }
 
 const STEPS = [
@@ -49,10 +51,52 @@ export function OfferClarityWizard() {
   const [searchedCompany, setSearchedCompany] = useState(false);
   const [creatingCompany, setCreatingCompany] = useState(false);
 
+  // Company lookup status: null = not checked, true = found, false = not found
+  const [companyLookupStatus, setCompanyLookupStatus] = useState<boolean | null>(null);
+  const [lookingUpCompany, setLookingUpCompany] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const checkCompanyExists = useCallback(async (name: string) => {
+    const trimmed = name.trim();
+    if (trimmed.length < 2) {
+      setCompanyLookupStatus(null);
+      return;
+    }
+    // Skip if already matched via dropdown
+    if (offerData.companyId) return;
+
+    setLookingUpCompany(true);
+    const { data } = await supabase
+      .from("companies")
+      .select("id, name")
+      .ilike("name", `%${trimmed}%`)
+      .limit(1);
+
+    if (data && data.length > 0) {
+      setCompanyLookupStatus(true);
+    } else {
+      setCompanyLookupStatus(false);
+    }
+    setLookingUpCompany(false);
+  }, [offerData.companyId]);
+
+  const scheduleCompanyCheck = useCallback((name: string) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => checkCompanyExists(name), 600);
+  }, [checkCompanyExists]);
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, []);
+
   const searchCompany = async (name: string) => {
-    setOfferData(d => ({ ...d, companyName: name, companyId: undefined }));
+    setOfferData(d => ({ ...d, companyName: name, companyId: undefined, unknownCompanyMeta: undefined }));
     setSearchedCompany(false);
+    setCompanyLookupStatus(null);
     if (name.length < 2) { setCompanyResults([]); return; }
+    setSearchingCompany(true);
+    scheduleCompanyCheck(name);
     setSearchingCompany(true);
     const { data } = await supabase
       .from("companies")
@@ -65,9 +109,11 @@ export function OfferClarityWizard() {
   };
 
   const selectCompany = (c: any) => {
-    setOfferData(d => ({ ...d, companyName: c.name, companyId: c.id }));
+    setOfferData(d => ({ ...d, companyName: c.name, companyId: c.id, unknownCompanyMeta: undefined }));
     setCompanyResults([]);
     setSearchedCompany(false);
+    setCompanyLookupStatus(true);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
   };
 
   const handleAddNewCompany = async () => {
@@ -108,6 +154,7 @@ export function OfferClarityWizard() {
           offerData,
           companyName: offerData.companyName,
           companyId: offerData.companyId,
+          unknownCompanyMeta: offerData.unknownCompanyMeta,
         },
       });
       if (error) throw error;
@@ -167,6 +214,7 @@ export function OfferClarityWizard() {
                     placeholder="e.g. Google, Hines, Amazon"
                     value={offerData.companyName}
                     onChange={e => searchCompany(e.target.value)}
+                    onBlur={() => checkCompanyExists(offerData.companyName)}
                     className="pl-9"
                   />
                 </div>
@@ -204,6 +252,23 @@ export function OfferClarityWizard() {
                   <Badge variant="secondary" className="mt-2 text-[10px]">
                     <CheckCircle2 className="w-3 h-3 mr-1" /> Matched — company signals will be included
                   </Badge>
+                )}
+                {!offerData.companyId && companyLookupStatus === true && (
+                  <Badge variant="success" className="mt-2 text-[10px]">
+                    <CheckCircle2 className="w-3 h-3 mr-1" /> Company found in database
+                  </Badge>
+                )}
+                {lookingUpCompany && !offerData.companyId && (
+                  <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Loader2 className="w-3 h-3 animate-spin" /> Checking database…
+                  </div>
+                )}
+                {!offerData.companyId && companyLookupStatus === false && offerData.companyName.trim().length >= 2 && (
+                  <UnknownCompanyPrompt
+                    companyName={offerData.companyName.trim()}
+                    meta={offerData.unknownCompanyMeta || {}}
+                    onChange={meta => setOfferData(d => ({ ...d, unknownCompanyMeta: meta }))}
+                  />
                 )}
               </div>
 
@@ -347,6 +412,7 @@ export function OfferClarityWizard() {
           onStartOver={() => {
             setStep(0);
             setReport(null);
+            setCompanyLookupStatus(null);
             setOfferData({
               roleTitle: "", location: "", yearsExperience: "",
               baseSalary: "", bonus: "", equity: "",
