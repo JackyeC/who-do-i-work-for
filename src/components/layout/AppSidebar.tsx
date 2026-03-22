@@ -125,20 +125,10 @@ export function AppSidebar() {
       {/* ── Logo ── */}
       <SidebarHeader className="p-3">
         <Link to="/" className="flex items-center gap-2.5 group px-1">
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-sm overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-            <ClipboardCheck className="w-[16px] h-[16px] text-primary-foreground relative z-10" />
-          </div>
-          {!collapsed && (
-            <div className="leading-none overflow-hidden">
-              <p className="text-sm font-bold text-foreground tracking-tight font-display truncate">
-                Who Do I Work For?
-              </p>
-              <p className="text-[7px] text-civic-gold tracking-[0.14em] uppercase font-semibold mt-0.5">
-                Talent Intelligence
-              </p>
-            </div>
-          )}
+          <span style={{fontFamily:"Inter,sans-serif",fontWeight:900,letterSpacing:"-0.03em",fontSize: collapsed ? "20px" : "26px"}}>
+            <span style={{color:"#111111"}}>W</span>
+            <span style={{color:"#F0C040"}}>?</span>
+          </span>
         </Link>
       </SidebarHeader>
 
