@@ -1,26 +1,44 @@
 
 
-## Current State
+## Plan: Replace all plain-text brand logos with W? logomark
 
-The W? logomark JSX and Inter 900 font are **already implemented** exactly as specified:
+### Locations to update
 
-- **`src/components/layout/TopBar.tsx` (lines 154-157)**: Contains the W? logo with `fontFamily:"'Inter',sans-serif"`, `fontWeight:900`, `letterSpacing:"-0.03em"`, `fontSize:"26px"`, colors `#111111` and `#F0C040`.
-- **`index.html` (line 8)**: Already loads `Inter:wght@900`.
+There are **3 places** where "Who Do I Work For?" appears as a visible logo/brand in a nav or header:
 
-## Likely Issue
+1. **`src/pages/Index.tsx` (lines 65-67)** — Homepage sticky header logo. Currently `<Link>` with serif font text.
+2. **`src/components/layout/AppSidebar.tsx` (lines 128-140)** — Sidebar logo block with icon + text. Replace the text portion with the W? mark.
+3. **`src/pages/WhoDoIWorkFor.tsx` (line 201)** — Page hero `<h1>` heading. This is a page title, not a nav logo — **skip** unless you want it changed too.
 
-The "W" is hardcoded to `#111111` (near-black). If the site is rendering in **dark mode**, the "W" is invisible against the dark background. This would make it look like only "?" appears, or that the logo is missing entirely.
+> All other occurrences (SEO titles, meta descriptions, JSON-LD, body copy, modals) are content/metadata — not logos — and will be left as-is.
 
-## Plan
+### Changes
 
-1. **Update the logo span** in `TopBar.tsx` (line 154-157) to match the user's exact JSX (remove extra `lineHeight` and `display` properties, remove quotes around `Inter`) and use a **theme-aware color** for the "W":
-   - Use `currentColor` or `inherit` so it picks up `text-foreground` from the parent, **or**
-   - Keep `#111111` if the user truly wants it black-only (but flag the dark-mode issue).
+**File 1: `src/pages/Index.tsx` (lines 65-67)**
+Replace the plain text Link:
+```jsx
+<Link to="/" className="font-serif text-foreground" style={{ fontSize: '18px', fontWeight: 700 }}>
+  Who Do I Work For?
+</Link>
+```
+With:
+```jsx
+<Link to="/" className="flex items-center shrink-0">
+  <span style={{fontFamily:"Inter,sans-serif",fontWeight:900,letterSpacing:"-0.03em",fontSize:"26px"}}>
+    <span style={{color:"#111111"}}>W</span>
+    <span style={{color:"#F0C040"}}>?</span>
+  </span>
+</Link>
+```
 
-   Since the user explicitly specified `color:"#111111"`, I will apply it exactly as given. If it's invisible in dark mode, that's a follow-up fix.
+**File 2: `src/components/layout/AppSidebar.tsx` (lines 128-140)**
+Replace the icon-box + text block with the W? mark. When sidebar is expanded, show the mark; when collapsed, show a smaller version:
+```jsx
+<span style={{fontFamily:"Inter,sans-serif",fontWeight:900,letterSpacing:"-0.03em",fontSize: collapsed ? "20px" : "26px"}}>
+  <span style={{color:"#111111"}}>W</span>
+  <span style={{color:"#F0C040"}}>?</span>
+</span>
+```
 
-2. **No changes needed** to `index.html` — Inter 900 is already loaded.
-
-### Files to Edit
-- `src/components/layout/TopBar.tsx` — lines 154-157: replace with the user's exact JSX (minor cleanup of extra style properties).
+No other files need changes. Inter 900 is already loaded in `index.html`.
 
