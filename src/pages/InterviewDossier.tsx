@@ -69,7 +69,7 @@ const COMPANIES = {
     signals: { compensation: 45, safety: 22, labor: 20, transparency: 60, diversity: 62, satisfaction: 42 },
     redFlags: [
       { signal: "Safety (22/100)", question: "What does Amazon's approach to injury prevention look like specifically on this team — not at the company level?" },
-   0 { signal: "Labor Relations (20/100)", question: "How does this team receive and respond to employee feedback about working conditions or process concerns?" },
+   { signal: "Labor Relations (20/100)", question: "How does this team receive and respond to employee feedback about working conditions or process concerns?" },
       { signal: "Compensation Equity (45/100)", question: "Can you walk me through how compensation ranges are set for this level and what the equity review cadence looks like?" },
       { signal: "90-Day Attrition Pattern", question: "What does the ramp look like for someone in this role, and what does success look like at 30, 60, and 90 days?" },
     ],
