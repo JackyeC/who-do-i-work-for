@@ -730,7 +730,7 @@ export default function InterviewDossier() {
                 </div>
                 <div style={{ fontWeight: 700, fontSize: "0.84rem", marginBottom: "0.5rem" }}>Interview Style & What They're Really Filtering For</div>
                 <div style={{ padding: "0.75rem 0.9rem", background: T.bg, borderRadius: 10, border: `1px solid ${T.border}`, marginBottom: "0.75rem", fontSize: "0.8rem", color: T.fg, lineHeight: 1.6 }}>{co.process?.style}</div>
-                {co.process.barraiser && (
+                {co.process?.barraiser && (
                   <div style={{ padding: "0.75rem 0.9rem", background: `${T.red}09`, border: `1px solid ${T.red}30`, borderRadius: 10, marginBottom: "0.75rem" }}>
                     <div style={{ color: T.red, fontWeight: 700, fontSize: "0.75rem", fontFamily: "'DM Mono',monospace", marginBottom: "0.2rem" }}>⚠ BAR RAISER — Independent Veto</div>
                     <div style={{ fontSize: "0.77rem", color: T.fg, lineHeight: 1.5 }}>The Bar Raiser has veto power and comes from a different org. Their only question: would this person raise the bar for the team? Behavioral depth and cultural signal matter most here — not technical depth.</div>
