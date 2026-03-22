@@ -518,7 +518,7 @@ export default function InterviewDossier() {
         .cat-pill.on { background: ${T.fg}; color: ${T.gold}; border-color: ${T.fg}; }
         @media(max-width:800px){ .layout { grid-template-columns: 1fr; height: auto; } }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: ${T.border}; border-radius: 10px; }
-        `})tyle>
+        `}</style>
 
       <div className="top">
         <div className="logo">WDIWF</div>
