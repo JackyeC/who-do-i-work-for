@@ -1146,12 +1146,12 @@ export default function InterviewDossier() {
                   <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "0.2rem" }}>Your Information</div>
                   <div style={{ color: T.muted, fontSize: "0.74rem", marginBottom: "0.75rem" }}>This appears on the dossier as the sending recruiter. It's how your candidate knows this came from you — and how to reach you.</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.55rem" }}>
-                    {[
-                      ["YOUR NAME *", recName, setRecName, "e.g. Jackye Clayton"],
-                      ["TITLE / ROLE", recTitle, setRecTitle, "e.g. Senior Recruiter, Agency Partner"],
-                      ["FIRM OR COMPANY", recFirm, setRecFirm, "e.g. Clayton Consulting · WDIWF Partner"],
-                      ["YOUR EMAIL", recEmail, setRecEmail, "e.g. jackye@yourfirm.com"],
-                    ].map(([label, val, setter, ph]) => (
+                    {([
+                      ["YOUR NAME *", recName, setRecName, "e.g. Jackye Clayton"] as const,
+                      ["TITLE / ROLE", recTitle, setRecTitle, "e.g. Senior Recruiter, Agency Partner"] as const,
+                      ["FIRM OR COMPANY", recFirm, setRecFirm, "e.g. Clayton Consulting · WDIWF Partner"] as const,
+                      ["YOUR EMAIL", recEmail, setRecEmail, "e.g. jackye@yourfirm.com"] as const,
+                    ] as const).map(([label, val, setter, ph]) => (
                       <div key={label}>
                         <div style={{ fontSize: "0.62rem", fontWeight: 700, color: T.muted, fontFamily: "'DM Mono',monospace", marginBottom: "0.25rem" }}>{label}</div>
                         <input value={val} onChange={e => setter(e.target.value)} placeholder={ph}
