@@ -36,7 +36,7 @@ export function AuditRequestForm({ companyName, onClose }: AuditRequestFormProps
           company_url: url.trim() || null,
           role_title: roleTitle.trim() || null,
           email: email.trim(),
-          user_id: user?.id ?? null,
+          user_id: user.id,
         });
       if (error) throw error;
       setSubmitted(true);
