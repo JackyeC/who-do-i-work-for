@@ -357,6 +357,7 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
           signals={hiringSignals}
           emptyType="jobs"
           companyName={props.companyName}
+          careersUrl={props.careersUrl}
           scanContext={props.scanContext}
         />
         <SignalCategory title="Workforce Stability" signals={stabilitySignals} />
