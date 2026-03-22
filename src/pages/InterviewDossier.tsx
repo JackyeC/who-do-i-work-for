@@ -1188,6 +1188,34 @@ export default function InterviewDossier() {
                   </div>
                 </div>
 
+                {/* Shareable Link + Message */}
+                <div className="section">
+                  <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "0.2rem" }}>Share This Dossier</div>
+                  <div style={{ color: T.muted, fontSize: "0.74rem", marginBottom: "0.75rem" }}>Copy the link below and send it to your candidate via email or LinkedIn. The message template is ready to paste.</div>
+                  <div style={{ marginBottom: "0.65rem" }}>
+                    <div style={{ fontSize: "0.62rem", fontWeight: 700, color: T.muted, fontFamily: "'DM Mono',monospace", marginBottom: "0.25rem" }}>DOSSIER LINK</div>
+                    <div style={{ display: "flex", gap: "0.4rem" }}>
+                      <input readOnly value={dossierUrl}
+                        style={{ flex: 1, padding: "0.5rem 0.7rem", border: `1.5px solid ${T.gold}50`, borderRadius: 8, fontFamily: "'DM Mono',monospace", fontSize: "0.75rem", background: T.bg, color: T.fg, outline: "none" }} />
+                      <button onClick={() => { navigator.clipboard.writeText(dossierUrl); }}
+                        style={{ padding: "0.5rem 0.85rem", background: T.gold, border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: "0.75rem", color: T.fg, whiteSpace: "nowrap" }}>
+                        Copy Link
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.62rem", fontWeight: 700, color: T.muted, fontFamily: "'DM Mono',monospace", marginBottom: "0.25rem" }}>SHARE MESSAGE — PASTE INTO EMAIL OR LINKEDIN</div>
+                    <div style={{ position: "relative" }}>
+                      <textarea readOnly value={shareMessage} rows={7}
+                        style={{ width: "100%", padding: "0.65rem 0.75rem", border: `1.5px solid ${T.border}`, borderRadius: 9, fontFamily: "'DM Sans',sans-serif", fontSize: "0.76rem", background: T.bg, color: T.fg, outline: "none", resize: "none", lineHeight: 1.55 }} />
+                      <button onClick={() => { navigator.clipboard.writeText(shareMessage); }}
+                        style={{ position: "absolute", top: "0.45rem", right: "0.45rem", padding: "0.3rem 0.65rem", background: T.fg, border: "none", borderRadius: 6, cursor: "pointer", fontFamily: "'DM Mono',monospace", fontWeight: 700, fontSize: "0.65rem", color: T.gold }}>
+                        Copy Message
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Recruiter Info */}
                 <div className="section">
                   <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "0.2rem" }}>Your Information</div>
