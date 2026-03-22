@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS idx_personalized_news_title_unique ON personalized_news (title);
