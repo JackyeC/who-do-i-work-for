@@ -215,6 +215,7 @@ const App = () => (
                   <Route path="/saved" element={<ProtectedRoute><SavedPage /></ProtectedRoute>} />
                   <Route path="/tracker" element={<ProtectedRoute><TrackerPage /></ProtectedRoute>} />
                   <Route path="/apply-kit" element={<ProtectedRoute><ApplyKitPage /></ProtectedRoute>} />
+                  <Route path="/interview-kits" element={<ProtectedRoute><InterviewKits /></ProtectedRoute>} />
                   <Route path="/job-board" element={<JobIntegrityBoard />} />
                   <Route path="/job-board/:id" element={<JobDetailPage />} />
                   <Route path="/request-correction" element={<RequestCorrection />} />
