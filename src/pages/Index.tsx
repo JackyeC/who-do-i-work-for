@@ -62,8 +62,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       </div>
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 lg:px-16 py-4 w-full">
         <div className="max-w-[1100px] mx-auto flex items-center justify-between">
-        <Link to="/" className="font-serif text-foreground" style={{ fontSize: '18px', fontWeight: 700 }}>
-          Who Do I Work For?
+        <Link to="/" className="flex items-center shrink-0">
+          <span style={{fontFamily:"Inter,sans-serif",fontWeight:900,letterSpacing:"-0.03em",fontSize:"26px"}}>
+            <span style={{color:"#111111"}}>W</span>
+            <span style={{color:"#F0C040"}}>?</span>
+          </span>
         </Link>
         <nav className="hidden md:flex items-center gap-4">
           {!authLoading && (
