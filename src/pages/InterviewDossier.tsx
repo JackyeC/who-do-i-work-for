@@ -747,8 +747,8 @@ export default function InterviewDossier() {
 
               <div className="section">
                 <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "0.25rem" }}>Who You'll Likely Meet</div>
-                <div style={{ color: T.muted, fontSize: "0.75rem", marginBottom: "0.75rem" }}>{co.orgContext.description}</div>
-                {co.orgContext.likelyPeople.map((p, i) => (
+                <div style={{ color: T.muted, fontSize: "0.75rem", marginBottom: "0.75rem" }}>{co.orgContext?.description}</div>
+                {(co.orgContext?.likelyPeople ?? []).map((p: any, i: number) => (
                   <div key={i} style={{ display: "flex", gap: "0.75rem", padding: "0.65rem 0.8rem", background: T.bg, border: `1px solid ${T.border}`, borderRadius: 10, marginBottom: "0.4rem" }}>
                     <span style={{ color: T.blue, fontWeight: 900, fontFamily: "'DM Mono',monospace", flexShrink: 0, marginTop: "0.15rem" }}>{i + 1}</span>
                     <div>
