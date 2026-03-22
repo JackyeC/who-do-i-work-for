@@ -1,5 +1,6 @@
 // InterviewDossier — Interview preparation dossier page
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const T = {
   bg: "#F7F5F0", fg: "#1A1A22", card: "#FFFFFF", gold: "#EBAD0C",
@@ -90,6 +91,20 @@ const COMPANIES = {
       ],
       redLine: "Never accept 'competitive with market' without seeing the band. You have the market data. Use it.",
     },
+    process: {
+      rounds: "5",
+      duration: "4–6 weeks",
+      format: "Phone screen → Online Assessment (OA) → Virtual onsite (4–5 interviews, 45 min each) → Debrief with Bar Raiser. Each interview maps to 2–3 Leadership Principles. The Bar Raiser interview is behavioral-only and has independent veto power.",
+      style: "Every answer must be STAR format (Situation, Task, Action, Result) and mapped to a Leadership Principle. Interviewers are trained to probe with 'Tell me more about YOUR role' — they will strip away team credit. Data points and metrics are expected. 'We shipped it' is not enough — what moved?",
+      barraiser: true,
+      knownFilters: [
+        "Leadership Principle alignment — every question maps to at least one LP. If your answer doesn't connect, it's a miss regardless of technical quality.",
+        "Ownership language — 'I' not 'we.' Amazon interviewers are trained to probe for individual contribution. Team-first framing will cost you.",
+        "Data-driven decision making — 'I believed' is weaker than 'The data showed.' Bring numbers to every story.",
+        "Customer obsession framing — trace every outcome back to customer impact. If the customer isn't in your answer, add them.",
+        "Bar Raiser veto — one interviewer from outside the team has independent veto power. They assess purely on LP behavioral depth, not technical skill.",
+      ],
+    },
     practice: [
       { category: "Leadership Principles", q: "Tell me about a time you took ownership of something that wasn't your responsibility.", hint: "Ownership LP. Lead with 'I' not 'we.' Make the stakes real — what broke if you didn't act? Use STAR. Amazon rewards stories where the outcome mattered to customers or the business." },
       { category: "Leadership Principles", q: "Tell me about a time you disagreed with your manager's decision. What did you do and what happened?", hint: "Disagree and Commit — both halves matter. Show intellectual honesty AND that you executed fully after the decision was made. The worst answers either capitulate immediately or refuse to move forward." },
@@ -172,6 +187,20 @@ const COMPANIES = {
       ],
       redLine: "Never accept without confirming the level. An L4 vs L5 difference is worth $80K+ over 4 years in total comp.",
     },
+    process: {
+      rounds: "4–5",
+      duration: "6–10 weeks",
+      format: "Recruiter screen → Technical phone screen (45 min, coding on Google Docs) → Virtual/onsite loop (4–5 interviews: 2 coding, 1 system design, 1 Googleyness/behavioral, 1 cross-functional) → Hiring Committee review → Team matching → Offer.",
+      style: "Google's Hiring Committee (not the interviewers) makes the final hire/no-hire decision based on your full interview packet. This means every interview matters equally — there's no 'acing 4 and tanking 1.' Interviewers are calibrated and will offer hints; accepting hints gracefully is a positive Googleyness signal. Coding interviews use Google Docs (no IDE, no autocomplete). System design is open-ended and scale-focused.",
+      barraiser: false,
+      knownFilters: [
+        "Googleyness — intellectual humility, comfort with ambiguity, collaborative instinct. This is assessed in a dedicated behavioral interview and cross-referenced across all interviewers' feedback.",
+        "Coding fluency without IDE support — you'll code in Google Docs. Practice without autocomplete, syntax highlighting, or compilation. Clean, readable code matters more than speed.",
+        "System design at Google scale — design for billions of users, not millions. Interviewers expect you to reason about consistency models, latency SLOs, and failure modes at planetary scale.",
+        "Level calibration — the Hiring Committee evaluates whether your packet matches L5 (or your target level). Under-leveling is common. Push for clarity on level before the onsite.",
+        "Cross-functional communication — the PM/TPM interviewer assesses your ability to explain technical decisions to non-engineers and navigate ambiguity across teams.",
+      ],
+    },
     practice: [
       { category: "Coding", q: "Given a list of meeting time intervals, find the minimum number of conference rooms required.", hint: "Classic Google medium. Min-heap on end times. Walk through your logic before coding. Google interviewers want to see how you think, not just the solution." },
       { category: "System Design", q: "Design a real-time global search index that serves 8 billion queries per day.", hint: "You're at Google — design at Google's scale. Cover: distributed indexing, crawl pipeline, inverted index sharding, consistency model, latency SLOs. Acknowledge the antitrust context if it's relevant to the tradeoffs." },
@@ -249,6 +278,20 @@ const COMPANIES = {
         "Get the remote/hybrid arrangement in writing before signing. Assumptions about flexibility become points of conflict.",
       ],
       redLine: "Do not accept 'values-driven company' as a substitute for a documented compensation range, review schedule, and benefits package in writing.",
+    },
+    process: {
+      rounds: "3–4",
+      duration: "3–5 weeks",
+      format: "Phone screen with People & Culture → Portfolio review with Creative Director → In-person or video conversation with senior leadership (may include Joanna Gaines for senior roles) → Final culture conversation with team members. Process is relationship-driven, not committee-driven.",
+      style: "Magnolia interviews feel like conversations, not interrogations. Don't mistake the warmth for low standards — they're assessing values alignment with every question. Portfolio work should demonstrate warmth, story, and belonging — not just technical polish. Be prepared to talk about what you care about as a person, not just as a professional. The 'why Magnolia specifically' question is the most important one you'll answer.",
+      barraiser: false,
+      knownFilters: [
+        "Values authenticity — they hire for who you are first, what you can do second. Generic answers about 'loving the brand' won't land. Be specific about what Magnolia's mission means to you personally.",
+        "Creative work with warmth and story — polished-but-cold portfolio work is a mismatch. Show work that made people feel something. Explain the story behind the work, not just the execution.",
+        "Operational maturity — senior creative roles require managing timelines, budgets, and multi-channel output. Magnolia runs lean. Show you can direct AND manage.",
+        "Community and place — Magnolia is rooted in Waco, TX. If you've researched the city and understand the community connection, it signals genuine interest. Treating it as 'just a job location' is a red flag.",
+        "Long-term orientation — they hire people who want to build something lasting. If your resume shows 18-month stints, be ready to explain what's different about this opportunity for you.",
+      ],
     },
     practice: [
       { category: "Values/Mission", q: "What draws you to Magnolia specifically — not creative work generally, but this brand, this company, this mission?", hint: "This is question one and it's the most important. Have a specific, genuine answer. 'I've admired the brand' is too vague. 'The idea that every piece of creative should make someone feel like they belong — that's the brief I want to work from' is specific and shows you've done the homework." },
@@ -463,6 +506,7 @@ function PracticeCard({ item }) {
 }
 
 export default function InterviewDossier() {
+  const navigate = useNavigate();
   const [coKey, setCoKey] = useState("amazon");
   const [tab, setTab] = useState("intel");
   const [filterCat, setFilterCat] = useState("All");
@@ -581,7 +625,7 @@ export default function InterviewDossier() {
           <div style={{ background: T.fg, borderRadius: 11, padding: "0.85rem 1rem" }}>
             <div style={{ color: T.gold, fontWeight: 800, fontSize: "0.78rem", marginBottom: "0.2rem" }}>Interview Dossier — $49</div>
             <div style={{ color: "rgba(240,235,224,0.55)", fontSize: "0.7rem", lineHeight: 1.45, marginBottom: "0.55rem" }}>Per company · Full research · PDF export · Refreshed with every search</div>
-            <div style={{ background: T.gold, borderRadius: 7, padding: "0.42rem", textAlign: "center", cursor: "pointer" }}>
+            <div onClick={() => navigate("/pricing")} style={{ background: T.gold, borderRadius: 7, padding: "0.42rem", textAlign: "center", cursor: "pointer" }}>
               <div style={{ fontWeight: 800, fontSize: "0.8rem", color: T.fg }}>Unlock Full Dossier →</div>
             </div>
             <div style={{ color: "rgba(240,235,224,0.35)", fontSize: "0.65rem", textAlign: "center", marginTop: "0.35rem" }}>Also included in Premium ($79/mo)</div>
@@ -1087,9 +1131,11 @@ export default function InterviewDossier() {
               <div className="section">
                 <div style={{ fontWeight: 700, fontSize: "0.84rem", marginBottom: "0.65rem" }}>Scripts — Word for Word</div>
                 {[
-                  { s: "When they ask your salary expectations", t: `"Based on my research for ${co.role} at ${co.name}, I'm targeting ${co.negotiation.marketRange.split("+")[0].trim()}. I want to understand the full structure — can you walk me through how the offer is built?"` },
-                  { s: "When the first offer comes in below market", t: `"I appreciate this offer. Based on the market data I've researched for this level at ${co.name}, I was expecting to be closer to ${co.negotiation.marketRange.split("+")[0].trim()}. Is there flexibility to move toward that range?"` },
+                  { s: "When they ask your salary expectations", t: `"Based on my research for ${co.role} at ${co.name}, I'm targeting ${(co.negotiation?.marketRange ?? "").split("+")[0].trim()}. I want to understand the full structure — can you walk me through how the offer is built?"` },
+                  { s: "When the first offer comes in below market", t: `"I appreciate this offer. Based on the market data I've researched for this level at ${co.name}, I was expecting to be closer to ${(co.negotiation?.marketRange ?? "").split("+")[0].trim()}. Is there flexibility to move toward that range?"` },
                   { s: "When you need more time", t: `"This is an important decision and I want to give it the consideration it deserves. Can I have until [specific date]? I want to be fully committed when I say yes."` },
+                  { s: "Counter-offer script — when you have competing offers", t: `"I want to be transparent — I have another offer at [competing company] that comes in at [amount]. I'm genuinely more interested in ${co.name} because of [specific reason tied to role/team/mission]. Is there room to close the gap on [base/RSU/signing]? I want to make this work."` },
+                  { s: "When they say 'this is our best offer'", t: `"I understand this may be the top of the band for base. Can we look at other components — signing bonus, RSU acceleration, review timeline, or professional development budget? I'm trying to build a package that reflects the level of commitment I'm bringing."` },
                 ].map(({ s, t }) => (
                   <div key={s} style={{ marginBottom: "0.65rem", padding: "0.75rem 0.9rem", background: T.bg, borderRadius: 10, border: `1px solid ${T.border}` }}>
                     <div style={{ fontWeight: 700, fontSize: "0.75rem", color: T.blue, marginBottom: "0.28rem" }}>📌 {s}</div>
@@ -1101,6 +1147,8 @@ export default function InterviewDossier() {
           )}
           {/* ── SEND TO CANDIDATE ── */}
           {tab === "send" && (() => {
+            const dossierUrl = `wdiwf.jackyeclayton.com/interview-dossier?company=${coKey}`;
+            const shareMessage = `I put together an interview prep dossier for your upcoming conversation with ${co.name}. It includes employer signal data, practice questions calibrated to their interview style, and negotiation intelligence.\n\nHere's your link:\n${dossierUrl}\n\nReview the Smart Questions tab especially — those are built from real employer data, not generic lists. Go in prepared.\n\nLet me know if you have questions.`;
             const NOTE_TEMPLATES = {
               truth: {
                 label: "The Full Truth (Jackye's Way)",
@@ -1138,6 +1186,34 @@ export default function InterviewDossier() {
                   <div style={{ marginTop: "0.65rem", padding: "0.5rem 0.75rem", background: `${T.gold}15`, border: `1px solid ${T.gold}35`, borderRadius: 7 }}>
                     <div style={{ color: T.gold, fontSize: "0.7rem", fontFamily: "'DM Mono',monospace", fontWeight: 700 }}>
                       "Skills are 25% of the hiring equation. Environment, culture, and fit are the other 75%. Give candidates what they need to assess all of it." — Jackye Clayton
+                    </div>
+                  </div>
+                </div>
+
+                {/* Shareable Link + Message */}
+                <div className="section">
+                  <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "0.2rem" }}>Share This Dossier</div>
+                  <div style={{ color: T.muted, fontSize: "0.74rem", marginBottom: "0.75rem" }}>Copy the link below and send it to your candidate via email or LinkedIn. The message template is ready to paste.</div>
+                  <div style={{ marginBottom: "0.65rem" }}>
+                    <div style={{ fontSize: "0.62rem", fontWeight: 700, color: T.muted, fontFamily: "'DM Mono',monospace", marginBottom: "0.25rem" }}>DOSSIER LINK</div>
+                    <div style={{ display: "flex", gap: "0.4rem" }}>
+                      <input readOnly value={dossierUrl}
+                        style={{ flex: 1, padding: "0.5rem 0.7rem", border: `1.5px solid ${T.gold}50`, borderRadius: 8, fontFamily: "'DM Mono',monospace", fontSize: "0.75rem", background: T.bg, color: T.fg, outline: "none" }} />
+                      <button onClick={() => { navigator.clipboard.writeText(dossierUrl); }}
+                        style={{ padding: "0.5rem 0.85rem", background: T.gold, border: "none", borderRadius: 8, cursor: "pointer", fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: "0.75rem", color: T.fg, whiteSpace: "nowrap" }}>
+                        Copy Link
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.62rem", fontWeight: 700, color: T.muted, fontFamily: "'DM Mono',monospace", marginBottom: "0.25rem" }}>SHARE MESSAGE — PASTE INTO EMAIL OR LINKEDIN</div>
+                    <div style={{ position: "relative" }}>
+                      <textarea readOnly value={shareMessage} rows={7}
+                        style={{ width: "100%", padding: "0.65rem 0.75rem", border: `1.5px solid ${T.border}`, borderRadius: 9, fontFamily: "'DM Sans',sans-serif", fontSize: "0.76rem", background: T.bg, color: T.fg, outline: "none", resize: "none", lineHeight: 1.55 }} />
+                      <button onClick={() => { navigator.clipboard.writeText(shareMessage); }}
+                        style={{ position: "absolute", top: "0.45rem", right: "0.45rem", padding: "0.3rem 0.65rem", background: T.fg, border: "none", borderRadius: 6, cursor: "pointer", fontFamily: "'DM Mono',monospace", fontWeight: 700, fontSize: "0.65rem", color: T.gold }}>
+                        Copy Message
+                      </button>
                     </div>
                   </div>
                 </div>
