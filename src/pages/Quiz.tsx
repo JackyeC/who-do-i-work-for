@@ -945,68 +945,80 @@ function ResultsScreen({
 
       {/* CTA buttons */}
       <div
-        className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10 w-full sm:w-auto"
+        className="flex flex-col items-center justify-center gap-4 mt-10 w-full sm:w-auto"
         style={{ animation: "quizFadeUp 0.6s ease 0.95s both", paddingBottom: 48 }}
       >
+        {/* Framing text */}
+        <p style={{
+          fontSize: 14,
+          color: "#7a7590",
+          fontFamily: "'DM Sans', sans-serif",
+          textAlign: "center",
+          maxWidth: 400,
+          lineHeight: 1.5,
+          marginBottom: 4,
+        }}>
+          Create a free account to save your results and unlock your personalized dashboard.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <a
+            href="/login"
+            style={{
+              background: "#f0c040",
+              color: "#0a0a0e",
+              borderRadius: 50,
+              padding: "14px 36px",
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+              fontFamily: "'DM Sans', sans-serif",
+              transition: "opacity 0.2s",
+              display: "inline-block",
+            }}
+          >
+            Create free account →
+          </a>
+          <button
+            onClick={onCopy}
+            style={{
+              background: "#221f30",
+              border: "1px solid rgba(255,255,255,0.07)",
+              color: "#f0ebe0",
+              borderRadius: 50,
+              padding: "12px 24px",
+              fontSize: 14,
+              fontWeight: 500,
+              cursor: "pointer",
+              fontFamily: "'DM Sans', sans-serif",
+              transition: "border-color 0.2s",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.borderColor = "rgba(240,192,64,0.3)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)")
+            }
+          >
+            Share my profile
+          </button>
+        </div>
+
+        {/* Browse without account */}
         <a
-          href="/dashboard"
+          href="/browse"
           style={{
-            background: "#f0c040",
-            color: "#0a0a0e",
-            borderRadius: 50,
-            padding: "14px 36px",
-            fontSize: 14,
-            fontWeight: 600,
+            fontSize: 13,
+            color: "#7a7590",
             textDecoration: "none",
             fontFamily: "'DM Sans', sans-serif",
-            transition: "opacity 0.2s",
-            display: "inline-block",
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+          onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
         >
-          Go to my dashboard →
+          Or browse companies first →
         </a>
-        <button
-          onClick={onCopy}
-          style={{
-            background: "#221f30",
-            border: "1px solid rgba(255,255,255,0.07)",
-            color: "#f0ebe0",
-            borderRadius: 50,
-            padding: "12px 24px",
-            fontSize: 14,
-            fontWeight: 500,
-            cursor: "pointer",
-            fontFamily: "'DM Sans', sans-serif",
-            transition: "border-color 0.2s",
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.borderColor = "rgba(240,192,64,0.3)")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)")
-          }
-        >
-          Share my profile
-        </button>
       </div>
-
-      {/* Early access link */}
-      <a
-        href="/join"
-        style={{
-          marginTop: 16,
-          fontSize: 13,
-          color: "#7a7590",
-          textDecoration: "none",
-          fontFamily: "'DM Sans', sans-serif",
-          animation: "quizFadeUp 0.6s ease 1.1s both",
-          display: "inline-block",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-        onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-      >
-        Launching April 6 — secure your spot →
-      </a>
 
       {/* Reset */}
       <button

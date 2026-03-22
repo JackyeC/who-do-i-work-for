@@ -32,11 +32,12 @@ export function useCareerWaitlist() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["career-waitlist"] }),
   });
 
+  // Waitlist disabled for launch — all users get access
   return {
     entry,
     isLoading,
-    isApproved: entry?.status === "approved",
-    isPending: entry?.status === "pending",
+    isApproved: true,
+    isPending: false,
     hasJoined: !!entry,
     joinWaitlist,
   };

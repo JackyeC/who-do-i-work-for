@@ -1,6 +1,6 @@
-import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
-import { useLocation } from "react-router-dom";
+import { useLocation, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCareerWaitlist } from "@/hooks/use-career-waitlist";
 import { useUserRole } from "@/hooks/use-user-role";
@@ -27,7 +27,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SignedOut>
-        {isDossierRoute ? <>{children}</> : <RedirectToSignIn />}
+        {isDossierRoute ? <>{children}</> : <Navigate to="/login" replace />}
       </SignedOut>
       <SignedIn>
         <ProtectedRouteInner>{children}</ProtectedRouteInner>
