@@ -279,6 +279,20 @@ const COMPANIES = {
       ],
       redLine: "Do not accept 'values-driven company' as a substitute for a documented compensation range, review schedule, and benefits package in writing.",
     },
+    process: {
+      rounds: "3–4",
+      duration: "3–5 weeks",
+      format: "Phone screen with People & Culture → Portfolio review with Creative Director → In-person or video conversation with senior leadership (may include Joanna Gaines for senior roles) → Final culture conversation with team members. Process is relationship-driven, not committee-driven.",
+      style: "Magnolia interviews feel like conversations, not interrogations. Don't mistake the warmth for low standards — they're assessing values alignment with every question. Portfolio work should demonstrate warmth, story, and belonging — not just technical polish. Be prepared to talk about what you care about as a person, not just as a professional. The 'why Magnolia specifically' question is the most important one you'll answer.",
+      barraiser: false,
+      knownFilters: [
+        "Values authenticity — they hire for who you are first, what you can do second. Generic answers about 'loving the brand' won't land. Be specific about what Magnolia's mission means to you personally.",
+        "Creative work with warmth and story — polished-but-cold portfolio work is a mismatch. Show work that made people feel something. Explain the story behind the work, not just the execution.",
+        "Operational maturity — senior creative roles require managing timelines, budgets, and multi-channel output. Magnolia runs lean. Show you can direct AND manage.",
+        "Community and place — Magnolia is rooted in Waco, TX. If you've researched the city and understand the community connection, it signals genuine interest. Treating it as 'just a job location' is a red flag.",
+        "Long-term orientation — they hire people who want to build something lasting. If your resume shows 18-month stints, be ready to explain what's different about this opportunity for you.",
+      ],
+    },
     practice: [
       { category: "Values/Mission", q: "What draws you to Magnolia specifically — not creative work generally, but this brand, this company, this mission?", hint: "This is question one and it's the most important. Have a specific, genuine answer. 'I've admired the brand' is too vague. 'The idea that every piece of creative should make someone feel like they belong — that's the brief I want to work from' is specific and shows you've done the homework." },
       { category: "Portfolio", q: "Walk me through a campaign or creative project you're most proud of. What was the brief, what was the outcome, and what would you do differently?", hint: "Show work that has warmth, story, and outcome. Magnolia cares about how things made people feel, not just how they looked. Include the 'what I'd do differently' — authenticity matters here more than polish." },
