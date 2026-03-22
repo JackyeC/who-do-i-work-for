@@ -737,7 +737,7 @@ export default function InterviewDossier() {
                   </div>
                 )}
                 <div style={{ fontWeight: 700, fontSize: "0.84rem", marginBottom: "0.5rem" }}>What They Actually Filter On</div>
-                {co.process.knownFilters.map((f, i) => (
+                {(co.process?.knownFilters ?? []).map((f: any, i: number) => (
                   <div key={i} style={{ display: "flex", gap: "0.6rem", padding: "0.5rem 0.7rem", background: T.bg, border: `1px solid ${T.border}`, borderRadius: 9, marginBottom: "0.35rem" }}>
                     <span style={{ color: T.blue, fontWeight: 700, flexShrink: 0 }}>→</span>
                     <div style={{ fontSize: "0.77rem", color: T.fg, lineHeight: 1.45 }}>{f}</div>
