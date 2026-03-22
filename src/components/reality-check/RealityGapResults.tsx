@@ -1,4 +1,4 @@
-import type { RealityGapResult } from "@/lib/integrityGapScore";
+import type { RealityGapResult } from "@/lib/realityGapScore";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
