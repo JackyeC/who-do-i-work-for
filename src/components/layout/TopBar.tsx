@@ -151,9 +151,9 @@ export function TopBar() {
       <header className="fixed top-[36px] left-0 right-0 z-50 border-b border-border h-[64px] flex items-center px-4 lg:px-6 bg-background/[0.92] backdrop-blur-[20px]">
         {/* Brand */}
         <Link to="/" className="flex items-center shrink-0 mr-4">
-          <span style={{fontFamily:'Inter,sans-serif', fontWeight:900, letterSpacing:'-0.03em', lineHeight:0.88, fontSize:'28px'}}>
-            <span className="text-foreground">W</span>
-            <span className="text-civic-gold" style={{textShadow:'0 0 20px rgba(240,192,64,0.4)'}}>?</span>
+          <span style={{fontFamily:"'Inter',sans-serif",fontWeight:900,letterSpacing:"-0.03em",lineHeight:0.88,fontSize:"26px",display:"inline-block"}}>
+            <span style={{color:"#111111"}}>W</span>
+            <span style={{color:"#F0C040"}}>?</span>
           </span>
         </Link>
 
