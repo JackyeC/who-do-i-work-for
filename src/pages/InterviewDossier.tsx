@@ -566,7 +566,7 @@ export default function InterviewDossier() {
             {[
               ["Latest Intel", `${co.currentPriorities.length} priorities · ${co.recentNews.length} news items`],
               ["Values & Culture", `${co.values.length} values mapped to signals`],
-              ["Process & People", `${co.process.rounds} rounds · ${co.orgContext.likelyPeople.length} likely contacts`],
+              ["Process & People", `${co.process?.rounds ?? "?"} rounds · ${co.orgContext?.likelyPeople?.length ?? 0} likely contacts`],
               ["Smart Questions", `${co.redFlags.length + co.strengthsToAsk.length} data-derived questions`],
               ["Practice", `${co.practice.length} questions + coaching`],
               ["Negotiation Brief", `${co.negotiation.leverageTips.length} leverage points`],
