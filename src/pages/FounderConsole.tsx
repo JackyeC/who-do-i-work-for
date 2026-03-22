@@ -138,7 +138,7 @@ export default function FounderConsole() {
     queryFn: async () => {
       const { data } = await supabase
         .from("beta_feedback")
-        .select("feedback_type, message, created_at, user_email")
+        .select("feedback_type, message, created_at, user_id")
         .order("created_at", { ascending: false })
         .limit(5);
       return data || [];
