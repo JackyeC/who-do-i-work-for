@@ -480,7 +480,7 @@ export default function InterviewDossier() {
   const [recTemplate, setRecTemplate] = useState("");
 
   const co = COMPANIES[coKey];
-  const categories: string[] = ["All", ...new Set(co.practice.map((p: any) => p.category))];
+  const categories: string[] = ["All", ...Array.from(new Set(co.practice.map((p: any) => p.category as string)))];
   const filtered = filterCat === "All" ? co.practice : co.practice.filter(p => p.category === filterCat);
 
   const tabs = [
