@@ -169,7 +169,9 @@ async function fetchExternalNews() {
         const url = `https://newsdata.io/api/1/latest?apikey=${NEWS_API_KEY}&q=${encodeURIComponent(query)}&language=en&category=business,politics&size=5`;
         const res = await fetch(url);
         const data = await res.json();
-        articles = (data.results || []).map((a: any) => ({
+        console.log(`[newsdata] query="${query}" status=${res.status} results_type=${typeof data.results} count=${Array.isArray(data.results) ? data.results.length : 'n/a'}`);
+        const results = Array.isArray(data.results) ? data.results : [];
+        articles = results.map((a: any) => ({
           title: a.title,
           summary: a.description || a.content?.slice(0, 300) || "",
           source: a.source_name || a.source_id || "External",
