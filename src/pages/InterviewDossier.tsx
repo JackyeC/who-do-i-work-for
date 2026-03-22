@@ -506,6 +506,7 @@ function PracticeCard({ item }) {
 }
 
 export default function InterviewDossier() {
+  const navigate = useNavigate();
   const [coKey, setCoKey] = useState("amazon");
   const [tab, setTab] = useState("intel");
   const [filterCat, setFilterCat] = useState("All");
