@@ -31,7 +31,7 @@
     --secondary-foreground: 240 20% 12%;
 
     --muted: 40 15% 92%;
-    --muted-foreground: 240 10% 42%;     /* #636370 */
+    --muted-foreground: 240 12% 32%;     /* #494954 — WCAG AA compliant on cream */
 
     --accent: 43 30% 90%;
     --accent-foreground: 43 85% 40%;

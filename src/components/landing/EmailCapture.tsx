@@ -85,7 +85,7 @@ export function EmailCapture() {
                 </form>
               )}
               <p className="text-xs text-muted-foreground/60 mt-5">
-                Join 0 career researchers. Free forever.
+                Join career researchers getting weekly intelligence. Free forever.
               </p>
             </div>
           </div>

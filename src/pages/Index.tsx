@@ -1,7 +1,7 @@
-import { useState, useEffect, lazy, Suspense, forwardRef } from "react";
+import { useState, lazy, Suspense, forwardRef } from "react";
 import jackyeHeadshotSm from "@/assets/jackye-headshot-sm.webp";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, ArrowRight, ArrowLeftRight, Zap, Search, Eye, Target, Brain, Rocket, CheckCircle2, Menu, X, Crosshair } from "lucide-react";
+import { Shield, ArrowRight, Eye, Target, Brain, Rocket, CheckCircle2, Menu, X, Crosshair } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 import { Button } from "@/components/ui/button";
@@ -16,10 +16,7 @@ const IntelligenceDashboard = lazy(() => import("@/components/landing/Intelligen
 const FAQSection = lazy(() => import("@/components/landing/FAQSection").then(m => ({ default: m.FAQSection })));
 const EmailCapture = lazy(() => import("@/components/landing/EmailCapture").then(m => ({ default: m.EmailCapture })));
 const ExitIntentCapture = lazy(() => import("@/components/ExitIntentCapture").then(m => ({ default: m.ExitIntentCapture })));
-const RivalryBattleCard = lazy(() => import("@/components/RivalryBattleCard").then(m => ({ default: m.RivalryBattleCard })));
 const SectionReveal = lazy(() => import("@/components/landing/SectionReveal").then(m => ({ default: m.SectionReveal })));
-
-const loadRivalries = () => import("@/data/rivalries2026").then(m => m.rivalries2026);
 
 const TRUST_SOURCES: { label: string; url: string }[] = [
   { label: "FEC Filings", url: "https://www.fec.gov/data/" },
@@ -36,7 +33,6 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const { user, loading: authLoading } = useAuth();
   const { isLoaded } = useClerkWithFallback();
 
-  const [rivalries, setRivalries] = useState<any[] | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   usePageSEO({
@@ -53,24 +49,15 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
     },
   });
 
-  // Load rivalries eagerly instead of on hover (so mobile users see them too)
-  useEffect(() => {
-    loadRivalries().then(setRivalries);
-  }, []);
-
   if (!isLoaded || authLoading) return null;
 
   return (
     <div ref={ref} className="flex flex-col min-h-screen bg-background">
-      {/* Live Intelligence Ticker */}
-      <Suspense fallback={<div className="h-[28px] bg-primary" />}>
-        <LiveIntelligenceTicker />
-      </Suspense>
-
-      {/* ── Site Header ── */}
-      <header className="px-6 lg:px-16 py-4 max-w-[1100px] mx-auto w-full flex items-center justify-between">
-        <Link to="/" className="font-serif text-foreground" style={{ fontSize: '20px', fontWeight: 700 }}>
-          WDIWF
+      {/* ── Site Header (Sticky) ── */}
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 lg:px-16 py-4 w-full">
+        <div className="max-w-[1100px] mx-auto flex items-center justify-between">
+        <Link to="/" className="font-serif text-foreground" style={{ fontSize: '18px', fontWeight: 700 }}>
+          Who Do I Work For?
         </Link>
         <nav className="hidden md:flex items-center gap-4">
           {!authLoading && (
@@ -93,6 +80,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <button className="md:hidden p-1 text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
           {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
+        </div>
       </header>
 
       {mobileMenuOpen && (
@@ -265,6 +253,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </div>
         </div>
       </section>
+
+      {/* Live Intelligence Ticker — below the fold */}
+      <Suspense fallback={null}>
+        <LiveIntelligenceTicker />
+      </Suspense>
 
       {/* ══════════════════════════════════════════════════════════════════
           TWO-SIDED PLATFORM PATHS
@@ -608,53 +601,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </SectionReveal>
       </Suspense>
 
-      {/* ── Rivalries Teaser ── */}
-      <Suspense fallback={null}>
-        <SectionReveal>
-          <section className="px-6 lg:px-16 py-16 lg:py-20 max-w-[960px] mx-auto w-full">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Zap className="w-4 h-4 text-primary" />
-                  <span className="font-mono text-sm tracking-[0.2em] uppercase text-primary font-semibold">2026 Intelligence</span>
-                </div>
-                <h2 className="text-xl font-bold text-foreground">Rivalry Super Tracker</h2>
-              </div>
-              <button onClick={() => navigate("/rivalries")} className="font-mono text-sm tracking-wider uppercase text-primary hover:underline flex items-center gap-1 whitespace-nowrap">
-                View all <ArrowRight className="w-3 h-3" />
-              </button>
-            </div>
-            {rivalries && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {rivalries.slice(0, 2).map(r => (
-                  <Suspense key={r.id} fallback={null}>
-                    <RivalryBattleCard rivalry={r} compact />
-                  </Suspense>
-                ))}
-              </div>
-            )}
-          </section>
-        </SectionReveal>
-      </Suspense>
-
-      {/* ── Compare CTA ── */}
-      <section className="px-6 lg:px-16 py-16 lg:py-20 max-w-[960px] mx-auto w-full">
-        <div
-          className="bg-card border border-border p-8 flex flex-col md:flex-row items-center justify-between gap-6 cursor-pointer hover:border-primary/30 transition-colors group"
-          onClick={() => navigate("/compare")}
-        >
-          <div className="flex items-center gap-4">
-            <ArrowLeftRight className="w-8 h-8 text-primary" strokeWidth={1.5} />
-            <div>
-              <div className="font-serif text-lg text-foreground group-hover:text-primary transition-colors">Compare Two Employers</div>
-              <div className="text-sm text-muted-foreground">Side-by-side scores, PAC spending, lobbying, and contracts.</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5 font-mono text-sm tracking-wider uppercase text-primary group-hover:gap-2.5 transition-all whitespace-nowrap">
-            Start comparison <ArrowRight className="w-3.5 h-3.5" />
-          </div>
-        </div>
-      </section>
+      {/* Rivalry Super Tracker + Compare CTA moved to /dashboard */}
 
       {/* ── Methodology ── */}
       <section className="px-6 lg:px-16 py-16 lg:py-20">

@@ -115,11 +115,14 @@ const tracks = [
   },
 ];
 
-export function PathfinderTracks() {
+export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
   const [isAnnual, setIsAnnual] = useState(false);
+
+  // On homepage: show only first 3 tiers. On /pricing: show all 5.
+  const visibleTracks = showAll ? tracks : tracks.slice(0, 3);
 
   const handleTrackAction = async (track: typeof tracks[0]) => {
     if (track.mode === "free") {
@@ -227,8 +230,13 @@ export function PathfinderTracks() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-px bg-border border border-border">
-          {tracks.map((track) => {
+        <div className={cn(
+          "grid gap-px bg-border border border-border",
+          showAll
+            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+            : "grid-cols-1 md:grid-cols-3"
+        )}>
+          {visibleTracks.map((track) => {
             const display = getDisplayPrice(track);
             return (
               <div
@@ -300,6 +308,20 @@ export function PathfinderTracks() {
             );
           })}
         </div>
+
+        {!showAll && (
+          <div className="text-center mt-8">
+            <button
+              onClick={() => navigate("/pricing")}
+              className="font-mono text-sm tracking-wider uppercase text-primary hover:underline inline-flex items-center gap-1.5"
+            >
+              See all plans <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+            <p className="text-xs text-muted-foreground mt-2">
+              Including 1-on-1 sessions with Jackye and full career autopilot.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
