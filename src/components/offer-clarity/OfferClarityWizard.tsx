@@ -154,6 +154,7 @@ export function OfferClarityWizard() {
           offerData,
           companyName: offerData.companyName,
           companyId: offerData.companyId,
+          unknownCompanyMeta: offerData.unknownCompanyMeta,
         },
       });
       if (error) throw error;
