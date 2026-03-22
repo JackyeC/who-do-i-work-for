@@ -30,6 +30,7 @@ export default function EarlyAccess() {
 
     try {
       await supabase.from("early_access_signups").insert({
+        first_name: "",
         email: email.trim().toLowerCase(),
         persona: role,
         referral_source: "vegas-early-access",
