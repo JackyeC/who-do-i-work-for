@@ -76,6 +76,7 @@ interface StructuredSignalsProps {
   companyId: string;
   companyName: string;
   companySlug: string;
+  careersUrl?: string;
   lastReviewed?: string;
   updatedAt?: string;
   scanContext?: {
