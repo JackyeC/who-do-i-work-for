@@ -472,6 +472,7 @@ export default function CompanyProfile() {
               companyId={dbCompanyId || ""}
               companyName={name}
               companySlug={id || ""}
+              careersUrl={(dbCompany as any)?.careers_url || company?.careersUrl}
               lastReviewed={dbCompany?.last_reviewed}
               updatedAt={dbCompany?.updated_at}
             />
