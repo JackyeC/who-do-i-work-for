@@ -1,452 +1,265 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSEO } from "@/hooks/use-page-seo";
 
-// Launch date removed — /join page always shows the signup form
-const BASE_COUNT = 312;
-
-const PERSONAS = [
-  "Looking for a job",
-  "Evaluating an offer",
-  "I recruit or hire",
-  "I lead a company or team",
-  "Selling or partnering",
-  "Employer brand / marketing",
-  "Investing or advising",
-  "Research or journalism",
-  "Changing careers",
-];
-
-function useAnimatedCounter(target: number, duration = 800) {
-  const [value, setValue] = useState(0);
-  const ref = useRef(false);
-  useEffect(() => {
-    if (ref.current) return;
-    ref.current = true;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const p = Math.min((now - start) / duration, 1);
-      setValue(Math.round(p * target));
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }, [target, duration]);
-  return value;
-}
+const PARTICLE_LABELS = ["FEC", "SEC", "NLRB", "OSHA", "$", "§", "27", "WARN", "DOJ"];
 
 export default function EarlyAccess() {
-  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
-  const [persona, setPersona] = useState<string | null>(null);
+  const [role, setRole] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [signupCount, setSignupCount] = useState(BASE_COUNT);
-  const [alreadySigned, setAlreadySigned] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   usePageSEO({
-    title: "Get Early Access",
-    description: "Join the early access list for Who Do I Work For? — the career intelligence platform that runs a background check on companies, not candidates. Launching April 2025.",
+    title: "Get Early Access — Who Do I Work For?",
+    description:
+      "Research any employer using public records — FEC filings, SEC reports, WARN notices, OSHA violations — all in one audit. Built by a recruiter, for everyone.",
     path: "/join",
   });
 
   useEffect(() => {
     const stored = localStorage.getItem("wdiwf_signed_up");
-    if (stored === "true") setAlreadySigned(true);
-
-    supabase
-      .rpc("get_early_access_count")
-      .then(({ data }) => {
-        if (data != null) setSignupCount(BASE_COUNT + Number(data));
-      });
+    if (stored === "true") setSubmitted(true);
   }, []);
 
-  const animatedCount = useAnimatedCounter(signupCount);
-
-  const getUtmParams = () => {
-    const params = new URLSearchParams(window.location.search);
-    const parts = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"]
-      .map((k) => params.get(k))
-      .filter(Boolean);
-    return parts.length ? parts.join(" | ") : null;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!persona) { setError("Please select what brings you here."); return; }
-    if (!email) { setError("Email is required."); return; }
-    setError("");
-    setSubmitting(true);
+    if (!email || !role) return;
+    setLoading(true);
 
-    const { error: dbErr } = await supabase.from("early_access_signups").insert({
-      first_name: firstName.trim(),
-      email: email.trim().toLowerCase(),
-      persona,
-      referral_source: getUtmParams(),
-    });
-
-    if (dbErr) {
-      if (dbErr.code === "23505") {
-        setError("You're already on the list!");
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-      setSubmitting(false);
-      return;
+    try {
+      await supabase.from("early_access_signups").insert({
+        first_name: "",
+        email: email.trim().toLowerCase(),
+        persona: role,
+        referral_source: "vegas-early-access",
+      });
+    } catch (_) {
+      // Insert optional — still show success
     }
 
     localStorage.setItem("wdiwf_signed_up", "true");
     localStorage.setItem("wdiwf_signup_email", email.trim().toLowerCase());
-    setSignupCount((c) => c + 1);
     setSubmitted(true);
-    setSubmitting(false);
-  };
-
-  const handleShare = () => {
-    navigator.clipboard.writeText(
-      "I just got early access to WDIWF — the platform that runs a background check on companies before you work for them. Launching in April: wdiwf.jackyeclayton.com/join"
-    );
-  };
-
-  // /join always shows the signup form — no redirect
+    setLoading(false);
+  }
 
   return (
-    <div
-      style={{
-        background: "#0a0a0e",
-        minHeight: "100vh",
-        fontFamily: "'DM Sans', sans-serif",
-        color: "#f0ebe0",
-        position: "relative",
-      }}
-    >
-      {/* Grain overlay */}
-      <svg style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 1, opacity: 0.04 }}>
-        <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" /></filter>
-        <rect width="100%" height="100%" filter="url(#grain)" />
-      </svg>
-
-      <div style={{ position: "relative", zIndex: 2 }}>
-        {/* Nav */}
-        <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", maxWidth: 960, margin: "0 auto" }}>
-          <Link to="/" style={{ fontSize: 18, fontWeight: 800, color: "#f0ebe0", textDecoration: "none", letterSpacing: "-0.5px" }}>
-            Who Do I Work For?
-          </Link>
-          <Link to="/dashboard" style={{ fontSize: 13, color: "#7a7590", textDecoration: "none" }}>
-            Already have access? Sign in →
-          </Link>
-        </nav>
-
-        {/* Main content */}
-        <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 24px 24px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-
-          {/* Section 1 — The Hook */}
-          <span style={{
-            display: "inline-block",
-            background: "rgba(240,192,64,0.10)",
-            border: "1px solid rgba(240,192,64,0.28)",
-            color: "#f0c040",
-            borderRadius: 20,
-            padding: "5px 14px",
-            fontSize: 11,
-            fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: "2.5px",
-            marginBottom: 28,
-          }}>
-            Early Access — Soft Launch
-          </span>
-
-          <h1 style={{
-            fontWeight: 800,
-            fontSize: "clamp(32px,5vw,56px)",
-            color: "#f0ebe0",
-            letterSpacing: "-1.5px",
-            lineHeight: 1.05,
-            marginBottom: 16,
-            textAlign: "center",
-            maxWidth: 700,
-          }}>
-            You deserve to know exactly who you work for.
-          </h1>
-
-          <p style={{
-            fontWeight: 400,
-            fontSize: "clamp(16px,2vw,20px)",
-            color: "#b8b4a8",
-            lineHeight: 1.65,
-            maxWidth: 520,
-            margin: "0 auto 36px",
-            textAlign: "center",
-          }}>
-            Before April — get access to the intelligence platform that runs a background check on companies, not just candidates.
-          </p>
-
-          <p style={{ fontSize: 14, fontWeight: 500, color: "#7a7590", textAlign: "center", marginBottom: 36 }}>
-            Join <span style={{ color: "#f0ebe0", fontWeight: 700 }}>{animatedCount.toLocaleString()}</span> people auditing before they apply
-          </p>
-
-          {/* Section 2 — The Form */}
-          <div style={{
-            background: "#13121a",
-            border: "1px solid rgba(255,255,255,0.10)",
-            borderRadius: 16,
-            padding: "36px 40px",
-            maxWidth: 480,
-            width: "100%",
-          }} className="join-form-card">
-            {submitted ? (
-              /* Success State */
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 48, fontWeight: 800, color: "#f0c040", marginBottom: 16 }}>✓</div>
-                <h2 style={{ fontSize: 32, fontWeight: 800, color: "#f0ebe0", letterSpacing: "-1px", marginBottom: 12 }}>You're in.</h2>
-                <p style={{ fontSize: 16, color: "#b8b4a8", lineHeight: 1.65, marginBottom: 28 }}>
-                  We'll email you the moment we launch in April. Until then — you can explore the platform now.
-                </p>
-                <a
-                  href="/"
-                  style={{
-                    display: "inline-block",
-                    background: "#f0c040",
-                    color: "#0a0a0e",
-                    fontWeight: 700,
-                    fontSize: 15,
-                    padding: "14px 36px",
-                    borderRadius: 50,
-                    textDecoration: "none",
-                    marginBottom: 12,
-                  }}
-                >
-                  Explore WDIWF now →
-                </a>
-                <br />
-                <button
-                  onClick={handleShare}
-                  style={{ fontSize: 14, color: "#7a7590", textDecoration: "none", background: "none", border: "none", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
-                >
-                  Copy share link →
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit}>
-                {alreadySigned && (
-                  <div style={{
-                    background: "rgba(240,192,64,0.10)",
-                    border: "1px solid rgba(240,192,64,0.28)",
-                    color: "#f0c040",
-                    borderRadius: 10,
-                    padding: "8px 14px",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    marginBottom: 16,
-                    textAlign: "center",
-                  }}>
-                    You're already on the list ✓
-                  </div>
-                )}
-
-                {/* First name */}
-                <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#b8b4a8", marginBottom: 6 }}>First name</label>
-                <input
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Your first name"
-                  style={{
-                    width: "100%",
-                    background: "#1c1a27",
-                    border: "1px solid rgba(255,255,255,0.10)",
-                    borderRadius: 10,
-                    padding: "14px 16px",
-                    fontSize: 15,
-                    color: "#f0ebe0",
-                    outline: "none",
-                    marginBottom: 16,
-                    boxSizing: "border-box",
-                  }}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(240,192,64,0.50)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.10)")}
-                />
-
-                {/* Email */}
-                <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#b8b4a8", marginBottom: 6 }}>Work or personal email</label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@wherever.com"
-                  style={{
-                    width: "100%",
-                    background: "#1c1a27",
-                    border: "1px solid rgba(255,255,255,0.10)",
-                    borderRadius: 10,
-                    padding: "14px 16px",
-                    fontSize: 15,
-                    color: "#f0ebe0",
-                    outline: "none",
-                    marginBottom: 16,
-                    boxSizing: "border-box",
-                  }}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(240,192,64,0.50)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.10)")}
-                />
-
-                {/* Persona selector */}
-                <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#b8b4a8", marginBottom: 8 }}>What brings you here?</label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 28 }} className="persona-grid">
-                  {PERSONAS.map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setPersona(p)}
-                      style={{
-                        background: persona === p ? "rgba(240,192,64,0.12)" : "#1c1a27",
-                        border: `1px solid ${persona === p ? "#f0c040" : "rgba(255,255,255,0.08)"}`,
-                        borderRadius: 50,
-                        padding: "10px 20px",
-                        fontSize: 14,
-                        fontWeight: persona === p ? 500 : 400,
-                        color: persona === p ? "#f0ebe0" : "#b8b4a8",
-                        cursor: "pointer",
-                        transition: "all 0.15s",
-                        textAlign: "center",
-                        fontFamily: "'DM Sans', sans-serif",
-                      }}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-
-                {error && (
-                  <p style={{ fontSize: 13, color: "#ff6b6b", marginBottom: 12, textAlign: "center" }}>{error}</p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  style={{
-                    width: "100%",
-                    background: "#f0c040",
-                    color: "#0a0a0e",
-                    fontSize: 15,
-                    fontWeight: 700,
-                    padding: 16,
-                    borderRadius: 50,
-                    border: "none",
-                    cursor: submitting ? "wait" : "pointer",
-                    fontFamily: "'DM Sans', sans-serif",
-                    opacity: submitting ? 0.7 : 1,
-                    transition: "opacity 0.2s, transform 0.15s",
-                  }}
-                  onMouseEnter={(e) => { if (!submitting) e.currentTarget.style.opacity = "0.88"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.opacity = submitting ? "0.7" : "1"; }}
-                >
-                  {alreadySigned ? "You're in — share with someone →" : "Get early access →"}
-                </button>
-
-                {alreadySigned && (
-                  <button
-                    type="button"
-                    onClick={handleShare}
-                    style={{
-                      width: "100%",
-                      marginTop: 8,
-                      background: "none",
-                      border: "none",
-                      color: "#7a7590",
-                      fontSize: 12,
-                      cursor: "pointer",
-                      fontFamily: "'DM Sans', sans-serif",
-                    }}
-                  >
-                    Copy share link
-                  </button>
-                )}
-
-                <p style={{ fontSize: 12, fontWeight: 400, color: "#3d3a4a", textAlign: "center", marginTop: 14 }}>
-                  No spam. No selling your data. One email when we launch in April.
-                </p>
-              </form>
-            )}
-          </div>
-
-          {/* Section 3 — Social Proof */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 40, marginTop: 48, flexWrap: "wrap" }} className="social-proof-strip">
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "#f0ebe0", letterSpacing: "-1px" }}>850+</div>
-              <div style={{ fontSize: 12, fontWeight: 500, color: "#7a7590", textTransform: "uppercase", letterSpacing: "1.5px" }}>Companies tracked</div>
-            </div>
-            <div style={{ width: 1, height: 40, background: "rgba(255,255,255,0.08)" }} className="proof-sep" />
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "#f0ebe0", letterSpacing: "-1px" }}>6</div>
-              <div style={{ fontSize: 12, fontWeight: 500, color: "#7a7590", textTransform: "uppercase", letterSpacing: "1.5px" }}>Federal data sources</div>
-            </div>
-            <div style={{ width: 1, height: 40, background: "rgba(255,255,255,0.08)" }} className="proof-sep" />
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 28, fontWeight: 800, color: "#f0ebe0", letterSpacing: "-1px" }}>15+</div>
-              <div style={{ fontSize: 12, fontWeight: 500, color: "#7a7590", textTransform: "uppercase", letterSpacing: "1.5px" }}>Years HR expertise</div>
-            </div>
-          </div>
-
-          {/* Section 4 — Value Stack */}
-          <p style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, color: "#7a7590", textAlign: "center", marginBottom: 20, marginTop: 56 }}>
-            What early access includes
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 16, maxWidth: 800, width: "100%" }} className="value-cards">
-            {[
-              { eyebrow: "Free", color: "#f0c040", bg: "rgba(240,192,64,0.12)", border: "rgba(240,192,64,0.3)", title: "Employer Audit", body: "Scan any company. Integrity Gap score, comp transparency, workforce stability, labor impacting detection." },
-              { eyebrow: "New", color: "#f0c040", bg: "rgba(240,192,64,0.12)", border: "rgba(240,192,64,0.3)", title: "Work DNA Quiz", body: "7 questions that reveal what kind of worker you are and which signals matter most for your decisions." },
-              { eyebrow: "April", color: "#47ffb3", bg: "rgba(71,255,179,0.12)", border: "rgba(71,255,179,0.3)", title: "Connected Dots", body: "See whether leadership got there on merit — or on who they know. Sourced from SEC proxy statements and public filings." },
-            ].map((card) => (
-              <div key={card.title} style={{ background: "#13121a", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: 24 }}>
-                <span style={{ display: "inline-block", fontSize: 11, fontWeight: 600, color: card.color, background: card.bg, border: `1px solid ${card.border}`, borderRadius: 20, padding: "3px 12px", marginBottom: 12, letterSpacing: 1, textTransform: "uppercase" }}>
-                  {card.eyebrow}
-                </span>
-                <h3 style={{ fontSize: 17, fontWeight: 700, color: "#f0ebe0", marginBottom: 8 }}>{card.title}</h3>
-                <p style={{ fontSize: 14, color: "#b8b4a8", lineHeight: 1.6, margin: 0 }}>{card.body}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Section 5 — Jackye */}
-          <div style={{
-            background: "#13121a",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-            padding: "48px 32px",
-            maxWidth: 600,
-            margin: "56px auto 0",
-            textAlign: "center",
-            borderRadius: 16,
-            width: "100%",
-          }}>
-            <span style={{ fontSize: 48, color: "#f0c040", lineHeight: 1, display: "block", marginBottom: 8 }}>"</span>
-            <p style={{ fontSize: 17, fontWeight: 400, fontStyle: "italic", color: "#b8b4a8", lineHeight: 1.75, maxWidth: 520, margin: "0 auto" }}>
-              I've spent 15+ years building the hiring machines for the biggest names in tech. I know exactly where the ghost jobs hide and where the real budget lives. I built WDIWF to put that power in your hands — not just employers'.
-            </p>
-            <p style={{ fontSize: 14, fontWeight: 600, color: "#f0ebe0", marginTop: 16 }}>— Jackye Clayton, Founder</p>
-          </div>
-
-          {/* Footer */}
-          <footer style={{ fontSize: 12, color: "#3d3a4a", textAlign: "center", padding: "48px 24px 24px" }}>
-            © 2026 Who Do I Work For? — wdiwf.jackyeclayton.com ·{" "}
-            <Link to="/privacy" style={{ color: "#3d3a4a" }}>Privacy</Link> ·{" "}
-            <Link to="/terms" style={{ color: "#3d3a4a" }}>Terms</Link>
-          </footer>
-        </div>
+    <div className="relative min-h-screen overflow-hidden" style={{ background: "#0a0a0e", fontFamily: "'DM Sans', sans-serif" }}>
+      {/* ── Background floating particles ── */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+        {[...Array(20)].map((_, i) => {
+          const left = `${5 + (i * 47) % 90}%`;
+          const delay = `${(i * 1.7) % 12}s`;
+          const duration = `${18 + (i * 3) % 14}s`;
+          const size = 10 + (i % 4) * 3;
+          return (
+            <span
+              key={i}
+              className="absolute animate-float-particle"
+              style={{
+                left,
+                top: `${10 + (i * 31) % 80}%`,
+                animationDelay: delay,
+                animationDuration: duration,
+                fontSize: size,
+                color: "rgba(240,192,64,0.08)",
+                fontWeight: 700,
+                fontFamily: "'DM Mono', monospace",
+                userSelect: "none",
+              }}
+            >
+              {PARTICLE_LABELS[i % PARTICLE_LABELS.length]}
+            </span>
+          );
+        })}
       </div>
 
-      {/* Responsive styles */}
+      {/* ── Main content ── */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-16">
+        {/* Logo mark */}
+        <div className="flex items-center gap-4 mb-10">
+          <span
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontWeight: 900,
+              letterSpacing: "-0.03em",
+              lineHeight: 0.88,
+              fontSize: "48px",
+            }}
+          >
+            <span style={{ color: "#ffffff" }}>W</span>
+            <span style={{ color: "#F0C040", textShadow: "0 0 20px rgba(240,192,64,0.4)" }}>?</span>
+          </span>
+
+          <div className="h-10 w-px bg-white/10" />
+
+          <div className="text-left">
+            <p
+              className="text-white leading-none tracking-tight"
+              style={{ fontSize: 16, fontWeight: 700 }}
+            >
+              Who Do I
+            </p>
+            <p
+              style={{
+                fontSize: 16,
+                fontWeight: 800,
+                letterSpacing: "0.08em",
+                color: "#F0C040",
+                textTransform: "uppercase",
+                lineHeight: 1.1,
+              }}
+            >
+              WORK FOR?
+            </p>
+            <p className="text-white/40 text-[10px] tracking-[0.15em] uppercase mt-0.5">
+              Career Intelligence
+            </p>
+          </div>
+        </div>
+
+        {!submitted ? (
+          <>
+            {/* Eyebrow */}
+            <span className="inline-block mb-6 px-4 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-[2.5px] border"
+              style={{
+                background: "rgba(240,192,64,0.10)",
+                borderColor: "rgba(240,192,64,0.28)",
+                color: "#F0C040",
+              }}
+            >
+              Early Access &nbsp;·&nbsp; April 6, 2026
+            </span>
+
+            {/* Headline */}
+            <h1
+              className="text-center max-w-[680px] mb-5"
+              style={{
+                fontWeight: 800,
+                fontSize: "clamp(32px, 5vw, 52px)",
+                color: "#f0ebe0",
+                letterSpacing: "-1.5px",
+                lineHeight: 1.08,
+              }}
+            >
+              Know what you're walking into.{" "}
+              <span style={{ color: "#F0C040" }}>Before you sign.</span>
+            </h1>
+
+            <p className="text-center max-w-[520px] mb-10" style={{ fontSize: "clamp(15px, 2vw, 18px)", color: "#b8b4a8", lineHeight: 1.65 }}>
+              Research any employer using public records — FEC filings, SEC reports,
+              WARN notices, OSHA violations — all in one audit. Built by a recruiter,
+              for everyone who's ever taken a job that looked great on paper.
+            </p>
+
+            {/* Stats row */}
+            <div className="flex items-center justify-center gap-6 sm:gap-10 mb-10 flex-wrap">
+              {[
+                { n: "47K+", l: "Employer Records" },
+                { n: "$2.1B", l: "Documented Fines" },
+                { n: "100%", l: "Public Data" },
+              ].map(({ n, l }) => (
+                <div key={l} className="text-center">
+                  <p className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight" style={{ fontFamily: "'DM Mono', monospace" }}>
+                    {n}
+                  </p>
+                  <p className="text-[11px] uppercase tracking-[1.5px] text-white/35 font-medium mt-0.5">
+                    {l}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full max-w-[380px]">
+              <input
+                type="email"
+                required
+                placeholder="you@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-white/5 border border-white/10 rounded-md px-4 py-3 text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#F0C040]/60 transition-colors"
+              />
+
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                required
+                className="bg-white/5 border border-white/10 rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#F0C040]/60 transition-colors appearance-none"
+                style={{ color: role ? "#fff" : "rgba(255,255,255,0.25)" }}
+              >
+                <option value="" disabled>I am a...</option>
+                <option value="job-seeker">Job seeker / candidate</option>
+                <option value="recruiter">Recruiter / talent acquisition</option>
+                <option value="career-coach">Career coach</option>
+                <option value="hr-leader">HR leader</option>
+                <option value="other">Other</option>
+              </select>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 rounded-full font-bold text-sm transition-all disabled:opacity-60"
+                style={{
+                  background: "#F0C040",
+                  color: "#0a0a0e",
+                }}
+              >
+                {loading ? "Requesting..." : "Request Early Access →"}
+              </button>
+            </form>
+
+            <p className="mt-4 text-[11px] text-white/20 text-center">
+              No spam. Access notification only. Built by Jackye Clayton.
+            </p>
+          </>
+        ) : (
+          /* ── Success state ── */
+          <div className="text-center max-w-[400px]">
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5 text-2xl font-extrabold"
+              style={{ background: "rgba(240,192,64,0.15)", color: "#F0C040" }}
+            >
+              ✓
+            </div>
+            <h2 className="text-3xl font-extrabold text-white tracking-tight mb-3">
+              You're on the list.
+            </h2>
+            <p className="text-white/50 text-sm leading-relaxed mb-6">
+              We'll reach out before April 6. In the meantime, the public record
+              isn't going anywhere.
+            </p>
+            <Link
+              to="/browse"
+              className="inline-block px-6 py-3 rounded-full text-sm font-bold transition-all hover:brightness-110"
+              style={{ background: "#F0C040", color: "#0a0a0e" }}
+            >
+              Start Auditing →
+            </Link>
+            <p className="mt-4 text-xs text-white/20 uppercase tracking-widest">
+              Early Access Confirmed
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Particle float animation */}
       <style>{`
-        @media (max-width: 560px) {
-          .join-form-card { padding: 28px 24px !important; }
-          .persona-grid { grid-template-columns: 1fr !important; }
-          .proof-sep { display: none; }
-          .social-proof-strip { flex-direction: column; gap: 24px !important; }
-          .value-cards { grid-template-columns: 1fr !important; }
+        @keyframes float-particle {
+          0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.06; }
+          25% { transform: translateY(-18px) rotate(3deg); opacity: 0.12; }
+          50% { transform: translateY(-8px) rotate(-2deg); opacity: 0.04; }
+          75% { transform: translateY(-22px) rotate(1deg); opacity: 0.10; }
         }
-        .join-form-card input::placeholder { color: #3d3a4a; }
+        .animate-float-particle {
+          animation: float-particle 20s ease-in-out infinite;
+        }
+        select option {
+          background: #1c1a27;
+          color: #fff;
+        }
       `}</style>
     </div>
   );
