@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import type { VibeMatchInput } from "@/lib/integrityGapScore";
+import type { VibeMatchInput } from "@/lib/realityGapScore";
 import {
   Terminal, Search, Users, Shield, AlertTriangle,
   MessageSquare, ClipboardCheck, Loader2, ChevronRight,
