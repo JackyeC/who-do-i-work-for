@@ -759,7 +759,7 @@ export default function InterviewDossier() {
                 ))}
                 <div style={{ marginTop: "0.65rem", padding: "0.6rem 0.8rem", background: `${T.gold}10`, border: `1px solid ${T.gold}30`, borderRadius: 9 }}>
                   <div style={{ fontSize: "0.67rem", fontWeight: 800, color: T.gold, fontFamily: "'DM Mono',monospace", marginBottom: "0.18rem" }}>HOW TO RESEARCH YOUR ACTUAL INTERVIEWERS</div>
-                  <div style={{ fontSize: "0.75rem", color: T.fg, lineHeight: 1.5 }}>{co.orgContext.searchTip}</div>
+                  <div style={{ fontSize: "0.75rem", color: T.fg, lineHeight: 1.5 }}>{co.orgContext?.searchTip}</div>
                 </div>
               </div>
             </>
