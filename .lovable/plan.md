@@ -1,28 +1,33 @@
 
 
-# Tone Down the Intelligence Advisor Opening Message
+# Fix News Ingestion Edge Function
 
-## Problem
-Every time a user visits `/ask-jackye` or opens the floating widget, they're hit with a verbose, system-prompt-looking message exposing internal framework names ("People Puzzles Proprietary Talent Framework v2.6", "WDIWF Intelligence Engine"), status readouts, and jargon. It reads like debug output, not a welcoming advisor. Users shouldn't see engine version numbers or internal system names.
+The `news-ingestion` function is failing for two reasons. Here's the plan to fix both.
 
-## Fix
+## Problem 1: No unique constraint on `title`
+The code does `upsert(..., { onConflict: "title" })` but the `personalized_news` table has no unique constraint on `title`. The upsert fails with a Postgres error.
 
-### Step 1: Rewrite the opening message in AskJackye.tsx
-Replace the current `OPENING_MESSAGE` with a concise, human welcome that focuses on what the advisor can **do** rather than system internals:
+**Fix:** Add a unique index on `title` via a database migration, so the upsert deduplication works correctly.
 
-```
-Welcome — I'm your career intelligence advisor.
+## Problem 2: NewsData.io API response format
+The API call to `newsdata.io/api/1/latest` returns a response where `data.results` is not an array (likely `undefined` or an error object when rate-limited or when the API format changed). The code does `(data.results || []).map(...)` but if `data.results` is a non-array truthy value (like an error string), the `||` fallback doesn't trigger.
 
-I analyze company filings, political spending, workforce signals, and leadership data to give you the full picture before you make a decision.
+**Fix:** Update the edge function to:
+- Add a proper array check: `Array.isArray(data.results) ? data.results : []`
+- Add logging of the raw API response status for debugging
+- Handle the case where the API returns an error gracefully
 
-Ask me about a company, an offer, or your next career move.
-```
+## Implementation Steps
 
-No version numbers. No "System:" labels. No "Status: All feeds active." No "Run the chain first."
+1. **Database migration** — Add unique constraint:
+   ```sql
+   CREATE UNIQUE INDEX IF NOT EXISTS idx_news_title_unique ON personalized_news (title);
+   ```
 
-### Step 2: Clean up the terminal header bar
-The header already shows "WDIWF Intelligence Engine · Framework v2.6" — simplify to just "Career Intelligence · Online" to match the cleaner tone.
+2. **Update `supabase/functions/news-ingestion/index.ts`** — Fix the NewsData.io response parsing (line 172) to safely handle non-array responses, and add response status logging.
 
-## Files to modify
-- `src/pages/AskJackye.tsx` — opening message + header subtitle text
+3. **Redeploy** — The edge function auto-deploys on save.
+
+## After Fix
+Once deployed, the user can re-trigger the ingestion and news will populate correctly, enabling the Daily Briefing card to show real content.
 
