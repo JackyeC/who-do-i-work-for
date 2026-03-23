@@ -177,7 +177,7 @@ export default function RecruiterBrief() {
           <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-primary mb-2 font-semibold">
             Recruiter Intelligence Brief
           </p>
-          <div className="relative">
+          <form onSubmit={handleSearchSubmit} className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               value={query}
