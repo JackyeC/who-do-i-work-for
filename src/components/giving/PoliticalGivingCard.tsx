@@ -67,7 +67,7 @@ export function PoliticalGivingCard({ companyId, companyName, companySlug }: Pol
     <div className="space-y-6" id={`giving-${companySlug}`}>
       <div>
         <h3 className="text-base font-semibold text-foreground mb-1">Political Giving & Influence</h3>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", color: "#7a7590" }}>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "12px", color: "hsl(var(--muted-foreground))" }}>
           Sourced from FEC filings, Senate LDA disclosures, and OpenSecrets. All figures represent publicly disclosed activity.
         </p>
       </div>
@@ -154,8 +154,8 @@ export function PoliticalGivingCard({ companyId, companyName, companySlug }: Pol
       {/* Legal footer */}
       <p style={{
         fontFamily: "'DM Sans', sans-serif",
-        fontSize: "11px",
-        color: "#7a7590",
+        fontSize: "12px",
+        color: "hsl(var(--muted-foreground))",
         marginTop: "16px",
         borderTop: "1px solid rgba(255,255,255,0.07)",
         paddingTop: "12px",

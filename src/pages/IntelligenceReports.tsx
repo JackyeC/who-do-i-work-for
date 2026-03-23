@@ -241,8 +241,8 @@ export default function IntelligenceReports() {
                     <CardContent>
                       <ResponsiveContainer width="100%" height={280}>
                         <BarChart data={analytics.issueChartData} layout="vertical" margin={{ left: 10, right: 20 }}>
-                          <XAxis type="number" tickFormatter={(v) => formatCurrency(v)} tick={{ fontSize: 10 }} />
-                          <YAxis type="category" dataKey="name" width={110} tick={{ fontSize: 10 }} />
+                          <XAxis type="number" tickFormatter={(v) => formatCurrency(v)} tick={{ fontSize: 12 }} />
+                          <YAxis type="category" dataKey="name" width={110} tick={{ fontSize: 12 }} />
                           <RechartsTooltip
                             formatter={(value: number) => [`$${value.toLocaleString()}`, "Amount"]}
                             contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid hsl(var(--border))" }}

@@ -121,7 +121,7 @@ export function ApplicationAnalytics() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={funnelData} layout="vertical" margin={{ left: 0, right: 16 }}>
                 <XAxis type="number" hide />
-                <YAxis type="category" dataKey="name" width={80} tick={{ fontSize: 11 }} />
+                <YAxis type="category" dataKey="name" width={80} tick={{ fontSize: 12 }} />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid hsl(var(--border))" }}
                 />
@@ -147,7 +147,7 @@ export function ApplicationAnalytics() {
             <div className="h-40">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={companyData} margin={{ left: 0, right: 8 }}>
-                  <XAxis dataKey="name" tick={{ fontSize: 9 }} interval={0} angle={-20} textAnchor="end" height={40} />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} interval={0} angle={-20} textAnchor="end" height={40} />
                   <YAxis hide />
                   <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
                   <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={24} />
@@ -167,7 +167,7 @@ export function ApplicationAnalytics() {
             <div className="h-40">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={alignmentBuckets} margin={{ left: 0, right: 8 }}>
-                  <XAxis dataKey="range" tick={{ fontSize: 10 }} />
+                  <XAxis dataKey="range" tick={{ fontSize: 12 }} />
                   <YAxis hide />
                   <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
                   <Bar dataKey="count" fill="hsl(var(--accent-foreground))" radius={[4, 4, 0, 0]} barSize={32} />
