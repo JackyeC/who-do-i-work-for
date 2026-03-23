@@ -121,9 +121,15 @@ export default function SampleDossier() {
         >
           Audit Any Employer
         </h1>
-        <p className="text-center mb-8" style={{ fontSize: 15, color: dimmed }}>
+        <p className="text-center mb-4" style={{ fontSize: 15, color: dimmed }}>
           Search a company to see their full integrity dossier — powered by public data.
         </p>
+        <div className="flex items-center gap-3 mb-8 px-4 py-2.5 rounded-full" style={{ background: accentBg, border: accentBorder }}>
+          <DollarSign className="w-3.5 h-3.5" style={{ color: amber }} />
+          <span className="text-xs font-medium" style={{ color: amber }}>
+            Free company profiles for all users · Full deep-dive dossier: $199 one-time
+          </span>
+        </div>
 
         {/* Search bar */}
         <div className="w-full max-w-[640px] mb-10">

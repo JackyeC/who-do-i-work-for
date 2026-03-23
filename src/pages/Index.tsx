@@ -27,7 +27,7 @@ const TRUST_SOURCES: { label: string; url: string }[] = [
   { label: "BLS Wage Data", url: "https://www.bls.gov/oes/" },
   { label: "OpenSecrets", url: "https://www.opensecrets.org/" },
 ];
-const STATIC_COMPANY_COUNT = 850;
+const STATIC_COMPANY_COUNT = 250;
 
 const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const navigate = useNavigate();
@@ -69,7 +69,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             <span style={{color:"#F0C040"}}>?</span>
           </span>
         </Link>
-        <nav className="hidden md:flex items-center gap-4">
+        <nav className="hidden md:flex items-center gap-6">
+          <Link to="/receipts" className="font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">Receipts</Link>
+          <Link to="/browse" className="font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">Companies</Link>
+          <Link to="/pricing" className="font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+          <Link to="/about" className="font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">About</Link>
           {!authLoading && (
             user ? (
               <Button size="sm" variant="outline" onClick={() => navigate("/dashboard")} className="font-sans text-btn">
@@ -96,6 +100,10 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {mobileMenuOpen && (
         <div className="md:hidden px-6 pb-4 border-b border-border/50">
           <nav className="flex flex-col gap-3">
+            <Link to="/receipts" onClick={() => setMobileMenuOpen(false)} className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors py-2">Receipts</Link>
+            <Link to="/browse" onClick={() => setMobileMenuOpen(false)} className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors py-2">Companies</Link>
+            <Link to="/pricing" onClick={() => setMobileMenuOpen(false)} className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors py-2">Pricing</Link>
+            <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors py-2">About</Link>
             {!authLoading && (
               user ? (
                 <Button size="sm" variant="outline" onClick={() => { setMobileMenuOpen(false); navigate("/dashboard"); }} className="font-mono text-xs tracking-wider uppercase w-full">Dashboard</Button>
@@ -116,8 +124,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           HERO — "The Flip Moment"
       ══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative flex flex-col items-center justify-center px-6 text-center bg-background"
-        style={{ minHeight: '80vh', paddingTop: '64px', paddingBottom: '64px' }}
+        className="relative flex flex-col items-center justify-center px-6 text-center py-24 lg:py-32 bg-background"
       >
         {/* Grain overlay */}
         <svg className="fixed inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0, opacity: 0.04 }}>
@@ -451,7 +458,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ══════════════════════════════════════════════════════════════════
           5-TRACK PATHFINDER
       ══════════════════════════════════════════════════════════════════ */}
-      <PathfinderTracks />
+      <PathfinderTracks showAll />
 
       {/* ══════════════════════════════════════════════════════════════════
           WHAT YOU GET — Three Value Cards
@@ -674,10 +681,13 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               </span>
               <span className="text-sm text-muted-foreground"> · by Jackye Clayton</span>
             </div>
-            <div className="flex gap-6">
+            <div className="flex gap-6 flex-wrap">
+              <a href="/receipts" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Receipts</a>
+              <a href="/pricing" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+              <a href="/about" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">About</a>
+              <a href="/methodology" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Methodology</a>
               <a href="/privacy" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
               <a href="/terms" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Terms</a>
-              <a href="/methodology" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Methodology</a>
             </div>
           </div>
           <div className="border-t border-border/50 pt-4">

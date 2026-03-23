@@ -156,8 +156,28 @@ export function AskJackyeWidget() {
             </button>
           </div>
 
-          {/* Quick prompts */}
-          {messages.length === 0 && (
+          {/* Logged-out gate */}
+          {!user && (
+            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <MessageCircle className="w-6 h-6 text-primary" />
+              </div>
+              <p className="font-serif text-sm text-primary mb-2">Ask Jackye Anything</p>
+              <p className="text-xs text-muted-foreground mb-5 leading-relaxed max-w-[280px]">
+                Get personalized career advice, offer analysis, negotiation scripts, and company intelligence — powered by 15+ years of recruiting expertise.
+              </p>
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-primary text-primary-foreground px-6 py-2.5 font-mono text-xs tracking-wider uppercase font-semibold hover:brightness-110 transition-all"
+              >
+                Sign in to start
+              </button>
+              <p className="text-[10px] text-muted-foreground mt-3">Free with any account</p>
+            </div>
+          )}
+
+          {/* Quick prompts (logged in only) */}
+          {user && messages.length === 0 && (
             <div className="flex flex-wrap gap-1.5 px-4 py-3 border-b border-border">
               {QUICK_PROMPTS.map(p => (
                 <button
@@ -171,70 +191,74 @@ export function AskJackyeWidget() {
             </div>
           )}
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto scrollbar-thin">
-            {messages.length === 0 && (
-              <div className="p-4 text-center text-muted-foreground text-[12px]">
-                <p className="font-serif text-sm text-primary mb-2">Welcome.</p>
-                <p>I've reviewed the intelligence report. Before you make any decisions, here's what you need to understand: the connection chain tells you who this company really is — not just who they say they are on their careers page. Ask me anything.</p>
-              </div>
-            )}
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`px-4 py-3 border-b border-border text-[12px] leading-relaxed ${
-                  msg.role === "assistant"
-                    ? "bg-primary/[0.04] border-l-2 border-l-primary"
-                    : "bg-surface-2 border-l-2 border-l-border"
-                }`}
-              >
-                <div className="font-mono text-micro tracking-wider uppercase mb-1.5">
-                  {msg.role === "assistant" ? (
-                    <span className="text-primary">Jackye Clayton</span>
-                  ) : (
-                    <span className="text-muted-foreground">You</span>
-                  )}
+          {/* Messages (logged in only) */}
+          {user && (
+            <div className="flex-1 overflow-y-auto scrollbar-thin">
+              {messages.length === 0 && (
+                <div className="p-4 text-center text-muted-foreground text-[12px]">
+                  <p className="font-serif text-sm text-primary mb-2">Welcome.</p>
+                  <p>I've reviewed the intelligence report. Before you make any decisions, here's what you need to understand: the connection chain tells you who this company really is — not just who they say they are on their careers page. Ask me anything.</p>
                 </div>
-                <div className={msg.role === "assistant" ? "text-foreground" : "text-muted-foreground"}>
-                  {msg.role === "assistant" ? (
-                    <MarkdownWrapper content={msg.content} />
-                  ) : (
-                    msg.content
-                  )}
+              )}
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`px-4 py-3 border-b border-border text-[12px] leading-relaxed ${
+                    msg.role === "assistant"
+                      ? "bg-primary/[0.04] border-l-2 border-l-primary"
+                      : "bg-surface-2 border-l-2 border-l-border"
+                  }`}
+                >
+                  <div className="font-mono text-micro tracking-wider uppercase mb-1.5">
+                    {msg.role === "assistant" ? (
+                      <span className="text-primary">Jackye Clayton</span>
+                    ) : (
+                      <span className="text-muted-foreground">You</span>
+                    )}
+                  </div>
+                  <div className={msg.role === "assistant" ? "text-foreground" : "text-muted-foreground"}>
+                    {msg.role === "assistant" ? (
+                      <MarkdownWrapper content={msg.content} />
+                    ) : (
+                      msg.content
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-            {isLoading && messages[messages.length - 1]?.role === "user" && (
-              <div className="px-4 py-3 border-b border-border bg-primary/[0.04] border-l-2 border-l-primary">
-                <div className="font-mono text-micro tracking-wider uppercase text-primary mb-1.5">Jackye Clayton</div>
-                <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse delay-100" />
-                  <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse delay-200" />
+              ))}
+              {isLoading && messages[messages.length - 1]?.role === "user" && (
+                <div className="px-4 py-3 border-b border-border bg-primary/[0.04] border-l-2 border-l-primary">
+                  <div className="font-mono text-micro tracking-wider uppercase text-primary mb-1.5">Jackye Clayton</div>
+                  <div className="flex gap-1">
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse delay-100" />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse delay-200" />
+                  </div>
                 </div>
-              </div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
+              )}
+              <div ref={chatEndRef} />
+            </div>
+          )}
 
-          {/* Input */}
-          <div className="flex border-t border-border shrink-0">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && send(input)}
-              placeholder="Ask Jackye anything..."
-              className="flex-1 bg-surface-2 border-none outline-none px-4 py-3 text-foreground font-sans text-[12px] placeholder:text-muted-foreground"
-              disabled={isLoading}
-            />
-            <button
-              onClick={() => send(input)}
-              disabled={isLoading || !input.trim()}
-              className="bg-primary text-primary-foreground px-4 font-mono text-xs tracking-wider uppercase font-semibold hover:brightness-110 transition-all disabled:opacity-50"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
+          {/* Input (logged in only) */}
+          {user && (
+            <div className="flex border-t border-border shrink-0">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && send(input)}
+                placeholder="Ask Jackye anything..."
+                className="flex-1 bg-surface-2 border-none outline-none px-4 py-3 text-foreground font-sans text-[12px] placeholder:text-muted-foreground"
+                disabled={isLoading}
+              />
+              <button
+                onClick={() => send(input)}
+                disabled={isLoading || !input.trim()}
+                className="bg-primary text-primary-foreground px-4 font-mono text-xs tracking-wider uppercase font-semibold hover:brightness-110 transition-all disabled:opacity-50"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </div>
       )}
     </>

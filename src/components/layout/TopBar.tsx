@@ -298,7 +298,7 @@ export function TopBar() {
             to="/browse"
             className="hidden sm:inline-flex items-center whitespace-nowrap font-sans transition-all hover:brightness-110 bg-primary text-primary-foreground rounded-full px-5 py-2 text-btn"
           >
-            Audit →
+            Scan a Company →
           </Link>
 
           {/* Mobile hamburger */}
