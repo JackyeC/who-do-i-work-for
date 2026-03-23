@@ -28,7 +28,13 @@ serve(async (req) => {
 
     const product = ANONYMOUS_PRODUCTS[productKey];
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+    if (!stripeKey.startsWith("sk_live_")) {
+      console.warn("[ANONYMOUS-CHECKOUT] WARNING: STRIPE_SECRET_KEY is not a live key");
+    }
+
+    const stripe = new Stripe(stripeKey, {
       apiVersion: "2025-08-27.basil",
     });
 

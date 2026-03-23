@@ -7,30 +7,15 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Employer tier prices that route to verification-pending
-const EMPLOYER_PRICES = new Set([
-  "price_1TBNzW7Qj0W6UtN9gLhA1aZG", // Employer Certification $499
-  "price_1TBO3H7Qj0W6UtN93hPQ1gPb", // Founding Partner $599
-]);
-
 // One-time purchase prices (not subscriptions)
 const ONE_TIME_PRICES = new Set([
-  "price_1TEEvz89MyCOs8yvWbLINfKw", // The Dossier $199 (one-time deep-dive) — LIVE
-  // Legacy test-mode prices (kept for existing test purchases)
-  "price_1TBO3F7Qj0W6UtN9oEHb8dHf", // Single Job Credit $199
-  "price_1TCTQW7Qj0W6UtN9eFTxOpYg", // Career Strategy Session $350
-  "price_1TCTQX7Qj0W6UtN9T019lM6x", // Offer Review Intensive $275
-  "price_1TCdDA7Qj0W6UtN9VPMXRkyY", // Strategist Dossier $149 (test)
-  "price_1TCdDB7Qj0W6UtN9VEaLssdN", // Partner Strategy Session $299 (test)
+  "price_1TEEvz89MyCOs8yvWbLINfKw", // The Dossier $199 (one-time deep-dive)
 ]);
 
 // Subscription prices (recurring)
 const SUBSCRIPTION_PRICES = new Set([
-  "price_1TEEvt89MyCOs8yv7SV1TeUJ", // Pro $19/mo — LIVE
-  "price_1TEEw589MyCOs8yvQI8FpHJx", // The Executive $999/yr — LIVE
-  // Legacy test-mode prices
-  "price_1TCTiJ7Qj0W6UtN9hARvCvgh", // Executive $999/yr (test)
-  "price_1TCdD87Qj0W6UtN9NBt8Wtb9", // Scout $19/mo (test)
+  "price_1TEEvt89MyCOs8yv7SV1TeUJ", // Pro $19/mo
+  "price_1TEEw589MyCOs8yvQI8FpHJx", // The Executive $999/yr
 ]);
 
 serve(async (req) => {
@@ -52,7 +37,13 @@ serve(async (req) => {
 
     const { priceId } = await req.json();
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+    if (!stripeKey.startsWith("sk_live_")) {
+      console.warn("[CREATE-CHECKOUT] WARNING: STRIPE_SECRET_KEY is not a live key");
+    }
+
+    const stripe = new Stripe(stripeKey, {
       apiVersion: "2025-08-27.basil",
     });
 
@@ -63,11 +54,8 @@ serve(async (req) => {
     }
 
     const origin = req.headers.get("origin") || "";
-    const isEmployer = EMPLOYER_PRICES.has(priceId);
     const isOneTime = ONE_TIME_PRICES.has(priceId);
-    const successUrl = isEmployer
-      ? `${origin}/employer/verification-pending`
-      : `${origin}/dashboard?checkout=success`;
+    const successUrl = `${origin}/dashboard?checkout=success`;
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
