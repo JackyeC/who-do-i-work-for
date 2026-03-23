@@ -80,7 +80,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 <button onClick={() => navigate("/login")} className="font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
                   Sign in
                 </button>
-                <Button size="sm" onClick={() => navigate("/login")} className="font-sans text-btn rounded-full px-5">
+                <Button size="sm" onClick={() => navigate("/join")} className="font-sans text-btn rounded-full px-5">
                   Get started
                 </Button>
               </>
@@ -102,7 +102,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               ) : (
                 <>
                   <button onClick={() => { setMobileMenuOpen(false); navigate("/login"); }} className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors py-2">Sign in</button>
-                  <Button size="sm" onClick={() => { setMobileMenuOpen(false); navigate("/login"); }} className="font-mono text-xs tracking-wider uppercase w-full">Get started</Button>
+                  <Button size="sm" onClick={() => { setMobileMenuOpen(false); navigate("/join"); }} className="font-mono text-xs tracking-wider uppercase w-full">Get started</Button>
                 </>
               )
             )}

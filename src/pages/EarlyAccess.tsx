@@ -8,8 +8,16 @@ const PARTICLE_LABELS = ["FEC", "SEC", "NLRB", "OSHA", "$", "§", "27", "WARN", 
 export default function EarlyAccess() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [promoCode, setPromoCode] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Pre-fill promo code from URL param (e.g., /join?code=TRANSFORM26)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code) setPromoCode(code.toUpperCase());
+  }, []);
 
   usePageSEO({
     title: "Get Early Access — Who Do I Work For?",
@@ -33,7 +41,7 @@ export default function EarlyAccess() {
         first_name: "",
         email: email.trim().toLowerCase(),
         persona: role,
-        referral_source: "vegas-early-access",
+        referral_source: promoCode ? `promo-${promoCode.toLowerCase()}` : "vegas-early-access",
       });
     } catch (_) {
       // Insert optional — still show success
@@ -187,7 +195,7 @@ export default function EarlyAccess() {
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 required
-                className="bg-white/5 border border-white/10 rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#F0C040]/60 transition-colors appearance-none"
+                className="bg-white/5 border border-white/10 rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#F0C040]/60 transition-colors"
                 style={{ color: role ? "#fff" : "rgba(255,255,255,0.25)" }}
               >
                 <option value="" disabled>I am a...</option>
@@ -197,6 +205,20 @@ export default function EarlyAccess() {
                 <option value="hr-leader">HR leader</option>
                 <option value="other">Other</option>
               </select>
+
+              <input
+                type="text"
+                placeholder="Promo code (optional)"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                className="bg-white/5 border border-white/10 rounded-md px-4 py-3 text-white placeholder-white/25 text-sm focus:outline-none focus:border-[#F0C040]/60 transition-colors font-mono tracking-wider text-center uppercase"
+                style={promoCode ? { borderColor: "rgba(240,192,64,0.5)", background: "rgba(240,192,64,0.08)" } : {}}
+              />
+              {promoCode === "TRANSFORM26" && (
+                <p className="text-xs text-center" style={{ color: "#F0C040" }}>
+                  🎟️ 30 days free Core access — activated at launch!
+                </p>
+              )}
 
               <button
                 type="submit"
@@ -213,6 +235,13 @@ export default function EarlyAccess() {
 
             <p className="mt-4 text-xs text-white/20 text-center">
               No spam. Access notification only. Built by Jackye Clayton.
+            </p>
+
+            <p className="mt-2 text-xs text-white/30 text-center">
+              Already have an account?{" "}
+              <Link to="/login" className="underline hover:text-white/50 transition-colors">
+                Sign in
+              </Link>
             </p>
           </>
         ) : (
@@ -241,6 +270,11 @@ export default function EarlyAccess() {
             <p className="mt-4 text-xs text-white/20 uppercase tracking-widest">
               Early Access Confirmed
             </p>
+            {promoCode === "TRANSFORM26" && (
+              <p className="mt-3 text-xs" style={{ color: "#F0C040" }}>
+                🎟️ Your TRANSFORM26 code is saved — 30 days free Core at launch.
+              </p>
+            )}
           </div>
         )}
       </div>
