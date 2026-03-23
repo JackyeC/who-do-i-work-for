@@ -90,7 +90,7 @@ export function PersonaSelector({ activePersona, onPersonaChange }: PersonaSelec
                 {isLocked ? (
                   <span>
                     <strong>{persona.label}</strong> — Upgrade to{" "}
-                    {persona.requiredPlan === "professional" ? "Professional ($99/mo)" : "Candidate ($29/mo)"}{" "}
+                    {persona.requiredPlan === "professional" ? "Executive ($999/yr)" : "Scout ($19/mo)"}{" "}
                     to unlock
                   </span>
                 ) : (
