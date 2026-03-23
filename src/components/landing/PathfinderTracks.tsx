@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Compass, Bot, Target, Users, Rocket, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { Compass, Bot, Target, Users, Rocket, ArrowRight, CheckCircle2, Loader2, Heart, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -24,6 +24,55 @@ const tracks = [
       "Public Intelligence Dashboard access",
       "Monday Momentum newsletter",
       "Follow Jackye on LinkedIn & YouTube",
+    ],
+  },
+  {
+    number: 1.5,
+    name: "The Believer",
+    icon: Heart,
+    price: "$3",
+    priceNote: "",
+    period: "/mo",
+    mode: "subscription" as const,
+    priceId: "price_believer_monthly_placeholder",
+    annualPrice: "$2",
+    annualPeriod: "/mo",
+    annualPriceNote: "billed annually",
+    annualPriceId: "price_believer_annual_placeholder",
+    hook: "Show up.",
+    subtitle: "Your first step into the W? ecosystem.",
+    description: "Support the mission and stay in the loop.",
+    action: "Become a Believer",
+    features: [
+      "Monthly Clarity Newsletter (Monday Momentum)",
+      "Access to the Public Intelligence Dashboard",
+      "One AI job-link audit per month",
+      "Community access + Jackye's weekly read",
+    ],
+  },
+  {
+    number: 1.7,
+    name: "The Watcher",
+    icon: Eye,
+    price: "$9",
+    priceNote: "",
+    period: "/mo",
+    mode: "subscription" as const,
+    priceId: "price_watcher_monthly_placeholder",
+    annualPrice: "$7",
+    annualPeriod: "/mo",
+    annualPriceNote: "billed annually",
+    annualPriceId: "price_watcher_annual_placeholder",
+    hook: "Stay alert.",
+    subtitle: "For career researchers who want the signals.",
+    description: "Weekly employer alerts before they hit the news.",
+    action: "Start Watching",
+    features: [
+      "Everything in The Believer",
+      "5 AI job-link audits per month",
+      "Weekly Signal Alerts (employer red flags)",
+      "Workplace DNA Calibration results",
+      "Early access to new W? features",
     ],
   },
   {
@@ -234,7 +283,7 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
         <div className={cn(
           "grid gap-px bg-border border border-border",
           showAll
-            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             : "grid-cols-1 md:grid-cols-3"
         )}>
           {visibleTracks.map((track) => {
@@ -266,6 +315,11 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
                   <div className="font-mono text-xs tracking-wider uppercase text-primary mb-1">
                     {track.hook}
                   </div>
+                  {"subtitle" in track && (track as any).subtitle && (
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {(track as any).subtitle}
+                    </div>
+                  )}
                 </div>
 
                 <div className="mb-4">
