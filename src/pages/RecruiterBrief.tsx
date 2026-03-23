@@ -188,7 +188,7 @@ export default function RecruiterBrief() {
             {searching && (
               <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground animate-spin" />
             )}
-          </div>
+          </form>
 
           {/* Dropdown */}
           <AnimatePresence>
