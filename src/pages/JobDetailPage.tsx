@@ -148,7 +148,7 @@ export default function JobDetailPage() {
     scenario: "salary",
   };
 
-  const pageTitle = job ? `${job.title} at ${co?.name || "Unknown"} | Job Board` : "Job Details";
+  const pageTitle = job ? `${job.title} at ${co?.name || "Unknown"} | Intelligence Feed` : "Job Details";
   const pageDesc = job
     ? `${job.title} at ${co?.name}. ${job.salary_range ? `Salary: ${job.salary_range}. ` : ""}${job.location || "Remote"}. View company intelligence before you apply.`
     : "Job listing with employer transparency signals.";
@@ -174,7 +174,7 @@ export default function JobDetailPage() {
         <main className="flex-1 container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-2">Job Not Found</h1>
           <p className="text-muted-foreground mb-4">This listing may have been removed or is no longer active.</p>
-          <Button asChild><Link to="/job-board">← Back to Job Board</Link></Button>
+          <Button asChild><Link to="/intelligence-feed">← Back to Intelligence Feed</Link></Button>
         </main>
         <Footer />
       </div>
@@ -190,8 +190,8 @@ export default function JobDetailPage() {
       <Header />
       {job && <JobPostingSchema job={job} />}
       <main className="flex-1 container mx-auto px-4 py-8 max-w-3xl">
-        <Link to="/job-board" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
-          <ChevronLeft className="w-4 h-4" /> Back to Job Board
+        <Link to="/intelligence-feed" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
+          <ChevronLeft className="w-4 h-4" /> Back to Intelligence Feed
         </Link>
 
         {/* Header */}

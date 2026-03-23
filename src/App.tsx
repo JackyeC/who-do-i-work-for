@@ -222,8 +222,11 @@ const App = () => (
                   <Route path="/tracker" element={<ProtectedRoute><TrackerPage /></ProtectedRoute>} />
                   <Route path="/apply-kit" element={<ProtectedRoute><ApplyKitPage /></ProtectedRoute>} />
                   <Route path="/interview-kits" element={<ProtectedRoute><InterviewKits /></ProtectedRoute>} />
-                  <Route path="/job-board" element={<JobIntegrityBoard />} />
-                  <Route path="/job-board/:id" element={<JobDetailPage />} />
+                  <Route path="/intelligence-feed" element={<ProtectedRoute><JobIntegrityBoard /></ProtectedRoute>} />
+                  <Route path="/intelligence-feed/:id" element={<ProtectedRoute><JobDetailPage /></ProtectedRoute>} />
+                  {/* Redirect old /job-board URLs to intelligence feed */}
+                  <Route path="/job-board" element={<Navigate to="/intelligence-feed" replace />} />
+                  <Route path="/job-board/:id" element={<Navigate to="/intelligence-feed" replace />} />
                   <Route path="/request-correction" element={<RequestCorrection />} />
                   <Route path="/offer-check/:companyId" element={<ProtectedRoute><OfferCheck /></ProtectedRoute>} />
                   <Route path="/strategic-offer-review" element={<StrategicOfferReview />} />

@@ -57,11 +57,12 @@ export const MAIN_SECTIONS = [
     path: "/site-map",
     matchPaths: [
       "/check", "/offer-check", "/offer-review", "/strategic-offer-review", "/offer-clarity",
-      "/job-board", "/jobs", "/ask-jackye", "/methodology", "/pricing",
+      "/intelligence-feed", "/job-board", "/jobs", "/ask-jackye", "/methodology", "/pricing",
       "/would-you-work-here", "/employer-receipt", "/employer-promise-check", "/follow-the-money", "/compare", "/site-map",
     ],
     subItems: [
-      { label: "Job Board", path: "/job-board" },
+      { label: "Find Jobs", path: "https://jobs.jackyeclayton.com", external: true },
+      { label: "Intelligence Feed", path: "/intelligence-feed", auth: true },
       { label: "Offer Analysis", path: "/check" },
       { label: "Career Path Explorer", path: "/career-intelligence" },
       { label: "Advisor", path: "/career-intelligence" },
@@ -130,7 +131,8 @@ export function TopBar() {
   /* Secondary nav items (More dropdown) */
   const SECONDARY_NAV = [
     { label: "Hire", path: "/hire" },
-    { label: "Job Board", path: "/job-board" },
+    { label: "Find Jobs", path: "https://jobs.jackyeclayton.com", external: true },
+    { label: "Intelligence Feed", path: "/intelligence-feed", auth: true },
     { label: "Offer Analysis", path: "/check" },
     { label: "Career Path Explorer", path: "/career-intelligence" },
     { label: "Advisor", path: "/career-intelligence" },
@@ -221,13 +223,33 @@ export function TopBar() {
             </button>
             <div className="absolute top-full left-0 hidden group-hover:block border border-border min-w-[220px] z-50 py-1 bg-popover rounded-md shadow-lg">
               {SECONDARY_NAV.map(sub => (
-                <Link
-                  key={sub.path}
-                  to={sub.path}
-                  className="block px-4 py-2.5 font-sans text-nav text-muted-foreground hover:text-foreground hover:bg-accent/30 transition-colors whitespace-nowrap"
-                >
-                  {sub.label}
-                </Link>
+                (sub as any).external ? (
+                  <a
+                    key={sub.path}
+                    href={sub.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-4 py-2.5 font-sans text-nav text-muted-foreground hover:text-foreground hover:bg-accent/30 transition-colors whitespace-nowrap"
+                  >
+                    {sub.label} ↗
+                  </a>
+                ) : (sub as any).auth && !user ? (
+                  <button
+                    key={sub.path}
+                    onClick={() => setSignupModalOpen(true)}
+                    className="block w-full text-left px-4 py-2.5 font-sans text-nav text-muted-foreground hover:text-foreground hover:bg-accent/30 transition-colors whitespace-nowrap"
+                  >
+                    {sub.label} <Lock className="w-3 h-3 inline opacity-50 ml-1" />
+                  </button>
+                ) : (
+                  <Link
+                    key={sub.path}
+                    to={sub.path}
+                    className="block px-4 py-2.5 font-sans text-nav text-muted-foreground hover:text-foreground hover:bg-accent/30 transition-colors whitespace-nowrap"
+                  >
+                    {sub.label}
+                  </Link>
+                )
               ))}
             </div>
           </div>
@@ -351,13 +373,33 @@ export function TopBar() {
 
           {/* Secondary */}
           {SECONDARY_NAV.map(sub => (
-            <Link
-              key={sub.path}
-              to={sub.path}
-              className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {sub.label}
-            </Link>
+            (sub as any).external ? (
+              <a
+                key={sub.path}
+                href={sub.path}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {sub.label} ↗
+              </a>
+            ) : (sub as any).auth && !user ? (
+              <button
+                key={sub.path}
+                onClick={() => { setMobileMenuOpen(false); setSignupModalOpen(true); }}
+                className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground"
+              >
+                {sub.label} <Lock className="w-3 h-3 inline opacity-50 ml-1" />
+              </button>
+            ) : (
+              <Link
+                key={sub.path}
+                to={sub.path}
+                className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {sub.label}
+              </Link>
+            )
           ))}
         </div>
       )}

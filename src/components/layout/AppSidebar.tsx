@@ -55,7 +55,7 @@ const NAV_GROUPS = [
       { id: "employer-scan", label: "Employer Scan", icon: Briefcase, path: "/check?tab=company" },
       { id: "offer-check", label: "Offer Check", icon: FileCheck, path: "/check?tab=offer" },
       { id: "career-map", label: "Career Path Explorer", icon: Map, path: "/career-map", auth: true },
-      { id: "jobs", label: "Job Board", icon: Briefcase, path: "/jobs" },
+      { id: "jobs", label: "Find Jobs ↗", icon: Briefcase, path: "https://jobs.jackyeclayton.com", external: true },
     ],
   },
   {
@@ -164,15 +164,27 @@ export function AppSidebar() {
                               : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                           )}
                         >
-                          <Link to={item.path}>
-                            <item.icon
-                              className={cn(
-                                "w-4 h-4 shrink-0",
-                                active ? "text-primary" : ""
-                              )}
-                            />
-                            {!collapsed && <span>{item.label}</span>}
-                          </Link>
+                          {(item as any).external ? (
+                            <a href={item.path} target="_blank" rel="noopener noreferrer">
+                              <item.icon
+                                className={cn(
+                                  "w-4 h-4 shrink-0",
+                                  active ? "text-primary" : ""
+                                )}
+                              />
+                              {!collapsed && <span>{item.label}</span>}
+                            </a>
+                          ) : (
+                            <Link to={item.path}>
+                              <item.icon
+                                className={cn(
+                                  "w-4 h-4 shrink-0",
+                                  active ? "text-primary" : ""
+                                )}
+                              />
+                              {!collapsed && <span>{item.label}</span>}
+                            </Link>
+                          )}
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     );
