@@ -63,8 +63,8 @@ export default function JobIntegrityBoard() {
   const { preferences } = useJobPreferences();
 
   usePageSEO({
-    title: "Job Integrity Board | Who Do I Work For?",
-    description: "Browse vetted job listings with transparency signals, employer insights, and connection chain data before you apply.",
+    title: "Intelligence Feed | Who Do I Work For?",
+    description: "Premium employer intelligence — transparency signals, strategic context, and connection chain data on every listing.",
   });
 
   const { data: jobs, isLoading } = useQuery({
@@ -211,11 +211,17 @@ export default function JobIntegrityBoard() {
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground tracking-tight mb-2">
-            Job Integrity Board
+            Intelligence Feed
           </h1>
           <p className="text-muted-foreground max-w-xl mx-auto">
             Every listing includes employer transparency signals, strategic context, and
             Connection Chain data — so you know who you're really working for.
+          </p>
+          <p className="text-sm text-muted-foreground mt-3">
+            Looking for curated, mission-driven jobs?{" "}
+            <a href="https://jobs.jackyeclayton.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              Visit our Job Board ↗
+            </a>
           </p>
         </div>
 

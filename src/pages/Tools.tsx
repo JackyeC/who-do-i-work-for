@@ -48,16 +48,24 @@ const TOOLS = [
   },
   {
     icon: Briefcase,
-    title: "Job Board",
-    description: "Browse job listings enriched with employer transparency signals, civic scores, and values alignment data. Know before you apply.",
-    path: "/jobs",
+    title: "Find Jobs",
+    description: "Curated, mission-driven jobs from values-aligned employers on our dedicated job board.",
+    path: "https://jobs.jackyeclayton.com",
+    external: true,
+  },
+  {
+    icon: Briefcase,
+    title: "Intelligence Feed",
+    description: "Premium employer intelligence on every listing — transparency signals, strategic context, and connection chain data.",
+    path: "/intelligence-feed",
+    badge: "Pro",
   },
 ];
 
 export default function Tools() {
   usePageSEO({
     title: "All Tools — Who Do I Work For?",
-    description: "Explore every tool on the WDIWF platform: Receipts, Career Map, Compare, Follow the Money, Recruiter Brief, Signal Alerts, and Job Board.",
+    description: "Explore every tool on the WDIWF platform: Receipts, Career Map, Compare, Follow the Money, Recruiter Brief, Signal Alerts, and Intelligence Feed.",
     path: "/tools",
   });
 

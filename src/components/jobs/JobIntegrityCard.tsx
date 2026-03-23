@@ -85,7 +85,7 @@ export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [], 
         <div className="flex items-start gap-3">
           <CompanyLogo companyName={co?.name || "Unknown"} logoUrl={co?.logo_url} size="sm" />
           <div className="flex-1 min-w-0">
-            <Link to={`/job-board/${job.id}`} className="font-semibold text-foreground text-sm leading-tight hover:text-primary transition-colors">
+            <Link to={`/intelligence-feed/${job.id}`} className="font-semibold text-foreground text-sm leading-tight hover:text-primary transition-colors">
               {job.title}
             </Link>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -191,7 +191,7 @@ export function JobIntegrityCard({ job, matchCount = 0, matchedCategories = [], 
           )}
           <SaveJobButton job={job as any} size="icon" className="h-8 w-8" />
           <Button size="sm" variant="outline" asChild className="gap-1 shrink-0">
-            <Link to={`/job-board/${job.id}`}>
+            <Link to={`/intelligence-feed/${job.id}`}>
               <ChevronRight className="w-3 h-3" /> Details
             </Link>
           </Button>
