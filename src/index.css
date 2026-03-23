@@ -37,7 +37,8 @@ body > div:last-child > a[href*="lovable"] {
 
     /* ── AMBER PRIMARY (shared) ── */
     --primary: 43 85% 50%;               /* slightly deeper amber for light bg */
-    --primary-foreground: 0 0% 100%;     /* white text on amber */
+    --primary-foreground: 240 20% 12%;   /* dark text on amber — WCAG AA 8.87:1 */
+    --primary-text: 43 55% 35%;          /* accessible gold for text on light bg — 5.8:1 on cream */
 
     --secondary: 40 15% 92%;
     --secondary-foreground: 240 20% 12%;
@@ -107,12 +108,13 @@ body > div:last-child > a[href*="lovable"] {
 
     --primary: 43 85% 59%;              /* #f0c040 */
     --primary-foreground: 240 27% 4%;   /* dark text on amber */
+    --primary-text: 43 85% 59%;          /* same as primary in dark — gold on dark bg passes AA */
 
     --secondary: 252 20% 10%;
     --secondary-foreground: 40 30% 92%;
 
     --muted: 252 20% 10%;
-    --muted-foreground: 252 14% 52%;    /* #7a7590 */
+    --muted-foreground: 252 10% 58%;    /* #8a889a — brightened for WCAG AA on dark bg */
 
     --accent: 43 40% 12%;
     --accent-foreground: 43 85% 59%;
@@ -200,6 +202,7 @@ body > div:last-child > a[href*="lovable"] {
 
   .font-mono {
     font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: max(13px, 1em);  /* floor at 13px for monospace readability */
   }
 
   .font-sans {
@@ -266,12 +269,12 @@ body > div:last-child > a[href*="lovable"] {
   }
 
   .text-eyebrow {
-    font-family: 'DM Mono', 'Courier New', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.15em;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: hsl(var(--primary));
+    color: hsl(var(--primary-text, var(--primary)));
   }
 
   .text-nav {
@@ -372,8 +375,15 @@ body > div:last-child > a[href*="lovable"] {
     width: max-content;
   }
 
-  .ticker-track:hover {
+  .ticker-track:hover,
+  .ticker-track:focus-within {
     animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none;
+    }
   }
 
   .animate-ticker {
@@ -398,6 +408,36 @@ body > div:last-child > a[href*="lovable"] {
 
   .animate-caution {
     animation: caution-pulse 2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-caution,
+    .animate-ticker {
+      animation: none;
+    }
+  }
+
+  /* ── SKIP TO CONTENT ── */
+  .skip-to-content {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 0.75rem 1.5rem;
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 0 0 8px 8px;
+    text-decoration: none;
+    transition: top 0.15s ease;
+  }
+  .skip-to-content:focus {
+    top: 0;
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
   }
 
   /* Shimmer skeleton */

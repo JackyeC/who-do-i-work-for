@@ -27,6 +27,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          text: "hsl(var(--primary-text, var(--primary)))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -94,8 +95,8 @@ export default {
         "body": ["clamp(14px, 1.2vw, 16px)", { lineHeight: "1.7", fontWeight: "400" }],
         "label": ["13px", { lineHeight: "1.4", fontWeight: "500" }],
         "caption": ["12px", { lineHeight: "1.5", fontWeight: "400" }],
-        "eyebrow": ["12px", { lineHeight: "1.4", fontWeight: "600", letterSpacing: "0.15em" }],
-        "micro": ["12px", { lineHeight: "1.4", fontWeight: "500", letterSpacing: "0.15em" }],
+        "eyebrow": ["13px", { lineHeight: "1.4", fontWeight: "600", letterSpacing: "0.15em" }],
+        "micro": ["13px", { lineHeight: "1.4", fontWeight: "500", letterSpacing: "0.15em" }],
         "nav": ["14px", { lineHeight: "1.4", fontWeight: "500" }],
         "btn": ["14px", { lineHeight: "1.4", fontWeight: "600", letterSpacing: "0.01em" }],
         "ticker": ["13px", { lineHeight: "1.4", fontWeight: "500" }],

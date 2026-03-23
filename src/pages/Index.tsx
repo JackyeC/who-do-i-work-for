@@ -168,7 +168,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ── WHAT WE PROMISE ── */}
       <section className="px-6 lg:px-16 py-16 lg:py-20 bg-card border-b border-border">
         <div className="max-w-[1100px] mx-auto">
-          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-3 text-center">
+          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary-text mb-3 text-center">
             What WDIWF promises
           </p>
           <h2 className="font-sans text-foreground leading-[1.1] mb-10 text-center" style={{ fontSize: "clamp(1.35rem, 2.8vw, 2rem)", fontWeight: 800 }}>
@@ -205,7 +205,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ── SECTION 3: FEATURED COMPANY CARDS ── */}
       <section className="px-6 lg:px-16 py-16 lg:py-20 bg-background">
         <div className="max-w-[1100px] mx-auto">
-          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-3 text-center">
+          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary-text mb-3 text-center">
             Recent Receipts
           </p>
           <h2 className="font-sans text-foreground leading-[1.1] mb-10 text-center" style={{ fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 800 }}>
@@ -289,7 +289,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ── SECTION 4: WHAT IS Who Do I Work For? ── */}
       <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-24">
         <div className="max-w-[1100px] mx-auto">
-          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-3 text-center">
+          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary-text mb-3 text-center">
             What We Do
           </p>
           <h2 className="font-sans text-foreground leading-[1.1] mb-6 text-center" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)", fontWeight: 800 }}>
@@ -342,7 +342,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ── SECTION 5: START HERE — Pricing Tiers ── */}
       <section className="px-6 lg:px-16 py-20 lg:py-24 bg-background">
         <div className="max-w-[1100px] mx-auto">
-          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-3 text-center">
+          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary-text mb-3 text-center">
             Start Here
           </p>
           <h2 className="font-sans text-foreground leading-[1.1] mb-12 text-center" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)", fontWeight: 800 }}>
@@ -352,7 +352,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="border border-border bg-card p-7 flex flex-col">
               <Search className="w-8 h-8 text-primary mb-4" strokeWidth={1.5} />
-              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">I'm Curious</span>
+              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary-text font-semibold mb-2">I'm Curious</span>
               <h3 className="font-sans font-bold text-foreground text-lg mb-2">Know before you sign.</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed mb-6 flex-1">
                 Search any company. See the basics. Read the Receipts. Free forever.
@@ -365,7 +365,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
             <div className="border border-primary bg-card p-7 flex flex-col ring-1 ring-primary/20 shadow-lg shadow-primary/10">
               <Briefcase className="w-8 h-8 text-primary mb-4" strokeWidth={1.5} />
-              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">The Signal</span>
+              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary-text font-semibold mb-2">The Signal</span>
               <h3 className="font-sans font-bold text-foreground text-lg mb-2">I'm actively looking.</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed mb-6 flex-1">
                 Full dossiers. Comp data. Interview prep. Values matching.
@@ -378,7 +378,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
             <div className="border border-border bg-card p-7 flex flex-col">
               <Shield className="w-8 h-8 text-primary mb-4" strokeWidth={1.5} />
-              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">The Match</span>
+              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary-text font-semibold mb-2">The Match</span>
               <h3 className="font-sans font-bold text-foreground text-lg mb-2">Find me my job.</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed mb-6 flex-1">
                 Auto-matched jobs. Application tracking. Priority alerts.
@@ -407,7 +407,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <div className="max-w-[1100px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-4">
+              <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary-text mb-4">
                 The Integrity Gap
               </p>
               <h2 className="font-sans text-foreground leading-[1.1] mb-6" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)", fontWeight: 800 }}>
@@ -431,7 +431,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       {/* ── SECTION 7: WHO IT'S FOR ── */}
       <section className="px-6 lg:px-16 py-20 lg:py-24 bg-background">
         <div className="max-w-[1100px] mx-auto">
-          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-4">
+          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary-text mb-4">
             Who It's For
           </p>
           <h2 className="font-sans text-foreground leading-[1.1] mb-12" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)", fontWeight: 800 }}>
@@ -462,7 +462,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               },
             ].map((card) => (
               <div key={card.persona} className="rounded-xl p-7 bg-card border border-border hover:border-primary/30 transition-colors">
-                <p className="font-mono text-xs tracking-[0.1em] uppercase text-primary mb-2">
+                <p className="font-mono text-xs tracking-[0.1em] uppercase text-primary-text mb-2">
                   {card.persona}
                 </p>
                 <p className="font-sans text-foreground italic mb-3" style={{ fontSize: "18px", fontWeight: 600 }}>
@@ -482,7 +482,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <SectionReveal>
           <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-24">
             <div className="max-w-[1100px] mx-auto">
-              <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-6">
+              <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary-text mb-6">
                 All roads lead here — built by Jackye Clayton, who helped build the machine and knows what it misses.
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 items-start">
