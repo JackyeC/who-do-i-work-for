@@ -32,6 +32,35 @@ export default function Login() {
   const [betaCode, setBetaCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [activatingBeta, setActivatingBeta] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
+  const handleForgotPassword = async () => {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      toast({
+        title: "Enter your email first",
+        description: "Type your email address above, then click 'Forgot password' again.",
+      });
+      return;
+    }
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+        redirectTo: `${window.location.origin}/login`,
+      });
+      if (error) throw error;
+      setResetSent(true);
+      toast({
+        title: "Reset link sent",
+        description: `Check ${trimmedEmail} for a password reset link.`,
+      });
+    } catch (err: any) {
+      toast({
+        title: "Could not send reset email",
+        description: err.message || "Something went wrong.",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     if (!loading && user && !isBeta) {
@@ -247,6 +276,18 @@ export default function Login() {
                 {!submitting && <ArrowRight className="w-4 h-4 ml-auto" />}
               </Button>
             </form>
+
+            {mode === "signin" && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {resetSent ? "Reset link sent — check your email" : "Forgot password?"}
+                </button>
+              </div>
+            )}
 
             <p className="text-center text-sm text-muted-foreground">
               {mode === "signin" ? (

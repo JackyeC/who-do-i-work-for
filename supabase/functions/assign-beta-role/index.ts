@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     const { betaCode } = await req.json();
     
     // Simple beta invite code validation
-    const VALID_CODES = ["JACKYE2026", "BETA2026", "CIVICLENS"];
+    const VALID_CODES = ["JACKYE2026", "BETA2026", "CIVICLENS", "TRANSFORM26"];
     if (!betaCode || !VALID_CODES.includes(betaCode.toUpperCase())) {
       return new Response(JSON.stringify({ error: "Invalid beta code" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

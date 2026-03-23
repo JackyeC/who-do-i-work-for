@@ -19,7 +19,7 @@ export function SlotManagementDashboard() {
         <p className="text-muted-foreground max-w-md mx-auto mb-6">
           Subscribe to track companies and unlock full intelligence dossiers.
         </p>
-        <Button onClick={() => navigate("/login")}>Get Started</Button>
+        <Button onClick={() => navigate("/join")}>Get Started</Button>
       </div>
     );
   }
