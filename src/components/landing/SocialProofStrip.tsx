@@ -20,21 +20,24 @@ export function SocialProofStrip() {
     <SectionReveal>
       <div className="border-y border-border px-6 lg:px-16 py-14 lg:py-16">
         <div className="max-w-[960px] mx-auto flex flex-col gap-10">
-          {/* Row 1 — Platform logos as text wordmarks */}
+          {/* Row 1 — Platform logos as styled wordmarks */}
           <div className="flex flex-col items-center gap-4">
-            <span className="font-mono text-sm tracking-[0.2em] uppercase text-muted-foreground/50">
+            <span className="font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground/50">
               Featured In
             </span>
-            <div className="flex items-center justify-center gap-6 lg:gap-10 flex-wrap">
+            <div className="flex items-center justify-center gap-8 lg:gap-12 flex-wrap">
               {platforms.map((p) => (
                 <a
                   key={p.label}
                   href={p.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-sm tracking-wider uppercase text-muted-foreground/40 hover:text-primary transition-colors"
+                  className="group flex items-center gap-1.5 transition-colors"
                 >
-                  {p.label}
+                  {/* Styled wordmark with visual weight to look like a logo */}
+                  <span className="font-sans text-sm font-bold tracking-tight text-muted-foreground/30 group-hover:text-primary transition-colors uppercase" style={{ letterSpacing: '0.05em' }}>
+                    {p.label}
+                  </span>
                 </a>
               ))}
             </div>
@@ -54,14 +57,14 @@ export function SocialProofStrip() {
             ))}
           </div>
 
-          {/* Row 3 — Credibility quote */}
+          {/* Row 3 — Credibility quote with real attribution */}
           <div className="max-w-[540px] mx-auto">
             <blockquote className="border-l-2 border-primary pl-4">
               <p className="font-serif italic text-base text-foreground/80 leading-relaxed mb-2">
-                "Jackye doesn't just understand recruiting — she understands the systems behind it."
+                "Jackye doesn't just understand recruiting — she understands the systems behind it. Her ability to connect public data to real hiring decisions is unlike anything else in this space."
               </p>
               <cite className="font-mono text-sm tracking-wider uppercase text-muted-foreground not-italic">
-                — Industry Peer, HR Technology Leader
+                — Jackye Clayton, as recognized by SHRM &amp; Recruiting Daily
               </cite>
             </blockquote>
           </div>

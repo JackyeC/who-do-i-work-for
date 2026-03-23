@@ -1,8 +1,10 @@
 import { useState, lazy, Suspense, forwardRef } from "react";
 import jackyeHeadshotSm from "@/assets/jackye-headshot-sm.webp";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, ArrowRight, Eye, Target, Brain, Rocket, CheckCircle2, Menu, X, Crosshair, FileSearch, AlertTriangle, Link2 } from "lucide-react";
-import { CareerFitReportCTA } from "@/components/CareerFitReportCTA";
+import {
+  Shield, ArrowRight, Eye, Brain, Rocket, CheckCircle2,
+  Menu, X, FileSearch, Target, AlertTriangle, Link2,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 import { Button } from "@/components/ui/button";
@@ -29,6 +31,45 @@ const TRUST_SOURCES: { label: string; url: string }[] = [
 ];
 const STATIC_COMPANY_COUNT = 850;
 
+/* ── Countdown timer to April 6, 2026 launch ── */
+function LaunchCountdown() {
+  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft());
+
+  function getTimeLeft() {
+    const launch = new Date("2026-04-06T09:00:00-07:00").getTime();
+    const now = Date.now();
+    const diff = Math.max(0, launch - now);
+    return {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((diff / (1000 * 60)) % 60),
+    };
+  }
+
+  // Update every minute
+  useState(() => {
+    const id = setInterval(() => setTimeLeft(getTimeLeft()), 60_000);
+    return () => clearInterval(id);
+  });
+
+  if (timeLeft.days <= 0 && timeLeft.hours <= 0 && timeLeft.minutes <= 0) return null;
+
+  return (
+    <div className="inline-flex items-center gap-3 bg-primary/8 border border-primary/20 rounded-full px-4 py-1.5">
+      <span className="font-mono text-xs tracking-wider uppercase text-primary-text font-semibold">
+        Full platform launches in
+      </span>
+      <div className="flex items-center gap-1.5">
+        <span className="font-data text-sm font-bold text-foreground tabular-nums">{timeLeft.days}d</span>
+        <span className="text-muted-foreground/40">:</span>
+        <span className="font-data text-sm font-bold text-foreground tabular-nums">{timeLeft.hours}h</span>
+        <span className="text-muted-foreground/40">:</span>
+        <span className="font-data text-sm font-bold text-foreground tabular-nums">{timeLeft.minutes}m</span>
+      </div>
+    </div>
+  );
+}
+
 const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -37,8 +78,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   usePageSEO({
-    title: "Career Intelligence — Stop Guessing, Start Auditing",
-    description: "You deserve to know exactly who you work for. Use 15+ years of recruiting intelligence to find aligned roles that match your DNA and your worth.",
+    title: "Who Do I Work For? — Career Intelligence Powered by Public Records",
+    description: "Free company investigations using FEC filings, SEC disclosures, OSHA violations, and lobbying records. 850+ companies tracked. Know before you apply.",
     path: "/",
     jsonLd: {
       "@type": "WebApplication",
@@ -55,54 +96,66 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
   return (
     <div ref={ref} className="flex flex-col min-h-screen bg-background">
       {/* ── Site Header (Sticky) ── */}
-      {/* Receipts banner */}
-      <div className="bg-primary/10 border-b border-primary/20 px-6 py-2.5 text-center">
-        <Link to="/receipts" className="font-sans text-sm text-primary hover:underline">
-          New: The Receipts — company-by-company investigations powered by public records →
-        </Link>
-      </div>
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 lg:px-16 py-4 w-full">
         <div className="max-w-[1100px] mx-auto flex items-center justify-between">
-        <Link to="/" className="flex items-center shrink-0">
-          <span style={{fontFamily:"Inter,sans-serif",fontWeight:900,letterSpacing:"-0.03em",fontSize:"26px"}}>
-            <span style={{color:"#111111"}}>W</span>
-            <span style={{color:"#F0C040"}}>?</span>
-          </span>
-        </Link>
-        <nav className="hidden md:flex items-center gap-4">
-          {!authLoading && (
-            user ? (
-              <Button size="sm" variant="outline" onClick={() => navigate("/dashboard")} className="font-sans text-btn">
-                Dashboard
-              </Button>
-            ) : (
-              <>
-                <button onClick={() => navigate("/login")} className="font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
-                  Sign in
-                </button>
-                <Button size="sm" onClick={() => navigate("/login")} className="font-sans text-btn rounded-full px-5">
-                  Get started
+          <Link to="/" className="flex items-center shrink-0">
+            <span style={{fontFamily:"Inter,sans-serif",fontWeight:900,letterSpacing:"-0.03em",fontSize:"26px"}}>
+              <span style={{color:"#111111"}}>W</span>
+              <span style={{color:"#F0C040"}}>?</span>
+            </span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link to="/receipts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Receipts
+            </Link>
+            <Link to="/pricing" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Pricing
+            </Link>
+            <Link to="/methodology" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+              About
+            </Link>
+            {!authLoading && (
+              user ? (
+                <Button size="sm" variant="outline" onClick={() => navigate("/dashboard")} className="font-sans text-btn">
+                  Dashboard
                 </Button>
-              </>
-            )
-          )}
-        </nav>
-        <button className="md:hidden p-1 text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+              ) : (
+                <>
+                  <button onClick={() => navigate("/login")} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Sign in
+                  </button>
+                  <Button size="sm" onClick={() => navigate("/login")} className="font-sans text-btn rounded-full px-5">
+                    Get started
+                  </Button>
+                </>
+              )
+            )}
+          </nav>
+          <button className="md:hidden p-1 text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </header>
 
       {mobileMenuOpen && (
-        <div className="md:hidden px-6 pb-4 border-b border-border/50">
-          <nav className="flex flex-col gap-3">
+        <div className="md:hidden px-6 pb-4 border-b border-border/50 bg-background">
+          <nav className="flex flex-col gap-3 pt-2">
+            <Link to="/receipts" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">
+              Receipts
+            </Link>
+            <Link to="/pricing" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">
+              Pricing
+            </Link>
+            <Link to="/methodology" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">
+              About
+            </Link>
             {!authLoading && (
               user ? (
-                <Button size="sm" variant="outline" onClick={() => { setMobileMenuOpen(false); navigate("/dashboard"); }} className="font-mono text-xs tracking-wider uppercase w-full">Dashboard</Button>
+                <Button size="sm" variant="outline" onClick={() => { setMobileMenuOpen(false); navigate("/dashboard"); }} className="font-sans text-sm w-full">Dashboard</Button>
               ) : (
                 <>
-                  <button onClick={() => { setMobileMenuOpen(false); navigate("/login"); }} className="font-mono text-xs tracking-wider uppercase text-muted-foreground hover:text-foreground transition-colors py-2">Sign in</button>
-                  <Button size="sm" onClick={() => { setMobileMenuOpen(false); navigate("/login"); }} className="font-mono text-xs tracking-wider uppercase w-full">Get started</Button>
+                  <button onClick={() => { setMobileMenuOpen(false); navigate("/login"); }} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">Sign in</button>
+                  <Button size="sm" onClick={() => { setMobileMenuOpen(false); navigate("/login"); }} className="font-sans text-sm w-full">Get started</Button>
                 </>
               )
             )}
@@ -113,11 +166,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       <Suspense fallback={null}><ExitIntentCapture /></Suspense>
 
       {/* ══════════════════════════════════════════════════════════════════
-          HERO — "The Flip Moment"
+          HERO — Tightened copy + product proof above the fold
       ══════════════════════════════════════════════════════════════════ */}
-      <section
-        className="relative flex flex-col items-center justify-center px-6 text-center min-h-screen bg-background"
-      >
+      <section className="relative flex flex-col items-center justify-center px-6 text-center pt-20 pb-16 lg:pt-28 lg:pb-20 bg-background">
         {/* Grain overlay */}
         <svg className="fixed inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0, opacity: 0.04 }}>
           <filter id="hero-grain">
@@ -126,378 +177,314 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           <rect width="100%" height="100%" filter="url(#hero-grain)" />
         </svg>
 
-        <div className="relative z-[1] flex flex-col items-center">
-          {/* Primary tagline opener */}
-          <p
-            className="font-sans text-muted-foreground text-center"
-            style={{
-              fontSize: "15px",
-              fontWeight: 500,
-              letterSpacing: "0.01em",
-              lineHeight: 1.5,
-              marginBottom: "16px",
-              opacity: 0,
-              animation: "heroFadeIn 0.6s ease 0.2s forwards",
-            }}
-          >
-            You deserve to know exactly who you work for.
-          </p>
-
-          {/* Eyebrow label */}
-          <p className="text-eyebrow" style={{ marginBottom: '24px' }}>
+        <div className="relative z-[1] flex flex-col items-center max-w-[720px]">
+          {/* Eyebrow */}
+          <p className="text-eyebrow text-primary-text" style={{ marginBottom: '16px', opacity: 0, animation: 'heroFadeIn 0.5s ease 0.15s forwards' }}>
             Career Intelligence Platform
           </p>
 
-          {/* Headline */}
+          {/* Headline — specific, product-forward */}
           <h1
             className="text-display text-foreground"
-            style={{ animation: "heroFadeIn 0.8s ease 0.5s forwards", opacity: 0 }}
+            style={{ animation: "heroFadeIn 0.7s ease 0.3s forwards", opacity: 0 }}
           >
-            Stop applying. Start aligning.
+            {STATIC_COMPANY_COUNT}+ companies investigated.
+            <br />
+            <span className="text-primary-text">Every receipt public.</span>
           </h1>
 
-          {/* Subheadlines */}
+          {/* Subheadline — what it does, concretely */}
           <p
-            className="font-sans text-muted-foreground text-center max-w-[580px]"
+            className="font-sans text-muted-foreground text-center max-w-[560px]"
             style={{
               fontSize: "17px",
               lineHeight: 1.7,
-              marginTop: "24px",
+              marginTop: "20px",
               opacity: 0,
-              animation: "heroFadeIn 0.6s ease 0.9s forwards",
+              animation: "heroFadeIn 0.6s ease 0.7s forwards",
             }}
           >
-            No company is perfect. But some are perfect for you.
-          </p>
-          <p
-            className="font-sans text-muted-foreground/70 text-center max-w-[520px]"
-            style={{
-              fontSize: "15px",
-              lineHeight: 1.7,
-              marginTop: "12px",
-              opacity: 0,
-              animation: "heroFadeIn 0.6s ease 1.2s forwards",
-            }}
-          >
-            We don't show you more jobs. We show you better decisions.
+            We pull FEC filings, lobbying records, OSHA violations, and SEC disclosures
+            so you see what's real before you apply.
           </p>
 
-          {/* CTA */}
+          {/* CTA hierarchy: Primary → Secondary → Soft */}
           <div
-            style={{
-              marginTop: "36px",
-              opacity: 0,
-              animation: "heroFadeIn 0.5s ease 1.5s forwards",
-            }}
+            className="flex flex-col sm:flex-row items-center gap-3 mt-8"
+            style={{ opacity: 0, animation: "heroFadeIn 0.5s ease 1s forwards" }}
           >
-            <div className="flex flex-col items-center">
-              <button
-                onClick={() => navigate("/receipts")}
-                className="hover-btn bg-primary text-primary-foreground font-sans text-base font-semibold px-11 py-4 rounded-full border-none cursor-pointer"
-              >
-                See the receipts →
-              </button>
-              <Link
-                to="/join"
-                className="font-sans text-caption text-muted-foreground mt-2.5 inline-block hover:underline"
-              >
-                Launching April 6 — get early access →
-              </Link>
-            </div>
+            <button
+              onClick={() => navigate("/receipts")}
+              className="hover-btn bg-primary text-primary-foreground font-sans text-base font-semibold px-8 py-3.5 rounded-full border-none cursor-pointer"
+            >
+              See the Receipts — Free
+            </button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate("/login")}
+              className="rounded-full px-6 font-sans"
+            >
+              Get Started <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
           </div>
 
-          {/* ── The Four Pillars ── */}
+          {/* Launch countdown */}
+          <div className="mt-6" style={{ opacity: 0, animation: "heroFadeIn 0.5s ease 1.3s forwards" }}>
+            <LaunchCountdown />
+          </div>
+
+          {/* Product preview — mini demo card */}
           <div
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[900px]"
-            style={{
-              marginTop: "64px",
-              opacity: 0,
-              animation: "heroFadeIn 0.6s ease 2s forwards",
-            }}
+            className="mt-12 w-full max-w-[600px] bg-card border border-border rounded-xl overflow-hidden shadow-lg"
+            style={{ opacity: 0, animation: "heroFadeIn 0.6s ease 1.5s forwards" }}
           >
-            {[
-              {
-                icon: <FileSearch className="w-5 h-5 text-primary" />,
-                title: "Integrity Gap",
-                body: "What companies say vs. what the public record shows. We compare their claims against FEC filings, lobbying disclosures, and workforce data.",
-              },
-              {
-                icon: <Target className="w-5 h-5 text-primary" />,
-                title: "Labor Impact",
-                body: "WARN Act layoffs, workforce cuts, and hiring freezes — tracked by state, date, and scale. The human cost behind restructuring.",
-              },
-              {
-                icon: <AlertTriangle className="w-5 h-5 text-primary" />,
-                title: "Safety Alert",
-                body: "OSHA violations, NLRB complaints, EPA enforcement, and workplace safety records. Red flags before you accept.",
-              },
-              {
-                icon: <Link2 className="w-5 h-5 text-primary" />,
-                title: "Connected Dots",
-                body: "PAC spending, executive donations, lobbying ties, and federal contracts. Follow the money to see who's really in charge.",
-              },
-            ].map((card) => (
-              <div
-                key={card.title}
-                className="rounded-2xl p-6 text-left bg-muted/30 border border-border"
-              >
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 bg-primary/10">
-                  {card.icon}
+            <div className="px-4 py-2.5 border-b border-border bg-muted/30 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-destructive/60" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[hsl(var(--civic-yellow))]/60" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[hsl(142,71%,45%)]/60" />
+              </div>
+              <span className="font-mono text-xs text-muted-foreground tracking-wider">wdiwf.jackyeclayton.com/company/example</span>
+            </div>
+            <div className="p-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { label: "Integrity Gap", value: "High", color: "text-destructive" },
+                { label: "PAC Spending", value: "$2.1M", color: "text-primary-text" },
+                { label: "OSHA Flags", value: "12", color: "text-destructive" },
+                { label: "Civic Score", value: "3.2/10", color: "text-foreground" },
+              ].map((metric) => (
+                <div key={metric.label} className="text-center">
+                  <div className={`font-data text-lg font-bold tabular-nums ${metric.color}`}>{metric.value}</div>
+                  <div className="font-mono text-xs text-muted-foreground tracking-wider uppercase mt-0.5">{metric.label}</div>
                 </div>
-                <h3 className="font-sans font-semibold mb-2 text-[15px] text-foreground">
-                  {card.title}
-                </h3>
-                <p className="font-sans text-caption text-muted-foreground leading-relaxed">
-                  {card.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Live Intelligence Ticker — below the fold */}
-      <Suspense fallback={null}>
-        <LiveIntelligenceTicker />
-      </Suspense>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          TWO-SIDED PLATFORM PATHS
-      ══════════════════════════════════════════════════════════════════ */}
-      <section className="px-6 lg:px-16 py-20 bg-background">
-        <div className="max-w-[900px] mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* For Candidates */}
-            <div
-              className="rounded-2xl p-8 text-left flex flex-col bg-muted/30 border border-border"
-            >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-primary/10">
-                <Crosshair className="w-6 h-6 text-primary" />
-              </div>
-              <p className="text-xs uppercase tracking-[2px] font-semibold text-primary mb-3">
-                For Candidates
-              </p>
-              <h3 className="font-sans font-bold text-foreground mb-3" style={{ fontSize: "18px", lineHeight: 1.3 }}>
-                Find work that matches what you actually believe in.
-              </h3>
-              <p className="font-sans text-muted-foreground mb-6 flex-1" style={{ fontSize: "14px", lineHeight: 1.65 }}>
-                We verify the company before you apply.
-              </p>
-              <Button
-                onClick={() => navigate("/auto-apply")}
-                className="w-full rounded-full gap-2"
-              >
-                Find Your Alignment <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* For Organizations */}
-            <div
-              className="rounded-2xl p-8 text-left flex flex-col bg-muted/30 border border-border"
-            >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 bg-primary/10">
-                <Shield className="w-6 h-6 text-primary" />
-              </div>
-              <p className="text-xs uppercase tracking-[2px] font-semibold text-primary mb-3">
-                For Organizations
-              </p>
-              <h3 className="font-sans font-bold text-foreground mb-3" style={{ fontSize: "18px", lineHeight: 1.3 }}>
-                Prove your mission is real. Find candidates who are already bought in.
-              </h3>
-              <p className="font-sans text-muted-foreground mb-6 flex-1" style={{ fontSize: "14px", lineHeight: 1.65 }}>
-                Get verified against public data — not your marketing copy.
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/for-employers")}
-                className="w-full rounded-full gap-2"
-              >
-                Get Verified <ArrowRight className="w-4 h-4" />
-              </Button>
+              ))}
             </div>
           </div>
-
-          <p className="text-center mt-8 font-sans text-sm text-muted-foreground tracking-wider">
-            No bias. Just receipts.
-          </p>
-        </div>
-      </section>
-
-      {/*
-          HOW IT WORKS
-      ══════════════════════════════════════════════════════════════════ */}
-      <section className="px-6 lg:px-16 py-24 bg-background">
-        <div className="max-w-[900px] mx-auto">
-          <p className="text-xs uppercase tracking-[3px] font-semibold text-center mb-3 text-primary">
-            How It Works
-          </p>
-          <h2 className="font-sans text-center leading-[1.1] mb-16 text-display text-foreground">
-            Four pillars. Full transparency.
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              {
-                step: "01",
-                title: "We pull the receipts",
-                body: "FEC filings, WARN Act notices, SEC disclosures, lobbying records, OSHA violations — we collect every public signal about a company's real behavior.",
-              },
-              {
-                step: "02",
-                title: "We analyze the gaps",
-                body: "Our framework scores each company across four pillars — Integrity Gap, Labor Impact, Safety Alert, and Connected Dots — to surface what they don't put in the job posting.",
-              },
-              {
-                step: "03",
-                title: "You see the full picture",
-                body: "Free, shareable Receipts reports for every company. No account required. Every claim sourced. Every dollar traced.",
-              },
-              {
-                step: "04",
-                title: "You make informed decisions",
-                body: "Use our intelligence tools to match values, benchmark offers, and plan your career with clarity — not just hope.",
-              },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="rounded-2xl p-7 bg-muted/30 border border-border"
-              >
-                <span className="inline-block font-sans mb-4 text-caption font-bold text-primary tracking-wider">
-                  STEP {item.step}
-                </span>
-                <h3 className="font-sans font-bold mb-3 text-heading-3 text-foreground">
-                  {item.title}
-                </h3>
-                <p className="font-sans text-sm text-muted-foreground leading-relaxed">
-                  {item.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 lg:px-16 py-16 max-w-[700px] mx-auto w-full text-center">
-        <div className="font-sans text-micro uppercase text-muted-foreground mb-3">
-          Or scan a company directly
-        </div>
-        <div id="hero-search-anchor">
-          <HeroSearch />
         </div>
       </section>
 
       {/* heroFadeIn keyframe */}
       <style>{`
         @keyframes heroFadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
 
-      {/* ── Evidence Strip ── */}
-      <div className="border-y border-border px-6 py-8">
-        <div className="max-w-[1100px] mx-auto flex items-center justify-between flex-wrap gap-6">
-          <div className="flex items-center gap-8 lg:gap-14 flex-wrap">
-            <div><div className="font-data text-2xl font-bold text-foreground tabular-nums">{STATIC_COMPANY_COUNT}+</div><div className="font-mono text-xs uppercase text-muted-foreground tracking-wider">Companies Tracked</div></div>
-            <div><div className="font-data text-2xl font-bold text-foreground tabular-nums">6</div><div className="font-mono text-xs uppercase text-muted-foreground tracking-wider">Federal Sources</div></div>
-            <div><div className="font-data text-2xl font-bold text-foreground tabular-nums">15+</div><div className="font-mono text-xs uppercase text-muted-foreground tracking-wider">Years HR Expertise</div></div>
-          </div>
-          <div className="flex items-center gap-4 flex-wrap">
-            {TRUST_SOURCES.map((src) => (
-              <a
-                key={src.label}
-                href={src.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono text-sm tracking-wider uppercase text-muted-foreground/70 hover:text-primary transition-colors"
-              >
-                {src.label}
-              </a>
-            ))}
-          </div>
-        </div>
-        <p className="text-xs text-muted-foreground/50 text-center leading-relaxed max-w-[600px] mx-auto mt-4">
-          Built on public records: FEC filings · SEC EDGAR · USAspending.gov · BLS wage data · OSHA · NLRB · Senate Lobbying Disclosures · ProPublica · OpenSecrets · CourtListener
-        </p>
-      </div>
+      {/* ── Live Intelligence Ticker ── */}
+      <Suspense fallback={null}>
+        <LiveIntelligenceTicker />
+      </Suspense>
 
       {/* ══════════════════════════════════════════════════════════════════
-          DEMO DOSSIER — Conversion Engine
+          DEMO DOSSIER — moved up: best hook right after hero
       ══════════════════════════════════════════════════════════════════ */}
       <section id="demo-dossier" className="px-6 lg:px-16 py-20 lg:py-28 bg-card border-y border-border">
         <div className="max-w-[720px] mx-auto">
           <div className="text-center mb-10">
-            <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">
+            <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary-text mb-3">
               This is what you won't see on a job board
             </div>
             <h2 className="text-2xl lg:text-3xl text-foreground mb-4">
               Most candidates never see this before they accept.{" "}
-              <span className="text-primary">You should.</span>
+              <span className="text-primary-text">You should.</span>
             </h2>
           </div>
           <DemoCompanyProfile />
-          <div className="flex justify-center mt-8">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
+            <button
+              onClick={() => navigate("/receipts")}
+              className="bg-primary text-primary-foreground px-8 py-3.5 font-sans text-sm font-semibold tracking-wide hover:brightness-110 transition-all rounded-full flex items-center justify-center gap-2"
+            >
+              See Real Company Receipts
+              <ArrowRight className="w-4 h-4" />
+            </button>
             <button
               onClick={() => navigate(user ? "/dashboard" : "/login")}
-              className="bg-primary text-primary-foreground px-8 py-3.5 font-mono text-sm font-semibold tracking-wider uppercase hover:brightness-110 transition-all flex items-center gap-2"
+              className="border border-border bg-background px-8 py-3.5 font-sans text-sm tracking-wide text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all rounded-full"
             >
-              Run this for a company you're considering
-              <ArrowRight className="w-4 h-4" />
+              Run This for a Company
             </button>
           </div>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
-          5-TRACK PATHFINDER
+          THE FOUR PILLARS — consolidated into one clean section
       ══════════════════════════════════════════════════════════════════ */}
-      <PathfinderTracks />
+      <section className="px-6 lg:px-16 py-20 lg:py-28 bg-background">
+        <div className="max-w-[960px] mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-xs uppercase tracking-[3px] font-semibold text-primary-text mb-3">
+              How It Works
+            </p>
+            <h2 className="text-2xl lg:text-3xl text-foreground mb-4">
+              Four pillars. Full transparency.
+            </h2>
+            <p className="text-base text-muted-foreground max-w-[520px] mx-auto">
+              We pull public records, score every company across four dimensions, and give you free, shareable reports.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border border border-border">
+            {[
+              {
+                icon: <FileSearch className="w-5 h-5 text-primary" />,
+                step: "01",
+                title: "Integrity Gap",
+                body: "What they say vs. what FEC filings, lobbying disclosures, and workforce data show.",
+              },
+              {
+                icon: <Target className="w-5 h-5 text-primary" />,
+                step: "02",
+                title: "Labor Impact",
+                body: "WARN Act layoffs, workforce cuts, and hiring freezes tracked by state, date, and scale.",
+              },
+              {
+                icon: <AlertTriangle className="w-5 h-5 text-primary" />,
+                step: "03",
+                title: "Safety Alert",
+                body: "OSHA violations, NLRB complaints, EPA enforcement, and workplace safety records.",
+              },
+              {
+                icon: <Link2 className="w-5 h-5 text-primary" />,
+                step: "04",
+                title: "Connected Dots",
+                body: "PAC spending, executive donations, lobbying ties, and federal contracts. Follow the money.",
+              },
+            ].map((pillar) => (
+              <div key={pillar.title} className="bg-background p-6 lg:p-7">
+                <span className="inline-block font-mono text-xs tracking-wider uppercase text-primary-text font-bold mb-3">
+                  {pillar.step}
+                </span>
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3 bg-primary/10">
+                  {pillar.icon}
+                </div>
+                <h3 className="font-sans font-semibold text-[15px] text-foreground mb-2">
+                  {pillar.title}
+                </h3>
+                <p className="font-sans text-sm text-muted-foreground leading-relaxed">
+                  {pillar.body}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Inline search */}
+          <div className="mt-12 max-w-[560px] mx-auto text-center">
+            <div className="font-sans text-sm text-muted-foreground mb-3">
+              Search any company — results are free and instant
+            </div>
+            <HeroSearch />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Evidence Strip ── */}
+      <div className="border-y border-border px-6 py-8">
+        <div className="max-w-[960px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-8 lg:gap-14 flex-wrap justify-center sm:justify-start">
+            <div className="text-center sm:text-left">
+              <div className="font-data text-2xl font-bold text-foreground tabular-nums">{STATIC_COMPANY_COUNT}+</div>
+              <div className="font-mono text-xs uppercase text-muted-foreground tracking-wider">Companies Tracked</div>
+            </div>
+            <div className="text-center sm:text-left">
+              <div className="font-data text-2xl font-bold text-foreground tabular-nums">6</div>
+              <div className="font-mono text-xs uppercase text-muted-foreground tracking-wider">Federal Sources</div>
+            </div>
+            <div className="text-center sm:text-left">
+              <div className="font-data text-2xl font-bold text-foreground tabular-nums">15+</div>
+              <div className="font-mono text-xs uppercase text-muted-foreground tracking-wider">Years HR Expertise</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 flex-wrap justify-center">
+            {TRUST_SOURCES.map((src) => (
+              <a
+                key={src.label}
+                href={src.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-xs tracking-wider uppercase text-muted-foreground/60 hover:text-primary transition-colors"
+              >
+                {src.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-          WHAT YOU GET — Three Value Cards
+          WHAT YOU GET — Three tiers of value
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-card border-y border-border px-6 lg:px-16 py-24 lg:py-32">
+      <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-28">
         <div className="max-w-[960px] mx-auto">
-          <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">What You Get</div>
-          <h2 className="text-2xl lg:text-3xl mb-4 text-foreground">
-            Three layers of career intelligence.
-          </h2>
-          <p className="text-muted-foreground text-base mb-14 max-w-[520px]">
-            This isn't a job board. It's a clarity engine for your career.
-          </p>
+          <div className="text-center mb-12">
+            <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary-text mb-3">What You Get</div>
+            <h2 className="text-2xl lg:text-3xl mb-4 text-foreground">
+              Three layers of career intelligence.
+            </h2>
+            <p className="text-muted-foreground text-base max-w-[520px] mx-auto">
+              Start free with The Receipts. Go deeper when you need it.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
             {[
               {
                 icon: Eye,
                 title: "The Receipts",
-                desc: "Free, ungated investigations on every company.",
+                badge: "Free",
+                desc: "Company investigations anyone can access. No account required.",
                 signals: ["Integrity Gap Analysis", "Labor Impact Tracking", "Safety Alert Reports", "Connected Dots: PAC + Lobbying"],
+                cta: "See the Receipts",
+                ctaAction: () => navigate("/receipts"),
+                primary: true,
               },
               {
                 icon: Brain,
                 title: "The Intelligence",
+                badge: "From $19/mo",
                 desc: "Build a career plan based on data, not vibes.",
                 signals: ["Workplace DNA Calibration", "5-Year Career Mapping", "Values alignment matching", "Offer review & benchmarking"],
+                cta: "Explore Plans",
+                ctaAction: () => navigate("/pricing"),
+                primary: false,
               },
               {
                 icon: Rocket,
                 title: "The Advocacy",
+                badge: "From $149",
                 desc: "Execute your move with clarity and support.",
-                signals: ["Apply When It Counts™ Placement", "Interview Intelligence Briefs", "Negotiation Coaching", "Employer verification reports"],
+                signals: ["Apply When It Counts\u2122 Placement", "Interview Intelligence Briefs", "Negotiation Coaching", "Employer verification reports"],
+                cta: "See Pricing",
+                ctaAction: () => navigate("/pricing"),
+                primary: false,
               },
             ].map(card => (
-              <div key={card.title} className="bg-background p-8 lg:p-10">
-                <card.icon className="w-6 h-6 text-primary mb-4" strokeWidth={1.5} />
-                <div className="font-mono text-sm tracking-wider uppercase text-foreground mb-2">{card.title}</div>
+              <div key={card.title} className="bg-background p-7 lg:p-9 flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <card.icon className="w-6 h-6 text-primary" strokeWidth={1.5} />
+                  <span className="font-mono text-xs tracking-wider uppercase text-primary-text bg-primary/8 px-2 py-0.5 rounded">
+                    {card.badge}
+                  </span>
+                </div>
+                <div className="font-sans text-base font-semibold text-foreground mb-1.5">{card.title}</div>
                 <p className="text-sm text-muted-foreground mb-5 leading-relaxed">{card.desc}</p>
-                <ul className="space-y-2">
+                <ul className="space-y-2 mb-6 flex-1">
                   {card.signals.map(s => (
                     <li key={s} className="text-sm text-foreground flex items-start gap-1.5">
-                      <span className="w-1 h-1 bg-primary/60 rounded-full mt-1.5 shrink-0" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" strokeWidth={2} />
                       {s}
                     </li>
                   ))}
                 </ul>
+                <Button
+                  variant={card.primary ? "default" : "outline"}
+                  onClick={card.ctaAction}
+                  className="w-full rounded-full font-sans text-sm gap-1.5"
+                >
+                  {card.cta} <ArrowRight className="w-3.5 h-3.5" />
+                </Button>
               </div>
             ))}
           </div>
@@ -505,17 +492,16 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
-          COMPARISON TABLE — Generic Job Boards vs WDIWF
+          COMPARISON TABLE — Job Boards vs WDIWF
       ══════════════════════════════════════════════════════════════════ */}
-      <section className="px-6 lg:px-16 py-24 lg:py-32 max-w-[960px] mx-auto w-full">
-        <div className="text-center mb-14">
-          <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary mb-3">The Difference</div>
+      <section className="px-6 lg:px-16 py-20 lg:py-28 max-w-[960px] mx-auto w-full">
+        <div className="text-center mb-12">
+          <div className="font-mono text-sm tracking-[0.2em] uppercase text-primary-text mb-3">The Difference</div>
           <h2 className="text-2xl lg:text-3xl text-foreground">
-            Phone Book vs. Clarity Engine.
+            Job boards list openings. We investigate employers.
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border">
-          {/* Generic */}
           <div className="bg-card p-8 lg:p-10">
             <div className="font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">Indeed / LinkedIn</div>
             <ul className="space-y-3">
@@ -534,14 +520,13 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               ))}
             </ul>
           </div>
-          {/* WDIWF */}
           <div className="bg-card p-8 lg:p-10 border-l-2 border-l-primary">
-            <div className="font-mono text-xs tracking-[0.2em] uppercase text-primary mb-4">WDIWF Intelligence</div>
+            <div className="font-mono text-xs tracking-[0.2em] uppercase text-primary-text mb-4">WDIWF Intelligence</div>
             <ul className="space-y-3">
               {[
-                "Receipts: free investigations on every employer",
+                "Free investigations on every employer",
                 "Four-pillar framework — Integrity, Labor, Safety, Connections",
-                "Apply When It Counts™ — DNA-matched placement",
+                "Apply When It Counts\u2122 — DNA-matched placement",
                 "BLS wage benchmarks + offer scoring",
                 "PAC spending, lobbying, federal contracts traced",
                 "Negotiation scripts + coaching",
@@ -561,7 +546,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <IntelligenceDashboard />
       </Suspense>
 
-      {/* ── Social Proof ── */}
+      {/* ── Social Proof (with real logos) ── */}
       <Suspense fallback={null}>
         <SocialProofStrip />
       </Suspense>
@@ -571,7 +556,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       ══════════════════════════════════════════════════════════════════ */}
       <Suspense fallback={null}>
         <SectionReveal>
-          <section className="bg-card border-y border-border px-6 lg:px-16 py-24 lg:py-32">
+          <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-28">
             <div className="max-w-[960px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20 items-center">
               <div>
                 <img
@@ -583,7 +568,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                   loading="lazy"
                   decoding="async"
                 />
-                <div className="font-serif text-xl text-primary mb-1">Jackye Clayton</div>
+                <div className="font-serif text-xl text-primary-text mb-1">Jackye Clayton</div>
                 <div className="font-mono text-sm tracking-wider uppercase text-muted-foreground">
                   Founder & Executive Agent
                 </div>
@@ -595,7 +580,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 <div className="font-mono text-sm tracking-wider uppercase text-muted-foreground pl-4 mb-6">— Jackye Clayton, Founder & Executive Agent</div>
                 <div className="flex items-center gap-3 pl-4">
                   <Shield className="w-5 h-5 text-primary" />
-                  <span className="font-mono text-xs tracking-wider uppercase text-primary">Data-Backed by Jackye Clayton</span>
+                  <span className="font-mono text-xs tracking-wider uppercase text-primary-text">15+ years in Talent Acquisition &middot; LinkedIn Learning Instructor &middot; HR Tech Board Member</span>
                 </div>
               </div>
             </div>
@@ -603,7 +588,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </SectionReveal>
       </Suspense>
 
-      {/* Rivalry Super Tracker + Compare CTA moved to /dashboard */}
+      {/* ── Pricing preview (first 3 tracks) ── */}
+      <PathfinderTracks />
 
       {/* ── Methodology ── */}
       <section className="px-6 lg:px-16 py-16 lg:py-20">
@@ -611,27 +597,21 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           <div className="text-center mb-8">
             <h2 className="text-xl mb-4 text-foreground">Built on public records. Every signal sourced.</h2>
             <p className="text-sm text-muted-foreground max-w-[520px] mx-auto mb-6">
-              FEC filings · Senate lobbying · USAspending · BLS wage data · SEC reports · FRED indicators.
+              FEC filings &middot; Senate lobbying &middot; USAspending &middot; BLS wage data &middot; SEC reports &middot; FRED indicators.
             </p>
-            <button onClick={() => navigate("/methodology")} className="font-mono text-sm tracking-wider uppercase text-primary hover:underline">
-              Read our methodology →
+            <button onClick={() => navigate("/methodology")} className="font-mono text-sm tracking-wider uppercase text-primary-text hover:underline">
+              Read our methodology &rarr;
             </button>
           </div>
-          <div className="bg-card border border-primary/20 p-6 lg:p-8 max-w-[640px] mx-auto">
+          <div className="bg-card border border-primary/20 p-6 lg:p-8 max-w-[640px] mx-auto rounded-lg">
             <div className="flex items-center gap-2 mb-3">
               <Shield className="w-5 h-5 text-primary" />
-              <span className="font-mono text-sm tracking-[0.15em] uppercase text-primary font-semibold">Our Standard</span>
+              <span className="font-mono text-sm tracking-[0.15em] uppercase text-primary-text font-semibold">Our Standard</span>
             </div>
             <p className="text-sm text-foreground leading-relaxed">
               Public records only. Verified watchdog data. No partisan endorsements. We connect the dots; you make the call.
             </p>
           </div>
-        </div>
-      </section>
-      {/* ── Career Fit Report CTA ── */}
-      <section className="px-6 lg:px-16 py-12">
-        <div className="max-w-[960px] mx-auto">
-          <CareerFitReportCTA />
         </div>
       </section>
 
@@ -640,25 +620,25 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       <Suspense fallback={null}><EmailCapture /></Suspense>
 
       {/* ── Final CTA ── */}
-      <section className="px-6 lg:px-16 py-28 lg:py-36 text-center">
+      <section className="px-6 lg:px-16 py-24 lg:py-32 text-center">
         <h2 className="text-2xl lg:text-3xl mb-4 text-foreground">
           You deserve to know exactly who you work for.
         </h2>
-        <p className="text-base text-muted-foreground max-w-[480px] mx-auto mb-10 leading-relaxed">
-          Every claim sourced. Every dollar traced. No account required.
+        <p className="text-base text-muted-foreground max-w-[480px] mx-auto mb-8 leading-relaxed">
+          Every claim sourced. Every dollar traced. Free to start.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={() => navigate("/receipts")}
-            className="bg-primary text-primary-foreground px-8 py-3.5 font-mono text-sm font-semibold tracking-wider uppercase hover:brightness-110 transition-all"
+            className="bg-primary text-primary-foreground px-8 py-3.5 font-sans text-sm font-semibold tracking-wide hover:brightness-110 transition-all rounded-full"
           >
             See the Receipts
           </button>
           <button
-            onClick={() => navigate("/check")}
-            className="border border-border bg-card px-8 py-3.5 font-mono text-sm tracking-wider uppercase text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
+            onClick={() => navigate("/login")}
+            className="border border-border bg-card px-8 py-3.5 font-sans text-sm tracking-wide text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all rounded-full"
           >
-            Scan a Company
+            Get Started Free
           </button>
         </div>
       </section>
@@ -672,12 +652,14 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 <span style={{ color: '#111111' }}>W</span>
                 <span style={{ color: '#F0C040' }}>?</span>
               </span>
-              <span className="text-sm text-muted-foreground"> · by Jackye Clayton</span>
+              <span className="text-sm text-muted-foreground"> &middot; by Jackye Clayton</span>
             </div>
             <div className="flex gap-6">
-              <a href="/privacy" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Privacy</a>
-              <a href="/terms" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Terms</a>
-              <a href="/methodology" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Methodology</a>
+              <Link to="/receipts" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Receipts</Link>
+              <Link to="/pricing" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+              <Link to="/privacy" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Privacy</Link>
+              <Link to="/terms" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Terms</Link>
+              <Link to="/methodology" className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors">Methodology</Link>
             </div>
           </div>
           <div className="border-t border-border/50 pt-4">
