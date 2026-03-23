@@ -13,7 +13,7 @@ const tracks = [
     name: "The Explorer",
     icon: Compass,
     price: "Free",
-    priceNote: "Registration required",
+    priceNote: "No credit card required",
     period: "",
     mode: "free" as const,
     hook: "Start Here.",
@@ -32,15 +32,10 @@ const tracks = [
     name: "Pro",
     icon: Bot,
     price: "$19",
-    priceNote: "",
+    priceNote: "Cancel anytime",
     period: "/mo",
     mode: "subscription" as const,
     priceId: "price_1TCdD87Qj0W6UtN9NBt8Wtb9",
-    annualPrice: "$15",
-    annualPeriod: "/mo",
-    annualPriceNote: "billed annually ($180/yr)",
-    // TODO: Create annual Stripe price and replace this placeholder
-    annualPriceId: "price_scout_annual_placeholder",
     hook: "Your AI Coach.",
     description: "Unlimited AI-powered audits on any job link. Values alignment scoring, real-time employer alerts, and direct access to Ask Jackye.",
     action: "Go Pro",
@@ -57,7 +52,7 @@ const tracks = [
     name: "The Dossier",
     icon: Target,
     price: "$199",
-    priceNote: "",
+    priceNote: "One company, one report",
     period: " one-time",
     mode: "payment" as const,
     priceId: "price_1TCdDA7Qj0W6UtN9VPMXRkyY",
@@ -78,7 +73,7 @@ const tracks = [
     name: "The Executive",
     icon: Rocket,
     price: "$999",
-    priceNote: "",
+    priceNote: "Billed annually",
     period: "/year",
     mode: "subscription" as const,
     priceId: "price_1TCTiJ7Qj0W6UtN9hARvCvgh",
@@ -100,7 +95,6 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
-  const [isAnnual, setIsAnnual] = useState(false);
 
   // On homepage: show first 3 tiers. On /pricing: show all 4.
   const visibleTracks = showAll ? tracks : tracks.slice(0, 3);
@@ -118,19 +112,15 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
       return;
     }
 
-    const effectivePriceId = isAnnual && "annualPriceId" in track
-      ? (track as any).annualPriceId
-      : track.priceId;
-
-    if (!effectivePriceId || effectivePriceId.includes("placeholder")) {
-      toast("This plan is coming soon — check back soon!");
+    if (!track.priceId) {
+      toast.error("Unable to start checkout. Please try again.");
       return;
     }
 
-    setLoading(effectivePriceId);
+    setLoading(track.priceId);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: effectivePriceId, mode: track.mode },
+        body: { priceId: track.priceId, mode: track.mode },
       });
       if (error) {
         toast.error("Unable to start checkout. Please try again.");
@@ -146,23 +136,6 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
     }
   };
 
-  const getDisplayPrice = (track: typeof tracks[0]) => {
-    if (isAnnual && "annualPrice" in track) {
-      return {
-        price: (track as any).annualPrice,
-        period: (track as any).annualPeriod,
-        priceNote: (track as any).annualPriceNote,
-        originalPrice: track.price,
-      };
-    }
-    return {
-      price: track.price,
-      period: track.period,
-      priceNote: track.priceNote,
-      originalPrice: null,
-    };
-  };
-
   return (
     <section className="px-6 lg:px-16 py-24 lg:py-32">
       <div className="max-w-[1100px] mx-auto">
@@ -174,42 +147,8 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
             Choose Your Track
           </h2>
           <p className="text-sm text-muted-foreground max-w-[520px] mx-auto mb-8">
-            From free career calibration to full autopilot search management. Start where you are.
+            From free career calibration to full career management. Start where you are.
           </p>
-
-          {/* Billing Toggle */}
-          <div className="inline-flex items-center gap-3 rounded-full border border-border bg-card px-1.5 py-1.5">
-            <button
-              onClick={() => setIsAnnual(false)}
-              className={cn(
-                "font-mono text-xs tracking-wider uppercase px-4 py-1.5 rounded-full transition-all duration-200",
-                !isAnnual
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setIsAnnual(true)}
-              className={cn(
-                "font-mono text-xs tracking-wider uppercase px-4 py-1.5 rounded-full transition-all duration-200 flex items-center gap-2",
-                isAnnual
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Annual
-              <span className={cn(
-                "text-xs font-semibold tracking-wider px-2 py-0.5 rounded-full",
-                isAnnual
-                  ? "bg-primary-foreground/20 text-primary-foreground"
-                  : "bg-primary/15 text-primary"
-              )}>
-                Save 20%
-              </span>
-            </button>
-          </div>
         </div>
 
         <div className={cn(
@@ -218,9 +157,7 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
             ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
             : "grid-cols-1 md:grid-cols-3"
         )}>
-          {visibleTracks.map((track) => {
-            const display = getDisplayPrice(track);
-            return (
+          {visibleTracks.map((track) => (
               <div
                 key={track.number}
                 className={cn(
@@ -235,11 +172,6 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
                 )}
 
                 <div className={cn("mb-4", track.popular && "mt-4")}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground">
-                      Track {track.number}
-                    </span>
-                  </div>
                   <track.icon className="w-6 h-6 text-primary mb-3" strokeWidth={1.5} />
                   <div className="font-mono text-sm tracking-wider uppercase text-foreground font-semibold mb-1">
                     {track.name}
@@ -247,25 +179,15 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
                   <div className="font-mono text-xs tracking-wider uppercase text-primary mb-1">
                     {track.hook}
                   </div>
-                  {"subtitle" in track && (track as any).subtitle && (
-                    <div className="text-xs text-muted-foreground mt-0.5">
-                      {(track as any).subtitle}
-                    </div>
-                  )}
                 </div>
 
                 <div className="mb-4">
-                  {display.originalPrice && (
-                    <span className="text-sm text-muted-foreground line-through mr-2">
-                      {display.originalPrice}
-                    </span>
+                  <span className="text-2xl font-bold text-foreground">{track.price}</span>
+                  {track.period && (
+                    <span className="text-sm text-muted-foreground">{track.period}</span>
                   )}
-                  <span className="text-2xl font-bold text-foreground">{display.price}</span>
-                  {display.period && (
-                    <span className="text-sm text-muted-foreground">{display.period}</span>
-                  )}
-                  {display.priceNote && (
-                    <div className="text-xs text-muted-foreground mt-0.5">{display.priceNote}</div>
+                  {track.priceNote && (
+                    <div className="text-xs text-muted-foreground mt-0.5">{track.priceNote}</div>
                   )}
                 </div>
 
@@ -288,7 +210,7 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
                   className="w-full gap-1.5 font-mono text-xs tracking-wider uppercase mt-auto"
                   disabled={!!loading}
                 >
-                  {loading === (isAnnual && "annualPriceId" in track ? (track as any).annualPriceId : track.priceId) ? (
+                  {loading === track.priceId ? (
                     <Loader2 className="w-3 h-3 animate-spin" />
                   ) : (
                     <>
@@ -298,8 +220,7 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
                   )}
                 </Button>
               </div>
-            );
-          })}
+          ))}
         </div>
 
         {!showAll && (

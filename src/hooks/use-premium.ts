@@ -71,8 +71,8 @@ export const STRIPE_TIERS = {
   strategist: {
     price_id: "price_1TCdDA7Qj0W6UtN9VPMXRkyY",
     product_id: "prod_UAzBBIzLrVAXLH",
-    label: "Strategist Dossier",
-    price: "$149",
+    label: "The Dossier",
+    price: "$199",
   },
   partner: {
     price_id: "price_1TCdDB7Qj0W6UtN9VEaLssdN",

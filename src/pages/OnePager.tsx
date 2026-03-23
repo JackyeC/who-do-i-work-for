@@ -85,9 +85,9 @@ const OnePager = () => {
         {/* Pricing */}
         <div className="grid grid-cols-3 gap-px bg-border border border-border mb-8">
           {[
-            { tier: "Scout", price: "$19", per: "per month", featured: false, items: ["Unlimited AI job audits", "Values alignment scoring", "Real-time signal alerts", "Ask Jackye — unlimited"] },
-            { tier: "Strategist", price: "$149", per: "one-time", featured: true, items: ["Full employer dossier", "Negotiation talking points", "Compensation benchmarks", "Interview intelligence brief"] },
-            { tier: "Executive", price: "$999", per: "per year", featured: false, items: ["Apply When It Counts™ engine", "Full career mapping", "Priority 1-on-1 with Jackye", "All Scout + Strategist features"] },
+            { tier: "Pro", price: "$19", per: "per month", featured: false, items: ["Unlimited AI job audits", "Values alignment scoring", "Real-time signal alerts", "Ask Jackye — unlimited"] },
+            { tier: "The Dossier", price: "$199", per: "one-time", featured: true, items: ["Full employer dossier", "Negotiation talking points", "Compensation benchmarks", "Interview intelligence brief"] },
+            { tier: "Executive", price: "$999", per: "per year", featured: false, items: ["Apply When It Counts™ engine", "Full career mapping", "Priority 1-on-1 with Jackye", "All Pro + Dossier features"] },
           ].map(p => (
             <div key={p.tier} className={`p-4 relative ${p.featured ? "bg-card" : "bg-background"}`}>
               {p.featured && (

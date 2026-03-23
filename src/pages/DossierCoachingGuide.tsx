@@ -227,7 +227,7 @@ function ExpandableQuestion({ question, index }: { question: string; index: numb
 const PRICING_TIERS = [
   {
     name: "Career Fit Report",
-    price: "$149",
+    price: "$199",
     interval: "one-time",
     description: "Full integrity analysis of this company, tailored to your background and role.",
     features: ["Complete signal breakdown", "Negotiation talking points", "Compensation benchmarks"],
@@ -235,7 +235,7 @@ const PRICING_TIERS = [
     highlighted: false,
   },
   {
-    name: "Scout",
+    name: "Pro",
     price: "$19",
     interval: "/month",
     description: "24/7 AI coach. Audit any job link. Know before you apply.",
@@ -248,7 +248,7 @@ const PRICING_TIERS = [
     price: "$999",
     interval: "/year",
     description: "Full search management + priority access. Your career, on cruise control.",
-    features: ["Apply When It Counts™ engine", "Full career mapping", "Priority 1-on-1 with Jackye", "All Scout + Strategist features"],
+    features: ["Apply When It Counts™ engine", "Full career mapping", "Priority 1-on-1 with Jackye", "All Pro + Dossier features"],
     cta: "Go Executive",
     highlighted: false,
   },

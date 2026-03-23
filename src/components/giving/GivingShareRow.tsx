@@ -16,7 +16,7 @@ export function GivingShareRow({ permalink, plainText, tweetText, companySlug }:
   const { user } = useAuth();
   // For now, all users are free-tier unless subscription logic is wired
   const isScout = !!user;
-  const isStrategist = false; // TODO: wire to subscription tier
+  const isStrategist = false; // TODO: wire to Dossier/Pro tier
 
   const copyLink = () => {
     navigator.clipboard.writeText(permalink);
@@ -66,10 +66,10 @@ export function GivingShareRow({ permalink, plainText, tweetText, companySlug }:
         </>
       ) : (
         <>
-          <button className={lockedClass} title="Upgrade to Strategist to unlock">
+          <button className={lockedClass} title="Upgrade to Pro to unlock">
             <Lock className="w-2.5 h-2.5" /> Image <span className="text-xs">Pro</span>
           </button>
-          <button className={lockedClass} title="Upgrade to Strategist to unlock">
+          <button className={lockedClass} title="Upgrade to Pro to unlock">
             <Lock className="w-2.5 h-2.5" /> PDF <span className="text-xs">Pro</span>
           </button>
         </>

@@ -66,7 +66,7 @@ export function DossierPaywall({ companyId, companyName, layerIndex }: DossierPa
             className="gap-2"
           >
             {checkoutLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-            Activate Scout — $19/mo
+            Go Pro — $19/mo
           </Button>
         ) : (
           <Button
@@ -76,13 +76,13 @@ export function DossierPaywall({ companyId, companyName, layerIndex }: DossierPa
             className="gap-2"
           >
             {checkoutLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-            Get Strategist Dossier — $149
+            Get My Dossier — $199
           </Button>
         )}
 
         <div className="mt-6 flex items-center justify-center gap-6 text-micro text-muted-foreground">
-          <span>Scout $19/mo · AI coach</span>
-          <span>Strategist $149 · full dossier</span>
+          <span>Pro $19/mo · AI coach</span>
+          <span>Dossier $199 · full report</span>
           <span>Executive $999/yr · autopilot</span>
         </div>
       </div>
