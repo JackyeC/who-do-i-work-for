@@ -5,7 +5,7 @@ import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDemoSafeMode } from "@/contexts/DemoSafeModeContext";
 import { cn } from "@/lib/utils";
-import { Search, Menu, X, Shield, ChevronDown, Lock, Compass, BarChart3, Radio, FileSearch } from "lucide-react";
+import { Search, Menu, X, Shield, ChevronDown, Lock, Compass, BarChart3, Radio, FileSearch, CreditCard } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PersonaChip } from "@/components/PersonaChip";
 import logoNav from "@/assets/wdiwf-logo-nav-light.png";
@@ -53,12 +53,19 @@ export const MAIN_SECTIONS = [
     subItems: [],
   },
   {
+    id: "pricing",
+    label: "Pricing",
+    path: "/pricing",
+    matchPaths: ["/pricing"],
+    subItems: [],
+  },
+  {
     id: "more",
     label: "More",
     path: "/site-map",
     matchPaths: [
       "/check", "/offer-check", "/offer-review", "/strategic-offer-review", "/offer-clarity",
-      "/job-board", "/jobs", "/ask-jackye", "/methodology", "/pricing",
+      "/job-board", "/jobs", "/ask-jackye", "/methodology",
       "/would-you-work-here", "/employer-receipt", "/employer-promise-check", "/follow-the-money", "/compare", "/site-map",
     ],
     subItems: [
@@ -70,7 +77,6 @@ export const MAIN_SECTIONS = [
       { label: "Follow the Money", path: "/follow-the-money" },
       { label: "Recruiter Brief", path: "/recruiter-brief" },
       { label: "Methodology", path: "/methodology" },
-      { label: "Pricing", path: "/pricing" },
       { label: "All Tools →", path: "/tools" },
     ],
   },
@@ -126,6 +132,7 @@ export function TopBar() {
     { id: "intelligence", label: "My Intel", icon: BarChart3, onClick: handleMyIntelligence, matchPaths: ["/dashboard"] },
     { id: "signals", label: "Signals", icon: Radio, path: "/signal-alerts", matchPaths: ["/signal-alerts"] },
     { id: "career-map", label: "Career Map", icon: Compass, path: "/career-intelligence", matchPaths: ["/career-intelligence", "/career-map"], auth: true },
+    { id: "pricing", label: "Pricing", icon: CreditCard, path: "/pricing", matchPaths: ["/pricing"] },
   ];
 
   /* Secondary nav items (More dropdown) */
@@ -141,7 +148,7 @@ export function TopBar() {
     { label: "Methodology", path: "/methodology" },
     { label: "Pricing", path: "/pricing" },
     { label: "All Tools →", path: "/tools" },
-    { label: "Get early access", path: "/join" },
+    { label: "Join Free", path: "/join" },
   ];
 
   const isMoreActive = SECONDARY_NAV.some(s => location.pathname.startsWith(s.path.split("?")[0]));
@@ -254,10 +261,10 @@ export function TopBar() {
             <PersonaChip />
           ) : (
             <Link
-              to="/join"
+              to="/pricing"
               className="hidden sm:inline-flex whitespace-nowrap font-sans text-label text-primary hover-btn"
             >
-              Get early access →
+              See pricing →
             </Link>
           )}
 
@@ -330,6 +337,9 @@ export function TopBar() {
           </button>
           <Link to="/signal-alerts" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
             Signals
+          </Link>
+          <Link to="/pricing" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
+            Pricing
           </Link>
           {user ? (
             <Link to="/career-intelligence" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">

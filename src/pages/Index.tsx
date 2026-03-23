@@ -198,10 +198,10 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 See the receipts →
               </button>
               <Link
-                to="/join"
+                to="/pricing"
                 className="font-sans text-caption text-muted-foreground mt-2.5 inline-block hover:underline"
               >
-                Launching April 6 — get early access →
+                See pricing & plans →
               </Link>
             </div>
           </div>

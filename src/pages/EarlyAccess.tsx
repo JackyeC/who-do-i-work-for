@@ -130,7 +130,7 @@ export default function EarlyAccess() {
                 color: "#F0C040",
               }}
             >
-              Early Access &nbsp;·&nbsp; April 6, 2026
+              Join WDIWF &nbsp;·&nbsp; Now Live
             </span>
 
             {/* Headline */}
@@ -228,8 +228,8 @@ export default function EarlyAccess() {
               You're on the list.
             </h2>
             <p className="text-white/50 text-sm leading-relaxed mb-6">
-              We'll reach out before April 6. In the meantime, the public record
-              isn't going anywhere.
+              Welcome to WDIWF. The public record
+              isn't going anywhere — and neither are we.
             </p>
             <Link
               to="/browse"

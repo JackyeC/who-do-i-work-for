@@ -302,7 +302,7 @@ export default function SampleDossier() {
               <ArrowRight className="w-4 h-4" />
             </a>
             <p className="text-xs mt-3" style={{ color: dimmed }}>
-              Sign up for early access and your agent starts working in 24 hours.
+              Sign up and your agent starts working in 24 hours.
             </p>
           </div>
         </div>

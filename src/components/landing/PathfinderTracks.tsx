@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Compass, Bot, Target, Users, Rocket, ArrowRight, CheckCircle2, Loader2, Heart, Eye } from "lucide-react";
+import { Compass, Bot, Target, Rocket, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -16,68 +16,20 @@ const tracks = [
     priceNote: "Registration required",
     period: "",
     mode: "free" as const,
-    hook: "Start for Free.",
-    description: "Calibrate your DNA and join 1,000+ career researchers for weekly clarity.",
-    action: "Unlock DNA Calibration",
+    hook: "Start Here.",
+    description: "Calibrate your Workplace DNA and access the public intelligence dashboard. See what most job boards won't show you.",
+    action: "Create Free Account",
     features: [
       "Workplace DNA Calibration results",
       "Public Intelligence Dashboard access",
-      "Monday Momentum newsletter",
-      "Follow Jackye on LinkedIn & YouTube",
-    ],
-  },
-  {
-    number: 1.5,
-    name: "The Believer",
-    icon: Heart,
-    price: "$3",
-    priceNote: "",
-    period: "/mo",
-    mode: "subscription" as const,
-    priceId: "price_believer_monthly_placeholder",
-    annualPrice: "$2",
-    annualPeriod: "/mo",
-    annualPriceNote: "billed annually",
-    annualPriceId: "price_believer_annual_placeholder",
-    hook: "Show up.",
-    subtitle: "Your first step into the W? ecosystem.",
-    description: "Support the mission and stay in the loop.",
-    action: "Become a Believer",
-    features: [
-      "Monthly Clarity Newsletter (Monday Momentum)",
-      "Access to the Public Intelligence Dashboard",
-      "One AI job-link audit per month",
-      "Community access + Jackye's weekly read",
-    ],
-  },
-  {
-    number: 1.7,
-    name: "The Watcher",
-    icon: Eye,
-    price: "$9",
-    priceNote: "",
-    period: "/mo",
-    mode: "subscription" as const,
-    priceId: "price_watcher_monthly_placeholder",
-    annualPrice: "$7",
-    annualPeriod: "/mo",
-    annualPriceNote: "billed annually",
-    annualPriceId: "price_watcher_annual_placeholder",
-    hook: "Stay alert.",
-    subtitle: "For career researchers who want the signals.",
-    description: "Weekly employer alerts before they hit the news.",
-    action: "Start Watching",
-    features: [
-      "Everything in The Believer",
-      "5 AI job-link audits per month",
-      "Weekly Signal Alerts (employer red flags)",
-      "Workplace DNA Calibration results",
-      "Early access to new W? features",
+      "Monday Momentum weekly newsletter",
+      "Receipts — free company investigations",
+      "Community access",
     ],
   },
   {
     number: 2,
-    name: "The Scout",
+    name: "Pro",
     icon: Bot,
     price: "$19",
     priceNote: "",
@@ -86,60 +38,43 @@ const tracks = [
     priceId: "price_1TCdD87Qj0W6UtN9NBt8Wtb9",
     annualPrice: "$15",
     annualPeriod: "/mo",
-    annualPriceNote: "billed annually",
+    annualPriceNote: "billed annually ($180/yr)",
     // TODO: Create annual Stripe price and replace this placeholder
     annualPriceId: "price_scout_annual_placeholder",
     hook: "Your AI Coach.",
-    description: "24/7 values-audit of any job link. Know before you apply.",
-    action: "Activate AI Coach",
+    description: "Unlimited AI-powered audits on any job link. Values alignment scoring, real-time employer alerts, and direct access to Ask Jackye.",
+    action: "Go Pro",
     features: [
       "Unlimited AI job-link audits",
       "Values alignment scoring",
-      "Real-time signal alerts",
+      "Weekly Signal Alerts (employer red flags)",
       "Ask Jackye — unlimited questions",
+      "Everything in Explorer",
     ],
   },
   {
     number: 3,
-    name: "The Strategist",
+    name: "The Dossier",
     icon: Target,
-    price: "$149",
+    price: "$199",
     priceNote: "",
     period: " one-time",
     mode: "payment" as const,
     priceId: "price_1TCdDA7Qj0W6UtN9VPMXRkyY",
-    hook: "The Audit.",
-    description: "Deep-dive dossier for one specific interview. Walk in prepared.",
+    hook: "Walk In Prepared.",
+    description: "A deep-dive employer intelligence report built for one specific company and interview. Data-backed negotiation prep included.",
     action: "Get My Dossier",
     popular: true,
     features: [
       "Full employer intelligence dossier",
-      "Negotiation talking points",
-      "Compensation benchmarks (BLS)",
+      "Compensation benchmarks (BLS data)",
+      "Negotiation talking points & scripts",
       "Interview intelligence brief",
+      "Red flag summary with sources",
     ],
   },
   {
     number: 4,
-    name: "The Partner",
-    icon: Users,
-    price: "$299",
-    priceNote: "",
-    period: " one-time",
-    mode: "payment" as const,
-    priceId: "price_1TCdDB7Qj0W6UtN9VEaLssdN",
-    hook: "The Session.",
-    description: "45-min 1-on-1 strategy session with Jackye Clayton.",
-    action: "Book Your Session",
-    features: [
-      "45-minute 1-on-1 with Jackye",
-      "Personalized career strategy",
-      "Offer negotiation coaching",
-      "Post-session action plan",
-    ],
-  },
-  {
-    number: 5,
     name: "The Executive",
     icon: Rocket,
     price: "$999",
@@ -147,19 +82,16 @@ const tracks = [
     period: "/year",
     mode: "subscription" as const,
     priceId: "price_1TCTiJ7Qj0W6UtN9hARvCvgh",
-    annualPrice: "$799",
-    annualPeriod: "/year",
-    annualPriceNote: "",
-    // TODO: Create annual Stripe price and replace this placeholder
-    annualPriceId: "price_executive_annual_placeholder",
-    hook: "The Autopilot.",
-    description: "Full search management + Priority access. Your career, on cruise control.",
+    hook: "Career On Autopilot.",
+    description: "Full-service career management. Jackye and the WDIWF intelligence engine working for you year-round.",
     action: "Go Executive",
     features: [
       "Apply When It Counts™ placement engine",
       "Full career mapping & 5-year plan",
-      "Priority 1-on-1 access to Jackye",
-      "All Scout + Strategist features",
+      "Quarterly 1-on-1 strategy sessions with Jackye",
+      "Priority response within 24 hours",
+      "All Pro + Dossier features included",
+      "Dedicated Slack channel for ongoing support",
     ],
   },
 ];
@@ -170,7 +102,7 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [isAnnual, setIsAnnual] = useState(false);
 
-  // On homepage: show only first 3 tiers. On /pricing: show all 5.
+  // On homepage: show first 3 tiers. On /pricing: show all 4.
   const visibleTracks = showAll ? tracks : tracks.slice(0, 3);
 
   const handleTrackAction = async (track: typeof tracks[0]) => {
@@ -283,7 +215,7 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
         <div className={cn(
           "grid gap-px bg-border border border-border",
           showAll
-            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
             : "grid-cols-1 md:grid-cols-3"
         )}>
           {visibleTracks.map((track) => {
@@ -379,7 +311,7 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
               See all plans <ArrowRight className="w-3.5 h-3.5" />
             </button>
             <p className="text-xs text-muted-foreground mt-2">
-              Including 1-on-1 sessions with Jackye and full career autopilot.
+              Including deep-dive dossiers and full career management.
             </p>
           </div>
         )}

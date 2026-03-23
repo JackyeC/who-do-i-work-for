@@ -86,7 +86,7 @@ export default function Hire() {
 
       <div className="text-center max-w-2xl">
         <p className="text-xs uppercase tracking-[3px] font-semibold mb-4" style={{ color: "#f0c040" }}>
-          Coming April 6th
+          Now Available
         </p>
 
         <h1
