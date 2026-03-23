@@ -24,6 +24,8 @@ import {
   LogIn, LogOut, Compass, Flame, Shield,
   Bookmark, Inbox, MessageSquare, Columns3, FileEdit, Mic,
 } from "lucide-react";
+import logoSquare from "@/assets/wdiwf-logo-square.png";
+import logoNav from "@/assets/wdiwf-logo-nav-light.png";
 
 /* ------------------------------------------------------------------ */
 /*  Nav structure                                                      */
