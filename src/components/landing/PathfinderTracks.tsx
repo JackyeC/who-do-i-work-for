@@ -283,7 +283,7 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
         <div className={cn(
           "grid gap-px bg-border border border-border",
           showAll
-            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             : "grid-cols-1 md:grid-cols-3"
         )}>
           {visibleTracks.map((track) => {
