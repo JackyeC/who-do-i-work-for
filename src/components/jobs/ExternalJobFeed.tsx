@@ -46,7 +46,24 @@ export function ExternalJobFeed() {
     retry: 1,
   });
 
-  const jobs = data?.jobs || [];
+  // Only show HR / People / Talent roles relevant to our audience
+  const HR_KEYWORDS = [
+    "talent", "recruiter", "recruiting", "recruitment",
+    "hr", "human resources", "people ops", "people operations",
+    "people partner", "hrbp", "hr business partner",
+    "deib", "dei", "diversity", "equity", "inclusion",
+    "compensation", "benefits", "total rewards",
+    "workforce", "organizational development",
+    "people team", "people strategy", "employee experience",
+    "talent acquisition", "employer brand",
+    "learning and development", "l&d",
+    "culture", "employee relations",
+  ];
+
+  const jobs = (data?.jobs || []).filter((job) => {
+    const text = `${job.title} ${job.category || ""}`.toLowerCase();
+    return HR_KEYWORDS.some((kw) => text.includes(kw));
+  });
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
