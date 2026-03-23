@@ -133,32 +133,32 @@ export function BetaFeedbackWidget() {
 
                 <div className="space-y-2">
                   <button
-                    onClick={() => handleCheckout(STRIPE_TIERS.candidate.price_id)}
+                    onClick={() => handleCheckout(STRIPE_TIERS.scout.price_id)}
                     disabled={checkoutLoading}
                     className="w-full flex items-center justify-between p-3 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-all text-left group"
                   >
                     <div>
-                      <span className="text-sm font-semibold text-foreground block">Candidate</span>
-                      <span className="text-xs text-muted-foreground font-mono">10 scans · 5 offer checks · all layers</span>
+                      <span className="text-sm font-semibold text-foreground block">Scout</span>
+                      <span className="text-xs text-muted-foreground font-mono">AI coach · unlimited audits · signal alerts</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono font-bold text-foreground">$29</span>
+                      <span className="font-mono font-bold text-foreground">$19</span>
                       <span className="text-xs text-muted-foreground">/mo</span>
                     </div>
                   </button>
 
                   <button
-                    onClick={() => handleCheckout(STRIPE_TIERS.professional.price_id)}
+                    onClick={() => handleCheckout(STRIPE_TIERS.executive_autopilot.price_id)}
                     disabled={checkoutLoading}
                     className="w-full flex items-center justify-between p-3 rounded-xl border border-border/50 bg-card hover:bg-muted/50 transition-all text-left"
                   >
                     <div>
-                      <span className="text-sm font-semibold text-foreground block">Professional</span>
-                      <span className="text-xs text-muted-foreground font-mono">50 scans · dossier export · EVP audit</span>
+                      <span className="text-sm font-semibold text-foreground block">Executive</span>
+                      <span className="text-xs text-muted-foreground font-mono">full autopilot · all features · priority access</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono font-bold text-foreground">$99</span>
-                      <span className="text-xs text-muted-foreground">/mo</span>
+                      <span className="font-mono font-bold text-foreground">$999</span>
+                      <span className="text-xs text-muted-foreground">/yr</span>
                     </div>
                   </button>
                 </div>

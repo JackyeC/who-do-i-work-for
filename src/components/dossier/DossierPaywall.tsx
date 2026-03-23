@@ -61,28 +61,29 @@ export function DossierPaywall({ companyId, companyName, layerIndex }: DossierPa
         ) : tier === "free" ? (
           <Button
             size="lg"
-            onClick={() => handleSubscribe(STRIPE_TIERS.candidate.price_id)}
+            onClick={() => handleSubscribe(STRIPE_TIERS.scout.price_id)}
             disabled={checkoutLoading}
             className="gap-2"
           >
             {checkoutLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-            Upgrade to Candidate — $29/mo
+            Activate Scout — $19/mo
           </Button>
         ) : (
           <Button
             size="lg"
-            onClick={() => handleSubscribe(STRIPE_TIERS.professional.price_id)}
+            onClick={() => handleSubscribe(STRIPE_TIERS.strategist.price_id)}
             disabled={checkoutLoading}
             className="gap-2"
           >
             {checkoutLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-            Upgrade to Professional — $99/mo
+            Get Strategist Dossier — $149
           </Button>
         )}
 
         <div className="mt-6 flex items-center justify-center gap-6 text-micro text-muted-foreground">
-          <span>Candidate $29/mo · 10 scans</span>
-          <span>Professional $99/mo · 50 scans</span>
+          <span>Scout $19/mo · AI coach</span>
+          <span>Strategist $149 · full dossier</span>
+          <span>Executive $999/yr · autopilot</span>
         </div>
       </div>
     </div>
