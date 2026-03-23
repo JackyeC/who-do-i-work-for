@@ -114,7 +114,7 @@ export function ExternalJobFeed() {
               </p>
             ) : jobs.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4 text-center">
-                No external listings found right now.
+                No HR/People/Talent roles in this feed right now — check back soon.
               </p>
             ) : (
               <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
