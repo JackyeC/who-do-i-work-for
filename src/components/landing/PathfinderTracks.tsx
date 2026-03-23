@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Compass, Bot, Target, Rocket, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { Compass, Bot, Target, Rocket, ArrowRight, CheckCircle2, Loader2, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -219,6 +219,12 @@ export function PathfinderTracks({ showAll = false }: { showAll?: boolean }) {
                     </>
                   )}
                 </Button>
+                {track.mode !== "free" && (
+                  <div className="flex items-center justify-center gap-1 mt-2 text-muted-foreground/50">
+                    <Lock className="w-3 h-3" />
+                    <span className="font-mono text-[10px] tracking-wider uppercase">Secured by Stripe</span>
+                  </div>
+                )}
               </div>
           ))}
         </div>

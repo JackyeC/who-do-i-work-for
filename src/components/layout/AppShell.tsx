@@ -13,7 +13,7 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   const location = useLocation();
   const isHomepage = location.pathname === "/";
-  const noShellRoutes = ["/interview", "/recruiter"];
+  const noShellRoutes = ["/interview", "/recruiter", "/pricing"];
   const hideShell = noShellRoutes.includes(location.pathname);
 
   if (hideShell) {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { FileSearch, Loader2, ArrowRight, Shield, Zap } from "lucide-react";
+import { FileSearch, Loader2, ArrowRight, Shield, Zap, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -63,6 +63,10 @@ export function CareerFitReportCTA({ companyName: initialCompany, variant = "car
             Get Report
           </Button>
         </div>
+        <div className="flex items-center gap-1 mt-2 text-muted-foreground/50">
+          <Lock className="w-3 h-3" />
+          <span className="font-mono text-[10px] tracking-wider uppercase">Secured by Stripe</span>
+        </div>
       </div>
     );
   }
@@ -106,6 +110,10 @@ export function CareerFitReportCTA({ companyName: initialCompany, variant = "car
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
               Get Your Report
             </Button>
+            <div className="flex items-center justify-center gap-1 mt-1.5 text-muted-foreground/50">
+              <Lock className="w-3 h-3" />
+              <span className="font-mono text-[10px] tracking-wider uppercase">Secured by Stripe</span>
+            </div>
           </div>
         </div>
       </CardContent>

@@ -9,7 +9,7 @@ const corsHeaders = {
 // Products available for anonymous purchase
 const ANONYMOUS_PRODUCTS: Record<string, { priceId: string; name: string }> = {
   "career-fit-report": {
-    priceId: "price_1TEARm7Qj0W6UtN9iIolmwsp",
+    priceId: "price_1TEGpC89MyCOs8yvhPDDHF8l",
     name: "Career Fit Report",
   },
 };

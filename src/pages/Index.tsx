@@ -116,7 +116,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           HERO — "The Flip Moment"
       ══════════════════════════════════════════════════════════════════ */}
       <section
-        className="relative flex flex-col items-center justify-center px-6 text-center min-h-screen bg-background"
+        className="relative flex flex-col items-center justify-center px-6 text-center bg-background"
+        style={{ minHeight: '80vh', paddingTop: '64px', paddingBottom: '64px' }}
       >
         {/* Grain overlay */}
         <svg className="fixed inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0, opacity: 0.04 }}>
@@ -156,50 +157,49 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             Stop applying. Start aligning.
           </h1>
 
-          {/* Subheadlines */}
+          {/* Subheadline — single, tighter */}
           <p
             className="font-sans text-muted-foreground text-center max-w-[580px]"
             style={{
               fontSize: "17px",
               lineHeight: 1.7,
-              marginTop: "24px",
+              marginTop: "20px",
               opacity: 0,
               animation: "heroFadeIn 0.6s ease 0.9s forwards",
             }}
           >
             No company is perfect. But some are perfect for you.
           </p>
-          <p
-            className="font-sans text-muted-foreground/70 text-center max-w-[520px]"
-            style={{
-              fontSize: "15px",
-              lineHeight: 1.7,
-              marginTop: "12px",
-              opacity: 0,
-              animation: "heroFadeIn 0.6s ease 1.2s forwards",
-            }}
-          >
-            We don't show you more jobs. We show you better decisions.
-          </p>
 
-          {/* CTA */}
+          {/* CTA — immediately after subheadline */}
           <div
             style={{
-              marginTop: "36px",
+              marginTop: "28px",
               opacity: 0,
-              animation: "heroFadeIn 0.5s ease 1.5s forwards",
+              animation: "heroFadeIn 0.5s ease 1.1s forwards",
             }}
           >
-            <div className="flex flex-col items-center">
-              <button
-                onClick={() => navigate("/receipts")}
-                className="hover-btn bg-primary text-primary-foreground font-sans text-base font-semibold px-11 py-4 rounded-full border-none cursor-pointer"
-              >
-                See the receipts →
-              </button>
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => navigate("/receipts")}
+                  className="hover-btn bg-primary text-primary-foreground font-sans text-base font-semibold px-11 py-4 rounded-full border-none cursor-pointer"
+                >
+                  See the receipts →
+                </button>
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('demo-dossier');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="font-sans text-base font-medium px-8 py-4 rounded-full border border-border bg-card text-foreground hover:border-primary/40 transition-all cursor-pointer"
+                >
+                  See a sample report
+                </button>
+              </div>
               <Link
                 to="/pricing"
-                className="font-sans text-caption text-muted-foreground mt-2.5 inline-block hover:underline"
+                className="font-sans text-caption text-muted-foreground inline-block hover:underline"
               >
                 See pricing & plans →
               </Link>
