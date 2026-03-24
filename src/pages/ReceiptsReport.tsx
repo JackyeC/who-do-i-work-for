@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { COMPANY_REPORTS, type CompanyReportData } from "@/data/receiptsData";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -1155,95 +1156,11 @@ function ConnectedDotsSection({ data }: { data: MetaReportData }) {
 }
 
 // ---------------------------------------------------------------------------
-// Demo Report Component (for Google, Amazon)
+// Generalized Report Component (for all companies except Meta)
 // ---------------------------------------------------------------------------
 
-const DEMO_INTEGRITY = {
-  google: {
-    quotes: [
-      { text: "Our mission is to organize the world's information and make it universally accessible and useful.", source: "Google Mission Statement, about.google" },
-      { text: "We are committed to significantly increasing the leadership representation of underrepresented groups.", source: "Google Diversity Report, 2022 (discontinued)" },
-    ],
-    findings: [
-      "Published diversity reports annually from 2014 to 2022 — then stopped.",
-      "Hiring targets for underrepresented groups eliminated in February 2025, citing 'legal landscape changes.'",
-      "PAC spending tilted 53% Republican in 2023–2024 cycle, up from 48% in 2021–2022.",
-      "Lobbied on 24 bills in 2024 including AI regulation, antitrust, and content moderation.",
-    ],
-  },
-  amazon: {
-    quotes: [
-      { text: "We strive to be Earth's most customer-centric company.", source: "Amazon Leadership Principles, aboutamazon.com" },
-      { text: "Diversity and inclusion are good for business — and more fundamentally — simply right.", source: "Amazon DEI page, 2023 (removed)" },
-    ],
-    findings: [
-      "14,000+ HR and corporate employees laid off in 2023–2024 restructuring.",
-      "DEI programs described as 'wound down' in internal communications, December 2024.",
-      "WARN Act: 4,085 employees affected in Washington state alone (2022–2026).",
-      "Lobbying spend: $21.8M in 2024, up 18% year-over-year, focused on antitrust and labor regulation.",
-    ],
-  },
-};
-
-const DEMO_LABOR = {
-  google: [
-    { date: "Jan 2023", title: "12,000 employees laid off (~6% of workforce)", description: "CEO Sundar Pichai cited 'economic reality' and over-hiring during pandemic growth period. Affected every major division." },
-    { date: "Throughout 2024", title: "Additional cuts across YouTube, Hardware, and Recruiting", description: "Targeted layoffs continued with reductions in YouTube content ops, Pixel hardware team, and internal recruiting organization." },
-    { date: "2024–2025", title: "Role reposting patterns detected in engineering", description: "Multiple engineering positions reposted within 30–60 days of layoffs, suggesting backfill-at-lower-cost strategy." },
-    { date: "2024–2025", title: "Hiring freeze in non-AI roles", description: "Internal communications indicated a company-wide hiring freeze for all roles not directly related to AI/ML product development." },
-    { date: "Jan 2023", title: "WARN Act filings in California and New York", description: "California EDD and NY Department of Labor received WARN notices covering thousands of affected workers across Mountain View, Sunnyvale, and New York City offices." },
-    { date: "Feb 2025", title: "Hiring diversity targets eliminated", description: "Internal memo confirmed all demographic hiring goals would be discontinued, citing 'legal landscape changes.'" },
-  ],
-  amazon: [
-    { date: "Nov 2022 – Mar 2023", title: "27,000 layoffs across two major waves", description: "First wave (Nov 2022): 18,000 employees, the largest layoff in company history. Second wave (Mar 2023): 9,000 additional cuts targeting AWS, Twitch, advertising, and PXT (HR) divisions." },
-    { date: "2023–2024", title: "14,000 additional corporate cuts", description: "Continued restructuring affecting corporate, operations, and HR teams across multiple business units." },
-    { date: "2022–2026", title: "WARN Act: 4,085 employees in Washington state", description: "WARN filings submitted to Washington Employment Security Department covering Seattle, Bellevue, and Kent facilities." },
-    { date: "Sep 2024", title: "Mandatory return-to-office 5 days/week", description: "CEO Andy Jassy mandated full-time in-office work for all corporate employees, reversing hybrid work policies established during pandemic." },
-    { date: "2021–Present", title: "Union activity at multiple fulfillment centers (ALU)", description: "Amazon Labor Union (ALU) won historic election at Staten Island JFK8 facility. Ongoing organizing efforts at warehouses in Alabama, Kentucky, and California despite company opposition." },
-    { date: "Dec 2024", title: "DEI programs quietly wound down", description: "Internal communications indicated diversity programs being 'streamlined' and 'deprioritized.' DEI page removed from public website." },
-  ],
-};
-
-const DEMO_SAFETY = {
-  google: [
-    "OSHA complaint filed at a Google data center facility in 2023 regarding contractor working conditions.",
-    "No major workplace safety violations on public OSHA record for Google corporate offices.",
-    "Psychological safety concerns raised in internal Googler surveys (leaked 2024) — employees cited fear of retaliation for dissent and 'culture of silence' around layoff decisions.",
-    "Antitrust ruling: Found to hold illegal monopoly in search (August 2024, DOJ v. Google).",
-    "ADF Viewpoint Diversity Score: 12% (2025 index).",
-  ],
-  amazon: [
-    "OSHA cited Amazon 17 times for safety violations at warehouses between 2022 and 2024, including ergonomic hazards and pace-of-work injuries.",
-    "Injury rates at Amazon warehouses documented as 2× the industry average, per Strategic Organizing Center annual reports using Amazon's own data.",
-    "Settlement reached with New York Attorney General over COVID-19 safety protocols at Staten Island and NYC-area fulfillment centers.",
-    "Largest federal contractor in tech sector — $15B+ in active government contracts (AWS GovCloud).",
-    "FTC antitrust complaint filed September 2023, alleging monopoly maintenance practices.",
-    "Delivery driver classification disputes ongoing across multiple states.",
-  ],
-};
-
-const DEMO_DOTS = {
-  google: [
-    "Sundar Pichai donated to Republican candidates in the 2024 election cycle.",
-    "Board interlocks: Stanford University (multiple board members hold faculty/trustee positions), Salesforce (shared board member), John Doerr (KPCB venture capital, major Google investor and board advisor).",
-    "53% of Google's lobbying spend in 2024 was directed at AI regulation — pushing for federal preemption of state-level AI laws.",
-    "8 external lobbying firms retained in 2024, spending $13.4M on 24 bills.",
-    "Former Google policy leads now holding positions at FTC, FCC, and White House OSTP.",
-    "PAC donated to members on both Judiciary and Commerce committees overseeing tech regulation.",
-  ],
-  amazon: [
-    "Andy Jassy PAC contributions leaned Republican in 2023–2024 cycle.",
-    "Board interlocks: JPMorgan Chase (Jamie Dimon — shared advisory relationships), Starbucks (overlapping board/executive network).",
-    "Amazon lobbying focused on four key areas: antitrust reform, labor regulation, AI governance, and drone delivery authorization.",
-    "12 external lobbying firms retained in 2024, spending $21.8M — highest in company history.",
-    "Former Amazon executives now serving on federal advisory boards for commerce and logistics.",
-    "PAC contributions concentrated in Commerce and Labor committee members across both parties.",
-  ],
-};
-
-function DemoReceiptsReport({ data, slug }: { data: { companyName: string; ticker: string; location: string; products: string; stats: any[] }; slug: string }) {
+function GeneralizedReport({ data }: { data: CompanyReportData }) {
   const [activeTab, setActiveTab] = useState<TabId>("integrity-gap");
-  const key = slug as "google" | "amazon";
 
   return (
     <div className="min-h-screen bg-background">
@@ -1253,16 +1170,13 @@ function DemoReceiptsReport({ data, slug }: { data: { companyName: string; ticke
         </Link>
 
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">{data.companyName}</h1>
-            <Badge variant="secondary" className="text-xs">Demo Data</Badge>
-          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">{data.companyName}</h1>
           <p className="text-muted-foreground text-sm mt-2 font-mono">{data.ticker} · {data.location} · {data.products}</p>
-          <Badge className="mt-3 bg-primary/15 text-primary border-primary/30">March 2026</Badge>
+          <Badge className="mt-3 bg-primary/15 text-primary border-primary/30">{data.reportDate}</Badge>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
-          {data.stats.map((s: any) => (
+          {data.stats.map((s) => (
             <Card key={s.label} className="bg-card border border-border">
               <CardContent className="p-4 text-center">
                 <p className="text-xs text-muted-foreground">{s.label}</p>
@@ -1290,95 +1204,254 @@ function DemoReceiptsReport({ data, slug }: { data: { companyName: string; ticke
 
         <AnimatePresence mode="wait">
           <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
+
+            {/* INTEGRITY GAP */}
             {activeTab === "integrity-gap" && (
               <div className="space-y-6">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 01</p>
-                    <Badge variant="secondary" className="text-xs">Demo Data</Badge>
-                  </div>
+                  <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 01</p>
                   <h2 className="text-2xl font-bold text-foreground mt-1">Integrity Gap</h2>
                   <p className="text-muted-foreground text-sm mt-1">The gap between what a company says and what it does.</p>
                 </div>
+
                 <h3 className="text-lg font-semibold text-foreground">What They Say</h3>
-                {DEMO_INTEGRITY[key]?.quotes.map((q, i) => <QuoteCard key={i} q={q} />)}
-                <h3 className="text-lg font-semibold text-foreground">What We Found</h3>
-                {DEMO_INTEGRITY[key]?.findings.map((f, i) => (
-                  <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <span className="text-primary mt-0.5 shrink-0">›</span>
-                    <span>{f}</span>
-                  </div>
+                <p className="text-sm text-muted-foreground">Per <a href={data.integrityGap.missionSourceUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">company website</a>:</p>
+                {data.integrityGap.missionQuotes.map((q, i) => <QuoteCard key={i} q={q} />)}
+                <p className="text-sm text-muted-foreground">{data.integrityGap.diversityNote}</p>
+
+                <h3 className="text-lg font-semibold text-foreground">PAC Activity</h3>
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">PAC Name:</strong> {data.integrityGap.pacName} · <strong className="text-foreground">FEC ID:</strong> {data.integrityGap.fecId}
+                </p>
+                <DataTable title="2023\u20132024 PAC Cycle Summary" headers={["Metric", "Amount"]}>
+                  {data.integrityGap.pacSummary.map((row) => (
+                    <tr key={row.metric}>
+                      <Td highlight>{row.metric}</Td>
+                      <Td mono className={row.color === "red" ? "text-destructive" : row.color === "blue" ? "text-blue-400" : undefined}>{row.amount}</Td>
+                    </tr>
+                  ))}
+                </DataTable>
+                <SourceLine urls={[{ text: data.integrityGap.pacSourceLabel, url: data.integrityGap.pacSourceUrl }]} />
+                <p className="text-sm text-muted-foreground">{data.integrityGap.pacAnalysis}</p>
+
+                <h3 className="text-lg font-semibold text-foreground">Lobbying Expenditures</h3>
+                <DataTable title="Annual Lobbying Spending" headers={["Year", "Total Spent", "YoY Change"]}>
+                  {data.integrityGap.lobbyingYears.map((y) => (
+                    <tr key={y.year}>
+                      <Td highlight>{y.year}</Td>
+                      <Td mono>{y.totalSpent}</Td>
+                      <Td mono className={y.changeColor === "red" ? "text-destructive" : y.changeColor === "amber" ? "text-amber-400" : undefined}>{y.yoyChange}</Td>
+                    </tr>
+                  ))}
+                </DataTable>
+                <SourceLine urls={data.integrityGap.lobbyingSourceUrls} />
+                <p className="text-sm text-muted-foreground">{data.integrityGap.lobbyingAnalysis}</p>
+
+                <h3 className="text-lg font-semibold text-foreground">Key Findings</h3>
+                {data.integrityGap.keyFindings.map((f, i) => (
+                  <KeyFinding key={i}>{f}</KeyFinding>
                 ))}
-                <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>
               </div>
             )}
+
+            {/* LABOR IMPACT */}
             {activeTab === "labor-impact" && (
               <div className="space-y-6">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 02</p>
-                    <Badge variant="secondary" className="text-xs">Demo Data</Badge>
-                  </div>
+                  <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 02</p>
                   <h2 className="text-2xl font-bold text-foreground mt-1">Labor Impact</h2>
-                  <p className="text-muted-foreground text-sm mt-1">How corporate decisions affect the workforce.</p>
+                  <p className="text-muted-foreground text-sm mt-1">What happened to workers.</p>
                 </div>
-                <div className="relative pl-8 space-y-6 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-px before:bg-border">
-                  {DEMO_LABOR[key]?.map((e, i) => (
-                    <div key={i} className="relative">
-                      <div className="absolute -left-5 top-1.5 w-3 h-3 rounded-full ring-2 ring-background bg-destructive" />
-                      <p className="font-mono text-xs text-muted-foreground mb-1">{e.date}</p>
-                      <h4 className="text-sm font-semibold text-foreground">{e.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-1">{e.description}</p>
-                    </div>
+
+                <h3 className="text-lg font-semibold text-foreground">DEI Program Changes \u2014 {data.laborImpact.deiDate}</h3>
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">Status:</strong> {data.laborImpact.deiStatus}
+                </p>
+                <p className="text-sm text-muted-foreground">{data.laborImpact.deiDetails}</p>
+                <SourceLine urls={data.laborImpact.deiSourceUrls} />
+
+                <DataTable title="Programs Changed" headers={["Program", "Status"]}>
+                  {data.laborImpact.programChanges.map((p) => (
+                    <tr key={p.program}>
+                      <Td highlight>{p.program}</Td>
+                      <Td>
+                        {p.badgeColor === "red" ? (
+                          <span className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium bg-destructive/20 text-destructive">{p.status}</span>
+                        ) : p.badgeColor === "amber" ? (
+                          <span className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium bg-amber-500/20 text-amber-400">{p.status}</span>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">{p.status}</span>
+                        )}
+                      </Td>
+                    </tr>
                   ))}
-                </div>
-                <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>
+                </DataTable>
+
+                <h3 className="text-lg font-semibold text-foreground">Layoff Timeline</h3>
+                <Timeline entries={data.laborImpact.layoffTimeline} />
+
+                <KeyFinding label="Total Impact" variant="red">
+                  <p>{data.laborImpact.totalLayoffs}</p>
+                </KeyFinding>
+
+                {data.laborImpact.warnFilings.length > 0 && (
+                  <>
+                    <h3 className="text-lg font-semibold text-foreground">WARN Act Filings</h3>
+                    <DataTable title="Selected WARN Filings" headers={["Location", "Employees", "Notice Date", "Layoff Date"]}>
+                      {data.laborImpact.warnFilings.map((f, i) => (
+                        <tr key={i}>
+                          <Td highlight>{f.location}</Td>
+                          <Td mono>{f.employees}</Td>
+                          <Td mono>{f.noticeDate}</Td>
+                          <Td mono>{f.layoffDate}</Td>
+                        </tr>
+                      ))}
+                    </DataTable>
+                    {data.laborImpact.warnSourceUrl && <SourceLine urls={[{ text: data.laborImpact.warnSourceLabel, url: data.laborImpact.warnSourceUrl }]} />}
+                  </>
+                )}
+                <p className="text-sm text-muted-foreground font-mono text-xs">{data.laborImpact.warnTotal}</p>
+
+                {data.laborImpact.keyFindings.map((f, i) => (
+                  <KeyFinding key={i}>{f}</KeyFinding>
+                ))}
               </div>
             )}
+
+            {/* SAFETY ALERT */}
             {activeTab === "safety-alert" && (
               <div className="space-y-6">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 03</p>
-                    <Badge variant="secondary" className="text-xs">Demo Data</Badge>
-                  </div>
+                  <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 03</p>
                   <h2 className="text-2xl font-bold text-foreground mt-1">Safety Alert</h2>
-                  <p className="text-muted-foreground text-sm mt-1">Federal contracts, regulatory exposure, and accountability signals.</p>
+                  <p className="text-muted-foreground text-sm mt-1">Systemic risk indicators.</p>
                 </div>
-                {DEMO_SAFETY[key]?.map((s, i) => (
-                  <div key={i} className="flex items-start gap-2 p-3 rounded-lg border border-border bg-card">
-                    <span className="text-primary mt-0.5 shrink-0">›</span>
-                    <span className="text-sm text-foreground">{s}</span>
-                  </div>
+
+                <h3 className="text-lg font-semibold text-foreground">Federal Contractor Status</h3>
+                <div className="mb-4">
+                  <StatusBadge status="confirmed" />
+                  <span className="ml-2 text-sm text-foreground font-medium">{data.safetyAlert.federalContractStatus}</span>
+                </div>
+
+                <DataTable title="Federal Contracts" headers={["Contract", "Agency", "Amount", "Description"]}>
+                  {data.safetyAlert.federalContracts.map((c, i) => (
+                    <tr key={i}>
+                      <Td mono className="text-xs">{c.contract}</Td>
+                      <Td>{c.agency}</Td>
+                      <Td mono>{c.amount}</Td>
+                      <Td className="text-xs">{c.description}</Td>
+                    </tr>
+                  ))}
+                </DataTable>
+                <SourceLine urls={data.safetyAlert.contractSourceUrls} />
+                <p className="text-sm text-muted-foreground">{data.safetyAlert.contractAnalysis}</p>
+
+                <h3 className="text-lg font-semibold text-foreground">HRC Corporate Equality Index</h3>
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">Score:</strong> <span className="font-mono">{data.safetyAlert.hrcScore}</span>
+                </p>
+                <p className="text-sm text-muted-foreground">{data.safetyAlert.hrcDetail}</p>
+                {data.safetyAlert.hrcSourceUrls.length > 0 && <SourceLine urls={data.safetyAlert.hrcSourceUrls} />}
+
+                {data.safetyAlert.additionalFindings.length > 0 && (
+                  <>
+                    <h3 className="text-lg font-semibold text-foreground">Additional Findings</h3>
+                    {data.safetyAlert.additionalFindings.map((f, i) => (
+                      <div key={i} className="flex items-start gap-2 p-3 rounded-lg border border-border bg-card">
+                        <span className="text-primary mt-0.5 shrink-0">\u203a</span>
+                        <span className="text-sm text-foreground">{f}</span>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {data.safetyAlert.keyFindings.map((f, i) => (
+                  <KeyFinding key={i}>{f}</KeyFinding>
                 ))}
-                <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>
               </div>
             )}
+
+            {/* CONNECTED DOTS */}
             {activeTab === "connected-dots" && (
               <div className="space-y-6">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 04</p>
-                    <Badge variant="secondary" className="text-xs">Demo Data</Badge>
-                  </div>
+                  <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 04</p>
                   <h2 className="text-2xl font-bold text-foreground mt-1">Connected Dots</h2>
-                  <p className="text-muted-foreground text-sm mt-1">Following the money from corporate treasury to political influence.</p>
+                  <p className="text-muted-foreground text-sm mt-1">Follow the money and the relationships.</p>
                 </div>
-                {DEMO_DOTS[key]?.map((d, i) => (
+
+                <h3 className="text-lg font-semibold text-foreground">Revolving Door</h3>
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">Rate:</strong> <span className="font-mono">{data.connectedDots.revolvingDoorPct}</span> of lobbyists are former government officials
+                </p>
+                <p className="text-sm text-muted-foreground">{data.connectedDots.revolvingDoorDetail}</p>
+                <SourceLine urls={data.connectedDots.lobbyistSourceUrls} />
+
+                <h3 className="text-lg font-semibold text-foreground">Notable Connections</h3>
+                {data.connectedDots.notableConnections.map((c, i) => (
                   <div key={i} className="flex items-start gap-2 p-3 rounded-lg border border-border bg-card">
-                    <span className="text-primary mt-0.5 shrink-0">›</span>
-                    <span className="text-sm text-foreground">{d}</span>
+                    <span className="text-primary mt-0.5 shrink-0">\u203a</span>
+                    <span className="text-sm text-foreground">{c}</span>
                   </div>
                 ))}
-                <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>
+
+                <h3 className="text-lg font-semibold text-foreground">Pattern Analysis</h3>
+                <p className="text-sm text-muted-foreground">{data.connectedDots.patternsAnalysis}</p>
+
+                {data.connectedDots.keyFindings.map((f, i) => (
+                  <KeyFinding key={i} variant="purple">{f}</KeyFinding>
+                ))}
               </div>
             )}
           </motion.div>
         </AnimatePresence>
 
-        <p className="text-xs text-muted-foreground mt-16 italic text-center">
-          This is a demonstration report using placeholder data. Full investigation report in progress — March 2026.
-        </p>
+        {/* Receipts at a Glance */}
+        <div className="mt-16">
+          <h2 className="text-2xl font-extrabold text-foreground mb-6">The Receipts at a Glance</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border border-border">
+              <thead>
+                <tr className="bg-card">
+                  <th className="text-left px-3 py-2 border-b border-border text-muted-foreground font-medium text-xs">Category</th>
+                  <th className="text-left px-3 py-2 border-b border-border text-muted-foreground font-medium text-xs">Finding</th>
+                  <th className="text-left px-3 py-2 border-b border-border text-muted-foreground font-medium text-xs">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.receiptsAtAGlance.map((r, i) => (
+                  <tr key={i}>
+                    <Td highlight>{r.category}</Td>
+                    <Td>{r.finding}</Td>
+                    <Td><StatusBadge status={r.status} /></Td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Sources */}
+        <div className="mt-16 mb-8">
+          <h3 className="text-xl font-bold text-foreground mb-2">Sources</h3>
+          <p className="text-xs text-muted-foreground mb-6">All data sourced from public records. Dollar amounts, dates, and bill numbers drawn directly from primary sources cited below.</p>
+          <div className="space-y-2">
+            {data.sources.map((s) => (
+              <div key={s.label} className="text-sm">
+                <strong className="text-muted-foreground">{s.label}:</strong>{" "}
+                {s.links.map((l, i) => (
+                  <span key={i}>
+                    {i > 0 && " \u00b7 "}
+                    <a href={l.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{l.text}</a>
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground mt-8 italic">
+            Report compiled March 2026. This is an investigative report; it does not constitute legal or financial advice.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -1393,47 +1466,26 @@ export default function ReceiptsReport() {
   const [activeTab, setActiveTab] = useState<TabId>("integrity-gap");
 
   const companyName = slug ? COMPANY_NAMES[slug] || slug : "";
+  const companyReport = slug ? COMPANY_REPORTS[slug] : null;
 
   usePageSEO({
     title: slug === "meta" ? "Meta Platforms \u2014 The Receipts" : `${companyName} \u2014 The Receipts`,
     description:
       slug === "meta"
         ? "Full investigation report on Meta Platforms, Inc. PAC spending, DEI dismantling, WARN Act filings, lobbying expenditures, and federal contractor status."
-        : `Investigation report for ${companyName} coming soon.`,
+        : companyReport
+          ? `Investigation report on ${companyName}. PAC spending, DEI actions, lobbying, and labor impact. Every claim sourced.`
+          : `Investigation report for ${companyName} coming soon.`,
     path: `/receipts/${slug}`,
   });
 
-  // Companies with full demo reports
-  const DEMO_REPORTS: Record<string, { companyName: string; ticker: string; location: string; products: string; stats: typeof META_REPORT.stats }> = {
-    google: {
-      companyName: "ALPHABET INC. (GOOGLE)",
-      ticker: "NASDAQ: GOOGL",
-      location: "Mountain View, CA",
-      products: "Google Search, YouTube, Android, Cloud, Waymo",
-      stats: [
-        { label: "PAC Raised", value: "$478,200", detail: "2023–24 cycle" },
-        { label: "Lobbying", value: "$13.4M", detail: "2024 total" },
-        { label: "WARN Filings", value: "42", detail: "2022–2026" },
-        { label: "Diversity Reports", value: "Stopped", detail: "After 11 years", trend: "down" },
-      ],
-    },
-    amazon: {
-      companyName: "AMAZON.COM, INC.",
-      ticker: "NASDAQ: AMZN",
-      location: "Seattle, WA",
-      products: "AWS, Marketplace, Prime, Alexa, Whole Foods",
-      stats: [
-        { label: "PAC Raised", value: "$612,400", detail: "2023–24 cycle" },
-        { label: "Lobbying", value: "$21.8M", detail: "2024 total" },
-        { label: "WARN Filings", value: "87", detail: "2022–2026" },
-        { label: "HR Cuts", value: "14,000+", detail: "Programs wound down", trend: "down" },
-      ],
-    },
-  };
+  // Route to generalized report for companies with data
+  if (slug !== "meta" && companyReport) {
+    return <GeneralizedReport data={companyReport} />;
+  }
 
-  const demoReport = slug ? DEMO_REPORTS[slug] : null;
-
-  if (slug !== "meta" && !demoReport) {
+  // Coming Soon for companies without data
+  if (slug !== "meta" && !companyReport) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center px-4 py-24">
         <h2 className="text-3xl font-bold text-foreground mb-3">Report Coming Soon</h2>
@@ -1443,10 +1495,6 @@ export default function ReceiptsReport() {
         </Link>
       </div>
     );
-  }
-
-  if (demoReport) {
-    return <DemoReceiptsReport data={demoReport} slug={slug!} />;
   }
 
   const data = META_REPORT;
