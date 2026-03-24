@@ -43,7 +43,7 @@ export default function Browse() {
   usePageSEO({
     title: "Browse Companies — Employer Intelligence Directory",
     description: "Browse 200+ employer profiles with civic footprint scores, PAC spending, lobbying data, and career intelligence. Filter by industry and category.",
-    path: "/browse",
+    path: "/companies",
     jsonLd: {
       "@type": "CollectionPage",
       name: "Employer Intelligence Directory",

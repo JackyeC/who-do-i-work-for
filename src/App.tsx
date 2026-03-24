@@ -197,14 +197,15 @@ const App = () => (
                   <Route path="/dossier/guide/:slug" element={<DossierCoachingGuide />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/search" element={<SearchResults />} />
-                  <Route path="/browse" element={<Browse />} />
+                  <Route path="/companies" element={<Browse />} />
+                  <Route path="/browse" element={<Navigate to="/companies" replace />} />
                   <Route path="/methodology" element={<Methodology />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/terms" element={<TermsOfService />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
                   <Route path="/disclaimers" element={<Disclaimers />} />
                   <Route path="/about" element={<About />} />
-                  <Route path="/companies" element={<Companies />} />
+                  <Route path="/aligned-companies" element={<Companies />} />
                   <Route path="/talent" element={<ProtectedRoute><Talent /></ProtectedRoute>} />
                   <Route path="/examples" element={<Examples />} />
                   <Route path="/signals" element={<SignalFeed />} />
@@ -251,7 +252,8 @@ const App = () => (
                   <Route path="/admin/ticker" element={<AdminRoute><AdminTicker /></AdminRoute>} />
                   <Route path="/recruiting" element={<RecruitingIntelligence />} />
                   <Route path="/employer/verification-pending" element={<ProtectedRoute><EmployerVerificationPending /></ProtectedRoute>} />
-                  <Route path="/for-employers" element={<ForEmployers />} />
+                  <Route path="/for-companies" element={<ForEmployers />} />
+                  <Route path="/for-employers" element={<Navigate to="/for-companies" replace />} />
                   <Route path="/relationship-intelligence" element={<ProtectedRoute><RelationshipIntelligence /></ProtectedRoute>} />
                   <Route path="/compare" element={<CompareCompanies />} />
                   <Route path="/investigative" element={<InvestigativeExplorer />} />

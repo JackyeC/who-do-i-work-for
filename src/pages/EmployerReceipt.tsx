@@ -328,7 +328,7 @@ export default function EmployerReceipt() {
         {/* ── CTAs below receipt ── */}
         <div className="mt-8 flex gap-3 justify-center flex-wrap">
           <button
-            onClick={() => navigate("/browse")}
+            onClick={() => navigate("/companies")}
             className="bg-primary text-primary-foreground px-6 py-3 font-mono text-[0.7rem] font-semibold tracking-wider uppercase hover:brightness-110 transition-all"
           >
             Run Employer Scan

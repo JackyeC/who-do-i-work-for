@@ -206,7 +206,7 @@ export default function IntelligenceChain() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
               { label: "What Am I Supporting?", path: "/what-am-i-supporting", icon: Globe },
-              { label: "Company Intelligence", path: "/browse", icon: Search },
+              { label: "Company Intelligence", path: "/companies", icon: Search },
               { label: "Offer Intelligence", path: "/check", icon: FileText },
               { label: "Ask Jackye", path: "/ask-jackye", icon: MessageCircle },
             ].map(item => (

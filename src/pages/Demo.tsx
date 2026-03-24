@@ -407,7 +407,7 @@ const Demo = () => {
                 Create Free Account <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
-            <Link to="/browse">
+            <Link to="/companies">
               <Button size="lg" variant="outline" className="font-mono text-xs uppercase tracking-wider gap-2">
                 <Search className="w-4 h-4" /> Browse Companies
               </Button>

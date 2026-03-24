@@ -7,7 +7,7 @@ const ForEmployers = () => {
     title: "For Companies — WDIWF",
     description:
       "The best talent is doing their homework. Is your company ready for the audit? Get ahead of your Integrity Score.",
-    path: "/for-employers",
+    path: "/for-companies",
   });
 
   return (

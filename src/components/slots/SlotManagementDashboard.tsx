@@ -37,7 +37,7 @@ export function SlotManagementDashboard() {
           <p className="text-sm text-muted-foreground mb-4">
             Search for a company and track it to unlock the full intelligence dossier.
           </p>
-          <Button size="sm" onClick={() => navigate("/browse")}>
+          <Button size="sm" onClick={() => navigate("/companies")}>
             Browse Companies
           </Button>
         </div>

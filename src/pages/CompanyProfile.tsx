@@ -257,7 +257,7 @@ export default function CompanyProfile() {
     const companyNameFromSlug = id?.replace(/-/g, ' ') || "this company";
     return (
       <div className="flex-1 container mx-auto px-4 py-12 max-w-2xl">
-        <Link to="/browse" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-6">
+        <Link to="/companies" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-6">
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to directory
         </Link>
@@ -289,7 +289,7 @@ export default function CompanyProfile() {
     <ContentProtector className="flex flex-col min-h-0">
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Breadcrumb */}
-        <Link to="/browse" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5">
+        <Link to="/companies" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5">
           <ArrowLeft className="w-3.5 h-3.5" />
           Back to directory
         </Link>

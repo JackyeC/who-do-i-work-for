@@ -14,7 +14,7 @@ export function AddYourStoryCTA() {
             Standard public data is only half the story. Claim your Narrative Alignment Package to provide the full context for your future talent.
           </p>
           <Link
-            to="/for-employers"
+            to="/for-companies"
             className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
           >
             Learn about the $599 Narrative Alignment Package →

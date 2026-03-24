@@ -47,9 +47,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link to="/receipts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Receipts</Link>
-            <Link to="/browse" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Companies</Link>
+            <Link to="/companies" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Companies</Link>
             <Link to="/about" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
-            <Link to="/for-employers" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">For Companies</Link>
+            <Link to="/for-companies" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">For Companies</Link>
             <Link to="/contact" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
             {!authLoading && (
               user ? (
@@ -73,9 +73,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <div className="md:hidden px-6 pb-4 border-b border-border/50 bg-background">
           <nav className="flex flex-col gap-3">
             <Link to="/receipts" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">Receipts</Link>
-            <Link to="/browse" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">Companies</Link>
+            <Link to="/companies" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">Companies</Link>
             <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">About</Link>
-            <Link to="/for-employers" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">For Companies</Link>
+            <Link to="/for-companies" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">For Companies</Link>
             <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">Contact</Link>
             {!authLoading && (
               user ? (
@@ -431,9 +431,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               <nav className="flex flex-col gap-2">
                 <Link to="/" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Home</Link>
                 <Link to="/receipts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Receipts</Link>
-                <Link to="/browse" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Companies</Link>
+                <Link to="/companies" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Companies</Link>
                 <Link to="/about" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
-                <Link to="/for-employers" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">For Companies</Link>
+                <Link to="/for-companies" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">For Companies</Link>
                 <Link to="/pricing" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
                 <Link to="/contact" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
               </nav>
