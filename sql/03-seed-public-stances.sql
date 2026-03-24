@@ -300,7 +300,7 @@ FROM public.companies WHERE slug = 'goldman-sachs'
 ON CONFLICT DO NOTHING;
 
 INSERT INTO public.company_public_stances (company_id, topic, public_position, spending_reality, gap)
-SELECT id, 'Ethics and Compliance', 'Promotes culture of integrity and ethical business practices', 'SEC settlement over 1MDB scandal involving billions in misappropriated funds; extensive revolving door with government', 'contradictory'
+SELECT id, 'Ethics and Compliance', 'Promotes culture of integrity and ethical business practices', 'DOJ settlement over 1MDB scandal involving billions in misappropriated funds; extensive revolving door with government', 'contradictory'
 FROM public.companies WHERE slug = 'goldman-sachs'
 ON CONFLICT DO NOTHING;
 

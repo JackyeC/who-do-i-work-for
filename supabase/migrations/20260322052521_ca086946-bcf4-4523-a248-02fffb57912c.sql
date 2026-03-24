@@ -5,12 +5,11 @@ INSERT INTO company_party_breakdown (company_id, party, amount, color) VALUES
   ('c9d0e1f2-a3b4-5678-cdef-789012345678', 'Republican', 290000, 'hsl(0, 72%, 51%)'),
   ('c9d0e1f2-a3b4-5678-cdef-789012345678', 'Other', 120000, 'hsl(215, 15%, 47%)');
 
--- Update party breakdown for Amazon (only had "Other")
+-- Update party breakdown for Amazon (corrected per OpenSecrets 2023-2024 cycle: PAC total $1,583,307, 50.56% D / 49.44% R)
 DELETE FROM company_party_breakdown WHERE company_id = 'd4e5f6a7-b8c9-0123-defa-234567890123';
 INSERT INTO company_party_breakdown (company_id, party, amount, color) VALUES
-  ('d4e5f6a7-b8c9-0123-defa-234567890123', 'Democrat', 380000, 'hsl(211, 69%, 50%)'),
-  ('d4e5f6a7-b8c9-0123-defa-234567890123', 'Republican', 280000, 'hsl(0, 72%, 51%)'),
-  ('d4e5f6a7-b8c9-0123-defa-234567890123', 'Other', 141000, 'hsl(215, 15%, 47%)');
+  ('d4e5f6a7-b8c9-0123-defa-234567890123', 'Democrat', 800517, 'hsl(211, 69%, 50%)'),
+  ('d4e5f6a7-b8c9-0123-defa-234567890123', 'Republican', 782790, 'hsl(0, 72%, 51%)');
 
 -- Update party breakdown for Alphabet Inc. (Google)
 DELETE FROM company_party_breakdown WHERE company_id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';

@@ -479,7 +479,7 @@ FROM public.companies WHERE slug = 'goldman-sachs'
 ON CONFLICT DO NOTHING;
 
 INSERT INTO public.issue_signals (entity_id, issue_category, signal_type, source_dataset, description, confidence_score, amount)
-SELECT id, 'consumer_protection', 'sec_filing', 'SEC Enforcement', 'SEC settlement over 1MDB Malaysian sovereign wealth fund scandal involving billions in misappropriated funds', 'high', 2900000000
+SELECT id, 'consumer_protection', 'sec_filing', 'DOJ', 'DOJ settlement over 1MDB Malaysian sovereign wealth fund scandal involving billions in misappropriated funds', 'high', 2900000000
 FROM public.companies WHERE slug = 'goldman-sachs'
 ON CONFLICT DO NOTHING;
 

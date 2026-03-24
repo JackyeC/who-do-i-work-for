@@ -279,6 +279,7 @@ export default function CompanyDossier() {
             {company.industry} · {company.state}
             {company.employee_count && ` · ${company.employee_count} employees`}
           </p>
+          <p className="text-xs text-muted-foreground mt-1 font-mono">Last verified: March 2026</p>
         </div>
         <ExportDossierButton companyId={companyId!} companyName={company.name} company={company} />
       </div>
