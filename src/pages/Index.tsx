@@ -339,7 +339,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 />
                 <div>
                   <p className="font-sans text-muted-foreground leading-relaxed mb-6" style={{ fontSize: "15px", maxWidth: "56ch" }}>
-                    WDIWF is created by Jackye Clayton — TA architect, HR Tech strategist, LinkedIn Learning instructor, and Associate Editor at The HR Gazette. Host of the Inclusive AF podcast, co-host of But First, Coffee and People in Squares. After building and auditing hiring systems for companies like Textio and SeekOut, she's now building the tool she wished candidates always had.
+                    WDIWF is created by Jackye Clayton — TA architect, HR Tech strategist, LinkedIn Learning instructor, and Associate Editor at The HR Gazette. Host of the Inclusive AF podcast, co-host of But First, Coffee and People in Squares. After years inside the hiring machines of major HR tech companies, she's now building the tool she wished candidates always had.
                   </p>
                   <div className="flex items-center gap-3 flex-wrap">
                     {[

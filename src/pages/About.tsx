@@ -18,15 +18,14 @@ const CREDENTIAL_BADGES: { label: string; url: string | null }[] = [
   { label: "The Well-led Podcast", url: "https://open.spotify.com/episode/1rxa6JAQD2LFRQIsCI9U7L" },
   { label: "The POZcast", url: "https://www.youtube.com/watch?v=2dAeURaRogg" },
   { label: "WRKdefined", url: "https://wrkdefined.com/person/jackye-clayton" },
-  { label: "Textio", url: null },
-  { label: "SeekOut", url: null },
+
 ];
 
 const About = () => {
   usePageSEO({
     title: "About — WDIWF by Jackye Clayton",
     description:
-      "Meet Jackye Clayton — TA architect, HR Tech strategist, and voice behind the Inclusive AF podcast and But First, Coffee. After building hiring systems for companies like Textio and SeekOut, she built the tool she wished candidates always had.",
+      "Meet Jackye Clayton — TA architect, HR Tech strategist, and voice behind the Inclusive AF podcast and But First, Coffee. After years inside the hiring machines of major HR tech companies, she built the tool she wished candidates always had.",
     path: "/about",
   });
 
@@ -65,7 +64,7 @@ const About = () => {
               <div>
                 <h2 className="font-sans text-lg font-bold text-foreground mb-3">The Origin</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  Jackye Clayton has spent her career inside the machinery of hiring — building recruiting tech stacks, auditing talent acquisition pipelines, and advising HR teams on everything from AI screening tools to DEIB strategy. She's worked with companies like Textio and SeekOut, spoken on stages at Unleash America, Workhuman Live, and Transform, and currently serves as Associate Editor at <a href="https://hr-gazette.com/category/news-reviews/events/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">The HR Gazette</a>.
+                  Jackye Clayton has spent her career inside the machinery of hiring — building recruiting tech stacks, auditing talent acquisition pipelines, and advising HR teams on everything from AI screening tools to DEIB strategy. She's spoken on stages at Unleash America, Workhuman Live, and Transform, and currently serves as Associate Editor at <a href="https://hr-gazette.com/category/news-reviews/events/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">The HR Gazette</a>.
                 </p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Along the way, she noticed a fundamental asymmetry: companies have sophisticated systems for evaluating candidates. Candidates have Glassdoor and Google. That's the gap WDIWF was built to close.
