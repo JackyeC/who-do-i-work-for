@@ -1,44 +1,25 @@
 
 
-## Plan: Replace all plain-text brand logos with W? logomark
+## Plan: Replace Job Board with Cavuno Widget Embed
 
-### Locations to update
+### Summary
+Replace the current full-page iframe in `JobBoardEmbed.tsx` with a styled page that includes a heading, descriptive subtext, and a Cavuno jobs widget embedded via `useEffect`.
 
-There are **3 places** where "Who Do I Work For?" appears as a visible logo/brand in a nav or header:
+### Changes — single file: `src/pages/JobBoardEmbed.tsx`
 
-1. **`src/pages/Index.tsx` (lines 65-67)** — Homepage sticky header logo. Currently `<Link>` with serif font text.
-2. **`src/components/layout/AppSidebar.tsx` (lines 128-140)** — Sidebar logo block with icon + text. Replace the text portion with the W? mark.
-3. **`src/pages/WhoDoIWorkFor.tsx` (line 201)** — Page hero `<h1>` heading. This is a page title, not a nav logo — **skip** unless you want it changed too.
+1. Keep `Header` import and `usePageSEO` hook as-is
+2. Add `useEffect` and `useRef` imports from React
+3. Replace the current iframe JSX with:
+   - A centered heading section: "Job Board" (large bold) + the provided subtext paragraph
+   - A `div` with `id="cavuno-jobs-widget"` and a `ref`
+4. In `useEffect`, programmatically create an `<iframe>` with:
+   - `src`: `https://who-do-i-work-for.cavuno.com/embed/jobs?limit=50`
+   - `width`: `100%`
+   - `style.minHeight`: `900px`
+   - `style.height`: `calc(100vh - 160px)`
+   - `style.border`: `none`
+   - `loading`: `lazy`
+   - Append to the widget div; remove on cleanup
 
-> All other occurrences (SEO titles, meta descriptions, JSON-LD, body copy, modals) are content/metadata — not logos — and will be left as-is.
-
-### Changes
-
-**File 1: `src/pages/Index.tsx` (lines 65-67)**
-Replace the plain text Link:
-```jsx
-<Link to="/" className="font-serif text-foreground" style={{ fontSize: '18px', fontWeight: 700 }}>
-  Who Do I Work For?
-</Link>
-```
-With:
-```jsx
-<Link to="/" className="flex items-center shrink-0">
-  <span style={{fontFamily:"Inter,sans-serif",fontWeight:900,letterSpacing:"-0.03em",fontSize:"26px"}}>
-    <span style={{color:"#111111"}}>W</span>
-    <span style={{color:"#F0C040"}}>?</span>
-  </span>
-</Link>
-```
-
-**File 2: `src/components/layout/AppSidebar.tsx` (lines 128-140)**
-Replace the icon-box + text block with the W? mark. When sidebar is expanded, show the mark; when collapsed, show a smaller version:
-```jsx
-<span style={{fontFamily:"Inter,sans-serif",fontWeight:900,letterSpacing:"-0.03em",fontSize: collapsed ? "20px" : "26px"}}>
-  <span style={{color:"#111111"}}>W</span>
-  <span style={{color:"#F0C040"}}>?</span>
-</span>
-```
-
-No other files need changes. Inter 900 is already loaded in `index.html`.
+No other files affected.
 
