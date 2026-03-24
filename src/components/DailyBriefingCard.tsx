@@ -147,14 +147,24 @@ export default function DailyBriefingCard() {
     );
   }
 
-  if (!briefing || briefing.news.length === 0) {
-    // Show curated WDIWF-relevant headlines instead of dead empty state
-    const curatedNews = [
-      { title: "EEOC settles AI hiring discrimination case with major tech employer", category: "ai_hiring", source: "Reuters" },
-      { title: "Senate introduces bipartisan bill requiring pay transparency in federal contracts", category: "policy", source: "Bloomberg Law" },
-      { title: "WARN Act filings spike 34% in Q1 2026 across tech and finance sectors", category: "layoffs", source: "BLS" },
-      { title: "New OSHA rule expands whistleblower protections for remote workers", category: "workplace", source: "DOL" },
-    ];
+  const DEMO_BRIEFING = [
+    { title: "Amazon files WARN Act notice for 847 employees in Seattle tech division", category: "layoffs", source: "Washington State WARN Act Database", time: "2 hours ago", flag: "red" },
+    { title: "Meta posts 312 engineering roles marked 'urgent' — same roles posted 4x in 90 days", category: "ai_hiring", source: "LinkedIn Jobs Analysis", time: "5 hours ago", flag: "yellow" },
+    { title: "Oracle PAC contributes $180K to candidates backing H-1B restriction legislation", category: "policy", source: "FEC Filings", time: "Yesterday", flag: "red" },
+    { title: "Salesforce pay equity audit published: 98.6% pay parity across gender and race", category: "workplace", source: "Salesforce Equality Report", time: "2 days ago", flag: "green" },
+    { title: "Google halts hiring in non-AI divisions per internal memo (via WARN filings pattern)", category: "layoffs", source: "CA WARN Act + LinkedIn data", time: "3 days ago", flag: "yellow" },
+  ];
+
+  const FLAG_STYLES: Record<string, { label: string; bg: string; text: string; dot: string }> = {
+    red: { label: "RED FLAG", bg: "bg-destructive/10", text: "text-destructive", dot: "bg-destructive" },
+    yellow: { label: "SIGNAL", bg: "bg-amber-500/10", text: "text-amber-500", dot: "bg-amber-500" },
+    green: { label: "CLEAR", bg: "bg-emerald-500/10", text: "text-emerald-500", dot: "bg-emerald-500" },
+  };
+
+  const showDemo = !briefing || briefing.news.length === 0;
+  const displayNews = showDemo ? DEMO_BRIEFING : null;
+
+  if (displayNews) {
     return (
       <div className="rounded-xl overflow-hidden" style={{ background: "#13121a", border: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="px-5 pt-5 pb-3 flex items-center justify-between">
@@ -163,33 +173,34 @@ export default function DailyBriefingCard() {
               <Newspaper className="w-4 h-4 text-primary" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-foreground font-display">Career Intelligence Briefing</h3>
-              <span className="text-xs text-muted-foreground font-mono">What's moving in the world of work</span>
+              <h3 className="text-sm font-semibold text-foreground font-display">Your Daily Briefing</h3>
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono">
+                <Clock className="w-3 h-3" />
+                {new Date().toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+              </div>
             </div>
           </div>
-          <button
-            onClick={() => fetchBriefing(true)}
-            disabled={refreshing}
-            className="p-1.5 rounded-md hover:bg-muted text-muted-foreground hover:text-primary transition-colors"
-          >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
-          </button>
+          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border/50">Demo Data</span>
         </div>
         <div className="divide-y divide-border/30">
-          {curatedNews.map((item, i) => {
+          {displayNews.map((item, i) => {
             const config = CATEGORY_CONFIG[item.category] || CATEGORY_CONFIG.industry;
             const Icon = config.icon;
+            const flag = FLAG_STYLES[item.flag];
             return (
               <div key={i} className="px-5 py-3 hover:bg-muted/30 transition-colors">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded flex items-center justify-center mt-0.5 shrink-0" style={{ backgroundColor: `${config.color}15` }}>
-                    <Icon className="w-3.5 h-3.5" style={{ color: config.color }} />
-                  </div>
+                  <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${flag.dot}`} />
                   <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${flag.bg} ${flag.text}`}>{flag.label}</span>
+                      <span className="text-xs font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${config.color}15`, color: config.color }}>{config.label}</span>
+                    </div>
                     <p className="text-sm font-medium text-foreground leading-snug">{item.title}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs font-medium px-1.5 py-0.5 rounded" style={{ backgroundColor: `${config.color}15`, color: config.color }}>{config.label}</span>
                       <span className="text-xs text-muted-foreground font-mono">{item.source}</span>
+                      <span className="text-xs text-muted-foreground/60">·</span>
+                      <span className="text-xs text-muted-foreground/60">{item.time}</span>
                     </div>
                   </div>
                 </div>
