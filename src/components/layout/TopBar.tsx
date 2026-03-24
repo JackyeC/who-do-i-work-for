@@ -146,6 +146,7 @@ export function TopBar() {
     { label: "Follow the Money", path: "/follow-the-money" },
     { label: "Recruiter Brief", path: "/recruiter-brief" },
     { label: "Methodology", path: "/methodology" },
+    { label: "Insights", path: "/insights" },
     { label: "Pricing", path: "/pricing" },
     { label: "All Tools →", path: "/tools" },
     { label: "Join Free", path: "/join" },

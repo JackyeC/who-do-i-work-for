@@ -300,6 +300,74 @@ export default function Methodology() {
               </div>
             </section>
 
+            {/* ───── Career Outcome Intelligence ───── */}
+            <section>
+              <h2 className="text-title text-foreground mb-5">Career Outcome Intelligence</h2>
+              <div className="space-y-4 text-body text-muted-foreground leading-relaxed">
+                <p>
+                  In addition to our core public records analysis, WDIWF now integrates career outcome data from
+                  the{" "}
+                  <a
+                    href="https://www.whereyouworkmatters.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Where You Work Matters List
+                  </a>{" "}
+                  — an independent rating of 1,750 U.S. employers by the Burning Glass Institute, Schultz Family
+                  Foundation, and Harvard Business School's Project on Managing the Future of Work.
+                </p>
+                <p>
+                  Employers are evaluated across <strong className="text-foreground">three archetypes</strong>:
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+                {[
+                  {
+                    archetype: "Early Career Jobs",
+                    desc: "Entry-level opportunity, upward mobility from within, and how the employer invests in workers just starting out.",
+                  },
+                  {
+                    archetype: "Growth Jobs",
+                    desc: "Internal promotion rates, advancement beyond the company, and whether the employer builds careers — not just fills seats.",
+                  },
+                  {
+                    archetype: "Stability Jobs",
+                    desc: "Wage competitiveness, retention rates, and whether workers can build a sustainable livelihood.",
+                  },
+                ].map((item) => (
+                  <Card key={item.archetype}>
+                    <CardContent className="p-5">
+                      <Badge className="bg-primary/15 text-primary border-primary/30 text-xs font-mono mb-2">
+                        {item.archetype}
+                      </Badge>
+                      <p className="text-caption text-muted-foreground leading-relaxed">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <div className="space-y-4 text-body text-muted-foreground leading-relaxed mt-5">
+                <p>
+                  Six underlying metrics power these archetypes: <strong className="text-foreground">Internal Promotion</strong>,{" "}
+                  <strong className="text-foreground">Advancement Beyond</strong>,{" "}
+                  <strong className="text-foreground">Wage</strong>,{" "}
+                  <strong className="text-foreground">Retention</strong>,{" "}
+                  <strong className="text-foreground">Entry Level</strong>, and{" "}
+                  <strong className="text-foreground">Leaders From Within</strong>.
+                </p>
+                <Card className="border-primary/20">
+                  <CardContent className="p-6">
+                    <p className="text-body text-foreground leading-relaxed font-medium">
+                      WDIWF's Receipts framework evaluates employer <em>integrity</em>. The WYWM List evaluates
+                      employer <em>outcomes</em>. Together, they create the most complete employer intelligence
+                      available.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </section>
+
             {/* ───── Known Limitations ───── */}
             <section>
               <h2 className="text-title text-foreground mb-5">Known Limitations</h2>

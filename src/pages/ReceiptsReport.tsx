@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CareerOutcomes } from "@/components/CareerOutcomes";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -667,6 +668,7 @@ const TABS = [
   { id: "labor-impact", label: "2. Labor Impact" },
   { id: "safety-alert", label: "3. Safety Alert" },
   { id: "connected-dots", label: "4. Connected Dots" },
+  { id: "career-outcomes", label: "5. Career Outcomes" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -1373,6 +1375,7 @@ function DemoReceiptsReport({ data, slug }: { data: { companyName: string; ticke
                 <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>
               </div>
             )}
+            {activeTab === "career-outcomes" && <CareerOutcomes slug={slug} />}
           </motion.div>
         </AnimatePresence>
 
@@ -1435,12 +1438,15 @@ export default function ReceiptsReport() {
 
   if (slug !== "meta" && !demoReport) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center text-center px-4 py-24">
-        <h2 className="text-3xl font-bold text-foreground mb-3">Report Coming Soon</h2>
-        <p className="text-muted-foreground mb-6">We're building the full investigation for {companyName}.</p>
-        <Link to="/receipts" className="inline-flex items-center gap-1 text-primary hover:underline">
-          <ArrowLeft className="h-4 w-4" /> Back to all Receipts
-        </Link>
+      <div className="min-h-screen bg-background px-4 py-24">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-foreground mb-3">Report Coming Soon</h2>
+          <p className="text-muted-foreground mb-6">We're building the full investigation for {companyName}.</p>
+          <Link to="/receipts" className="inline-flex items-center gap-1 text-primary hover:underline mb-8">
+            <ArrowLeft className="h-4 w-4" /> Back to all Receipts
+          </Link>
+          {slug && <CareerOutcomes slug={slug} />}
+        </div>
       </div>
     );
   }
@@ -1512,6 +1518,7 @@ export default function ReceiptsReport() {
             {activeTab === "labor-impact" && <LaborImpactSection data={data} />}
             {activeTab === "safety-alert" && <SafetyAlertSection data={data} />}
             {activeTab === "connected-dots" && <ConnectedDotsSection data={data} />}
+            {activeTab === "career-outcomes" && <CareerOutcomes slug={slug!} />}
           </motion.div>
         </AnimatePresence>
 

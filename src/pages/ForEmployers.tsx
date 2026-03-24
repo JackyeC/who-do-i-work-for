@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { usePageSEO } from "@/hooks/use-page-seo";
-import { Shield, Eye, CheckCircle2, ArrowRight } from "lucide-react";
+import { Shield, Eye, CheckCircle2, ArrowRight, BarChart3 } from "lucide-react";
 
 const ForEmployers = () => {
   usePageSEO({
@@ -31,7 +31,7 @@ const ForEmployers = () => {
 
         {/* ── Three Value Cards ── */}
         <section className="max-w-[1100px] mx-auto px-6 lg:px-16 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               {
                 icon: <Shield className="w-6 h-6 text-primary" strokeWidth={1.5} />,
@@ -47,6 +47,11 @@ const ForEmployers = () => {
                 icon: <CheckCircle2 className="w-6 h-6 text-primary" strokeWidth={1.5} />,
                 title: "Signal Transparency",
                 body: "Companies that opt into WDIWF are signaling that they welcome scrutiny. In a market where trust is the new currency, transparency is your competitive advantage.",
+              },
+              {
+                icon: <BarChart3 className="w-6 h-6 text-primary" strokeWidth={1.5} />,
+                title: "Career Outcome Benchmarking",
+                body: "See how your pay, promotion, and retention rates compare to competitors — powered by independent data from the Where You Work Matters List. Candidates are looking at both your integrity score AND your career outcomes.",
               },
             ].map((card) => (
               <div
@@ -87,6 +92,10 @@ const ForEmployers = () => {
                 {
                   bold: "Transparency builds trust faster",
                   rest: " than marketing. When a company proactively addresses its data, candidates notice. It's the difference between a company that says \"trust us\" and one that says \"here's the evidence.\"",
+                },
+                {
+                  bold: "1,750 employers rated on career outcomes",
+                  rest: " by the Where You Work Matters List. Candidates now have independent data on how companies pay, promote, and retain. Your integrity score plus your career outcomes equals dual scrutiny.",
                 },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
