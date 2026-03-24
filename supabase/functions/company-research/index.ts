@@ -227,35 +227,50 @@ Return ONLY valid JSON. No markdown, no explanation.`;
       if (skipCandidates) console.log(`[company-research] Preserving ${candidateCount} real candidates from API sync`);
       if (skipParty) console.log(`[company-research] Preserving ${partyCount} real party breakdown records from API sync`);
     } else {
-      // Insert new company
+      // Insert new company — but first do an exact slug check to avoid duplicates
       const finalSlug = co.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-      const { data: newCompany, error: companyError } = await supabase.from('companies').insert({
-        name: co.name,
-        slug: finalSlug,
-        industry: co.industry || 'Unknown',
-        state: co.state || 'N/A',
-        revenue: co.revenue || null,
-        employee_count: co.employee_count || null,
-        description: co.description || null,
-        parent_company: co.parent_company || null,
-        effective_tax_rate: co.effective_tax_rate || null,
-        corporate_pac_exists: co.corporate_pac_exists ?? false,
-        total_pac_spending: co.total_pac_spending || 0,
-        lobbying_spend: co.lobbying_spend || null,
-        government_contracts: co.government_contracts || null,
-        subsidies_received: co.subsidies_received || null,
-        civic_footprint_score: co.civic_footprint_score || 50,
-        confidence_rating: co.confidence_rating || 'inferred',
-      }).select('id, name, slug').single();
+      
+      const { data: slugMatch } = await supabase
+        .from('companies')
+        .select('id, name, slug')
+        .eq('slug', finalSlug)
+        .maybeSingle();
 
-      if (companyError) {
-        console.error('Failed to insert company:', companyError);
-        return new Response(JSON.stringify({ success: false, error: `Failed to create company: ${companyError.message}` }), {
-          status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
+      if (slugMatch) {
+        // Company exists by slug — treat as existing
+        console.log(`[company-research] Found existing company by exact slug: ${finalSlug}`);
+        companyId = slugMatch.id;
+        companyRecord = slugMatch;
+        existing = slugMatch;
+      } else {
+        const { data: newCompany, error: companyError } = await supabase.from('companies').insert({
+          name: co.name,
+          slug: finalSlug,
+          industry: co.industry || 'Unknown',
+          state: co.state || 'N/A',
+          revenue: co.revenue || null,
+          employee_count: co.employee_count || null,
+          description: co.description || null,
+          parent_company: co.parent_company || null,
+          effective_tax_rate: co.effective_tax_rate || null,
+          corporate_pac_exists: co.corporate_pac_exists ?? false,
+          total_pac_spending: co.total_pac_spending || 0,
+          lobbying_spend: co.lobbying_spend || null,
+          government_contracts: co.government_contracts || null,
+          subsidies_received: co.subsidies_received || null,
+          civic_footprint_score: co.civic_footprint_score || 50,
+          confidence_rating: co.confidence_rating || 'inferred',
+        }).select('id, name, slug').single();
+
+        if (companyError) {
+          console.error('Failed to insert company:', companyError);
+          return new Response(JSON.stringify({ success: false, error: `Failed to create company: ${companyError.message}` }), {
+            status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+        companyId = newCompany.id;
+        companyRecord = newCompany;
       }
-      companyId = newCompany.id;
-      companyRecord = newCompany;
     }
 
     const insertErrors: string[] = [];
