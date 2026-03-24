@@ -38,8 +38,24 @@ export default function DailyBriefingCard() {
       const response = await supabase.functions.invoke("generate-briefing", {
         body: { mode: "single", user_id: user.id },
       });
-      if (response.data?.success) {
+      if (response.data?.success && response.data.news?.length > 0) {
         setBriefing(response.data);
+      } else if (response.data?.success && response.data.news?.length === 0) {
+        // No news articles available — trigger news-ingestion to seed data, then retry once
+        console.log("[Briefing] No news found, triggering news-ingestion...");
+        try {
+          await supabase.functions.invoke("news-ingestion", { body: {} });
+          // Small delay to let inserts settle
+          await new Promise(r => setTimeout(r, 1500));
+          const retry = await supabase.functions.invoke("generate-briefing", {
+            body: { mode: "single", user_id: user.id },
+          });
+          if (retry.data?.success) {
+            setBriefing(retry.data);
+          }
+        } catch (seedErr) {
+          console.error("[Briefing] News seeding error:", seedErr);
+        }
       }
     } catch (err) {
       console.error("Briefing fetch error:", err);

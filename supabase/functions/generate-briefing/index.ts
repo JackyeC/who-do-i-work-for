@@ -104,14 +104,19 @@ async function generateUserBriefing(supabase: any, userId: string) {
   // Check if briefing already exists for today
   const { data: existing } = await supabase
     .from("daily_briefings")
-    .select("id, generated_at")
+    .select("id, generated_at, news_ids")
     .eq("user_id", userId)
     .eq("briefing_date", today)
     .maybeSingle();
 
-  if (existing) {
-    // Briefing already generated — return it
+  if (existing && existing.news_ids && existing.news_ids.length > 0) {
+    // Briefing already generated with actual news — return it
     return await fetchFullBriefing(supabase, userId, today);
+  }
+
+  // If an empty briefing exists (from earlier failed attempt), delete it so we regenerate
+  if (existing && (!existing.news_ids || existing.news_ids.length === 0)) {
+    await supabase.from("daily_briefings").delete().eq("id", existing.id);
   }
 
   // Fetch user profile
