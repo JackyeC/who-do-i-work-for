@@ -118,7 +118,7 @@ const COMPANIES: ReceiptsCompany[] = [
   {
     slug: "microsoft", name: "Microsoft", sector: "Big Tech", state: "WA",
     categories: ["big-tech"],
-    stat: "DEI team laid off Jul 2024 · Diversity report discontinued",
+    stat: "PAC: $2.06M · 53% Republican · DEI Reports Ended Nov 2025 · 55 WARN filings",
     status: "full-report", date: "March 2026",
     spice: 3, dramaScore: 68,
     topSignal: "DEI team laid off mid-year",
@@ -128,7 +128,7 @@ const COMPANIES: ReceiptsCompany[] = [
   {
     slug: "boeing", name: "Boeing", sector: "Defense", state: "VA",
     categories: ["big-tech", "defense"],
-    stat: "DEI department dismantled Oct 2024 · 20% Black representation goal abandoned",
+    stat: "PAC: $5.4M · 62% Republican · DEI Dept Dismantled Oct 2024 · 17,000 layoffs",
     status: "full-report", date: "March 2026",
     spice: 4, dramaScore: 85,
     topSignal: "Representation goals scrapped + safety lawsuits",
@@ -138,7 +138,7 @@ const COMPANIES: ReceiptsCompany[] = [
   {
     slug: "booz-allen-hamilton", name: "Booz Allen Hamilton", sector: "Consulting", state: "VA",
     categories: ["consulting", "defense"],
-    stat: "Full DEI closure · Federal contractor compliance · WorldPride withdrawal",
+    stat: "PAC: $360K · 54% Republican · Full DEI Closure Feb 2025 · Treasury contracts canceled",
     status: "full-report", date: "March 2026",
     spice: 4, dramaScore: 79,
     topSignal: "Complete DEI shutdown as federal contractor",
@@ -148,7 +148,7 @@ const COMPANIES: ReceiptsCompany[] = [
   {
     slug: "accenture", name: "Accenture", sector: "Consulting", state: "Global",
     categories: ["consulting"],
-    stat: "All diversity goals 'sunsetted' Feb 2025 · 800K employees affected",
+    stat: "PAC: $175K · 51% Republican · All DEI Goals Sunset Feb 2025 · 800K employees affected",
     status: "full-report", date: "March 2026",
     spice: 4, dramaScore: 83,
     topSignal: "800K employees affected by goal sunset",
@@ -158,7 +158,7 @@ const COMPANIES: ReceiptsCompany[] = [
   {
     slug: "verizon", name: "Verizon", sector: "Telecom", state: "NY",
     categories: ["telecom"],
-    stat: "DEI eliminated as FCC merger condition · $20B Frontier deal",
+    stat: "PAC: $2.3M · 51% Republican · DEI Eliminated May 2025 · $20B Frontier deal",
     status: "full-report", date: "March 2026",
     spice: 3, dramaScore: 72,
     topSignal: "DEI traded away for merger approval",
@@ -168,7 +168,7 @@ const COMPANIES: ReceiptsCompany[] = [
   {
     slug: "t-mobile", name: "T-Mobile", sector: "Telecom", state: "WA",
     categories: ["telecom"],
-    stat: "DEI eliminated for FCC approval · $4.4B US Cellular deal",
+    stat: "PAC: $1.34M · 49% Republican · DEI Eliminated Jul 2025 · $4.4B US Cellular deal",
     status: "full-report", date: "March 2026",
     spice: 3, dramaScore: 70,
     topSignal: "DEI commitments dropped for deal",
@@ -178,7 +178,7 @@ const COMPANIES: ReceiptsCompany[] = [
   {
     slug: "att", name: "AT&T", sector: "Telecom", state: "TX",
     categories: ["telecom"],
-    stat: "'DEI does not exist at AT&T' · FCC letter Dec 2025",
+    stat: "PAC: $2.4M · 54% Republican · 'DEI does not exist at AT&T' · FCC letter Dec 2025",
     status: "full-report", date: "March 2026",
     spice: 5, dramaScore: 88,
     topSignal: "Publicly declared DEI doesn't exist",
