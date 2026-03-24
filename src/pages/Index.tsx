@@ -50,6 +50,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             <Link to="/browse" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Companies</Link>
             <Link to="/about" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
             <Link to="/for-employers" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">For Companies</Link>
+            <Link to="/insights" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Insights</Link>
             <Link to="/contact" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
             {!authLoading && (
               user ? (
@@ -76,6 +77,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             <Link to="/browse" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">Companies</Link>
             <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">About</Link>
             <Link to="/for-employers" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">For Companies</Link>
+            <Link to="/insights" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">Insights</Link>
             <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors py-2">Contact</Link>
             {!authLoading && (
               user ? (
@@ -242,7 +244,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               {
                 step: "02",
                 title: "Score",
-                body: "Our Integrity Score measures the gap between what a company claims and what the data shows. No sponsored results. No employer branding. Just receipts.",
+                body: "Our Integrity Score measures the gap between what a company claims and what the data shows — now enriched with career outcome benchmarks from the Where You Work Matters List. No sponsored results. No employer branding. Just receipts.",
               },
               {
                 step: "03",
@@ -263,6 +265,19 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── WYWM enrichment callout ── */}
+      <section className="px-6 lg:px-16 pb-8 bg-background">
+        <div className="max-w-[1100px] mx-auto">
+          <p className="text-sm text-muted-foreground leading-relaxed border-l-2 border-primary/40 pl-4">
+            Now enriched with career outcome data from the{" "}
+            <a href="https://www.whereyouworkmatters.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              Where You Work Matters List
+            </a>{" "}
+            — see how companies actually pay, promote, and retain their workforce.
+          </p>
         </div>
       </section>
 
@@ -434,6 +449,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 <Link to="/browse" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Companies</Link>
                 <Link to="/about" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">About</Link>
                 <Link to="/for-employers" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">For Companies</Link>
+                <Link to="/insights" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Insights</Link>
                 <Link to="/pricing" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
                 <Link to="/contact" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
               </nav>
@@ -460,7 +476,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               © 2026 WDIWF. A People Puzzles venture. Built because you deserve to know.
             </p>
             <p className="font-sans text-xs text-muted-foreground/50">
-              Built on public records: FEC · SEC · BLS · OSHA · NLRB · Senate Lobbying
+              Built on public records: FEC · SEC · BLS · OSHA · NLRB · Senate Lobbying · Career outcomes powered by <a href="https://www.whereyouworkmatters.org" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors underline">Where You Work Matters</a>
             </p>
           </div>
         </div>

@@ -56,7 +56,13 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         You deserve to know exactly who you work for.
       </p>
 
-      {/* Row 4 — Copyright */}
+      {/* Row 4 — Data Sources */}
+      <p style={{ fontSize: 12, fontWeight: 400, color: 'hsl(var(--muted-foreground))', lineHeight: 1.6 }}>
+        Built on public records: FEC · SEC · BLS · OSHA · NLRB · Senate Lobbying · Career outcomes powered by{' '}
+        <a href="https://www.whereyouworkmatters.org" target="_blank" rel="noopener noreferrer" style={{ color: 'hsl(var(--muted-foreground))', textDecoration: 'underline' }}>Where You Work Matters</a>
+      </p>
+
+      {/* Row 5 — Copyright */}
       <p style={{ fontSize: 12, fontWeight: 400, color: 'hsl(var(--muted-foreground))', lineHeight: 1.5 }}>
         © {new Date().getFullYear()} Who Do I Work For? — Public records only. We connect the dots; you make the call.
       </p>
