@@ -299,7 +299,7 @@ export default function WouldYouWorkHere() {
           Run a full employer intelligence scan, upload an offer letter, or ask the Advisor directly.
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
-          <button onClick={() => navigate("/browse")} className="bg-primary text-primary-foreground px-7 py-3 font-mono text-[0.7rem] font-semibold tracking-wider uppercase hover:brightness-110 transition-all flex items-center gap-2">
+          <button onClick={() => navigate("/companies")} className="bg-primary text-primary-foreground px-7 py-3 font-mono text-[0.7rem] font-semibold tracking-wider uppercase hover:brightness-110 transition-all flex items-center gap-2">
             Run Employer Scan <ArrowRight className="w-4 h-4" />
           </button>
           <button onClick={() => navigate("/check")} className="border border-border text-muted-foreground px-7 py-3 font-mono text-[0.7rem] tracking-wider uppercase hover:border-primary hover:text-primary transition-all">

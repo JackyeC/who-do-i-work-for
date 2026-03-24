@@ -209,7 +209,7 @@ export default function Companies() {
   usePageSEO({
     title: "Aligned Companies Directory",
     description: "Browse verified mission-driven organizations. No bias. Just receipts.",
-    path: "/companies",
+    path: "/aligned-companies",
   });
 
   const [search, setSearch] = useState("");
@@ -264,7 +264,7 @@ export default function Companies() {
       {/* Claim CTA */}
       <section className="px-4 pb-8">
         <div className="max-w-5xl mx-auto">
-          <Link to="/for-employers">
+          <Link to="/for-companies">
             <div className="p-4 rounded-xl border border-primary/20 bg-primary/[0.04] flex items-center gap-3 hover:border-primary/40 transition-colors">
               <PenLine className="w-5 h-5 text-primary shrink-0" />
               <div className="flex-1 min-w-0">
@@ -507,7 +507,7 @@ export default function Companies() {
 
                       {/* Open roles */}
                       {org.openRoles > 0 ? (
-                        <Link to={`/browse?search=${encodeURIComponent(org.name)}`}>
+                        <Link to={`/companies?search=${encodeURIComponent(org.name)}`}>
                           <Button size="sm" variant="outline" className="w-full gap-1.5 text-xs mt-auto">
                             <Briefcase className="w-3 h-3" />
                             Open Roles: {org.openRoles}

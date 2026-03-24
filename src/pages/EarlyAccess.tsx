@@ -232,7 +232,7 @@ export default function EarlyAccess() {
               isn't going anywhere — and neither are we.
             </p>
             <Link
-              to="/browse"
+              to="/companies"
               className="inline-block px-6 py-3 rounded-full text-sm font-bold transition-all hover:brightness-110"
               style={{ background: "#F0C040", color: "#0a0a0e" }}
             >

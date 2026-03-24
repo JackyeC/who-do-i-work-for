@@ -220,7 +220,7 @@ export function IntelligenceDashboard() {
             </h2>
           </div>
           <Link
-            to="/browse"
+            to="/companies"
             className="font-mono text-sm tracking-wider uppercase text-primary hover:underline flex items-center gap-1 whitespace-nowrap"
           >
             Browse all <ArrowRight className="w-3 h-3" />

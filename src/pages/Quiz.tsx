@@ -1006,7 +1006,7 @@ function ResultsScreen({
 
         {/* Browse without account */}
         <a
-          href="/browse"
+          href="/companies"
           style={{
             fontSize: 13,
             color: "hsl(var(--muted-foreground))",

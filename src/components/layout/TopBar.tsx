@@ -18,8 +18,8 @@ export const MAIN_SECTIONS = [
   {
     id: "audit",
     label: "Scan a Company",
-    path: "/browse",
-    matchPaths: ["/browse", "/search", "/company/", "/dossier/", "/add-company", "/values-search", "/intelligence", "/what-am-i-supporting"],
+    path: "/companies",
+    matchPaths: ["/companies", "/search", "/company/", "/dossier/", "/add-company", "/values-search", "/intelligence", "/what-am-i-supporting"],
     subItems: [],
   },
   {
@@ -295,7 +295,7 @@ export function TopBar() {
 
           {/* Audit CTA */}
           <Link
-            to="/browse"
+            to="/companies"
             className="hidden sm:inline-flex items-center whitespace-nowrap font-sans transition-all hover:brightness-110 bg-primary text-primary-foreground rounded-full px-5 py-2 text-btn"
           >
             Scan a Company →

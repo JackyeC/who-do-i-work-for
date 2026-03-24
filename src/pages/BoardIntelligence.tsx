@@ -103,7 +103,7 @@ export default function BoardIntelligence() {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
-      <Link to="/browse" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5">
+      <Link to="/companies" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-5">
         <ArrowLeft className="w-3.5 h-3.5" />
         Back to directory
       </Link>

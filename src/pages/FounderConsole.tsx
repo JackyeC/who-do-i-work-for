@@ -295,7 +295,7 @@ export default function FounderConsole() {
                     <ClipboardCheck className="w-3 h-3" /> Vibe Check
                   </Button>
                 </Link>
-                <Link to="/browse">
+                <Link to="/companies">
                   <Button variant="outline" size="sm" className="w-full text-xs gap-1 border-primary/20 hover:bg-primary/10">
                     <Shield className="w-3 h-3" /> Alignment Scan
                   </Button>

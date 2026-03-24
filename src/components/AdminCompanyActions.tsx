@@ -80,7 +80,7 @@ export function AdminCompanyActions({ companyId, companyName, companySlug }: Adm
 
       toast({ title: "Company deleted", description: `${companyName} has been removed.` });
       queryClient.invalidateQueries({ queryKey: ["companies"] });
-      navigate("/browse");
+      navigate("/companies");
     } catch (e: any) {
       toast({ title: "Delete failed", description: e.message, variant: "destructive" });
     } finally {

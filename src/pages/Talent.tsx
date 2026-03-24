@@ -156,7 +156,7 @@ function AccessDenied() {
           The talent pool is available to verified employer accounts. Get verified to browse
           mission-aligned candidates matched against your organization's DNA.
         </p>
-        <Button onClick={() => navigate("/for-employers")} className="rounded-full gap-2">
+        <Button onClick={() => navigate("/for-companies")} className="rounded-full gap-2">
           Get Verified <ArrowRight className="w-4 h-4" />
         </Button>
       </div>
@@ -351,7 +351,7 @@ export default function Talent() {
                     size="sm"
                     className="w-full gap-1.5 text-xs"
                     onClick={() =>
-                      navigate("/for-employers")
+                      navigate("/for-companies")
                     }
                   >
                     <ShieldCheck className="w-3.5 h-3.5" />

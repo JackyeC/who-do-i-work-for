@@ -42,7 +42,7 @@ export function NarrativeGapCard({ companyName, lastAuditedAt, signalGroupCount,
             </p>
             <div className="flex items-center gap-3">
               <Button asChild size="sm" className="bg-[hsl(var(--civic-gold))] hover:bg-[hsl(var(--civic-gold))]/90 text-foreground gap-1.5 font-semibold text-xs">
-                <Link to="/for-employers">
+                <Link to="/for-companies">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Claim This Profile & Provide Context
                 </Link>

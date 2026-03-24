@@ -47,7 +47,7 @@ export function SlotTracker() {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => navigate("/browse")}
+            onClick={() => navigate("/companies")}
             className="gap-1.5 text-xs"
           >
             <Plus className="w-3.5 h-3.5" />

@@ -42,7 +42,7 @@ const NAV_GROUPS = [
     label: "Explore",
     items: [
       { id: "search", label: "Search Everything", icon: Search, path: "/search" },
-      { id: "browse", label: "Employer Directory", icon: Building2, path: "/browse" },
+      { id: "browse", label: "Employer Directory", icon: Building2, path: "/companies" },
       { id: "add-company", label: "Add Company", icon: PlusCircle, path: "/add-company" },
       { id: "examples", label: "Top Searched", icon: TrendingUp, path: "/examples" },
       { id: "rivalries", label: "2026 Rivalries", icon: Flame, path: "/rivalries" },

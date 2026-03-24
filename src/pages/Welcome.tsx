@@ -76,7 +76,7 @@ export default function Welcome() {
               <Button size="lg" onClick={() => navigate("/login")} className="gap-2 px-8 py-6 text-base">
                 Get Started <ArrowRight className="w-4 h-4" />
               </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate("/browse")} className="gap-2 px-8 py-6 text-base">
+              <Button size="lg" variant="outline" onClick={() => navigate("/companies")} className="gap-2 px-8 py-6 text-base">
                 <Search className="w-4 h-4" /> Browse Companies
               </Button>
             </>

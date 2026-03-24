@@ -324,7 +324,7 @@ export default function SignalFeed() {
               </Link>
             </Button>
             <Button asChild variant="outline" size="sm" className="gap-1.5">
-              <Link to="/browse">
+              <Link to="/companies">
                 <TrendingUp className="w-3.5 h-3.5" /> Browse Companies
               </Link>
             </Button>

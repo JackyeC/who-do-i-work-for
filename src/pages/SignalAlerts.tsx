@@ -111,7 +111,7 @@ export default function SignalAlerts() {
                 icon={EyeOff}
                 title="No companies watched"
                 description="Visit a company profile and click 'Watch' to start receiving signal alerts."
-                action={{ label: "Browse Companies", onClick: () => navigate("/browse") }}
+                action={{ label: "Browse Companies", onClick: () => navigate("/companies") }}
                 compact
               />
             ) : (

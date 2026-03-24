@@ -259,7 +259,7 @@ export function AlignedValuesSearch({ hasTakenQuiz }: { hasTakenQuiz: boolean })
 
       {/* Browse link */}
       <Link
-        to="/companies"
+        to="/aligned-companies"
         className="text-xs font-medium mt-3 flex items-center gap-1 transition-colors"
         style={{ color: "#f0c040" }}
       >

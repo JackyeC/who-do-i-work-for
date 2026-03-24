@@ -283,7 +283,7 @@ export default function InfluenceGraph() {
         <div className="text-center">
           <Network className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-foreground mb-2">Company Not Found</h1>
-          <Link to="/browse"><Button>Browse Companies</Button></Link>
+          <Link to="/companies"><Button>Browse Companies</Button></Link>
         </div>
       </div>
     );

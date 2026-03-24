@@ -242,7 +242,7 @@ export default function WhatAmISupporting() {
           <div className="font-mono text-[0.6rem] uppercase tracking-widest text-muted-foreground mb-4 text-center">Continue Your Research</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { label: "Company Intelligence", path: "/browse", icon: Search },
+              { label: "Company Intelligence", path: "/companies", icon: Search },
               { label: "Connection Chain", path: "/follow-the-money", icon: Globe },
               { label: "Intelligence Chain", path: "/intelligence-chain", icon: Landmark },
               { label: "Ask the Advisor", path: "/ask-jackye", icon: MessageCircle },
