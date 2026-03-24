@@ -1,18 +1,22 @@
 
 
-## Fix Job Board Iframe Source URL
+## Plan: Execute 3 SQL Seed Files Against the Database
 
-**Problem**: The current iframe src (`https://who-do-i-work-for.cavuno.com`) is blocked by Cavuno's `X-Frame-Options` header, causing an empty/broken state.
+### What
+Run the three SQL files from the repo against the database to seed 49 companies and 47 issue signals.
 
-**Fix**: Update the iframe `src` in `src/pages/JobBoardEmbed.tsx` from the root URL to the embed-specific endpoint `https://who-do-i-work-for.cavuno.com/embed/jobs?limit=50`.
+### Execution Order
+1. **sql/10-seed-receipts-companies.sql** (746 lines) — 10 core "Receipts" companies with full data (Meta, Google, Amazon, Microsoft, Boeing, Booz Allen, Accenture, Verizon, T-Mobile, MAC Cosmetics)
+2. **sql/11-seed-additional-companies.sql** (2,147 lines) — 40 additional companies across Big Tech, Finance, Healthcare, Retail, Energy, Defense sectors
+3. **sql/12-seed-issue-signals.sql** (272 lines) — 47 issue signals linked to the 10 Receipts companies
 
-### Changes
+All use `INSERT ... ON CONFLICT` so they're safe to re-run (idempotent).
 
-**File: `src/pages/JobBoardEmbed.tsx`** (line 20)
-- Change: `iframe.src = "https://who-do-i-work-for.cavuno.com/embed/jobs?limit=50";`
-- This line already has the correct URL based on the current code. Let me verify the actual file content first.
+### How
+Since these are INSERT statements (data operations, not schema changes), I'll execute them using `psql` via the database connection. The files are large, so I'll read the full content and execute each file's SQL directly.
 
-Looking at the current code — the file already uses `https://who-do-i-work-for.cavuno.com/embed/jobs?limit=50` as the iframe src (line 20). **No change is needed.**
-
-If the iframe is still showing a broken/empty state, the issue may be elsewhere — possibly the Cavuno embed endpoint itself is down, or there's a separate full-page iframe being rendered by a different route or component. I'll investigate further if you approve.
+### Verification
+After execution, run count queries to confirm:
+- `SELECT COUNT(*) FROM companies`
+- `SELECT COUNT(*) FROM issue_signals`
 
