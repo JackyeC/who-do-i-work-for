@@ -1324,6 +1324,7 @@ export type Database = {
           category_tags: string[] | null
           civic_footprint_score: number
           confidence_rating: string
+          connected_dots_score: number | null
           consumer_relevance: string | null
           corporate_pac_exists: boolean
           created_at: string
@@ -1340,9 +1341,12 @@ export type Database = {
           identity_matched: boolean | null
           industry: string
           insider_score: number | null
+          integrity_gap_score: number | null
+          integrity_score: number | null
           is_publicly_traded: boolean | null
           is_startup: boolean | null
           jackye_insight: string | null
+          labor_impact_score: number | null
           last_audited_at: string | null
           last_reviewed: string
           last_scan_attempted: string | null
@@ -1354,6 +1358,7 @@ export type Database = {
           parent_company: string | null
           record_status: string
           revenue: string | null
+          safety_alert_score: number | null
           scan_completion: Json | null
           search_query: string | null
           sec_cik: string | null
@@ -1375,6 +1380,7 @@ export type Database = {
           category_tags?: string[] | null
           civic_footprint_score?: number
           confidence_rating?: string
+          connected_dots_score?: number | null
           consumer_relevance?: string | null
           corporate_pac_exists?: boolean
           created_at?: string
@@ -1391,9 +1397,12 @@ export type Database = {
           identity_matched?: boolean | null
           industry: string
           insider_score?: number | null
+          integrity_gap_score?: number | null
+          integrity_score?: number | null
           is_publicly_traded?: boolean | null
           is_startup?: boolean | null
           jackye_insight?: string | null
+          labor_impact_score?: number | null
           last_audited_at?: string | null
           last_reviewed?: string
           last_scan_attempted?: string | null
@@ -1405,6 +1414,7 @@ export type Database = {
           parent_company?: string | null
           record_status?: string
           revenue?: string | null
+          safety_alert_score?: number | null
           scan_completion?: Json | null
           search_query?: string | null
           sec_cik?: string | null
@@ -1426,6 +1436,7 @@ export type Database = {
           category_tags?: string[] | null
           civic_footprint_score?: number
           confidence_rating?: string
+          connected_dots_score?: number | null
           consumer_relevance?: string | null
           corporate_pac_exists?: boolean
           created_at?: string
@@ -1442,9 +1453,12 @@ export type Database = {
           identity_matched?: boolean | null
           industry?: string
           insider_score?: number | null
+          integrity_gap_score?: number | null
+          integrity_score?: number | null
           is_publicly_traded?: boolean | null
           is_startup?: boolean | null
           jackye_insight?: string | null
+          labor_impact_score?: number | null
           last_audited_at?: string | null
           last_reviewed?: string
           last_scan_attempted?: string | null
@@ -1456,6 +1470,7 @@ export type Database = {
           parent_company?: string | null
           record_status?: string
           revenue?: string | null
+          safety_alert_score?: number | null
           scan_completion?: Json | null
           search_query?: string | null
           sec_cik?: string | null

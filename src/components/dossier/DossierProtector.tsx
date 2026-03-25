@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { useTrackedCompanies } from "@/hooks/use-tracked-companies";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePremium } from "@/hooks/use-premium";
 import { DossierPaywall } from "@/components/dossier/DossierPaywall";
 import { SignalExamples } from "@/components/dossier/SignalExamples";
 import { InfluenceGauge } from "@/components/dossier/InfluenceGauge";
@@ -9,49 +10,70 @@ interface DossierProtectorProps {
   companyId: string;
   companyName: string;
   influenceScore: number;
-  /** Layer 1 content — always visible */
+  /** Free content — always visible (overview + Top 3 Flags + Basics) */
   overviewContent: ReactNode;
-  /** Layers 2–7 content — gated */
-  fullContent: ReactNode;
+  /** Pro-tier content — Integrity Gap, Labor Impact, Connected Dots */
+  proContent: ReactNode;
+  /** Premium/Dossier-tier content — Safety Alert, Interview Questions, Decision Brief */
+  premiumContent?: ReactNode | null;
 }
 
 /**
- * Higher-Order wrapper that enforces the fuzz/lock paywall.
+ * Higher-Order wrapper that enforces the 3-tier fuzz/lock paywall.
  *
- * If the company IS in the user's tracked list → render full 7-layer dossier.
- * If NOT → show Overview + Influence Score + one Signal Example + blurred previews + CTA.
+ * Free: overview + Integrity Score gauge + signal examples + CTA
+ * Pro ($19/mo): + Integrity Gap, Labor Impact, Connected Dots
+ * Dossier ($199) or Professional: + Safety Alert, Interview Questions, Decision Brief
  */
 export function DossierProtector({
   companyId,
   companyName,
   influenceScore,
   overviewContent,
-  fullContent,
+  proContent,
+  premiumContent,
 }: DossierProtectorProps) {
   const { user } = useAuth();
   const { isCompanyTracked, isPremium } = useTrackedCompanies();
+  const { tier } = usePremium();
 
   const isTracked = isCompanyTracked(companyId);
-  const hasFullAccess = isTracked && isPremium;
+  const hasProAccess = isTracked && isPremium;
+  const hasPremiumAccess = isTracked && (tier === "professional");
 
-  if (hasFullAccess) {
+  // Full access — show everything
+  if (hasPremiumAccess) {
     return (
       <>
         {overviewContent}
-        {fullContent}
+        {proContent}
+        {premiumContent}
       </>
     );
   }
 
-  // Fuzzed / locked view
+  // Pro access — show free + pro, paywall before premium
+  if (hasProAccess) {
+    return (
+      <>
+        {overviewContent}
+        {proContent}
+        {premiumContent && (
+          <DossierPaywall companyId={companyId} companyName={companyName} layerIndex={5} />
+        )}
+      </>
+    );
+  }
+
+  // Free / not tracked — show overview + gauge + signal examples + pro paywall
   return (
     <>
-      {/* Always visible: Layer 1 overview */}
+      {/* Always visible: overview (header, gauges, Jackye's Read, Top 3 Flags, Basics) */}
       {overviewContent}
 
-      {/* Always visible: Influence Score gauge */}
+      {/* Always visible: Integrity Score gauge */}
       <div className="flex justify-center py-6">
-        <InfluenceGauge value={influenceScore} label="Influence Score" size="lg" />
+        <InfluenceGauge value={influenceScore} label="Integrity Score" size="lg" />
       </div>
 
       {/* Always visible: one signal example */}

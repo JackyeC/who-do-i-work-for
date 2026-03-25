@@ -4,9 +4,42 @@ import { usePageSEO } from "@/hooks/use-page-seo";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { COMPANY_REPORTS, type CompanyReportData } from "@/data/receiptsData";
+
+/* ─── Dossier cross-link mapping (receipt slug → dossier slug) ─── */
+const RECEIPT_TO_DOSSIER: Record<string, { slug: string; name: string }> = {
+  google: { slug: "alphabet-inc-google", name: "Google (Alphabet)" },
+  meta: { slug: "meta-platforms-facebook", name: "Meta Platforms" },
+  amazon: { slug: "amazon", name: "Amazon" },
+  microsoft: { slug: "microsoft", name: "Microsoft" },
+  boeing: { slug: "boeing", name: "Boeing" },
+  "booz-allen-hamilton": { slug: "booz-allen-hamilton", name: "Booz Allen Hamilton" },
+  accenture: { slug: "accenture", name: "Accenture" },
+  verizon: { slug: "verizon", name: "Verizon" },
+  "t-mobile": { slug: "t-mobile", name: "T-Mobile" },
+  att: { slug: "att", name: "AT&T" },
+};
+
+function DossierCrossLink({ receiptSlug, position }: { receiptSlug: string; position: "top" | "bottom" }) {
+  const mapping = RECEIPT_TO_DOSSIER[receiptSlug];
+  if (!mapping) return null;
+  return (
+    <Link
+      to={`/dossier/${mapping.slug}`}
+      className={cn(
+        "flex items-center gap-3 p-4 rounded-xl border border-primary/20 bg-primary/[0.04] hover:bg-primary/[0.08] transition-colors group",
+        position === "top" ? "mb-6" : "mt-8"
+      )}
+    >
+      <FileText className="w-4 h-4 text-primary" />
+      <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+        View {mapping.name}&apos;s full dossier with scores →
+      </span>
+    </Link>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -1169,6 +1202,9 @@ function GeneralizedReport({ data }: { data: CompanyReportData }) {
           <ArrowLeft className="h-3 w-3" /> All Receipts
         </Link>
 
+        {/* Dossier cross-link (top) */}
+        <DossierCrossLink receiptSlug={data.slug} position="top" />
+
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">{data.companyName}</h1>
           <p className="text-muted-foreground text-sm mt-2 font-mono">{data.ticker} · {data.location} · {data.products}</p>
@@ -1452,6 +1488,9 @@ function GeneralizedReport({ data }: { data: CompanyReportData }) {
             Report compiled March 2026. This is an investigative report; it does not constitute legal or financial advice.
           </p>
         </div>
+
+        {/* Dossier cross-link (bottom) */}
+        <DossierCrossLink receiptSlug={data.slug} position="bottom" />
       </div>
     </div>
   );
@@ -1506,6 +1545,9 @@ export default function ReceiptsReport() {
         <Link to="/receipts" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-8">
           <ArrowLeft className="h-3 w-3" /> All Receipts
         </Link>
+
+        {/* Dossier cross-link (top) */}
+        <DossierCrossLink receiptSlug="meta" position="top" />
 
         {/* Report Header */}
         <div className="mb-8">
@@ -1637,6 +1679,9 @@ export default function ReceiptsReport() {
             Report compiled March 21, 2026. This is a demonstration template for investigative use; it does not constitute legal or financial advice.
           </p>
         </div>
+
+        {/* Dossier cross-link (bottom) */}
+        <DossierCrossLink receiptSlug={data.slug} position="bottom" />
       </div>
     </div>
   );

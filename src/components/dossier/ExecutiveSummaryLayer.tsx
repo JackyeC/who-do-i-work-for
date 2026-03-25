@@ -19,6 +19,10 @@ interface ExecutiveSummaryProps {
   innovationScore?: number;
   stabilityScore?: number;
   attractionScore?: number;
+  integrityGapScore?: number;
+  laborImpactScore?: number;
+  safetyAlertScore?: number;
+  connectedDotsScore?: number;
 }
 
 function ScoreCard({ label, score, icon: Icon, color }: { label: string; score: number; icon: React.ElementType; color: string }) {
@@ -37,7 +41,7 @@ function ScoreCard({ label, score, icon: Icon, color }: { label: string; score: 
   );
 }
 
-export function ExecutiveSummaryLayer({ company, influenceScore = 0, innovationScore = 0, stabilityScore = 0, attractionScore = 0 }: ExecutiveSummaryProps) {
+export function ExecutiveSummaryLayer({ company, influenceScore = 0, innovationScore = 0, stabilityScore = 0, attractionScore = 0, integrityGapScore, laborImpactScore, safetyAlertScore, connectedDotsScore }: ExecutiveSummaryProps) {
   return (
     <div className="space-y-6">
       {/* Company identity */}
@@ -66,10 +70,10 @@ export function ExecutiveSummaryLayer({ company, influenceScore = 0, innovationS
 
       {/* Score cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <ScoreCard label="Influence Score" score={influenceScore} icon={Target} color="bg-primary/10 text-primary" />
-        <ScoreCard label="Innovation Score" score={innovationScore} icon={Sparkles} color="bg-civic-blue/10 text-civic-blue" />
-        <ScoreCard label="Stability Score" score={stabilityScore} icon={Shield} color="bg-civic-green/10 text-civic-green" />
-        <ScoreCard label="Attraction Score" score={attractionScore} icon={Users} color="bg-civic-gold/10 text-civic-gold" />
+        <ScoreCard label="Integrity Gap" score={integrityGapScore ?? influenceScore} icon={Target} color="bg-amber-500/10 text-amber-600" />
+        <ScoreCard label="Labor Impact" score={laborImpactScore ?? innovationScore} icon={Users} color="bg-red-500/10 text-red-600" />
+        <ScoreCard label="Safety Alert" score={safetyAlertScore ?? stabilityScore} icon={Shield} color="bg-orange-500/10 text-orange-600" />
+        <ScoreCard label="Connected Dots" score={connectedDotsScore ?? attractionScore} icon={Sparkles} color="bg-blue-500/10 text-blue-600" />
       </div>
     </div>
   );
