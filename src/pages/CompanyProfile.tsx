@@ -60,6 +60,7 @@ export default function CompanyProfile() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [isScanning, setIsScanning] = useState(false);
+  const [isEditingCompany, setIsEditingCompany] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
   const [candidateDrawerOpen, setCandidateDrawerOpen] = useState(false);
   const [selectedExecutive, setSelectedExecutive] = useState<any>(null);
