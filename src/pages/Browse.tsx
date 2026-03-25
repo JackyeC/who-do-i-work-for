@@ -63,16 +63,21 @@ export default function Browse() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { data: dbCompanies, isLoading } = useQuery({
+  const { data: dbCompanies, isLoading, isError } = useQuery({
     queryKey: ["browse-companies"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("companies")
         .select("id, name, slug, industry, state, civic_footprint_score, total_pac_spending, lobbying_spend, revenue, employee_count, description, is_startup, category_tags, career_intelligence_score")
         .order("civic_footprint_score", { ascending: false });
-      if (error) throw error;
+      if (error) {
+        console.error("Browse companies query error:", error);
+        throw error;
+      }
       return data || [];
     },
+    retry: 2,
+    staleTime: 5 * 60 * 1000,
   });
 
   const allCompanies = useMemo(() => {
