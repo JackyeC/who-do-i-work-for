@@ -330,7 +330,7 @@ export default function CompanyProfile() {
                       )}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
-                      <AdminCompanyActions companyId={dbCompany?.id || company?.id || ""} companyName={name} companySlug={id || ""} />
+                      <AdminCompanyActions companyId={dbCompany?.id || company?.id || ""} companyName={name} companySlug={id || ""} onEditClick={() => setIsEditingCompany(true)} />
                       <WatchCompanyButton companyId={dbCompany?.id || company?.id || ""} companyName={name} />
                       <ShareableScorecard data={{
                         name, industry, state, civicFootprintScore: civicScore,
