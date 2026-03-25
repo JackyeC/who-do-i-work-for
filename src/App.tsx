@@ -133,6 +133,7 @@ const PreviewTierToolbar = lazy(() => import("./components/PreviewTierToolbar").
 const Receipts = lazy(() => import("./pages/Receipts"));
 const ReceiptsReport = lazy(() => import("./pages/ReceiptsReport"));
 const HRTechIntelligence = lazy(() => import("./pages/HRTechIntelligence"));
+const WhoDidIVoteForPage = lazy(() => import("./pages/WhoDidIVoteForPage"));
 
 const queryClient = new QueryClient();
 
@@ -215,6 +216,7 @@ const App = () => (
                   <Route path="/search-your-employer" element={<SearchYourEmployer />} />
                   <Route path="/values-search" element={<ValuesSearch />} />
                   <Route path="/who-do-i-work-for" element={<ProtectedRoute><WhoDoIWorkFor /></ProtectedRoute>} />
+                  <Route path="/who-did-i-vote-for" element={<WhoDidIVoteForPage />} />
                   <Route path="/voter-lookup" element={<ProtectedRoute><VoterLookup /></ProtectedRoute>} />
                   <Route path="/representative/:name" element={<ProtectedRoute><RepresentativeProfile /></ProtectedRoute>} />
                   <Route path="/add-company" element={<AddCompany />} />
