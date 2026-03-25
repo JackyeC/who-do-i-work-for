@@ -19,7 +19,7 @@ const CATEGORY_CONFIG: Record<string, { label: string; icon: any; color: string;
   sec_insider_trading: { label: "MARKETS", icon: BarChart3, color: "text-civic-yellow", accent: "bg-civic-yellow", headline: "Insider trading activity" },
   lobbying: { label: "INFLUENCE", icon: Scale, color: "text-civic-blue", accent: "bg-civic-blue", headline: "Lobbying disclosure" },
   pac_spending: { label: "POLITICAL SPENDING", icon: DollarSign, color: "text-purple-600", accent: "bg-purple-500", headline: "PAC spending detected" },
-  federal_contracts: { label: "CONTRACTS", icon: Briefcase, color: "text-emerald-600", accent: "bg-civic-green", headline: "Federal contract awarded" },
+  federal_contracts: { label: "CONTRACTS", icon: Briefcase, color: "text-civic-green", accent: "bg-civic-green", headline: "Federal contract awarded" },
   workplace_enforcement: { label: "ENFORCEMENT", icon: Shield, color: "text-civic-red", accent: "bg-civic-red", headline: "Workplace enforcement action" },
   ai_hiring: { label: "AI & HIRING", icon: Eye, color: "text-indigo-600", accent: "bg-indigo-500", headline: "AI hiring practice detected" },
 };

@@ -113,7 +113,7 @@ export default function InvestigativeExplorer() {
           </div>
 
           {/* Safety notice */}
-          <div className="mt-4 flex items-start gap-2 p-3 bg-civic-yellow/5 border border-civic-yellow/20 text-xs text-amber-200/80">
+          <div className="mt-4 flex items-start gap-2 p-3 bg-civic-yellow/5 border border-civic-yellow/20 text-xs text-civic-yellow/80">
             <Shield className="h-4 w-4 text-civic-yellow mt-0.5 shrink-0" />
             <div>
               <strong className="text-civic-yellow">Context safeguards active.</strong>{" "}

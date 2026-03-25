@@ -42,12 +42,12 @@ const sentimentColors: Record<string, string> = {
   positive: "bg-civic-green/10 text-civic-green",
   negative: "bg-destructive/10 text-destructive",
   neutral: "bg-muted text-muted-foreground",
-  mixed: "bg-civic-yellow/10 text-amber-700",
+  mixed: "bg-civic-yellow/10 text-civic-yellow",
 };
 
 const severityColors: Record<string, string> = {
   high: "bg-destructive/10 text-destructive",
-  medium: "bg-civic-yellow/10 text-amber-700",
+  medium: "bg-civic-yellow/10 text-civic-yellow",
   low: "bg-muted text-muted-foreground",
 };
 

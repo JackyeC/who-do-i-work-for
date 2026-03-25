@@ -7,9 +7,9 @@ import { FileText, Calendar, ArrowRight, Shield } from "lucide-react";
 
 const VERIFICATION_LABELS: Record<string, { text: string; className: string }> = {
   fully_verified: { text: "Fully Verified", className: "border-civic-green/30 text-civic-green" },
-  partially_verified: { text: "Partially Verified", className: "border-civic-yellow/30 text-yellow-700" },
+  partially_verified: { text: "Partially Verified", className: "border-civic-yellow/30 text-civic-yellow" },
   analysis_with_linked_evidence: { text: "Analysis + Evidence", className: "border-civic-blue/30 text-civic-blue" },
-  limited_evidence: { text: "Limited Evidence", className: "border-civic-yellow/30 text-orange-700" },
+  limited_evidence: { text: "Limited Evidence", className: "border-civic-yellow/30 text-civic-yellow" },
   unverified: { text: "Unverified", className: "border-civic-red/30 text-civic-red" },
 };
 

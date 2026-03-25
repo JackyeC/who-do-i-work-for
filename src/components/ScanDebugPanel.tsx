@@ -298,9 +298,9 @@ export function ScanDebugPanel({ companyId }: Props) {
                                   variant="outline"
                                   className={cn(
                                     "text-xs",
-                                    evt.processing_status === 'completed' ? 'border-green-200 text-civic-green' :
+                                    evt.processing_status === 'completed' ? 'border-civic-green/20 text-civic-green' :
                                     evt.processing_status === 'failed' ? 'border-destructive/30 text-destructive' :
-                                    'border-yellow-200 text-civic-yellow'
+                                    'border-civic-yellow/20 text-civic-yellow'
                                   )}
                                 >
                                   {evt.processing_status}

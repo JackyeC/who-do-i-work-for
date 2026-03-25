@@ -73,7 +73,7 @@ const EVENT_ICONS: Record<EventCategory, { icon: any; color: string }> = {
   influence: { icon: DollarSign, color: "text-purple-600 bg-purple-500/10 border-purple-500/20" },
   signals: { icon: BarChart3, color: "text-civic-blue bg-civic-blue/10 border-civic-blue/20" },
   workforce: { icon: Users, color: "text-civic-yellow bg-civic-yellow/10 border-civic-yellow/20" },
-  governance: { icon: Shield, color: "text-emerald-600 bg-civic-green/10 border-civic-green/20" },
+  governance: { icon: Shield, color: "text-civic-green bg-civic-green/10 border-civic-green/20" },
 };
 
 function formatDate(dateStr: string): string {

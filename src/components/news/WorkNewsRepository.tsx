@@ -33,7 +33,7 @@ const CATEGORY_CONFIG: Record<string, { label: string; icon: any; color: string 
 
 const TONE_COLORS: Record<string, string> = {
   "Very Positive": "bg-civic-green/10 text-civic-green border-civic-green/20",
-  "Positive": "bg-civic-green/10 text-emerald-600 border-civic-green/20",
+  "Positive": "bg-civic-green/10 text-civic-green border-civic-green/20",
   "Neutral": "bg-muted text-muted-foreground border-border",
   "Negative": "bg-civic-yellow/10 text-civic-yellow border-civic-yellow/20",
   "Very Negative": "bg-destructive/10 text-destructive border-destructive/20",

@@ -108,7 +108,7 @@ export function TalentSignalsCard({
 
   const severityBadge = (s: string) =>
     s === "high" ? "bg-destructive/10 text-destructive border-destructive/20" :
-    s === "medium" ? "bg-civic-yellow/10 text-amber-700 border-civic-yellow/20" :
+    s === "medium" ? "bg-civic-yellow/10 text-civic-yellow border-civic-yellow/20" :
     "bg-muted text-muted-foreground";
 
   return (

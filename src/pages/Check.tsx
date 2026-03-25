@@ -123,8 +123,8 @@ function AddCompanyCard({ companyName, onDiscovered }: { companyName: string; on
 }
 
 const WORK_MODE_COLORS: Record<string, string> = {
-  remote: "bg-civic-green/10 text-emerald-700 border-civic-green/20",
-  hybrid: "bg-civic-yellow/10 text-amber-700 border-civic-yellow/20",
+  remote: "bg-civic-green/10 text-civic-green border-civic-green/20",
+  hybrid: "bg-civic-yellow/10 text-civic-yellow border-civic-yellow/20",
   onsite: "bg-sky-500/10 text-sky-700 border-sky-500/20",
 };
 

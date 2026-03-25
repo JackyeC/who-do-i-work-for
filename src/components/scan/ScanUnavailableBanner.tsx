@@ -33,7 +33,7 @@ export function ScanUnavailableBanner({ hasCachedData, lastUpdated, variant = "b
     <div className="rounded-lg border border-civic-yellow/20 bg-civic-yellow/5 p-3 space-y-1.5">
       <div className="flex items-center gap-2">
         <ShieldCheck className="w-4 h-4 text-civic-yellow shrink-0" />
-        <span className="font-mono text-xs font-medium text-amber-700 dark:text-amber-300 tracking-wide">
+        <span className="font-mono text-xs font-medium text-civic-yellow dark:text-civic-yellow tracking-wide">
           Live scan temporarily unavailable
         </span>
       </div>

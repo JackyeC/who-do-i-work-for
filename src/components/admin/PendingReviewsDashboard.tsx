@@ -324,7 +324,7 @@ export function PendingReviewsDashboard() {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="bg-transparent p-0 gap-1">
-          <TabsTrigger value="pending" className="text-xs data-[state=active]:bg-civic-yellow/10 data-[state=active]:text-amber-700">
+          <TabsTrigger value="pending" className="text-xs data-[state=active]:bg-civic-yellow/10 data-[state=active]:text-civic-yellow">
             Pending {counts?.pending ? `(${counts.pending})` : ""}
           </TabsTrigger>
           <TabsTrigger value="reviewing" className="text-xs data-[state=active]:bg-civic-blue/10 data-[state=active]:text-civic-blue">

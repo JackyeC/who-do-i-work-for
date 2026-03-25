@@ -51,7 +51,7 @@ const NATIONAL_BENCHMARKS = {
     { group: "All Women", date: "March 12", color: "bg-primary" },
     { group: "AAPI Women", date: "April 3", color: "bg-civic-blue" },
     { group: "Black Women", date: "July 9", color: "bg-purple-500" },
-    { group: "Native Women", date: "Sept 21", color: "bg-amber-600" },
+    { group: "Native Women", date: "Sept 21", color: "bg-civic-yellow" },
     { group: "Latina Women", date: "Oct 3", color: "bg-civic-red" },
   ],
 };

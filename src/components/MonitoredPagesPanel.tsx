@@ -128,10 +128,10 @@ export function MonitoredPagesPanel({ companyId }: MonitoredPagesPanelProps) {
                       className={cn(
                         "text-xs",
                         event.processing_status === "completed"
-                          ? "border-green-200 text-civic-green"
+                          ? "border-civic-green/20 text-civic-green"
                           : event.processing_status === "failed"
                           ? "border-destructive/30 text-destructive"
-                          : "border-yellow-200 text-civic-yellow"
+                          : "border-civic-yellow/20 text-civic-yellow"
                       )}
                     >
                       {event.processing_status}

@@ -232,7 +232,7 @@ export function SurvivorAlertCard({ companyName, dbCompanyId }: SurvivorAlertPro
           <div className="rounded-lg border border-civic-yellow/30 bg-civic-yellow/5 p-4">
             <div className="flex items-center gap-2 mb-2">
               <Globe className="w-4 h-4 text-civic-yellow" />
-              <span className="text-sm font-semibold text-orange-700">
+              <span className="text-sm font-semibold text-civic-yellow">
                 Strategic Workforce Shift Detected
               </span>
             </div>

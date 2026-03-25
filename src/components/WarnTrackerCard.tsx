@@ -59,7 +59,7 @@ const SOURCE_LABELS: Record<string, { label: string; color: string }> = {
   official_state_warn: { label: "Official WARN", color: "bg-civic-green/10 text-civic-green border-civic-green/20" },
   structured_open_data: { label: "Open Data", color: "bg-civic-blue/10 text-civic-blue border-civic-blue/20" },
   big_local_news: { label: "Big Local News", color: "bg-violet-500/10 text-violet-700 border-violet-500/20" },
-  news_report: { label: "News Report", color: "bg-civic-yellow/10 text-amber-700 border-civic-yellow/20" },
+  news_report: { label: "News Report", color: "bg-civic-yellow/10 text-civic-yellow border-civic-yellow/20" },
   sec_8k: { label: "SEC 8-K", color: "bg-civic-red/10 text-civic-red border-civic-red/20" },
   firecrawl_search: { label: "Web Search", color: "bg-muted text-muted-foreground" },
   unknown: { label: "Unknown", color: "bg-muted text-muted-foreground" },
