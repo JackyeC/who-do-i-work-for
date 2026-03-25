@@ -113,6 +113,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           <p className="font-mono text-[10px] text-muted-foreground/50 mt-3 tracking-wide" style={{ opacity: 0, animation: "heroFadeIn 0.4s ease 1.2s forwards" }}>
             Powered by FEC, SEC EDGAR, BLS, OSHA, NLRB, and Senate Lobbying data.
           </p>
+          <p className="font-sans text-foreground mt-8 mb-2 tracking-tight" style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 800, letterSpacing: "-0.5px", opacity: 0, animation: "heroFadeIn 0.4s ease 1.4s forwards" }}>
+            Stop applying. Start aligning.
+          </p>
         </div>
       </section>
 
