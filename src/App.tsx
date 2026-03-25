@@ -133,6 +133,7 @@ const PreviewTierToolbar = lazy(() => import("./components/PreviewTierToolbar").
 const Receipts = lazy(() => import("./pages/Receipts"));
 const ReceiptsReport = lazy(() => import("./pages/ReceiptsReport"));
 const HRTechIntelligence = lazy(() => import("./pages/HRTechIntelligence"));
+const WhoDidIVoteForPage = lazy(() => import("./pages/WhoDidIVoteForPage"));
 
 const queryClient = new QueryClient();
 
