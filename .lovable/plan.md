@@ -1,22 +1,31 @@
 
 
-## Plan: Execute 3 SQL Seed Files Against the Database
+## Fix: Theme Flashing Between Light and Dark Mode
 
-### What
-Run the three SQL files from the repo against the database to seed 49 companies and 47 issue signals.
+**Root cause**: The `<html>` tag in `index.html` has no `class="dark"` set. The page initially renders in light mode (browser default). Then React mounts, `ThemeToggle`'s `useEffect` runs, and adds the `dark` class — causing a visible flash from light to dark.
 
-### Execution Order
-1. **sql/10-seed-receipts-companies.sql** (746 lines) — 10 core "Receipts" companies with full data (Meta, Google, Amazon, Microsoft, Boeing, Booz Allen, Accenture, Verizon, T-Mobile, MAC Cosmetics)
-2. **sql/11-seed-additional-companies.sql** (2,147 lines) — 40 additional companies across Big Tech, Finance, Healthcare, Retail, Energy, Defense sectors
-3. **sql/12-seed-issue-signals.sql** (272 lines) — 47 issue signals linked to the 10 Receipts companies
+**Fix** (2 changes):
 
-All use `INSERT ... ON CONFLICT` so they're safe to re-run (idempotent).
+### 1. `index.html` — Set dark class immediately
+- Add `class="dark"` and `style="color-scheme: dark"` to the `<html>` tag
+- Add a blocking inline `<script>` in `<head>` that reads `localStorage.theme` before any rendering occurs. If the user previously chose light mode, it removes the `dark` class immediately — no flash either way
 
-### How
-Since these are INSERT statements (data operations, not schema changes), I'll execute them using `psql` via the database connection. The files are large, so I'll read the full content and execute each file's SQL directly.
+```html
+<html lang="en" class="dark" style="color-scheme: dark">
+  <head>
+    ...
+    <script>
+      (function() {
+        var t = localStorage.getItem('theme');
+        if (t === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      })();
+    </script>
+  </head>
+```
 
-### Verification
-After execution, run count queries to confirm:
-- `SELECT COUNT(*) FROM companies`
-- `SELECT COUNT(*) FROM issue_signals`
+### 2. `src/components/ThemeToggle.tsx` — Remove redundant init useEffect
+- Delete the second `useEffect` (lines 26-38) that re-applies the theme on mount — the inline script already handles this, and the first `useEffect` covers state changes. This eliminates the double-apply that causes the flash.
 
