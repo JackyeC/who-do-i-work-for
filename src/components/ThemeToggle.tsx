@@ -22,21 +22,6 @@ export function ThemeToggle() {
     }
   }, [dark]);
 
-  // Init on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("theme");
-    const root = document.documentElement;
-    if (saved === "light") {
-      root.classList.remove("dark");
-      root.style.colorScheme = "light";
-      setDark(false);
-    } else {
-      root.classList.add("dark");
-      root.style.colorScheme = "dark";
-      setDark(true);
-    }
-  }, []);
-
   return (
     <button
       onClick={() => setDark(!dark)}
