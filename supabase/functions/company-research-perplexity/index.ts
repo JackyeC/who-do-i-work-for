@@ -67,18 +67,23 @@ Deno.serve(async (req) => {
     }
 
     // Single Perplexity query — cost-optimized
-    const perplexityRes = await fetch("https://api.perplexity.ai/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${perplexityKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "sonar",
-        messages: [
-          {
-            role: "system",
-            content: `You are an investigative corporate intelligence analyst. Return a structured analysis in exactly this format:
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+    let perplexityRes: Response;
+    try {
+      perplexityRes = await fetch("https://api.perplexity.ai/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${perplexityKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "sonar",
+          messages: [
+            {
+              role: "system",
+              content: `You are an investigative corporate intelligence analyst. Return a structured analysis in exactly this format:
 
 ## Summary
 [2-3 sentence overview of the company, industry, size, and HQ]
@@ -93,15 +98,23 @@ Deno.serve(async (req) => {
 [Lawsuits, regulatory actions, workplace complaints, scandals. If none found, say "No major controversies detected"]
 
 Be factual, cite-worthy, and concise. Focus on information relevant to job seekers and employees.`,
-          },
-          {
-            role: "user",
-            content: `Research this company for our employer intelligence platform: "${companyName}". Include leadership, board of directors, corporate political donations, lobbying activity, and any workplace controversies or regulatory issues.`,
-          },
-        ],
-        search_recency_filter: "year",
-      }),
-    });
+            },
+            {
+              role: "user",
+              content: `Research this company for our employer intelligence platform: "${companyName}". Include leadership, board of directors, corporate political donations, lobbying activity, and any workplace controversies or regulatory issues.`,
+            },
+          ],
+          search_recency_filter: "year",
+        }),
+        signal: controller.signal,
+      });
+    } catch (fetchErr: any) {
+      clearTimeout(timeout);
+      const isTimeout = fetchErr.name === 'AbortError';
+      console.error(`Perplexity fetch ${isTimeout ? 'timed out' : 'failed'}:`, fetchErr.message);
+      throw new Error(isTimeout ? 'Research request timed out. Please try again.' : `Connection failed: ${fetchErr.message}`);
+    }
+    clearTimeout(timeout);
 
     if (!perplexityRes.ok) {
       const errText = await perplexityRes.text();

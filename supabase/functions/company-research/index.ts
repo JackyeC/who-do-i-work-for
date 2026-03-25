@@ -122,20 +122,36 @@ IMPORTANT: For the "candidates" array, include at least 8-15 real politicians wh
 
 Return ONLY valid JSON. No markdown, no explanation.`;
 
-    const aiResp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${lovableKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: 'You are a corporate political intelligence researcher. Return only valid JSON with real, publicly available data about companies. Be thorough with candidate/politician recipient lists.' },
-          { role: 'user', content: aiPrompt },
-        ],
-      }),
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 55000); // 55s timeout
+
+    let aiResp: Response;
+    try {
+      aiResp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${lovableKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: 'You are a corporate political intelligence researcher. Return only valid JSON with real, publicly available data about companies. Be thorough with candidate/politician recipient lists.' },
+            { role: 'user', content: aiPrompt },
+          ],
+        }),
+        signal: controller.signal,
+      });
+    } catch (fetchErr: any) {
+      clearTimeout(timeout);
+      const isTimeout = fetchErr.name === 'AbortError';
+      console.error(`AI fetch ${isTimeout ? 'timed out' : 'failed'}:`, fetchErr.message);
+      return new Response(JSON.stringify({
+        success: false,
+        error: isTimeout ? 'AI request timed out. Please try again.' : `AI connection failed: ${fetchErr.message}`,
+      }), { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+    clearTimeout(timeout);
 
     if (!aiResp.ok) {
       const status = aiResp.status;
