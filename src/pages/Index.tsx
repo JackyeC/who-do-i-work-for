@@ -113,6 +113,9 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           <p className="font-mono text-[10px] text-muted-foreground/50 mt-3 tracking-wide" style={{ opacity: 0, animation: "heroFadeIn 0.4s ease 1.2s forwards" }}>
             Powered by FEC, SEC EDGAR, BLS, OSHA, NLRB, and Senate Lobbying data.
           </p>
+          <p className="font-sans text-foreground mt-8 mb-2 tracking-tight" style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 800, letterSpacing: "-0.5px", opacity: 0, animation: "heroFadeIn 0.4s ease 1.4s forwards" }}>
+            Stop applying. Start aligning.
+          </p>
         </div>
       </section>
 
@@ -286,6 +289,16 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </section>
 
+      {/* ── DIVIDER: STOP APPLYING ── */}
+      <section className="px-6 lg:px-16 py-16 lg:py-20 text-center">
+        <p className="font-sans text-foreground tracking-tight" style={{ fontSize: "clamp(1.3rem, 3vw, 2rem)", fontWeight: 800, letterSpacing: "-0.5px" }}>
+          Stop applying. Start aligning.
+        </p>
+        <p className="text-sm text-muted-foreground mt-3 max-w-[36ch] mx-auto leading-relaxed">
+          What the data shows — no opinions, no rankings, just patterns.
+        </p>
+      </section>
+
       {/* ── SECTION 6: THE INTEGRITY GAP ── */}
       <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-24">
         <div className="max-w-[1100px] mx-auto">
@@ -421,10 +434,10 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <div className="absolute bottom-[-20%] left-[-5%] w-[40%] h-[60%] pointer-events-none" style={{ background: "radial-gradient(ellipse, rgba(240,192,64,0.05) 0%, transparent 70%)" }} />
         <div className="relative z-[1] max-w-[600px] mx-auto">
           <h2 className="font-sans text-foreground leading-[1.1] mb-4" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)", fontWeight: 800 }}>
-            The hiring process is about to get a lot more honest.
+            Stop applying. Start aligning.
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-[48ch] mx-auto mb-8">
-            WDIWF is building the career intelligence platform that flips the interview. Get early access and be the first to pull receipts on your next employer.
+            You don't need more applications. You need better decisions.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
