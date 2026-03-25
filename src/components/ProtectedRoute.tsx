@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 import { useLocation, Navigate } from "react-router-dom";
@@ -8,7 +9,8 @@ import { CareerWaitlistGate } from "@/components/career/CareerWaitlistGate";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Loader2 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+
+const AUTH_GRACE_MS = 2000;
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isLoaded, isFallback } = useClerkWithFallback();
@@ -18,8 +20,6 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (!isLoaded) return null;
   if (isDossierRoute) return <>{children}</>;
 
-  // When Clerk failed to load (fallback mode), render content directly
-  // instead of using Clerk's <SignedIn>/<SignedOut> wrappers
   if (isFallback) {
     return <ProtectedRouteInner>{children}</ProtectedRouteInner>;
   }
@@ -27,7 +27,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SignedOut>
-        {isDossierRoute ? <>{children}</> : <Navigate to="/login" replace />}
+        <Navigate to="/login" replace />
       </SignedOut>
       <SignedIn>
         <ProtectedRouteInner>{children}</ProtectedRouteInner>
@@ -40,6 +40,16 @@ function ProtectedRouteInner({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const { isApproved, isLoading: waitlistLoading } = useCareerWaitlist();
   const { isAdmin, isOwner, isLoading: roleLoading } = useUserRole();
+  const [graceElapsed, setGraceElapsed] = useState(false);
+
+  useEffect(() => {
+    if (loading || user) {
+      setGraceElapsed(false);
+      return;
+    }
+    const id = setTimeout(() => setGraceElapsed(true), AUTH_GRACE_MS);
+    return () => clearTimeout(id);
+  }, [loading, user]);
 
   if (loading || roleLoading || waitlistLoading) {
     return (
@@ -49,9 +59,16 @@ function ProtectedRouteInner({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // If Supabase user isn't loaded yet (Clerk is signed in but Supabase bridge pending), show content
+  if (!user && !graceElapsed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   if (!user) {
-    return <>{children}</>;
+    return <Navigate to="/login" replace />;
   }
 
   if (!isAdmin && !isOwner && !isApproved) {
