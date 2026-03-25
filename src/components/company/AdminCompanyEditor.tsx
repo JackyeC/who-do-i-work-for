@@ -36,20 +36,14 @@ export function AdminCompanyEditor({ companyId, companySlug, currentData, onClos
   const { isAdmin, isOwner } = useUserRole();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [form, setForm] = useState<CompanyEditableFields>(currentData);
 
   if (!isAdmin && !isOwner) return null;
 
-  const handleOpen = () => {
-    setForm(currentData);
-    setIsEditing(true);
-  };
-
   const handleCancel = () => {
     setForm(currentData);
-    setIsEditing(false);
+    onClose();
   };
 
   const handleChange = (field: keyof CompanyEditableFields, value: string | number | null) => {
