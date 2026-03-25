@@ -9,7 +9,8 @@ import {
   Building2, Lightbulb, Network, Landmark, Eye,
   Sparkles, Users, Heart, Loader2, ShoppingCart,
   BarChart3, TrendingUp, User, Megaphone, Target, AlertTriangle,
-  FileSearch, Scan, Search,
+  FileSearch, Scan, Search, Receipt, Shield, MessageSquareQuote,
+  FileText,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -25,11 +26,11 @@ import { CompanyLogo } from "@/components/CompanyLogo";
 import { Badge } from "@/components/ui/badge";
 import { ExportDossierButton } from "@/components/dossier/ExportDossierButton";
 import { useDossierLens } from "@/contexts/DossierLensContext";
+import { TopFlagsSection } from "@/components/dossier/TopFlagsSection";
 
 // Layer components
 import { ProductsPlatformsLayer } from "@/components/dossier/ProductsPlatformsLayer";
 import { MarketsSegmentsLayer } from "@/components/dossier/MarketsSegmentsLayer";
-import { InnovationPatentsLayer } from "@/components/dossier/InnovationPatentsLayer";
 import { EcosystemSubcontractorsLayer } from "@/components/dossier/EcosystemSubcontractorsLayer";
 import { InfluencePolicyLayer } from "@/components/dossier/InfluencePolicyLayer";
 import { PoliticalGivingCard } from "@/components/giving/PoliticalGivingCard";
@@ -43,7 +44,6 @@ import { FullEvidenceLayer } from "@/components/dossier/FullEvidenceLayer";
 import { DecisionMakerLayer } from "@/components/dossier/DecisionMakerLayer";
 import { WorkforceDemographicsLayer } from "@/components/dossier/WorkforceDemographicsLayer";
 import { BuyingLogicLayer } from "@/components/dossier/BuyingLogicLayer";
-import { StockPatentsLayer } from "@/components/dossier/StockPatentsLayer";
 import { EEOCCaseAlert } from "@/components/EEOCCaseAlert";
 import { useEEOCByCompanyName } from "@/hooks/use-eeoc-cases";
 import { PremiumGate } from "@/components/PremiumGate";
@@ -55,6 +55,55 @@ import { SituationContextBanner } from "@/components/policy-intelligence/Situati
 import { TrustFramingLine } from "@/components/TrustFramingLine";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+/* ─── Receipts cross-link mapping ─── */
+const RECEIPTS_SLUGS = new Set(["meta", "google", "amazon", "microsoft", "boeing", "booz-allen-hamilton", "accenture", "verizon", "t-mobile", "att"]);
+const SLUG_TO_RECEIPT: Record<string, string> = {
+  "alphabet-inc-google": "google",
+  "meta-platforms-facebook": "meta",
+  "meta-platforms": "meta",
+  "at-t": "att",
+  "at-t-inc": "att",
+  "booz-allen-hamilton-holding": "booz-allen-hamilton",
+};
+
+/* ─── Interview question generator ─── */
+function generateInterviewQuestions(issueSignals: any[] | undefined, jackyeInsight: string | null | undefined): string[] {
+  const questions: string[] = [];
+
+  if (issueSignals && issueSignals.length > 0) {
+    const categories = [...new Set(issueSignals.map((s: any) => s.issue_category).filter(Boolean))];
+    if (categories.some((c: string) => c.toLowerCase().includes("layoff") || c.toLowerCase().includes("workforce"))) {
+      questions.push("Can you walk me through the company's recent workforce changes and how the team has adapted?");
+    }
+    if (categories.some((c: string) => c.toLowerCase().includes("discrimination") || c.toLowerCase().includes("eeoc"))) {
+      questions.push("What concrete steps has the company taken to address workplace equity and inclusion concerns?");
+    }
+    if (categories.some((c: string) => c.toLowerCase().includes("lobby") || c.toLowerCase().includes("political"))) {
+      questions.push("How does the company's political activity align with its stated values and employee interests?");
+    }
+  }
+
+  if (jackyeInsight) {
+    questions.push("What would you say is the biggest gap between the company's public messaging and day-to-day reality?");
+  }
+
+  // Always include these general questions to reach at least 3
+  const defaults = [
+    "How does leadership handle transparency around company decisions that affect employees?",
+    "What does the company's track record look like on following through on commitments to workers?",
+    "Can you describe the company's approach to safety, compliance, and regulatory accountability?",
+    "How are decisions made about workforce investments versus cost-cutting measures?",
+    "What mechanisms exist for employees to raise concerns without retaliation?",
+  ];
+
+  for (const d of defaults) {
+    if (questions.length >= 5) break;
+    if (!questions.includes(d)) questions.push(d);
+  }
+
+  return questions.slice(0, 5);
+}
 
 /* ─── Lens config ─── */
 const LENS_META = {
@@ -235,14 +284,25 @@ export default function CompanyDossier() {
     );
   }
 
-  const influenceScore = company.civic_footprint_score || 0;
+  // 4-pillar scores with fallbacks
+  const integrityGapScore = company.integrity_gap_score ?? company.civic_footprint_score ?? 0;
+  const laborImpactScore = company.labor_impact_score ?? 0;
+  const safetyAlertScore = company.safety_alert_score ?? 0;
+  const connectedDotsScore = company.connected_dots_score ?? company.insider_score ?? 0;
+  const compositeIntegrityScore = Math.round(
+    0.30 * integrityGapScore + 0.25 * laborImpactScore + 0.20 * safetyAlertScore + 0.25 * connectedDotsScore
+  );
+
   const hasFullAccess = isTracked;
   const LensMeta = LENS_META[lens];
   const LensIcon = LensMeta.icon;
 
+  // Receipts cross-link
+  const receiptSlug = SLUG_TO_RECEIPT[company.slug] || (RECEIPTS_SLUGS.has(company.slug) ? company.slug : null);
+
   // No-data detection: all scores zero, no insight, no signals, no stances
   const hasNoData =
-    influenceScore === 0 &&
+    compositeIntegrityScore === 0 &&
     !company.jackye_insight &&
     !(company as any).description &&
     (company.total_pac_spending ?? 0) === 0 &&
@@ -283,14 +343,35 @@ export default function CompanyDossier() {
 
       {/* Score gauges */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 p-6 rounded-2xl border border-border/40 bg-card">
-        <InfluenceGauge value={influenceScore} label="Influence Score" />
-        <InfluenceGauge value={0} label="Innovation Score" />
-        <InfluenceGauge value={0} label="Stability Score" />
-        <InfluenceGauge value={0} label="Attraction Score" />
+        <InfluenceGauge value={integrityGapScore} label="Integrity Gap" />
+        <InfluenceGauge value={laborImpactScore} label="Labor Impact" />
+        <InfluenceGauge value={safetyAlertScore} label="Safety Alert" />
+        <InfluenceGauge value={connectedDotsScore} label="Connected Dots" />
       </div>
 
       {/* Jackye's Insight — shared component */}
       <JackyesInsightBlock insight={company.jackye_insight} description={(company as any)?.description} />
+
+      {/* Receipts cross-link */}
+      {receiptSlug && (
+        <Link
+          to={`/receipts/${receiptSlug}`}
+          className="flex items-center gap-3 p-4 mb-4 rounded-xl border border-primary/20 bg-primary/[0.04] hover:bg-primary/[0.08] transition-colors group"
+        >
+          <Receipt className="w-4 h-4 text-primary" />
+          <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+            Read the full Receipts report for {company.name} →
+          </span>
+        </Link>
+      )}
+
+      {/* Top 3 Flags — always free */}
+      <TopFlagsSection
+        issueSignals={issueSignals}
+        eeocCases={eeocCases}
+        valuesSignals={valuesSignals as any[]}
+        companyName={company.name}
+      />
 
       {/* No-data fallback */}
       {hasNoData && (
@@ -309,8 +390,8 @@ export default function CompanyDossier() {
         </Card>
       )}
 
-      {/* Layer 1: Basics — always shown */}
-      <DossierLayer title="Basics" subtitle="Products, markets, segments, and company overview" icon={Building2} layerNumber={1} defaultOpen>
+      {/* Layer 1: Company Overview — always shown */}
+      <DossierLayer title="Company Overview" subtitle="Products, markets, segments, and company overview" icon={Building2} layerNumber={1} defaultOpen>
         <div className="space-y-6">
           {company.description && (
             <p className="text-body text-muted-foreground leading-relaxed">{company.description}</p>
@@ -319,45 +400,32 @@ export default function CompanyDossier() {
           <MarketsSegmentsLayer segments={[]} companyName={company.name} />
         </div>
       </DossierLayer>
-
-      {/* Innovation — always visible */}
-      <DossierLayer title="Innovation & Patents" subtitle="Stock timeline, patent clusters, R&D themes" icon={Lightbulb} layerNumber={2}>
-        <div className="space-y-8">
-          <StockPatentsLayer companyId={companyId!} companyName={company.name} unlocked={hasFullAccess} />
-          <div className="border-t border-border/30 pt-6">
-            <InnovationPatentsLayer totalPatents={0} clusters={[]} companyName={company.name} companyId={companyId} unlocked={hasFullAccess} />
-          </div>
-        </div>
-      </DossierLayer>
-
-      {/* EEOC Enforcement Alert */}
-      {eeocCases && eeocCases.length > 0 && (
-        <EEOCCaseAlert cases={eeocCases} />
-      )}
     </>
   );
 
-  /* ─── CANDIDATE LENS — values, workforce, career ─── */
-  const candidateContent = (
+  /* ─── CANDIDATE LENS — unified 4-pillar system ─── */
+
+  /* Pro tier content (layers 2-4) */
+  const candidateProContent = (
     <>
-      <DossierLayer title="Values Filter" subtitle="Evidence-based filtering across 14 issue lenses" icon={Heart} layerNumber={3} defaultOpen>
+      <DossierLayer title="Integrity Gap" subtitle="What they say vs. what they do — stated values against documented contradictions" icon={Heart} layerNumber={2} defaultOpen>
         <ValuesSignalsLayer signals={mappedValues} companyName={company.name} />
       </DossierLayer>
 
-      <DossierLayer title="Workforce Signals" subtitle="WARN notices, hiring stability, workforce signals" icon={Users} layerNumber={4} defaultOpen>
+      <DossierLayer title="Labor Impact" subtitle="Settlement history, layoff patterns, workforce stability, and demographic signals" icon={Users} layerNumber={3} defaultOpen>
         <TalentContextLayer signals={[]} companyName={company.name} />
+        <div className="mt-6">
+          <WorkforceDemographicsLayer companyId={companyId!} companyName={company.name} />
+        </div>
+        {/* State-level women's status context */}
+        {company.state && (
+          <div className="mt-6">
+            <StateWomenStatusCard stateCode={company.state} companyName={company.name} />
+          </div>
+        )}
       </DossierLayer>
 
-      <DossierLayer title="Workforce Demographics" subtitle="Role distribution, pay equity, diversity, and promotion signals" icon={BarChart3} layerNumber={5}>
-        <WorkforceDemographicsLayer companyId={companyId!} companyName={company.name} />
-      </DossierLayer>
-
-      {/* State-level women's status context */}
-      {company.state && (
-        <StateWomenStatusCard stateCode={company.state} companyName={company.name} />
-      )}
-
-      <DossierLayer title="Influence & Policy Signals" subtitle="PAC giving, lobbying, government contracts" icon={Landmark} layerNumber={6}>
+      <DossierLayer title="Connected Dots" subtitle="PAC donations, lobbying, executive giving, government contracts, and institutional relationships" icon={Network} layerNumber={4}>
         <InfluencePolicyLayer
           politicalGiving={politicalGiving}
           lobbyingActivity={[]}
@@ -379,26 +447,56 @@ export default function CompanyDossier() {
             <PolicyScoreCard companyId={companyId} companyName={company.name} />
           </div>
         )}
+        {companyId && (
+          <div className="mt-6">
+            <PoliticalGivingCard companyId={companyId} companyName={company.name} companySlug={company.slug} />
+          </div>
+        )}
+        {companyId && (
+          <div className="mt-6">
+            <ExecutiveGivingSection companyId={companyId} companyName={company.name} companySlug={company.slug} />
+          </div>
+        )}
+        <div className="mt-6">
+          <InsiderScoreBreakdown companyId={companyId!} companyName={company.name} insiderScore={company.insider_score ?? null} />
+        </div>
+      </DossierLayer>
+    </>
+  );
+
+  /* Dossier/Premium tier content (layers 5-7) */
+  const candidatePremiumContent = (
+    <>
+      <DossierLayer title="Safety Alert" subtitle="OSHA citations, product safety, environmental record, and regulatory risk" icon={Shield} layerNumber={5}>
+        <div className="space-y-6">
+          {/* EEOC cases */}
+          {eeocCases && eeocCases.length > 0 && (
+            <EEOCCaseAlert cases={eeocCases} />
+          )}
+          {/* Placeholder for additional safety data */}
+          <div className="p-4 rounded-xl border border-border/30 bg-muted/20 text-center">
+            <Shield className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+            <p className="text-sm text-muted-foreground">Additional safety data (OSHA, product recalls, environmental records) coming soon.</p>
+          </div>
+        </div>
       </DossierLayer>
 
-      {companyId && (
-        <DossierLayer title="Political Giving & Influence" subtitle="PAC spending, lobbying, institutional links — sourced from FEC & LDA" icon={Landmark} layerNumber={7}>
-          <PoliticalGivingCard companyId={companyId} companyName={company.name} companySlug={company.slug} />
-        </DossierLayer>
-      )}
-
-      {companyId && (
-        <DossierLayer title="Leadership Political Giving" subtitle="Individual executive donation records from FEC public filings" icon={Users} layerNumber={8}>
-          <ExecutiveGivingSection companyId={companyId} companyName={company.name} companySlug={company.slug} />
-        </DossierLayer>
-      )}
-
-      <DossierLayer title="Connected Dots" subtitle="Leadership network concentration and hiring pattern transparency" icon={Eye} layerNumber={9}>
-        <InsiderScoreBreakdown companyId={companyId!} companyName={company.name} insiderScore={(company as any).insider_score ?? null} />
+      <DossierLayer title="Interview Questions" subtitle="Personalized questions based on flags detected for this company" icon={MessageSquareQuote} layerNumber={6}>
+        <div className="space-y-3">
+          {generateInterviewQuestions(issueSignals, company.jackye_insight).map((q, i) => (
+            <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-border/30 bg-muted/20">
+              <span className="text-sm font-mono font-bold text-primary mt-0.5">{i + 1}.</span>
+              <p className="text-sm text-foreground leading-relaxed">{q}</p>
+            </div>
+          ))}
+        </div>
       </DossierLayer>
 
-      <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={10}>
+      <DossierLayer title="Decision Brief" subtitle="Key observations, notable patterns, and export" icon={FileText} layerNumber={7}>
         <PatternsSynthesisLayer patterns={[]} companyName={company.name} />
+        <div className="mt-6 flex justify-center">
+          <ExportDossierButton companyId={companyId!} companyName={company.name} company={company} />
+        </div>
       </DossierLayer>
     </>
   );
@@ -488,7 +586,9 @@ export default function CompanyDossier() {
     </PremiumGate>
   );
 
-  const fullContent = lens === "candidate" ? candidateContent : lens === "sales" ? gatedSalesContent : gatedHrContent;
+  // For candidate lens, pass pro + premium content separately to DossierProtector
+  const fullContent = lens === "candidate" ? candidateProContent : lens === "sales" ? gatedSalesContent : gatedHrContent;
+  const premiumContent = lens === "candidate" ? candidatePremiumContent : null;
 
   return (
     <ContentProtector className="min-h-screen flex flex-col bg-background">
@@ -498,9 +598,10 @@ export default function CompanyDossier() {
           <DossierProtector
             companyId={companyId!}
             companyName={company.name}
-            influenceScore={influenceScore}
+            influenceScore={compositeIntegrityScore}
             overviewContent={overviewContent}
-            fullContent={fullContent}
+            proContent={fullContent}
+            premiumContent={premiumContent}
           />
           <TransparencyDisclaimer />
 

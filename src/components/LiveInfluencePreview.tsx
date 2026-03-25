@@ -139,10 +139,10 @@ export function LiveInfluencePreview() {
   const cards = [
     {
       icon: TrendingUp,
-      label: "Influence Score",
+      label: "Integrity Score",
       value: activeData.influenceScore.toString(),
       suffix: "/ 100",
-      detail: "Composite score based on PAC spending, lobbying, contracts, and network connections",
+      detail: "Composite score based on integrity gap, labor impact, safety alerts, and connected dots",
       color: "text-primary",
       bgColor: "bg-primary/[0.06] border-primary/[0.12]",
       iconBg: "bg-primary/10",

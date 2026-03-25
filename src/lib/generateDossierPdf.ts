@@ -209,15 +209,15 @@ function buildCoverPage(doc: jsPDF, data: DossierPdfData) {
   doc.text(nameLines, ML, 85);
   const nameEndY = 85 + nameLines.length * 15;
 
-  // Influence Score badge
+  // Integrity Score badge
   const score = company.civic_footprint_score ?? 0;
   const scoreColor = score > 70 ? C.red : score > 40 ? C.amber : C.green;
   doc.setFillColor(...scoreColor);
-  doc.roundedRect(ML, nameEndY + 4, 50, 12, 2, 2, "F");
+  doc.roundedRect(ML, nameEndY + 4, 52, 12, 2, 2, "F");
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.setTextColor(...C.white);
-  doc.text(`INFLUENCE SCORE: ${score}/100`, ML + 4, nameEndY + 12);
+  doc.text(`INTEGRITY SCORE: ${score}/100`, ML + 4, nameEndY + 12);
 
   // Description
   if (company.description) {
@@ -286,7 +286,7 @@ function buildExecutiveSummary(doc: jsPDF, data: DossierPdfData) {
   let y = 42;
   const score = company.civic_footprint_score ?? 0;
   const kpiW = (CW - 12) / 4;
-  drawKpiBox(doc, ML, y, kpiW, "Influence Score", `${score}/100`, score > 70 ? C.red : score > 40 ? C.amber : C.green);
+  drawKpiBox(doc, ML, y, kpiW, "Integrity Score", `${score}/100`, score > 70 ? C.red : score > 40 ? C.amber : C.green);
   drawKpiBox(doc, ML + kpiW + 4, y, kpiW, "PAC Spending", company.total_pac_spending ? fmt$(company.total_pac_spending) : "—", C.indigo);
   drawKpiBox(doc, ML + (kpiW + 4) * 2, y, kpiW, "Lobbying Spend", company.lobbying_spend ? fmt$(company.lobbying_spend) : "—", C.teal);
   drawKpiBox(doc, ML + (kpiW + 4) * 3, y, kpiW, "Gov Contracts", company.government_contracts ? fmt$(company.government_contracts) : "—", C.amber);
