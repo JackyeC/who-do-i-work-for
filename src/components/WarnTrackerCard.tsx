@@ -56,7 +56,7 @@ function getTimeFilterDate(filter: TimeFilter): Date {
 }
 
 const SOURCE_LABELS: Record<string, { label: string; color: string }> = {
-  official_state_warn: { label: "Official WARN", color: "bg-civic-green/10 text-civic-green border-green-500/20" },
+  official_state_warn: { label: "Official WARN", color: "bg-civic-green/10 text-civic-green border-civic-green/20" },
   structured_open_data: { label: "Open Data", color: "bg-civic-blue/10 text-civic-blue border-civic-blue/20" },
   big_local_news: { label: "Big Local News", color: "bg-violet-500/10 text-violet-700 border-violet-500/20" },
   news_report: { label: "News Report", color: "bg-civic-yellow/10 text-amber-700 border-civic-yellow/20" },
@@ -369,7 +369,7 @@ export function WarnTrackerCard({ companyName, dbCompanyId }: { companyName: str
 
                       {/* Worker Transition Support */}
                       {notice.support_services_mentioned && (
-                        <div className="rounded-md bg-civic-green/5 border border-green-500/20 p-2.5">
+                        <div className="rounded-md bg-civic-green/5 border border-civic-green/20 p-2.5">
                           <div className="flex items-center gap-1.5 mb-1">
                             <ShieldCheck className="w-3.5 h-3.5 text-civic-green" />
                             <span className="text-xs font-semibold text-civic-green">Worker Transition Support</span>

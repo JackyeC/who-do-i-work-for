@@ -18,7 +18,7 @@ import { motion } from "framer-motion";
 const STATUS_CONFIG: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   queued: { label: "Queued", icon: Clock, color: "text-muted-foreground bg-muted border-border" },
   processing: { label: "Processing", icon: Loader2, color: "text-civic-yellow bg-yellow-50 border-yellow-200/10 dark:border-civic-yellow/20" },
-  completed: { label: "Completed", icon: CheckCircle2, color: "text-civic-green bg-green-50 border-green-200/10 dark:border-green-500/20" },
+  completed: { label: "Completed", icon: CheckCircle2, color: "text-civic-green bg-green-50 border-green-200/10 dark:border-civic-green/20" },
   failed: { label: "Failed", icon: AlertCircle, color: "text-destructive bg-destructive/5 border-destructive/30" },
 };
 

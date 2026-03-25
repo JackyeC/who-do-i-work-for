@@ -41,7 +41,7 @@ interface CompanyImpact {
 const IMPACT_CATEGORIES = [
   { key: "labor_rights", label: "Labor Rights", icon: Factory, color: "text-civic-yellow", bgColor: "bg-civic-yellow/10", borderColor: "border-civic-yellow/20", table: "issue_signals", filter: "labor" },
   { key: "immigration", label: "Immigration", icon: Globe, color: "text-civic-blue", bgColor: "bg-civic-blue/10", borderColor: "border-civic-blue/20", table: "issue_signals", filter: "immigration" },
-  { key: "climate", label: "Climate", icon: Leaf, color: "text-civic-green", bgColor: "bg-civic-green/10", borderColor: "border-green-500/20", table: "climate_signals", filter: null },
+  { key: "climate", label: "Climate", icon: Leaf, color: "text-civic-green", bgColor: "bg-civic-green/10", borderColor: "border-civic-green/20", table: "climate_signals", filter: null },
   { key: "gun_policy", label: "Gun Policy", icon: Crosshair, color: "text-civic-red", bgColor: "bg-civic-red/10", borderColor: "border-civic-red/20", table: "gun_policy_signals", filter: null },
   { key: "civil_rights", label: "Civil Rights", icon: Scale, color: "text-purple-400", bgColor: "bg-purple-500/10", borderColor: "border-purple-500/20", table: "civil_rights_signals", filter: null },
   { key: "healthcare", label: "Healthcare", icon: Heart, color: "text-pink-400", bgColor: "bg-pink-500/10", borderColor: "border-pink-500/20", table: "healthcare_signals", filter: null },

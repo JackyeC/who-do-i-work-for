@@ -37,7 +37,7 @@ interface PendingReview {
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
   pending: { label: "Pending", color: "bg-civic-yellow/10 text-civic-yellow border-civic-yellow/20", icon: Clock },
   reviewing: { label: "Reviewing", color: "bg-civic-blue/10 text-civic-blue border-civic-blue/20", icon: Eye },
-  approved: { label: "Approved", color: "bg-civic-green/10 text-civic-green border-green-500/20", icon: Check },
+  approved: { label: "Approved", color: "bg-civic-green/10 text-civic-green border-civic-green/20", icon: Check },
   published: { label: "Published", color: "bg-primary/10 text-primary border-primary/20", icon: Building2 },
   rejected: { label: "Rejected", color: "bg-destructive/10 text-destructive border-destructive/20", icon: X },
 };

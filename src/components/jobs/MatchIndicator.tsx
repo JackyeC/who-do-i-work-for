@@ -32,7 +32,7 @@ export function MatchIndicator({ matchCount, matchedCategories, className }: Mat
           className={cn(
             "text-xs gap-1 py-0 cursor-default",
             matchCount >= 3
-              ? "bg-civic-green/10 text-civic-green border-green-500/20"
+              ? "bg-civic-green/10 text-civic-green border-civic-green/20"
               : matchCount >= 2
               ? "bg-primary/10 text-primary border-primary/20"
               : "bg-muted text-muted-foreground border-border",
