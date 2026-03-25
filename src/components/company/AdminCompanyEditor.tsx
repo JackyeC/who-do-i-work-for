@@ -64,7 +64,7 @@ export function AdminCompanyEditor({ companyId, companySlug, currentData, onClos
 
       if (Object.keys(updates).length === 0) {
         toast({ title: "No changes", description: "Nothing was modified." });
-        setIsEditing(false);
+        onClose();
         return;
       }
 
@@ -78,27 +78,13 @@ export function AdminCompanyEditor({ companyId, companySlug, currentData, onClos
       toast({ title: "Company updated", description: "Changes saved successfully." });
       queryClient.invalidateQueries({ queryKey: ["company-profile", companySlug] });
       queryClient.invalidateQueries({ queryKey: ["browse-companies"] });
-      setIsEditing(false);
+      onClose();
     } catch (e: any) {
       toast({ title: "Update failed", description: e.message, variant: "destructive" });
     } finally {
       setIsSaving(false);
     }
   };
-
-  if (!isEditing) {
-    return (
-      <Button
-        variant="ghost"
-        size="sm"
-        className="h-7 text-xs gap-1 text-muted-foreground hover:text-foreground"
-        onClick={handleOpen}
-      >
-        <Pencil className="w-3 h-3" />
-        Edit
-      </Button>
-    );
-  }
 
   return (
     <Card className="mb-6 border-primary/30 bg-primary/[0.02]">
