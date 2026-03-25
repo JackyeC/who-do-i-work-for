@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: dark;  /* dark is the site default — prevents browser white flash */
 
     /* ── NAV OFFSET ── */
     --ticker-height: 36px;
