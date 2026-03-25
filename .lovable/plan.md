@@ -1,31 +1,29 @@
 
 
-## Fix: Theme Flashing Between Light and Dark Mode
+## Fix: Inconsistent Colors Across the Homepage
 
-**Root cause**: The `<html>` tag in `index.html` has no `class="dark"` set. The page initially renders in light mode (browser default). Then React mounts, `ThemeToggle`'s `useEffect` runs, and adds the `dark` class — causing a visible flash from light to dark.
+### Problem
+The homepage (`src/pages/Index.tsx`) mixes hardcoded Tailwind colors with theme-aware tokens. This means colors won't adapt correctly between light and dark modes and look visually inconsistent.
 
-**Fix** (2 changes):
+**Specific issues in `Index.tsx`:**
+- Lines 162-166: Score badges use `text-green-400`, `text-yellow-400`, `text-red-400` and their `bg-` variants instead of the civic signal tokens
+- These hardcoded colors look washed out in light mode and don't match the CivicScoreCard component used elsewhere
 
-### 1. `index.html` — Set dark class immediately
-- Add `class="dark"` and `style="color-scheme: dark"` to the `<html>` tag
-- Add a blocking inline `<script>` in `<head>` that reads `localStorage.theme` before any rendering occurs. If the user previously chose light mode, it removes the `dark` class immediately — no flash either way
+### Fix (Index.tsx only — scoped to homepage)
 
-```html
-<html lang="en" class="dark" style="color-scheme: dark">
-  <head>
-    ...
-    <script>
-      (function() {
-        var t = localStorage.getItem('theme');
-        if (t === 'light') {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.style.colorScheme = 'light';
-        }
-      })();
-    </script>
-  </head>
-```
+Replace all hardcoded score color classes in the Featured Company Cards section:
 
-### 2. `src/components/ThemeToggle.tsx` — Remove redundant init useEffect
-- Delete the second `useEffect` (lines 26-38) that re-applies the theme on mount — the inline script already handles this, and the first `useEffect` covers state changes. This eliminates the double-apply that causes the flash.
+| Current (hardcoded) | Replacement (theme token) |
+|---|---|
+| `bg-green-500/10 text-green-400` | `bg-civic-green/10 text-civic-green` |
+| `bg-yellow-500/10 text-yellow-400` | `bg-civic-yellow/10 text-civic-yellow` |
+| `bg-red-500/10 text-red-400` | `bg-civic-red/10 text-civic-red` |
+
+These civic tokens are already defined in `index.css` and adapt to both light and dark mode automatically.
+
+### Scope
+This change is limited to **`src/pages/Index.tsx`** lines 162-166 (the featured company cards score badges). The broader codebase has similar issues in ~13 other files, but those are separate pages and should be addressed incrementally.
+
+### No other changes
+Layout, typography, and content remain untouched.
 
