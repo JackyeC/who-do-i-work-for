@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { generateCandidatePdf } from "@/lib/generateCandidatePdf";
+import { useToast } from "@/hooks/use-toast";
 
 const COMPANY_FIELDS = "id, name, industry, civic_footprint_score, career_intelligence_score, confidence_rating, lobbying_spend, employee_count, jackye_insight, is_publicly_traded, description" as const;
 
@@ -52,6 +54,7 @@ export default function RecruiterBrief() {
   const [brief, setBrief] = useState<RecruiterBriefData | null>(null);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
@@ -394,7 +397,16 @@ export default function RecruiterBrief() {
             <Button variant="outline" className="gap-2 text-sm">
               <Save className="w-4 h-4" /> Save Brief
             </Button>
-            <Button variant="outline" className="gap-2 text-sm">
+            <Button
+              variant="outline"
+              className="gap-2 text-sm"
+              onClick={() => {
+                if (brief) {
+                  generateCandidatePdf(brief);
+                  toast({ title: "Candidate brief downloaded 📄" });
+                }
+              }}
+            >
               <FileText className="w-4 h-4" /> Generate Candidate Version
             </Button>
             <Button variant="outline" className="gap-2 text-sm">
