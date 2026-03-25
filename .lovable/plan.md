@@ -1,45 +1,38 @@
 
 
-## Add "Stop Applying. Start Aligning." to the Homepage
+## Plan: Seed Workforce Intelligence with Breaking News Data
 
-The tagline doesn't exist anywhere in the codebase currently. Based on your instructions, it should appear in **3 places** on `src/pages/Index.tsx` — each serving a different purpose.
+You shared 4 major workforce stories from this week. I'll insert them into the existing `work_news` and `briefing_items` tables so they appear on the Workforce Intelligence Brief page and the Daily Briefing card on the dashboard.
 
-### Placement 1 — Hero accent line (after the search bar micro-text, ~line 115)
-A standalone statement below the data sources line. Big, bold, centered, with whitespace. No box, no emoji.
+### Data to Insert
 
-```
-Stop applying. Start aligning.
-```
+**work_news table** (4 articles for the Workforce Brief page):
 
-Small, clean, Helvetica-bold with slight letter-spacing. Sits between the search bar and the ticker.
+| Headline | Category | Tone | Source |
+|----------|----------|------|--------|
+| More Workers Are Struggling Than Thriving for the First Time, Gallup Finds | future_of_work | Negative | Gallup |
+| Healthcare Is Carrying 109% of All US Private Sector Job Growth | future_of_work | Neutral | ADP Research |
+| Half of All Companies Expect AI to Replace Zero Roles in 2026, NBER Survey Finds | ai_workplace | Positive | NBER |
+| Tech Employment Declined in 2025 but AI-Skilled Roles Lead 2026 Rebound | ai_workplace | Neutral | CompTIA |
 
-### Placement 2 — Before the Integrity Gap section (~line 289)
-A full-width divider statement that reframes what comes next:
+**briefing_items table** (4 signal alerts for the Daily Briefing card):
 
-```
-Stop applying. Start aligning.
-What the data shows — no opinions, no rankings, just patterns.
-```
+| Company/Topic | Signal | Headline |
+|---------------|--------|----------|
+| US Labor Market | amber_flag | Gallup: More US workers now "struggling" than "thriving" — first time ever recorded |
+| Healthcare Sector | info | ADP: Healthcare accounts for 109% of net private-sector job growth; all other sectors contracting |
+| AI Employment | green_badge | NBER: 50% of CFOs surveyed expect AI to replace zero roles in 2026; projected impact < 0.4% |
+| Tech Sector | info | CompTIA: Tech employment fell in 2025, but AI-skilled roles projected to lead 2026 rebound; median tech wages 126% above national average |
 
-This sits between the "Start Here" pricing tiers and the Integrity Gap section as a transitional beat.
+### Technical Steps
 
-### Placement 3 — Bottom CTA section (replace generic CTA copy, ~line 423)
-Replace the current headline "The hiring process is about to get a lot more honest." with:
+1. **Run a single SQL migration** with INSERT statements for both tables, using the real source URLs (Gallup, ADP, NBER, CompTIA) and published date of 2026-03-24.
 
-```
-Stop applying. Start aligning.
-```
+2. **No code changes needed** — the existing `WorkNewsRepository`, `WorkNewsTicker`, and `DailyBriefingCard` components will automatically pick up the new rows.
 
-Subtext becomes: "You don't need more applications. You need better decisions."
-Buttons stay the same.
+### What You'll See After
 
-### Design rules
-- Bold, centered, generous whitespace
-- No box/border/card around it
-- Font: `font-sans`, weight 800, slight tracking
-- Muted subtext below where applicable
-- No emoji
-
-### File changed
-- `src/pages/Index.tsx` — 3 insertions/edits, no deletions of existing sections
+- The **Workforce Intelligence Brief** page will show the 4 new articles with category badges, tone labels, and source links.
+- The **Daily Briefing** card on the dashboard will show the 4 signal items with color-coded severity badges.
+- The **Work News Ticker** will scroll the new headlines.
 
