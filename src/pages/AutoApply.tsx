@@ -629,13 +629,22 @@ export default function AutoApply() {
 
           {/* Interview Kit CTA */}
           {!showKit && (
-            <button
-              onClick={() => setShowKit(true)}
-              className="inline-flex items-center gap-2 h-12 px-8 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
-              style={{ background: "#f0c040", color: "#0a0a0e" }}
-            >
-              Prepare for This Interview →
-            </button>
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={() => setShowKit(true)}
+                className="inline-flex items-center gap-2 h-12 px-8 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{ background: "#f0c040", color: "#0a0a0e" }}
+              >
+                Prepare for This Interview →
+              </button>
+              <button
+                onClick={() => navigate("/dream-jobs")}
+                className="inline-flex items-center gap-2 h-10 px-6 rounded-lg text-sm font-semibold transition-opacity hover:opacity-80"
+                style={{ background: "transparent", color: "#f0c040", border: "1px solid rgba(240,192,64,0.3)" }}
+              >
+                View Your Matches →
+              </button>
+            </div>
           )}
         </div>
 
