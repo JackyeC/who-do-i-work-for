@@ -30,6 +30,7 @@ import {
   Cpu,
   Factory,
 } from "lucide-react";
+import TransformSponsorsSection from "@/components/TransformSponsorsSection";
 import {
   HR_TECH_VENDORS,
   PE_OWNERS,
@@ -805,6 +806,9 @@ export default function HRTechIntelligence() {
           </motion.div>
         </div>
       </section>
+
+      {/* ═══ TRANSFORM CONFERENCE SPONSORS ═══ */}
+      <TransformSponsorsSection />
 
       {/* ═══ CTA / METHODOLOGY ═══ */}
       <section className="py-16 px-4 border-t border-border">
