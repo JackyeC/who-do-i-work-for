@@ -14,6 +14,10 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface AnalysisResult {
   atsScore: number;
@@ -24,48 +28,108 @@ interface AnalysisResult {
   valuesCheck: { present: string[]; missing: string[]; overall: string };
 }
 
-const MOCK_RESULT: AnalysisResult = {
-  atsScore: 72,
-  keywordsPresent: ["product strategy", "agile", "stakeholder management", "data-driven", "roadmap"],
-  keywordsMissing: ["sustainability", "B Corp", "environmental impact", "cross-functional leadership", "OKRs"],
-  bulletRewrites: [
-    {
-      original: "Managed product roadmap for mobile app with 2M users",
-      optimized: "Led cross-functional product roadmap for sustainability-focused mobile platform serving 2M+ users, driving 23% engagement increase through values-aligned feature prioritization",
-      reason: "Adds sustainability context, quantifies impact, and mirrors Patagonia's mission-driven language.",
-    },
-    {
-      original: "Worked with engineering team to ship features on time",
-      optimized: "Partnered with engineering and sustainability teams to deliver purpose-driven features on cadence, balancing business goals with environmental accountability metrics",
-      reason: "Elevates from task description to strategic collaboration, incorporating company values language.",
-    },
-    {
-      original: "Conducted user research and analyzed feedback",
-      optimized: "Designed and executed mixed-methods user research programs, translating community feedback into product decisions aligned with organizational mission and stakeholder impact goals",
-      reason: "Transforms passive activity into leadership behavior; adds values and impact framing.",
-    },
-  ],
-  skillsGap: ["Sustainability metrics", "B Corp reporting", "Environmental compliance"],
-  valuesCheck: {
-    present: ["Collaboration", "Impact-driven work", "User advocacy"],
-    missing: ["Environmental commitment", "Community engagement", "Purpose over profit"],
-    overall: "Your resume reflects strong collaboration and impact values, but doesn't yet speak the language of mission-driven organizations. Adding sustainability and purpose framing will significantly improve alignment.",
-  },
-};
-
 export default function ResumeOptimizer() {
   usePageSEO({ title: "Resume Optimizer — Who Do I Work For?" });
+  const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [jobUrl, setJobUrl] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
-  const handleAnalyze = () => {
+  const { data: latestResume, refetch: refetchResume } = useQuery({
+    queryKey: ["latest-resume", user?.id],
+    queryFn: async () => {
+      const { data } = await (supabase as any)
+        .from("user_documents")
+        .select("id, file_path, original_filename, created_at")
+        .eq("user_id", user!.id)
+        .eq("document_type", "resume")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const handleFileUpload = async (selectedFile: File) => {
+    if (!user) {
+      toast.error("Please sign in to upload your resume.");
+      return;
+    }
+    setFile(selectedFile);
+    setUploading(true);
+    try {
+      const fileExt = selectedFile.name.split(".").pop();
+      const filePath = `${user.id}/resume/${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from("documents")
+        .upload(filePath, selectedFile);
+      if (uploadError) throw uploadError;
+
+      const { error: dbError } = await (supabase as any)
+        .from("user_documents")
+        .insert({
+          user_id: user.id,
+          document_type: "resume",
+          file_path: filePath,
+          original_filename: selectedFile.name,
+        });
+      if (dbError) throw dbError;
+
+      await refetchResume();
+      toast.success("Resume uploaded successfully!");
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      toast.error(err.message || "Failed to upload resume.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleAnalyze = async () => {
+    if (!latestResume?.id) {
+      toast.error("Please upload your resume first.");
+      return;
+    }
+    if (!jobUrl.trim()) {
+      toast.error("Please enter a job description or URL.");
+      return;
+    }
     setAnalyzing(true);
-    setTimeout(() => {
-      setResult(MOCK_RESULT);
+    setResult(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("tailor-resume", {
+        body: {
+          resumeDocId: latestResume.id,
+          pastedJobDescription: jobUrl.trim(),
+        },
+      });
+      if (error) throw error;
+      // Map the response to the AnalysisResult interface
+      setResult({
+        atsScore: data.match_score || 0,
+        keywordsPresent: data.matched_skills || [],
+        keywordsMissing: data.missing_skills || [],
+        bulletRewrites: (data.tailoring_suggestions || []).map((s: any) => ({
+          original: s.original || s.current || "",
+          optimized: s.suggested || s.optimized || "",
+          reason: s.reason || s.rationale || "",
+        })),
+        skillsGap: data.skill_gaps || data.missing_skills || [],
+        valuesCheck: {
+          present: data.values_present || [],
+          missing: data.values_missing || [],
+          overall: data.values_overall || "Analysis complete",
+        },
+      });
+    } catch (err: any) {
+      console.error("Resume analysis error:", err);
+      toast.error(err.message || "Failed to analyze resume. Please try again.");
+    } finally {
       setAnalyzing(false);
-    }, 2500);
+    }
   };
 
   const scoreColor = (score: number) =>
@@ -101,7 +165,7 @@ export default function ResumeOptimizer() {
                   <div
                     className={cn(
                       "border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer",
-                      file ? "border-primary/40 bg-primary/[0.03]" : "border-border hover:border-primary/30"
+                      (file || latestResume) ? "border-primary/40 bg-primary/[0.03]" : "border-border hover:border-primary/30"
                     )}
                     onClick={() => document.getElementById("resume-upload")?.click()}
                   >
@@ -110,12 +174,20 @@ export default function ResumeOptimizer() {
                       type="file"
                       accept=".pdf,.doc,.docx"
                       className="hidden"
-                      onChange={(e) => setFile(e.target.files?.[0] || null)}
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleFileUpload(f);
+                      }}
                     />
-                    {file ? (
+                    {uploading ? (
+                      <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-sm font-medium">Uploading...</span>
+                      </div>
+                    ) : file || latestResume ? (
                       <div className="flex items-center justify-center gap-2 text-primary">
                         <FileText className="w-5 h-5" />
-                        <span className="text-sm font-medium">{file.name}</span>
+                        <span className="text-sm font-medium">{file?.name || latestResume?.original_filename || "Resume uploaded"}</span>
                       </div>
                     ) : (
                       <>
@@ -139,7 +211,7 @@ export default function ResumeOptimizer() {
 
                 <Button
                   onClick={handleAnalyze}
-                  disabled={!file || !jobUrl || analyzing}
+                  disabled={(!file && !latestResume) || !jobUrl || analyzing}
                   className="w-full gap-2"
                   size="lg"
                 >
@@ -268,7 +340,7 @@ export default function ResumeOptimizer() {
               </TabsContent>
             </Tabs>
 
-            <Button variant="outline" onClick={() => { setResult(null); setFile(null); setJobUrl(""); }}>
+            <Button variant="outline" onClick={() => { setResult(null); setJobUrl(""); }}>
               Analyze Another Resume
             </Button>
           </motion.div>

@@ -1,6 +1,8 @@
 import { useState, useCallback, useRef } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { InterviewKit } from "@/components/interview/InterviewKit";
 import { Helmet } from "react-helmet-async";
 import { usePageSEO } from "@/hooks/use-page-seo";
@@ -327,11 +329,13 @@ const STEP_META = [
 
 export default function AutoApply() {
   const { isLoaded, isSignedIn } = useClerkWithFallback();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>(INITIAL);
   const [done, setDone] = useState(false);
   const [showKit, setShowKit] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   usePageSEO({
     title: "Apply When It Counts™ — WDIWF",
@@ -347,9 +351,92 @@ export default function AutoApply() {
   if (!isLoaded) return null;
   if (!isSignedIn) return <Navigate to="/join" replace />;
 
-  const next = () => {
-    if (step < 3) setStep(step + 1);
-    else setDone(true);
+  const next = async () => {
+    if (step < 3) {
+      setStep(step + 1);
+      return;
+    }
+
+    // step === 3: save everything to Supabase then mark done
+    if (!user) {
+      alert("You must be signed in to launch the agent.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      // a) Upsert user_career_profile
+      const { error: careerErr } = await supabase
+        .from("user_career_profile")
+        .upsert(
+          {
+            user_id: user.id,
+            preferred_titles: form.jobTitles,
+            industries: form.industries,
+            preferred_locations: form.locationPrefs,
+            salary_range_min: form.salaryRange[0],
+            salary_range_max: form.salaryRange[1],
+            values_preferences: { ranking: form.valuesRanking },
+          },
+          { onConflict: "user_id" }
+        );
+      if (careerErr) throw careerErr;
+
+      // b) Upsert auto_apply_settings
+      const { error: settingsErr } = await supabase
+        .from("auto_apply_settings")
+        .upsert(
+          {
+            user_id: user.id,
+            is_enabled: true,
+            is_paused: false,
+            min_alignment_threshold: form.minIntegrityScore,
+            max_daily_applications: 5,
+          },
+          { onConflict: "user_id" }
+        );
+      if (settingsErr) throw settingsErr;
+
+      // c) Update profiles table
+      const { error: profileErr } = await supabase
+        .from("profiles")
+        .update({
+          target_job_titles: form.jobTitles,
+          industries: form.industries,
+          min_salary: form.salaryRange[0],
+          user_values: form.valuesRanking,
+        })
+        .eq("id", user.id);
+      if (profileErr) throw profileErr;
+
+      // d) Upload resume if provided
+      if (form.resumeFile) {
+        const extension = form.resumeFile.name.split(".").pop() || "pdf";
+        const filePath = `${user.id}/resume-${Date.now()}.${extension}`;
+        const { error: uploadErr } = await supabase.storage
+          .from("resumes")
+          .upload(filePath, form.resumeFile, { upsert: true });
+        if (uploadErr) throw uploadErr;
+
+        const { data: publicUrlData } = supabase.storage
+          .from("resumes")
+          .getPublicUrl(filePath);
+
+        const { error: resumeUpdateErr } = await supabase
+          .from("profiles")
+          .update({ resume_url: publicUrlData.publicUrl })
+          .eq("id", user.id);
+        if (resumeUpdateErr) throw resumeUpdateErr;
+      }
+
+      // e) All saves succeeded
+      setDone(true);
+    } catch (err: any) {
+      // f) Show error
+      alert(err?.message || "Failed to save your preferences. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
   const back = () => step > 0 && setStep(step - 1);
 
@@ -646,11 +733,12 @@ export default function AutoApply() {
           )}
           <button
             onClick={next}
-            className="h-12 px-8 rounded-lg text-sm font-semibold flex items-center gap-2 transition-opacity hover:opacity-90"
+            disabled={submitting}
+            className="h-12 px-8 rounded-lg text-sm font-semibold flex items-center gap-2 transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ background: "#f0c040", color: "#0a0a0e" }}
           >
-            {step === 3 ? "Launch Agent" : "Continue"}
-            <ArrowRight className="w-4 h-4" />
+            {submitting ? "Saving…" : step === 3 ? "Launch Agent" : "Continue"}
+            {!submitting && <ArrowRight className="w-4 h-4" />}
           </button>
         </div>
       </div>
