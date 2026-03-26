@@ -311,6 +311,17 @@ export default function Browse() {
                 <Button
                   onClick={async () => {
                     setIsDiscovering(true);
+
+                    const token = await getToken();
+                    const verified = token ? await verifyTurnstileToken(token) : false;
+                    resetToken();
+
+                    if (!verified) {
+                      toast({ title: "Verification failed", description: "Please try again.", variant: "destructive" });
+                      setIsDiscovering(false);
+                      return;
+                    }
+
                     try {
                       const { data, error } = await supabase.functions.invoke("company-discover", {
                         body: { searchQuery: searchQuery.trim(), companyName: searchQuery.trim() },
