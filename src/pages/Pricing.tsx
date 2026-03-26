@@ -42,7 +42,7 @@ const TIERS = [
     annualMonthly: 15,
     annualSavings: 46,
     monthlyPriceId: "price_1TEEvt89MyCOs8yv7SV1TeUJ",
-    annualPriceId: "price_1TEEvt89MyCOs8yv7SV1TeUJ",
+    annualPriceId: "price_1TF2Wd89MyCOs8yv0GXHpkUE",
     features: [
       "Everything in The Check",
       "Unlimited AI job-link audits",
@@ -64,8 +64,8 @@ const TIERS = [
     annualPrice: 470,
     annualMonthly: 39,
     annualSavings: 118,
-    monthlyPriceId: "price_1TEEvz89MyCOs8yvWbLINfKw",
-    annualPriceId: "price_1TEEvz89MyCOs8yvWbLINfKw",
+    monthlyPriceId: "price_1TF2WU89MyCOs8yvobpafjEl",
+    annualPriceId: "price_1TF2WU89MyCOs8yvfUHZOfuD",
     features: [
       "Everything in The Signal",
       "Full employer intelligence dossier",
@@ -88,8 +88,8 @@ const TIERS = [
     annualPrice: 950,
     annualMonthly: 79,
     annualSavings: 238,
-    monthlyPriceId: "price_1TEEw589MyCOs8yvQI8FpHJx",
-    annualPriceId: "price_1TEEw589MyCOs8yvQI8FpHJx",
+    monthlyPriceId: "price_1TF2WU89MyCOs8yvodXAgyVX",
+    annualPriceId: "price_1TF2WU89MyCOs8yvS5zZrwjy",
     features: [
       "Everything in The Analyst",
       "Monthly 30-min 1-on-1 with Jackye",
@@ -148,7 +148,7 @@ export default function Pricing() {
     setLoadingTier(tier.id);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId, mode: "subscription" },
+        body: { priceId },
       });
       if (error) throw error;
       if (data?.url) {

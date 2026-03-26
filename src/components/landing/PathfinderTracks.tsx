@@ -38,8 +38,7 @@ const tracks = [
     annualPrice: "$15",
     annualPeriod: "/mo",
     annualPriceNote: "billed annually",
-    // TODO: Create annual Stripe price and replace this placeholder
-    annualPriceId: "price_scout_annual_placeholder",
+    annualPriceId: "price_1TF2Wd89MyCOs8yv0GXHpkUE",
     hook: "Your AI Coach.",
     description: "24/7 values-audit of any job link. Know before you apply.",
     action: "Activate AI Coach",
@@ -101,8 +100,7 @@ const tracks = [
     annualPrice: "$799",
     annualPeriod: "/year",
     annualPriceNote: "",
-    // TODO: Create annual Stripe price and replace this placeholder
-    annualPriceId: "price_executive_annual_placeholder",
+    annualPriceId: "price_1TEEw589MyCOs8yvQI8FpHJx",
     hook: "The Autopilot.",
     description: "Full search management + Priority access. Your career, on cruise control.",
     action: "Go Executive",
