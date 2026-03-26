@@ -570,6 +570,366 @@ input { font: inherit; color: inherit; background: none; border: none; outline: 
   .instructions { left: 12px; right: 12px; bottom: 70px; max-width: none; }
 }
 
+/* ========== RECEIPT CHAIN OVERLAY ========== */
+.rc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(10, 10, 14, 0.98);
+  transform: translateY(100%);
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.rc-overlay.open {
+  transform: translateY(0);
+}
+/* Scanline texture */
+.rc-overlay::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(240, 235, 224, 0.015) 2px,
+    rgba(240, 235, 224, 0.015) 4px
+  );
+}
+.rc-close {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 510;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: rgba(19, 18, 26, 0.8);
+  backdrop-filter: blur(8px);
+  transition: all var(--transition);
+  cursor: pointer;
+}
+.rc-close:hover {
+  background: rgba(240, 235, 224, 0.1);
+  border-color: rgba(240, 235, 224, 0.3);
+}
+.rc-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 24px 100px;
+}
+.rc-breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin-bottom: 32px;
+}
+.rc-breadcrumb span { color: var(--gold); }
+
+/* Beat sections */
+.rc-beat {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+  margin-bottom: 64px;
+}
+.rc-beat.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.rc-beat-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rc-beat-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.2;
+}
+.rc-beat--money .rc-beat-label { color: var(--gold); }
+.rc-beat--access .rc-beat-label { color: #73AAED; }
+.rc-beat--impact .rc-beat-label { color: var(--red); }
+
+/* Money beat */
+.rc-amount {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: var(--gold);
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.rc-flow {
+  font-size: 18px;
+  color: var(--fg-muted);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.rc-flow strong { color: var(--fg); font-weight: 600; }
+.rc-context {
+  font-size: 14px;
+  color: var(--fg-faint);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.rc-accent-line {
+  height: 2px;
+  width: 0;
+  margin: 24px 0;
+  transition: width 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.revealed .rc-accent-line { width: 120px; }
+.rc-beat--money .rc-accent-line { background: var(--gold); }
+.rc-beat--access .rc-accent-line { background: #73AAED; }
+.rc-beat--impact .rc-accent-line { background: var(--red); }
+
+/* Access beat */
+.rc-committee {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+.rc-writes {
+  font-size: 16px;
+  color: #73AAED;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.rc-access-detail {
+  font-size: 14px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+}
+
+/* Impact beat */
+.rc-impact-stat {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(3.5rem, 10vw, 6rem);
+  color: var(--red);
+  line-height: 1.1;
+  margin-bottom: 12px;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 400ms ease-out 600ms, transform 400ms ease-out 600ms;
+}
+.rc-beat--impact.revealed .rc-impact-stat {
+  opacity: 1;
+  transform: scale(1);
+}
+.rc-impact-context {
+  font-size: 15px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.rc-fact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.rc-fact-list li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 14px;
+  color: var(--fg-muted);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.rc-fact-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+}
+.rc-verdict {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--fg-faint);
+  border-top: 1px solid rgba(240, 235, 224, 0.08);
+  padding-top: 20px;
+  margin-top: 32px;
+  font-style: italic;
+}
+
+/* Next beat button */
+.rc-next-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 100px;
+  border: 1px solid;
+  transition: all var(--transition);
+  cursor: pointer;
+  background: none;
+  margin-top: 16px;
+}
+.rc-beat--money .rc-next-btn {
+  color: var(--gold);
+  border-color: rgba(240, 192, 64, 0.3);
+}
+.rc-beat--money .rc-next-btn:hover {
+  background: rgba(240, 192, 64, 0.1);
+  border-color: var(--gold);
+}
+.rc-beat--access .rc-next-btn {
+  color: #73AAED;
+  border-color: rgba(115, 170, 237, 0.3);
+}
+.rc-beat--access .rc-next-btn:hover {
+  background: rgba(115, 170, 237, 0.1);
+  border-color: #73AAED;
+}
+
+/* Connected investigations */
+.rc-connected {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(240, 235, 224, 0.06);
+}
+.rc-connected-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin-bottom: 16px;
+}
+.rc-connected-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rc-connected-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(19, 18, 26, 0.6);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.rc-connected-card:hover {
+  border-color: rgba(240, 192, 64, 0.3);
+  background: rgba(19, 18, 26, 0.9);
+}
+.rc-connected-card-arrow {
+  font-family: var(--font-mono);
+  color: var(--gold);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.rc-connected-card-text {
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+.rc-connected-card-text strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+.rc-connected-card-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 100px;
+  margin-left: auto;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+/* Investigate button in detail panel */
+.detail-investigate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 20px;
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0A0A0E;
+  background: var(--gold);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+  animation: investigate-pulse 2s ease-in-out infinite;
+}
+.detail-investigate-btn:hover {
+  background: #f5cf60;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(240, 192, 64, 0.35);
+}
+@keyframes investigate-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 192, 64, 0); }
+  50% { box-shadow: 0 0 0 6px rgba(240, 192, 64, 0.15); }
+}
+.detail-receipt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gold);
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity var(--transition);
+  margin-top: 4px;
+}
+.detail-receipt-link:hover { opacity: 1; }
+
+/* Counter animation */
+@keyframes rc-count-flash {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* Mobile adjustments for receipt chain */
+@media (max-width: 768px) {
+  .rc-content { padding: 60px 16px 80px; }
+  .rc-close { top: 12px; right: 12px; }
+  .rc-connected-card { padding: 12px 14px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -577,6 +937,11 @@ input { font: inherit; color: inherit; background: none; border: none; outline: 
     transition-duration: 0.01ms !important;
   }
 }
+/* Embed mode — hide nav when in iframe */
+.embed-mode .top-bar { display: none !important; }
+.embed-mode .bottom-cta { display: none !important; }
+.embed-mode .data-footer { display: none !important; }
+.embed-mode .stats-bar { margin-top: 0; padding-top: 12px; }
 </style>
 </head>
 <body>
@@ -663,6 +1028,14 @@ input { font: inherit; color: inherit; background: none; border: none; outline: 
       </button>
     </div>
     <div class="detail-content" id="panel-content"></div>
+  </div>
+
+  <!-- RECEIPT CHAIN OVERLAY -->
+  <div class="rc-overlay" id="rc-overlay">
+    <button class="rc-close" id="rc-close" aria-label="Close investigation">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="rc-content" id="rc-content"></div>
   </div>
 
   <!-- BOTTOM CTA -->
@@ -1224,8 +1597,16 @@ function initGraph() {
       })
       .on("click", function(event, d) {
         event.stopPropagation();
-        const sourceNode = graphData.nodes.find(n => n.id === (typeof d.source === "object" ? d.source.id : d.source));
-        if (sourceNode) openDetailPanel(sourceNode);
+        // Check if this edge has a receipt chain
+        const srcId = typeof d.source === "object" ? d.source.id : d.source;
+        const tgtId = typeof d.target === "object" ? d.target.id : d.target;
+        const chainId = receiptChainLookup[`${srcId}-${tgtId}`];
+        if (chainId) {
+          openReceiptChain(chainId);
+        } else {
+          const sourceNode = graphData.nodes.find(n => n.id === srcId);
+          if (sourceNode) openDetailPanel(sourceNode);
+        }
       });
 
     linkEnter.transition().duration(600).attr("opacity", 0.35);
@@ -1473,9 +1854,12 @@ function initGraph() {
         html += `<div class="detail-section">
           <div class="detail-section-title">Top Politicians Funded</div>`;
         c.topRecipients.forEach(r => {
+          const polId = politicians.find(p => p.name === r.name)?.id;
+          const rcLinkId = polId ? receiptChainLookup[`${c.id}-${polId}`] : null;
+          const rcLink = rcLinkId ? `<div class="detail-receipt-link" onclick="event.stopPropagation(); openReceiptChain('${rcLinkId}')">See the receipt chain →</div>` : '';
           html += `<div class="detail-list-item">
             <div class="detail-list-dot" style="background:hsl(213,88%,73%)"></div>
-            <div class="detail-list-text"><strong>${r.name}</strong> (${r.party})<br><span style="font-family:var(--font-mono);color:var(--gold)">$${(r.amount/1000).toFixed(0)}K</span></div>
+            <div class="detail-list-text"><strong>${r.name}</strong> (${r.party})<br><span style="font-family:var(--font-mono);color:var(--gold)">$${(r.amount/1000).toFixed(0)}K</span>${rcLink}</div>
           </div>`;
         });
         html += `</div>`;
@@ -1525,6 +1909,15 @@ function initGraph() {
         <div class="detail-section-title">Why This Matters</div>
         <div class="detail-impact">${c.impact.replace(/(\$[\d,.]+[BMK]?|\d+ dead|\d+\+? (?:layoffs|workers|complaints|violations|users))/g, '<strong>$1</strong>')}</div>
       </div>`;
+
+      // INVESTIGATE button — find first matching receipt chain for this company
+      const companyChainId = receiptChainLookup[`company-${c.id}`];
+      if (companyChainId) {
+        html += `<button class="detail-investigate-btn" onclick="openReceiptChain('${companyChainId}')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          INVESTIGATE →
+        </button>`;
+      }
 
     } else if (node.type === "politician") {
       const p = node.data;
@@ -1730,6 +2123,390 @@ function initGraph() {
 }
 
 // =========================================================
+// RECEIPT CHAIN DATA
+// =========================================================
+const receiptChains = {
+  "boeing-hudson": {
+    id: "boeing-hudson",
+    company: "Boeing",
+    companyId: "boeing",
+    politician: "Rep. Richard Hudson (R-NC)",
+    politicianId: "hudson",
+    beats: {
+      money: {
+        amount: 48000,
+        amountDisplay: "$48,000",
+        flow: "from <strong>Boeing PAC</strong> → to <strong>Rep. Richard Hudson</strong> (R-NC)",
+        context: "Combined defense industry donations to Hudson: $76K+. Boeing spent $12.4M/year lobbying Congress. FEC filing, 2022-2024 cycle."
+      },
+      access: {
+        committee: "House Armed Services Committee",
+        writes: "Writes the NDAA — decides which defense contracts get funded",
+        detail: "Hudson sits on the committee that authorizes $886B in annual defense spending. Boeing spends $12.4M/year lobbying this committee. Every F-15, F/A-18, and KC-46 contract flows through here."
+      },
+      impact: {
+        stat: "346 DEAD",
+        context: "Boeing got self-certification authority over its own planes — the FAA let Boeing approve its own safety inspections.",
+        facts: [
+          "346 people died in two 737 MAX crashes (Lion Air 610, Ethiopian Airlines 302)",
+          "$2.5B DOJ settlement — Boeing admitted to fraud",
+          "Boeing employees who reported safety concerns were retaliated against",
+          "Whistleblower John Barnett found dead during lawsuit deposition",
+          "Self-certification deal meant Boeing approved its own safety — regulators looked away"
+        ],
+        verdict: "This is what your employer's PAC money pays for."
+      }
+    },
+    related: ["amazon-cantwell", "jpmorgan-schumer"]
+  },
+  "amazon-cantwell": {
+    id: "amazon-cantwell",
+    company: "Amazon",
+    companyId: "amazon",
+    politician: "Sen. Maria Cantwell (D-WA)",
+    politicianId: "cantwell",
+    beats: {
+      money: {
+        amount: 35000,
+        amountDisplay: "$35,000",
+        flow: "from <strong>Amazon PAC</strong> → to <strong>Sen. Maria Cantwell</strong> (D-WA)",
+        context: "Amazon spent $20.3M on lobbying in 2023 alone. One of the largest corporate lobbying operations in Washington. FEC + LDA disclosures."
+      },
+      access: {
+        committee: "Senate Commerce Committee (Chair)",
+        writes: "Oversees antitrust, labor regulation, and tech policy",
+        detail: "Cantwell chairs the committee that regulates Amazon's core business. She represents Washington state — Amazon's home turf. Every antitrust bill, labor regulation, and tech policy proposal goes through her desk."
+      },
+      impact: {
+        stat: "2× INJURY RATE",
+        context: "Amazon warehouse workers report injury rates double the industry average. The company that delivers your packages in 24 hours does it by breaking workers' bodies.",
+        facts: [
+          "$61.7M settlement for stealing tips from delivery drivers",
+          "100,000+ layoffs since 2022 while revenue hit record highs",
+          "Workers forced to urinate in bottles due to impossible delivery quotas",
+          "Warehouse injury rates 2x the industry average — OSHA citations",
+          "Aggressive anti-union campaigns at warehouses nationwide"
+        ],
+        verdict: "This is what your employer's PAC money pays for."
+      }
+    },
+    related: ["boeing-hudson", "starbucks-antiunion"]
+  },
+  "jpmorgan-schumer": {
+    id: "jpmorgan-schumer",
+    company: "JPMorgan Chase",
+    companyId: "jpmorgan",
+    politician: "Sen. Chuck Schumer (D-NY)",
+    politicianId: "schumer",
+    beats: {
+      money: {
+        amount: 45000,
+        amountDisplay: "$45,000",
+        flow: "from <strong>JPMorgan Chase PAC</strong> → to <strong>Sen. Chuck Schumer</strong> (D-NY)",
+        context: "JPMorgan spent $8.6M on lobbying in 2023. They lobby on Dodd-Frank rollback, crypto regulation, and banking deregulation. FEC + LDA disclosures."
+      },
+      access: {
+        committee: "Senate Majority Leader",
+        writes: "Controls which bills reach the Senate floor for a vote",
+        detail: "Schumer decides what gets voted on in the Senate. NYC is JPMorgan's home turf. They lobby him on Dodd-Frank rollback, crypto regulation, and banking deregulation — the rules that are supposed to prevent another 2008."
+      },
+      impact: {
+        stat: "$39 BILLION",
+        context: "$39 billion in fines since 2000 — and JPMorgan is still the largest bank in America. The fines are a cost of doing business.",
+        facts: [
+          "Paid $920M for manipulating precious metals and Treasury markets",
+          "Enabled Bernie Madoff's $65B Ponzi scheme — paid $2.6B in settlements",
+          "$13B settlement for mortgage fraud leading up to 2008 crisis",
+          "Still the largest bank in America by assets ($3.7 trillion)",
+          "CEO Jamie Dimon compensation: $36M in 2023"
+        ],
+        verdict: "This is what your employer's PAC money pays for."
+      }
+    },
+    related: ["boeing-hudson", "disney-darkmoney"]
+  },
+  "mcdonalds-minwage": {
+    id: "mcdonalds-minwage",
+    company: "McDonald's",
+    companyId: "mcdonalds",
+    politician: "Minimum Wage Blockers",
+    politicianId: null,
+    beats: {
+      money: {
+        amount: 3200000,
+        amountDisplay: "$3.2M",
+        flow: "from <strong>McDonald's PAC</strong> → to <strong>Labor Committee members</strong>",
+        context: "$3.2M in total PAC spending. Top recipients sit on committees that control minimum wage legislation. Also funded the National Restaurant Association — 'the other NRA' — which blocks wage bills."
+      },
+      access: {
+        committee: "Labor & Workforce Committees",
+        writes: "Block every federal minimum wage increase since 2009",
+        detail: "McDonald's funded the National Restaurant Association ('the other NRA'), the most powerful lobby blocking federal wage increases. The federal minimum wage has been $7.25/hr since 2009 — the longest period without an increase in history."
+      },
+      impact: {
+        stat: "$7.25/HR",
+        context: "1 in 8 Americans has worked at McDonald's. The federal minimum wage hasn't moved since 2009 while McDonald's CEO makes $20M+.",
+        facts: [
+          "$45.8M in workplace violations — wage theft, safety, child labor",
+          "1 in 8 Americans has worked at McDonald's at some point",
+          "CEO Chris Kempczinski compensation: $20M+ per year",
+          "Franchise model shields corporate from direct liability for worker conditions",
+          "Federal minimum wage frozen at $7.25 since July 2009"
+        ],
+        verdict: "This is what your employer's PAC money pays for."
+      }
+    },
+    related: ["starbucks-antiunion", "disney-darkmoney"]
+  },
+  "starbucks-antiunion": {
+    id: "starbucks-antiunion",
+    company: "Starbucks",
+    companyId: "starbucks",
+    politician: "Anti-Union Apparatus",
+    politicianId: null,
+    beats: {
+      money: {
+        amount: 1100000,
+        amountDisplay: "$1.1M",
+        flow: "from <strong>Starbucks PAC</strong> + <strong>Howard Schultz personal donations</strong>",
+        context: "$1.1M in PAC spending. Howard Schultz personally donated to anti-labor candidates. But the real spend is on union-busting: Starbucks hired Littler Mendelson, the largest anti-union law firm in America."
+      },
+      access: {
+        committee: "NLRB + Federal Courts",
+        writes: "Filed challenges arguing the NLRB itself is unconstitutional",
+        detail: "Starbucks hired Littler Mendelson — the largest anti-union law firm in America. They didn't just fight individual union drives. They filed legal challenges arguing the National Labor Relations Board itself is unconstitutional — trying to destroy the entire framework of worker organizing rights."
+      },
+      impact: {
+        stat: "400+ COMPLAINTS",
+        context: "Over 400 NLRB complaints filed against Starbucks. Workers who organized faced retaliation, schedule cuts, and store closures.",
+        facts: [
+          "400+ unfair labor practice complaints filed with the NLRB",
+          "Fired union organizers — NLRB ordered reinstatement multiple times",
+          "Closed stores after workers voted to unionize",
+          "Workers faced retaliation: schedule cuts, hour reductions, discipline",
+          "Spent $400M+ on 'partner experience' — anti-union rebranding"
+        ],
+        verdict: "This is what your employer's PAC money pays for."
+      }
+    },
+    related: ["mcdonalds-minwage", "amazon-cantwell"]
+  },
+  "disney-darkmoney": {
+    id: "disney-darkmoney",
+    company: "Disney",
+    companyId: "disney",
+    politician: "Dark Money Network",
+    politicianId: null,
+    beats: {
+      money: {
+        amount: 1900000,
+        amountDisplay: "$1.9M",
+        flow: "from <strong>Disney PAC</strong> → direct donations + <strong>First Amendment Fund</strong> (dark money)",
+        context: "$1.9M in direct PAC spending. Also contributed to the First Amendment Fund — a dark money vehicle that doesn't disclose its donors. You can't trace where all the money goes."
+      },
+      access: {
+        committee: "Copyright & Commerce Committees",
+        writes: "Lobbied for the Mickey Mouse Protection Act and streaming exemptions",
+        detail: "Disney lobbied for the Copyright Term Extension Act (nicknamed 'the Mickey Mouse Protection Act') — extending copyright from 75 to 95 years. They also lobbied for streaming regulation exemptions and theme park labor exemptions that let them pay workers less."
+      },
+      impact: {
+        stat: "$233M STOLEN",
+        context: "$233M wage theft settlement affecting 51,000 workers. Disney park employees — the people who make the magic — can't afford to live near the parks.",
+        facts: [
+          "$233M wage theft settlement — 51,000 workers affected",
+          "Aggressive anti-union campaigns at parks and productions",
+          "CEO Bob Iger compensation: $32.5M in 2023",
+          "Park workers report poverty wages despite full-time hours",
+          "Dark money contributions through untraceable channels"
+        ],
+        verdict: "This is what your employer's PAC money pays for."
+      }
+    },
+    related: ["jpmorgan-schumer", "mcdonalds-minwage"]
+  }
+};
+
+// Map company+politician IDs to receipt chain IDs
+const receiptChainLookup = {};
+Object.values(receiptChains).forEach(chain => {
+  if (chain.companyId && chain.politicianId) {
+    receiptChainLookup[`${chain.companyId}-${chain.politicianId}`] = chain.id;
+  }
+  // Also map by company ID alone (for the INVESTIGATE button)
+  if (!receiptChainLookup[`company-${chain.companyId}`]) {
+    receiptChainLookup[`company-${chain.companyId}`] = chain.id;
+  }
+});
+
+// =========================================================
+// RECEIPT CHAIN RENDERER
+// =========================================================
+function openReceiptChain(chainId) {
+  const chain = receiptChains[chainId];
+  if (!chain) return;
+
+  const overlay = document.getElementById('rc-overlay');
+  const content = document.getElementById('rc-content');
+
+  // Close detail panel if open
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('panel-overlay').classList.remove('visible');
+
+  // Build HTML
+  const b = chain.beats;
+  let relatedHTML = '';
+  if (chain.related && chain.related.length) {
+    const cards = chain.related.map(rid => {
+      const rc = receiptChains[rid];
+      if (!rc) return '';
+      const tagColor = rc.id.includes('darkmoney') ? 'var(--red)' :
+                       rc.id.includes('antiunion') ? 'var(--purple)' :
+                       rc.id.includes('minwage') ? 'var(--orange)' : 'var(--gold)';
+      const tagBg = rc.id.includes('darkmoney') ? 'rgba(236,95,124,0.12)' :
+                    rc.id.includes('antiunion') ? 'rgba(178,132,224,0.12)' :
+                    rc.id.includes('minwage') ? 'rgba(240,160,60,0.12)' : 'rgba(240,192,64,0.12)';
+      const tagText = rc.politician.includes('Dark') ? 'DARK MONEY' :
+                      rc.politician.includes('Anti') ? 'UNION BUSTING' :
+                      rc.politician.includes('Minimum') ? 'WAGE THEFT' : 'PAC DONATION';
+      return `<div class="rc-connected-card" onclick="openReceiptChain('${rid}')">
+        <span class="rc-connected-card-arrow">→</span>
+        <span class="rc-connected-card-text"><strong>${rc.company}</strong> → ${rc.politician}</span>
+        <span class="rc-connected-card-tag" style="color:${tagColor};background:${tagBg}">${tagText}</span>
+      </div>`;
+    }).join('');
+
+    relatedHTML = `<div class="rc-connected">
+      <div class="rc-connected-title">Connected Investigations</div>
+      <div class="rc-connected-cards">${cards}</div>
+    </div>`;
+  }
+
+  content.innerHTML = `
+    <div class="rc-breadcrumb">INVESTIGATION // <span>${chain.company}</span> → ${chain.politician}</div>
+
+    <div class="rc-beat rc-beat--money" id="rc-beat-1">
+      <div class="rc-beat-label">BEAT 1 — THE MONEY</div>
+      <div class="rc-amount" id="rc-amount-counter">${b.money.amountDisplay}</div>
+      <div class="rc-flow">${b.money.flow}</div>
+      <div class="rc-context">${b.money.context}</div>
+      <div class="rc-accent-line"></div>
+      <button class="rc-next-btn" onclick="revealBeat(2)">What does this buy? →</button>
+    </div>
+
+    <div class="rc-beat rc-beat--access" id="rc-beat-2">
+      <div class="rc-beat-label">BEAT 2 — THE ACCESS</div>
+      <div class="rc-committee">${b.access.committee}</div>
+      <div class="rc-writes">${b.access.writes}</div>
+      <div class="rc-access-detail">${b.access.detail}</div>
+      <div class="rc-accent-line"></div>
+      <button class="rc-next-btn" onclick="revealBeat(3)">So what happened? →</button>
+    </div>
+
+    <div class="rc-beat rc-beat--impact" id="rc-beat-3">
+      <div class="rc-beat-label">BEAT 3 — THE IMPACT</div>
+      <div class="rc-impact-stat">${b.impact.stat}</div>
+      <div class="rc-impact-context">${b.impact.context}</div>
+      <ul class="rc-fact-list">
+        ${b.impact.facts.map(f => `<li>${f}</li>`).join('')}
+      </ul>
+      <div class="rc-accent-line"></div>
+      <div class="rc-verdict">${b.impact.verdict}</div>
+    </div>
+
+    ${relatedHTML}
+  `;
+
+  // Open overlay
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+
+  // Reveal beat 1 with delay
+  setTimeout(() => {
+    const beat1 = document.getElementById('rc-beat-1');
+    if (beat1) {
+      beat1.classList.add('revealed');
+      // Animate the dollar counter
+      animateCounter(document.getElementById('rc-amount-counter'), b.money.amount, b.money.amountDisplay);
+    }
+  }, 300);
+}
+
+function revealBeat(num) {
+  const beat = document.getElementById(`rc-beat-${num}`);
+  if (!beat) return;
+  beat.classList.add('revealed');
+  // Smooth scroll to the beat
+  setTimeout(() => {
+    beat.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+function animateCounter(el, targetValue, finalDisplay) {
+  if (!el) return;
+  const duration = 600;
+  const start = performance.now();
+
+  // Determine format
+  const isMillions = targetValue >= 1000000;
+  const prefix = '$';
+
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(targetValue * eased);
+
+    if (isMillions) {
+      el.textContent = prefix + (current / 1000000).toFixed(1) + 'M';
+    } else if (current >= 1000) {
+      el.textContent = prefix + current.toLocaleString();
+    } else {
+      el.textContent = prefix + current;
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      el.textContent = finalDisplay;
+    }
+  }
+  requestAnimationFrame(update);
+}
+
+function closeReceiptChain() {
+  const overlay = document.getElementById('rc-overlay');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close button
+document.getElementById('rc-close').addEventListener('click', closeReceiptChain);
+
+// Escape key closes receipt chain too
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('rc-overlay');
+    if (overlay.classList.contains('open')) {
+      closeReceiptChain();
+      e.stopPropagation();
+    }
+  }
+});
+
+// Make functions globally available
+window.openReceiptChain = openReceiptChain;
+window.revealBeat = revealBeat;
+window.closeReceiptChain = closeReceiptChain;
+
+// =========================================================
+// EMBED MODE
+// =========================================================
+if (new URLSearchParams(window.location.search).get('embed') === 'true') {
+  document.documentElement.classList.add('embed-mode');
+}
+
+// =========================================================
 // INIT
 // =========================================================
 document.addEventListener("DOMContentLoaded", () => {
@@ -1739,17 +2516,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-<script>
-// Embed mode — hide chrome when loaded in iframe
-(function() {
-  if (new URLSearchParams(window.location.search).get('embed') === 'true') {
-    document.documentElement.classList.add('embed-mode');
-  }
-})();
-</script>
-<style>
-.embed-mode .top-bar { display: none !important; }
-.embed-mode .bottom-cta { display: none !important; }
-.embed-mode .footer { display: none !important; }
-.embed-mode .stats-bar { margin-top: 0; padding-top: 12px; }
-</style>
