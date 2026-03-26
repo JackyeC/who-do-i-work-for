@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { ContentProtector } from "@/components/ContentProtector";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { CompanyZeroState } from "@/components/CompanyZeroState";
 import { useQuery } from "@tanstack/react-query";
 import { usePageSEO } from "@/hooks/use-page-seo";
