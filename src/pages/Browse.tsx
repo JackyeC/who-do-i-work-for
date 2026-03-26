@@ -64,6 +64,7 @@ export default function Browse() {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { containerRef: turnstileRef, getToken, resetToken } = useTurnstile();
 
   const { data: dbCompanies, isLoading, isError } = useQuery({
     queryKey: ["browse-companies"],
