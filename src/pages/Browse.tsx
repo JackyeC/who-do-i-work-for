@@ -1,4 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
+import { useTurnstile } from "@/hooks/useTurnstile";
+import { verifyTurnstileToken } from "@/lib/verifyTurnstile";
 import { Link, useNavigate } from "react-router-dom";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { motion } from "framer-motion";
@@ -62,6 +64,7 @@ export default function Browse() {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { containerRef: turnstileRef, getToken, resetToken } = useTurnstile();
 
   const { data: dbCompanies, isLoading, isError } = useQuery({
     queryKey: ["browse-companies"],
@@ -153,6 +156,7 @@ export default function Browse() {
 
   return (
     <div className="flex-1">
+      <div ref={turnstileRef} />
       <Tabs defaultValue="companies" className="w-full">
       {/* Compact header */}
       <div className="border-b border-border/40 bg-card/30">
@@ -307,6 +311,17 @@ export default function Browse() {
                 <Button
                   onClick={async () => {
                     setIsDiscovering(true);
+
+                    const token = await getToken();
+                    const verified = token ? await verifyTurnstileToken(token) : false;
+                    resetToken();
+
+                    if (!verified) {
+                      toast({ title: "Verification failed", description: "Please try again.", variant: "destructive" });
+                      setIsDiscovering(false);
+                      return;
+                    }
+
                     try {
                       const { data, error } = await supabase.functions.invoke("company-discover", {
                         body: { searchQuery: searchQuery.trim(), companyName: searchQuery.trim() },
