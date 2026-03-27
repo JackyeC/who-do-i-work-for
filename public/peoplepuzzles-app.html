@@ -50,11 +50,16 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   align-items:center;padding:12px 0;gap:6px;z-index:20;
 }
 .tool-btn{
-  width:38px;height:38px;border-radius:10px;display:flex;align-items:center;
+  width:42px;height:auto;min-height:42px;border-radius:10px;display:flex;flex-direction:column;align-items:center;
   justify-content:center;font-size:18px;color:var(--muted);transition:all .15s;
-  position:relative;
+  position:relative;padding:4px 2px;
 }
 .tool-btn:hover{background:var(--gold-dim);color:var(--primary)}
+.tool-label{
+  display:block;font-size:8px;font-family:var(--font-mono);color:var(--muted);
+  margin-top:2px;letter-spacing:0.3px;line-height:1;pointer-events:none;
+}
+.tool-btn:hover .tool-label{color:var(--primary)}
 .tool-btn .badge{
   position:absolute;top:2px;right:2px;background:var(--primary);color:var(--bg);
   font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;
@@ -776,12 +781,12 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   <!-- Left toolbar -->
   <div id="toolbar">
     <div class="tool-btn" id="btn-logo" title="PeoplePuzzles™" style="color:var(--primary);font-family:var(--font-logo);font-weight:900;font-size:14px;margin-bottom:8px">W?</div>
-    <button class="tool-btn" id="btn-cleanup" title="Clean up canvas">🧹</button>
-    <button class="tool-btn" id="btn-encyclopedia" title="Encyclopedia">📖<span class="badge" id="enc-badge" style="display:none">0</span></button>
-    <button class="tool-btn" id="btn-hint" title="Hint">💡</button>
-    <button class="tool-btn" id="btn-sound" title="Toggle sound">🔊</button>
+    <button class="tool-btn" id="btn-cleanup" title="Clean up canvas">🧹<span class="tool-label">Clear</span></button>
+    <button class="tool-btn" id="btn-encyclopedia" title="Encyclopedia">📖<span class="badge" id="enc-badge" style="display:none">0</span><span class="tool-label">Guide</span></button>
+    <button class="tool-btn" id="btn-hint" title="Hint">💡<span class="tool-label">Hint</span></button>
+    <button class="tool-btn" id="btn-sound" title="Toggle sound">🔊<span class="tool-label">Sound</span></button>
     <div style="flex:1"></div>
-    <button class="tool-btn" id="btn-certs" title="Certifications">🏆</button>
+    <button class="tool-btn" id="btn-certs" title="Certifications">🏆<span class="tool-label">Certs</span></button>
   </div>
 
   <!-- Canvas -->
