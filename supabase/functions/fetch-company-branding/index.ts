@@ -112,7 +112,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ success: true, logoUrl, source: 'branding' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching company branding:', error);
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
@@ -176,7 +176,7 @@ async function tryFallbackLogo(
       JSON.stringify({ success: !!logoUrl, logoUrl, source: 'metadata_fallback' }),
       { headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Fallback logo fetch failed:', error);
     return new Response(
       JSON.stringify({ success: false, error: 'Could not extract logo' }),

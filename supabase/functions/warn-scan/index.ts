@@ -283,7 +283,7 @@ ${combinedText}`,
       JSON.stringify({ success: true, notices: inserted, stateBreakdown }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("[warn-scan] Error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),

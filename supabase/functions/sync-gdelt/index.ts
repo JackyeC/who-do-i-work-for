@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ success: true, count: rows.length, controversies: rows.filter((r: any) => r.is_controversy).length }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (err) {
+  } catch (err: any) {
     console.error("GDELT sync error:", err);
     return new Response(JSON.stringify({ error: String(err) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }

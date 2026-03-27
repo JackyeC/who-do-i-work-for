@@ -173,7 +173,7 @@ ${offshoreFlag ? '- offshore_alert: string (assessment of US-to-international sh
             console.error("[survivor-alert] Failed to parse autopsy:", text.slice(0, 200));
           }
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error("[survivor-alert] Autopsy generation failed:", e);
       }
     }
@@ -190,7 +190,7 @@ ${offshoreFlag ? '- offshore_alert: string (assessment of US-to-international sh
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("[survivor-alert] Error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),

@@ -344,7 +344,7 @@ Deno.serve(async (req) => {
       details: unique.map(c => ({ topic: c.topic, severity: c.severity })),
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[detect-contradictions] Error:', error);
     return new Response(JSON.stringify({
       success: false,

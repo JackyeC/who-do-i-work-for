@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
           }
         } else { results.osha = 0; }
       } else { results.osha = 0; }
-    } catch (e) { console.warn("[OSHA]", e); results.osha = 0; }
+    } catch (e: any) { console.warn("[OSHA]", e); results.osha = 0; }
 
     // ─── 2. WHD Wage & Hour Violations ───
     try {
@@ -96,7 +96,7 @@ Deno.serve(async (req) => {
           }
         } else { results.whd = 0; }
       } else { results.whd = 0; }
-    } catch (e) { console.warn("[WHD]", e); results.whd = 0; }
+    } catch (e: any) { console.warn("[WHD]", e); results.whd = 0; }
 
     // ─── 3. NLRB Cases ───
     try {
@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
           }).catch(() => {});
         }
       } else { results.nlrb = 0; }
-    } catch (e) { console.warn("[NLRB]", e); results.nlrb = 0; }
+    } catch (e: any) { console.warn("[NLRB]", e); results.nlrb = 0; }
 
     // ─── 4. CourtListener — Employment Litigation ───
     try {
@@ -151,7 +151,7 @@ Deno.serve(async (req) => {
           }).catch(() => {});
         }
       } else { results.courtlistener = 0; }
-    } catch (e) { console.warn("[CourtListener]", e); results.courtlistener = 0; }
+    } catch (e: any) { console.warn("[CourtListener]", e); results.courtlistener = 0; }
 
     // ─── 5. FTC Enforcement Actions ───
     try {
@@ -178,7 +178,7 @@ Deno.serve(async (req) => {
           }
         } else { results.ftc = 0; }
       } else { results.ftc = 0; }
-    } catch (e) { console.warn("[FTC]", e); results.ftc = 0; }
+    } catch (e: any) { console.warn("[FTC]", e); results.ftc = 0; }
 
     // ─── 6. CFPB Consumer Complaints ───
     try {
@@ -201,7 +201,7 @@ Deno.serve(async (req) => {
           }).catch(() => {});
         }
       } else { results.cfpb = 0; }
-    } catch (e) { console.warn("[CFPB]", e); results.cfpb = 0; }
+    } catch (e: any) { console.warn("[CFPB]", e); results.cfpb = 0; }
 
     // ─── 7. Perplexity AI — News & Watchdog Deep Enrichment ───
     let aiEnrichment = null;
@@ -352,7 +352,7 @@ Include ONLY verified, factual information. Empty arrays for fields with no data
           console.warn(`[Perplexity] ${perplexityRes.status}`);
           results.ai_enrichment = 0;
         }
-      } catch (e) { console.warn("[Perplexity]", e); results.ai_enrichment = 0; }
+      } catch (e: any) { console.warn("[Perplexity]", e); results.ai_enrichment = 0; }
     } else {
       results.ai_enrichment = 0;
     }
@@ -389,7 +389,7 @@ Include ONLY verified, factual information. Empty arrays for fields with no data
       } : null,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("enrich-private-company error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },

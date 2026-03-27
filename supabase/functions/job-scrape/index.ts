@@ -248,7 +248,7 @@ const ATS_CONFIGS: Record<string, { detect: (url: string) => boolean; fetchJobs:
         const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, content];
         const parsed = JSON.parse(jsonMatch[1].trim());
         return Array.isArray(parsed) ? parsed.filter((j: any) => j.title && j.title.length >= 4 && j.title.length <= 120) : [];
-      } catch (e) {
+      } catch (e: any) {
         console.warn('[job-scrape] Pinpoint scrape failed:', e);
         return [];
       }
@@ -581,7 +581,7 @@ Deno.serve(async (req) => {
           scanContext.explanation = `${ats.platform} ATS was detected and queried, but returned no active job listings.`;
           scanContext.confidence = 'high';
         }
-      } catch (e) {
+      } catch (e: any) {
         console.warn(`[job-scrape] ATS API failed for ${ats.platform}:`, e);
         scanContext.explanation = `${ats.platform} ATS was detected but the API query failed. Falling back to page scraping.`;
       }
@@ -642,13 +642,13 @@ Deno.serve(async (req) => {
                     scanContext.explanation = `Live jobs retrieved from linked ${embeddedAtsConfig.platform} ATS (discovered via career page).`;
                     scanContext.confidence = 'high';
                   }
-                } catch (e) {
+                } catch (e: any) {
                   console.warn(`[job-scrape] Embedded ATS fetch failed for ${atsLink.platform}:`, e);
                 }
               }
             }
           }
-        } catch (e) {
+        } catch (e: any) {
           console.warn(`[job-scrape] Failed to scrape main page:`, e);
         }
       }
@@ -748,7 +748,7 @@ Deno.serve(async (req) => {
                   }
                 }
               }
-            } catch (e) { console.warn(`[job-scrape] Failed to scrape ${url}:`, e); }
+            } catch (e: any) { console.warn(`[job-scrape] Failed to scrape ${url}:`, e); }
           }
         }
       }
@@ -911,7 +911,7 @@ Deno.serve(async (req) => {
                 }
               }
             }
-          } catch (e) {
+          } catch (e: any) {
             console.warn(`[job-scrape] Failed to scrape careers subdomain:`, e);
           }
         }
@@ -1156,7 +1156,7 @@ Content:\n${allMarkdown.slice(0, 20000)}`
       departmentBreakdown: deptBreakdown,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[job-scrape] Error:', error);
     return new Response(JSON.stringify({
       success: false, error: error instanceof Error ? error.message : 'Unknown error',

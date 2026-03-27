@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
             signalsFound: scanResult?.totalSignals || 0,
           });
         }
-      } catch (e) {
+      } catch (e: any) {
         console.warn(`[seed-labor] Scan error for ${company.name}:`, e);
         results.push({ company: company.name, status: 'scan_error' });
       }
@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
       results,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[seed-labor] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

@@ -58,7 +58,7 @@ async function searchDOLEnforcement(
         }
       }
       if (!found) console.log(`[sync-workplace-enforcement] New DOL portal: ${newResp.status} for "${name}" — data not yet migrated`);
-    } catch (err) {
+    } catch (err: any) {
       console.warn(`[sync-workplace-enforcement] New DOL portal error (expected):`, err instanceof Error ? err.message : err);
     }
 
@@ -82,7 +82,7 @@ async function searchDOLEnforcement(
           console.log(`[sync-workplace-enforcement] Legacy enforcedata.dol.gov: ${resp.status} / non-JSON for "${name}" — confirmed decommissioned`);
           await resp.text();
         }
-      } catch (err) {
+      } catch (err: any) {
         console.warn(`[sync-workplace-enforcement] Legacy API error (expected — API is decommissioned):`, err instanceof Error ? err.message : err);
       }
     }
@@ -236,7 +236,7 @@ Deno.serve(async (req) => {
       data_gaps: dataGaps.length > 0 ? dataGaps : undefined,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-workplace-enforcement] Unhandled error:', error);
     return new Response(JSON.stringify({
       success: false,

@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
           } else {
             results[source.name].success++;
           }
-        } catch (e) {
+        } catch (e: any) {
           console.warn(`[${source.name}] Error for ${info.name}:`, e);
           results[source.name].failed++;
         }
@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
           await supabase.functions.invoke('enrich-private-company', {
             body: { companyId, companyName: info.name },
           });
-        } catch (e) {
+        } catch (e: any) {
           console.warn(`[enrich-private-company] Error for ${info.name}:`, e);
         }
         await new Promise(r => setTimeout(r, 2000));
@@ -151,7 +151,7 @@ Deno.serve(async (req) => {
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('[daily-gov-refresh] Fatal error:', error);
     return new Response(
       JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown' }),

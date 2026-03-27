@@ -260,7 +260,7 @@ Only include entities you are confident about. Maximum 15 entries.`;
       totalRelationships: allRelationships?.length || 0,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[resolve-entity] Error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message : 'Unknown error',

@@ -83,7 +83,7 @@ async function scrapeWithFirecrawl(url: string, firecrawlKey: string | undefined
 
     const data = await response.json();
     return data?.data?.markdown || data?.markdown || null;
-  } catch (e) {
+  } catch (e: any) {
     console.warn(`[sync-opensecrets] Firecrawl error for ${url}:`, e);
     return null;
   }
@@ -408,7 +408,7 @@ Deno.serve(async (req) => {
       profileUrl: bestMatch?.profile_url || null,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-opensecrets] Error:', error);
     return new Response(JSON.stringify({
       success: false,

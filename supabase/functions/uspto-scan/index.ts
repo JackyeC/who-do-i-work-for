@@ -131,7 +131,7 @@ async function queryGooglePatents(
     }
 
     return { patents, totalResults };
-  } catch (err) {
+  } catch (err: any) {
     console.warn(`Google Patents error for "${companyName}":`, err);
     return { patents: [], totalResults: 0 };
   }
@@ -419,7 +419,7 @@ serve(async (req) => {
       aliasesUsed: searchQueries.length,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Patent scan error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -189,7 +189,7 @@ ${searchContent ? `Search results:\n${searchContent}` : 'Use your knowledge.'}`,
             console.error('Failed to parse identity AI output');
           }
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error('Identity verification failed:', e);
       }
     }
@@ -229,7 +229,7 @@ ${searchContent ? `Search results:\n${searchContent}` : 'Use your knowledge.'}`,
         },
         body: JSON.stringify({ companyName: identityData.official_name || name, companyId: newCompany.id, enrichExisting: true }),
       }).catch(e => console.error('Background company-research failed:', e));
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to trigger company-research:', e);
     }
 
@@ -249,7 +249,7 @@ ${searchContent ? `Search results:\n${searchContent}` : 'Use your knowledge.'}`,
           careersUrl,
         }),
       }).catch(e => console.error('Background job-scrape failed:', e));
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to trigger job-scrape:', e);
     }
 
@@ -272,7 +272,7 @@ ${searchContent ? `Search results:\n${searchContent}` : 'Use your knowledge.'}`,
       status: 'research_in_progress',
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Company discover error:', error);
     return new Response(JSON.stringify({
       success: false,

@@ -40,7 +40,7 @@ async function searchGooglePatents(companyName: string): Promise<{ totalResults:
     const totalResults = countMatch ? parseInt(countMatch[1].replace(/,/g, '')) : titles.length;
 
     return { totalResults, titles: titles.slice(0, 10), links: links.slice(0, 10) };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Google Patents scrape error:", error);
     return { totalResults: 0, titles: [], links: [] };
   }
@@ -80,7 +80,7 @@ async function categorizeWithLLM(companyName: string, patentTitles: string[]): P
     const jsonMatch = content.match(/\[[\s\S]*\]/);
     if (!jsonMatch) return [];
     return JSON.parse(jsonMatch[0]);
-  } catch (error) {
+  } catch (error: any) {
     console.error("LLM categorization error:", error);
     return [{ theme: "General Innovation", count: patentTitles.length, examples: patentTitles.slice(0, 5) }];
   }
@@ -133,7 +133,7 @@ serve(async (req) => {
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Patent scan error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),

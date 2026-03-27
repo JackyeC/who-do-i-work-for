@@ -232,7 +232,7 @@ The letter must read like something a smart, busy professional would actually se
           matchingStatement = parsed.cover_letter || '';
           targetedIntro = parsed.one_line_pitch || '';
           valuesCheck = parsed.values_alignment_note || '';
-        } catch (e) {
+        } catch (e: any) {
           console.error('Failed to parse tool call:', e);
           matchingStatement = aiData.choices?.[0]?.message?.content || '';
         }
@@ -302,7 +302,7 @@ The letter must read like something a smart, busy professional would actually se
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('generate-application-payload error:', error);
 
     if (error instanceof Response) {

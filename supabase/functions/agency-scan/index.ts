@@ -103,7 +103,7 @@ Only include items with evidence. Return valid JSON only.`;
       try {
         const jsonMatch = raw.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, raw];
         analysis = JSON.parse(jsonMatch[1].trim());
-      } catch (e) {
+      } catch (e: any) {
         console.error('Failed to parse AI response:', e);
         analysis.summary = raw.slice(0, 1000);
       }
@@ -219,7 +219,7 @@ Only include items with evidence. Return valid JSON only.`;
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Agency scan error:', error);
     return new Response(JSON.stringify({
       success: false,

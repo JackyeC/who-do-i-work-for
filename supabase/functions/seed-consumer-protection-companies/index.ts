@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
           body: { companyId, companyName: company.name },
         });
         results.push({ company: company.name, status: syncErr ? 'sync_failed' : 'synced' });
-      } catch (e) {
+      } catch (e: any) {
         results.push({ company: company.name, status: 'sync_error' });
       }
 
@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ success: true, results }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
-  } catch (error) {
+  } catch (error: any) {
     return new Response(JSON.stringify({
       success: false, error: error instanceof Error ? error.message : 'Unknown error',
     }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });

@@ -105,7 +105,7 @@ Return ONLY the JSON array, no other text.`;
       JSON.stringify({ success: true, claims_extracted: rows.length, citations: data.citations || [] }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("extract-corporate-claims error:", error);
     return new Response(
       JSON.stringify({ success: false, error: error instanceof Error ? error.message : "Unknown error" }),

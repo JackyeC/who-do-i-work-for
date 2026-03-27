@@ -94,7 +94,7 @@ Keep responses concise (2-4 paragraphs max). Use markdown formatting. If suggest
     return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
-  } catch (e) {
+  } catch (e: any) {
     console.error("ask-jackye-chat error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
       status: 500,

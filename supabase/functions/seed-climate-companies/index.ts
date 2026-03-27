@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
 
       // Throttle
       await new Promise(r => setTimeout(r, 3000));
-    } catch (e) {
+    } catch (e: any) {
       console.error(`[seed-climate] Error for ${company.name}:`, e);
       results.push({ company: company.name, status: 'error', error: e instanceof Error ? e.message : 'Unknown' });
     }

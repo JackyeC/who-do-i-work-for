@@ -247,7 +247,7 @@ Only include items you find evidence for. Return valid JSON only.`;
       try {
         const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, content];
         aiAnalysis = JSON.parse(jsonMatch[1].trim());
-      } catch (e) {
+      } catch (e: any) {
         console.error('Failed to parse AI response:', e);
         aiAnalysis.summary = content.slice(0, 1000);
       }
@@ -309,7 +309,7 @@ Only include items you find evidence for. Return valid JSON only.`;
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Worker sentiment scan error:', error);
     return new Response(JSON.stringify({
       success: false,

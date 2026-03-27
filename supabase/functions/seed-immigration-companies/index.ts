@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
         } else {
           results.push({ company: company.name, status: 'synced', signals: data?.totalSignals || 0 });
         }
-      } catch (e) {
+      } catch (e: any) {
         console.warn(`[seed-immigration] Sync error for ${company.name}:`, e);
         results.push({ company: company.name, status: 'sync_error' });
       }
@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
       results,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[seed-immigration] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

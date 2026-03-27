@@ -43,7 +43,7 @@ async function tryLevelsFyi(company: string): Promise<CompData | null> {
         { source_name: "Levels.fyi", source_type: "official_comp_api", confidence: 0.9, notes: "Primary source for total compensation and levels" },
       ],
     };
-  } catch (e) {
+  } catch (e: any) {
     console.error("Levels.fyi provider error:", e);
     return null;
   }
@@ -76,7 +76,7 @@ async function tryApify(company: string): Promise<CompData | null> {
         { source_name: "Glassdoor (via Apify)", source_type: "scraped_market_signal", confidence: 0.6, notes: "Secondary source for directional market comparison" },
       ],
     };
-  } catch (e) {
+  } catch (e: any) {
     console.error("Apify provider error:", e);
     return null;
   }
@@ -105,7 +105,7 @@ async function tryH1B(company: string): Promise<CompData | null> {
         { source_name: "H1B Disclosure Data", source_type: "base_salary_only", confidence: 0.7, notes: "Base salary only from DoL H1B filings" },
       ],
     };
-  } catch (e) {
+  } catch (e: any) {
     console.error("H1B provider error:", e);
     return null;
   }
@@ -212,7 +212,7 @@ Return ONLY structured data. Rules:
       if (parsed?.median_total_compensation_usd) return parsed;
     }
     return null;
-  } catch (e) {
+  } catch (e: any) {
     console.error("AI estimation error:", e);
     return null;
   }
@@ -362,7 +362,7 @@ serve(async (req) => {
     return new Response(JSON.stringify(upserted || row), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch (e: any) {
     console.error("fetch-company-compensation error:", e);
     return new Response(JSON.stringify({ error: "Internal error processing compensation request" }), {
       status: 500,

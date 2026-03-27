@@ -100,12 +100,12 @@ async function fetchGunPolicyDonations(companyName: string): Promise<any[]> {
             }
           }
           await new Promise(r => setTimeout(r, 500));
-        } catch (e) {
+        } catch (e: any) {
           console.warn(`[FEC Gun] Error checking ${org.shortName}:`, e);
         }
       }
     }
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[FEC Gun] Error:', e);
   }
 
@@ -252,7 +252,7 @@ Deno.serve(async (req) => {
       stats,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-gun-policy] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

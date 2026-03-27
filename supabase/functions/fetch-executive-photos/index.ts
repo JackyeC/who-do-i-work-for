@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
         });
         pageData = await scrapeResp.json();
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Map/scrape failed:', e);
     }
 
@@ -201,7 +201,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ success: true, updated, total: executives.length }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching executive photos:', error);
     return new Response(
       JSON.stringify({ success: false, error: error.message }),

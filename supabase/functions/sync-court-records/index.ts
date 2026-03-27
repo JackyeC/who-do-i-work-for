@@ -161,7 +161,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ success: true, results: results.length, inserted }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (err) {
+  } catch (err: any) {
     console.error("[court-records] Error:", err);
     return new Response(
       JSON.stringify({ error: err instanceof Error ? err.message : "Unknown error" }),

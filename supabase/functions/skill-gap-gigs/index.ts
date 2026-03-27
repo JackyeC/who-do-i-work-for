@@ -218,7 +218,7 @@ RULES:
       career_readiness_current: generated.career_readiness_current || 0,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Skill gap gigs error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message : 'Unknown error',

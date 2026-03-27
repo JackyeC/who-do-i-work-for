@@ -135,7 +135,7 @@ async function searchCourtListener(): Promise<any[]> {
       url: r.absolute_url ? `https://www.courtlistener.com${r.absolute_url}` : null,
       docket_id: r.docket_id || null,
     }));
-  } catch (err) {
+  } catch (err: any) {
     console.error("CourtListener search failed:", err);
     return [];
   }
@@ -203,7 +203,7 @@ Return ONLY the JSON array, no markdown.`,
     }
 
     return [];
-  } catch (err) {
+  } catch (err: any) {
     console.error("AI case extraction failed:", err);
     return [];
   }

@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
         } catch (sigErr) {
           console.warn(`[bulk-refresh] Signal generation failed for ${company.name}:`, sigErr);
         }
-      } catch (e) {
+      } catch (e: any) {
         results.push({
           name: company.name,
           error: e instanceof Error ? e.message : "Unknown error",
@@ -154,7 +154,7 @@ Deno.serve(async (req) => {
       results,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("[bulk-refresh] Error:", error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message : "Unknown error",

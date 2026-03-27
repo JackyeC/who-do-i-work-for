@@ -105,7 +105,7 @@ async function fetchNewsAPI(apiKey: string): Promise<any[]> {
 
       // Small delay between queries
       await new Promise(r => setTimeout(r, 500));
-    } catch (e) {
+    } catch (e: any) {
       console.warn(`[NewsAPI] Error for "${q.slice(0, 30)}...":`, e);
     }
   }
@@ -164,7 +164,7 @@ async function fetchGDELT(): Promise<any[]> {
       }
 
       await new Promise(r => setTimeout(r, 6000));
-    } catch (e) {
+    } catch (e: any) {
       console.warn(`[GDELT] Error:`, e);
     }
   }
@@ -235,7 +235,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ success: true, newArticles: unique.length, totalArticles: count, sources }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("[sync-work-news] error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown" }),

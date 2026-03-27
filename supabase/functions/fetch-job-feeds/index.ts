@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ success: true, jobs: limited, totalFound: allJobs.length, errors }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching feeds:', error);
     return new Response(
       JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),

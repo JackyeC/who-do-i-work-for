@@ -37,7 +37,7 @@ Deno.serve(async (req: Request) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error("Briefing generation error:", err);
     return new Response(
       JSON.stringify({ error: err.message }),
@@ -76,7 +76,7 @@ async function generateBatchBriefings(supabase: any) {
       const effectiveUserId = user.id;
       await buildBriefingForUser(supabase, effectiveUserId, user);
       generated++;
-    } catch (err) {
+    } catch (err: any) {
       console.error(`Failed briefing for user ${user.id}:`, err);
       failed++;
     }

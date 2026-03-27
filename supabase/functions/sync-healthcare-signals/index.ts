@@ -264,7 +264,7 @@ Deno.serve(async (req) => {
       stats,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-healthcare] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

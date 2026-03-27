@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
       JSON.stringify({ success: true, count: trades.length }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (err) {
+  } catch (err: any) {
     console.error("Insider trades sync error:", err);
     return new Response(JSON.stringify({ error: String(err) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }

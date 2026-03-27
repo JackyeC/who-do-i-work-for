@@ -195,7 +195,7 @@ Deno.serve(async (req) => {
             jobsAdded: scrapeResult.jobsAdded || 0,
           });
           console.log(`✅ ${target.name}: ${scrapeResult.jobsAdded || 0} jobs`);
-        } catch (e) {
+        } catch (e: any) {
           const msg = e instanceof Error ? e.message : 'Unknown error';
           console.error(`❌ ${target.name}: ${msg}`);
           results.push({ tier: 'bcorp', company: target.name, status: 'error', error: msg });
@@ -241,7 +241,7 @@ Deno.serve(async (req) => {
             jobsAdded: scrapeResult.jobsAdded || 0,
           });
           console.log(`✅ ${target.name}: ${scrapeResult.jobsAdded || 0} jobs (Lobbying: $${target.lobbying.toLocaleString()}, PAC: $${target.pacSpending.toLocaleString()})`);
-        } catch (e) {
+        } catch (e: any) {
           const msg = e instanceof Error ? e.message : 'Unknown error';
           console.error(`❌ ${target.name}: ${msg}`);
           results.push({ tier: 'political', company: target.name, status: 'error', error: msg });
@@ -284,7 +284,7 @@ Deno.serve(async (req) => {
             jobsAdded: scrapeResult.jobsAdded || 0,
           });
           console.log(`✅ ${company.name}: ${scrapeResult.jobsAdded || 0} jobs`);
-        } catch (e) {
+        } catch (e: any) {
           const msg = e instanceof Error ? e.message : 'Unknown error';
           results.push({ tier: 'political', company: company.name, status: 'error', error: msg });
         }
@@ -337,7 +337,7 @@ Deno.serve(async (req) => {
               jobsAdded: scrapeResult.jobsAdded || 0,
             });
             console.log(`✅ ${company.name}: ${scrapeResult.jobsAdded || 0} jobs`);
-          } catch (e) {
+          } catch (e: any) {
             const msg = e instanceof Error ? e.message : 'Unknown error';
             results.push({ tier: 'unfilled', company: company.name, status: 'error', error: msg });
           }
@@ -387,7 +387,7 @@ Deno.serve(async (req) => {
             jobsAdded: scrapeResult.jobsAdded || 0,
           });
           console.log(`✅ ${target.name}: ${scrapeResult.jobsAdded || 0} jobs (Values: ${target.values.join(', ')})`);
-        } catch (e) {
+        } catch (e: any) {
           const msg = e instanceof Error ? e.message : 'Unknown error';
           console.error(`❌ ${target.name}: ${msg}`);
           results.push({ tier: 'values', company: target.name, status: 'error', error: msg });
@@ -424,7 +424,7 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Bulk scrape fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

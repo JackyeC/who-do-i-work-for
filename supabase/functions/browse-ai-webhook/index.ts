@@ -226,7 +226,7 @@ Deno.serve(async (req) => {
       watchersNotified: watchers?.length || 0,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[browse-ai-webhook] Error:', error);
     return new Response(JSON.stringify({
       error: 'Internal server error',

@@ -44,7 +44,7 @@ async function searchOpenSanctions(query: string, schema: string = 'Thing'): Pro
 
     const data = await resp.json();
     return (data.results || []).filter((r: MatchResult) => r.score > 0.5);
-  } catch (err) {
+  } catch (err: any) {
     console.error('[sync-opensanctions] Search error:', err);
     return [];
   }
@@ -259,7 +259,7 @@ Deno.serve(async (req) => {
       boardMatches: records.filter(r => r.match_type === 'board_member').length,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-opensanctions] Error:', error);
     return new Response(JSON.stringify({
       success: false,

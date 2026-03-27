@@ -270,14 +270,14 @@ Provide a full career analysis with gap analysis, salary estimates, and 30-60-90
       if (!goalsResponse.ok) {
         console.error("Auto SMART goals generation failed:", await goalsResponse.text());
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("SMART goals auto-gen error:", e);
     }
 
     return new Response(JSON.stringify({ success: true, track }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch (e: any) {
     console.error("career-gap-analysis error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },

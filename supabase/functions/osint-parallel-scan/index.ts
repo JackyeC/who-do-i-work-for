@@ -159,7 +159,7 @@ Deno.serve(async (req) => {
             data: data,
             error: error?.message || data?.error,
           };
-        } catch (e) {
+        } catch (e: any) {
           return {
             source: functionName,
             success: false,
@@ -201,7 +201,7 @@ Deno.serve(async (req) => {
       results: summary,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[osint-parallel-scan] Error:', error);
     return new Response(JSON.stringify({
       success: false,

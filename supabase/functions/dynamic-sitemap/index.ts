@@ -110,7 +110,7 @@ ${entries.join("\n")}
 </urlset>`;
 
     return new Response(xml, { headers: corsHeaders });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Sitemap generation error:", err);
     return new Response("Error generating sitemap", { status: 500 });
   }

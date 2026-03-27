@@ -31,7 +31,7 @@ async function tryExtractText(fileData: Blob, filename: string): Promise<string>
         return result.value;
       }
       console.log("Mammoth returned short text:", result.value?.length || 0, "chars");
-    } catch (e) {
+    } catch (e: any) {
       console.log("Mammoth failed:", e.message);
     }
 
@@ -52,7 +52,7 @@ async function tryExtractText(fileData: Blob, filename: string): Promise<string>
         if (text.length > 100) return text;
         console.log("JSZip returned short text:", text.length, "chars");
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log("JSZip failed:", e.message);
     }
   }
@@ -64,7 +64,7 @@ async function tryExtractText(fileData: Blob, filename: string): Promise<string>
       const result = await pdfParse(new Uint8Array(ab));
       if (result.text?.trim().length > 100) return result.text;
       console.log("pdf-parse returned short text:", result.text?.length || 0, "chars");
-    } catch (e) {
+    } catch (e: any) {
       console.log("pdf-parse failed:", e.message);
     }
   }

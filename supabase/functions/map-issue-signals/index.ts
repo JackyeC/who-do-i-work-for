@@ -275,7 +275,7 @@ async function queryFECDirect(companyName: string, companyId: string): Promise<I
         }
       }
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error('[map-issue-signals] FEC direct query error:', e);
   }
   return signals;
@@ -755,7 +755,7 @@ Deno.serve(async (req) => {
       recordsAnalyzed,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[map-issue-signals] Error:', error);
     return new Response(JSON.stringify({
       success: false,

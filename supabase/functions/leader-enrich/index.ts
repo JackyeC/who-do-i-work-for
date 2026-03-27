@@ -40,7 +40,7 @@ async function findHeadshot(name: string, company: string, firecrawlKey: string)
         return r.url;
       }
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error("Headshot search error:", e);
   }
   return null;
@@ -252,7 +252,7 @@ Be factual. If information is uncertain, say so. Never fabricate specific dates,
     return new Response(JSON.stringify({ enrichment: upserted, cached: false }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch (e: any) {
     console.error("leader-enrich error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },

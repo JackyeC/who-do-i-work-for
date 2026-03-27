@@ -312,7 +312,7 @@ Deno.serve(async (req) => {
       errors: errors.length > 0 ? errors : undefined,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("[seed-intelligence] Error:", error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message : "Unknown error",

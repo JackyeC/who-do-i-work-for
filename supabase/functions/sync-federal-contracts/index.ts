@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
 
         await new Promise(r => setTimeout(r, 300));
         if (allResults.length >= 100) break;
-      } catch (e) {
+      } catch (e: any) {
         console.error(`[sync-federal-contracts] Error searching "${searchText}":`, e);
       }
     }
@@ -293,7 +293,7 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-federal-contracts] error:', error);
     return new Response(
       JSON.stringify({

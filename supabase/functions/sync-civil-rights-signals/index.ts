@@ -50,7 +50,7 @@ async function fetchCivilRightsCases(companyName: string): Promise<any[]> {
       console.warn(`[CourtListener] ${resp.status} for "${searchName}"`);
     }
     await new Promise(r => setTimeout(r, 1000));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[CourtListener] Error:', e);
   }
 
@@ -301,7 +301,7 @@ Deno.serve(async (req) => {
       stats,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-civil-rights] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

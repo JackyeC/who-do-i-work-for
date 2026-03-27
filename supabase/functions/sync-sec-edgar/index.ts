@@ -102,7 +102,7 @@ async function findCIK(companyName: string): Promise<{ cik: string; ticker: stri
     }
 
     return null;
-  } catch (e) {
+  } catch (e: any) {
     console.error('[sync-sec-edgar] CIK lookup error:', e);
     return null;
   }

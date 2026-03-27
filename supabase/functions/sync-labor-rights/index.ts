@@ -56,7 +56,7 @@ async function fetchOSHA(companyName: string): Promise<{ results: any[]; dataGap
         }
       }
       console.log(`[OSHA] New DOL portal returned ${newResp.status} for "${name}" — OSHA data not yet migrated`);
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[OSHA] New DOL portal error (expected):', e instanceof Error ? e.message : e);
     }
 
@@ -77,7 +77,7 @@ async function fetchOSHA(companyName: string): Promise<{ results: any[]; dataGap
       }
       console.log(`[OSHA] Legacy enforcedata.dol.gov returned ${resp.status} / non-JSON for "${name}" — confirmed decommissioned`);
       await resp.text(); // consume body
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[OSHA] Legacy API error (expected — API is decommissioned):', e instanceof Error ? e.message : e);
     }
 
@@ -115,7 +115,7 @@ async function fetchWHD(companyName: string): Promise<{ results: any[]; dataGap:
         }
       }
       console.log(`[WHD] New DOL portal returned ${newResp.status} for "${name}" — WHD data may not be migrated yet`);
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[WHD] New DOL portal error (expected):', e instanceof Error ? e.message : e);
     }
 
@@ -136,7 +136,7 @@ async function fetchWHD(companyName: string): Promise<{ results: any[]; dataGap:
       }
       console.log(`[WHD] Legacy enforcedata.dol.gov returned ${resp.status} / non-JSON for "${name}" — confirmed decommissioned`);
       await resp.text();
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[WHD] Legacy API error (expected — API is decommissioned):', e instanceof Error ? e.message : e);
     }
 
@@ -182,7 +182,7 @@ async function fetchNLRB(companyName: string): Promise<any[]> {
       const records = json?.result?.records || json?.records || [];
       if (Array.isArray(records)) allResults.push(...records);
       await new Promise(r => setTimeout(r, 500));
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[NLRB] Error:', e);
     }
   }
@@ -197,7 +197,7 @@ async function fetchNLRB(companyName: string): Promise<any[]> {
         // Extract any downloadable resources
         console.log(`[NLRB] Data.gov fallback returned ${json?.result?.count || 0} packages`);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[NLRB] Data.gov fallback error:', e);
     }
   }
@@ -233,7 +233,7 @@ async function fetchBLSUnionData(industryCode?: string): Promise<any> {
 
     const json = await resp.json();
     return json?.Results?.series || null;
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[BLS] Error:', e);
     return null;
   }
@@ -417,7 +417,7 @@ Deno.serve(async (req) => {
         body: { companyId, companyName, searchNames },
       });
       console.log('[sync-labor-rights] Triggered sync-workplace-enforcement');
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[sync-labor-rights] sync-workplace-enforcement failed:', e);
     }
 
@@ -485,7 +485,7 @@ Deno.serve(async (req) => {
       data_gaps: dataGaps.length > 0 ? dataGaps : undefined,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-labor-rights] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

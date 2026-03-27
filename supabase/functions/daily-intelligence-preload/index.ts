@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
             },
           });
           refreshed++;
-        } catch (e) {
+        } catch (e: any) {
           console.warn(`Preload failed for ${info.name}/${section}:`, e);
         }
 
@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('daily-intelligence-preload error:', error);
     return new Response(
       JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),

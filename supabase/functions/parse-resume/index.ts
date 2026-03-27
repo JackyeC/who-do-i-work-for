@@ -73,7 +73,7 @@ Deno.serve(async (req: Request) => {
       }),
       { status: 200, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
     );
-  } catch (err) {
+  } catch (err: any) {
     console.error("Resume parse error:", err);
     return new Response(
       JSON.stringify({ error: err.message }),

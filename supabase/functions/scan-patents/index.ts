@@ -38,7 +38,7 @@ async function searchGooglePatents(companyName: string): Promise<{ titles: strin
     }
 
     return { titles, links, patentIds };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Google Patents scrape error:", error);
     return { titles: [], links: [], patentIds: [] };
   }

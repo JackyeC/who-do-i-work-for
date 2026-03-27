@@ -145,7 +145,7 @@ Return valid JSON only.`;
       data: { flags: analysis.flags || [], summary: analysis.summary || '', riskLevel: analysis.riskLevel || 'none',
         flagCount: flags.length, alertCount: criticalFlags.length, resultCount: allResults.length }
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Ideology scan error:', error);
     return new Response(JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });

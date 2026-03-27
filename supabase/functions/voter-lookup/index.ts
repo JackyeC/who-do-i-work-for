@@ -306,7 +306,7 @@ Focus on federal-level reps (Senators + House). Include state-level if found. Re
       try {
         const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, content];
         reps = JSON.parse(jsonMatch[1].trim());
-      } catch (e) {
+      } catch (e: any) {
         console.error('Failed to parse AI response:', e);
       }
     } else {
@@ -407,7 +407,7 @@ Focus on federal-level reps (Senators + House). Include state-level if found. Re
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Voter lookup error:', error);
     return new Response(JSON.stringify({
       success: false,

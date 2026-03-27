@@ -177,7 +177,7 @@ Return ONLY valid JSON. No markdown, no explanation.`;
     try {
       const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, content];
       research = JSON.parse(jsonMatch[1].trim());
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to parse AI research:', e, content.slice(0, 500));
       return new Response(JSON.stringify({ success: false, error: 'Failed to parse AI research results' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -435,7 +435,7 @@ Return ONLY valid JSON. No markdown, no explanation.`;
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Company research error:', error);
     return new Response(JSON.stringify({
       success: false,

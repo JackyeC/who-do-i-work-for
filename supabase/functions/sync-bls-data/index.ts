@@ -207,7 +207,7 @@ Deno.serve(async (req) => {
           }
 
           if (i + batchSize < oesSeriesIds.length) await new Promise(r => setTimeout(r, 500));
-        } catch (e) {
+        } catch (e: any) {
           console.error(`OES batch error:`, e);
         }
       }
@@ -260,7 +260,7 @@ Deno.serve(async (req) => {
           if (error) console.error("ECI upsert error:", error);
           results.eci = { synced: eciRows.length };
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error("ECI error:", e);
       }
     }
@@ -297,7 +297,7 @@ Deno.serve(async (req) => {
           if (error) console.error("CPS insert error:", error);
           results.cps = { synced: cpsRows.length };
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error("CPS error:", e);
       }
     }
@@ -333,7 +333,7 @@ Deno.serve(async (req) => {
           if (error) console.error("NCS insert error:", error);
           results.ncs = { synced: ncsRows.length };
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error("NCS error:", e);
       }
     }
@@ -341,7 +341,7 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ success: true, results, apiVersion: blsApiKey ? 2 : 1 }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("sync-bls-data error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,

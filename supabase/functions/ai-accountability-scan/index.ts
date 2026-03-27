@@ -155,7 +155,7 @@ Deno.serve(async (req) => {
               allContent += `\n\nSOURCE: ${page.url}\nTYPE: ${page.label}\nMARKDOWN:\n${md.slice(0, 5000)}\nHTML_EXCERPT:\n${html.slice(0, 5000)}`;
             }
           }
-        } catch (e) {
+        } catch (e: any) {
           console.error(`Scrape failed for ${page.url}`, e);
         }
       }
@@ -366,7 +366,7 @@ ${truncated}`,
             amount: null,
           });
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error(`Entity linkage failed for ${v.vendor_name}:`, e);
       }
     }
@@ -383,7 +383,7 @@ ${truncated}`,
       scannedAt: now,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('AI Accountability scan error:', error);
     return new Response(JSON.stringify({
       success: false,

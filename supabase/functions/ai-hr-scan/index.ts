@@ -234,7 +234,7 @@ Deno.serve(async (req) => {
           } else {
             scrapeFailCount++;
           }
-        } catch (e) {
+        } catch (e: any) {
           scrapeFailCount++;
         }
       }
@@ -429,7 +429,7 @@ ${truncated}`,
       scannedAt: now,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[ai-hr-scan] Unhandled error:', error);
     scanLog.steps.error = error instanceof Error ? error.message : 'Unknown error';
     console.log('[ai-hr-scan] SCAN_LOG:', JSON.stringify(scanLog));

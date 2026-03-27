@@ -126,7 +126,7 @@ Deno.serve(async (req) => {
             .eq('user_id', userId)
             .in('role', ['owner', 'admin', 'internal_test']);
           isPrivilegedUser = (roleData && roleData.length > 0);
-        } catch (e) {
+        } catch (e: any) {
           console.warn('[intelligence-scan] Role check failed (non-critical):', e);
         }
 
@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
                 isPaidUser = subs.data.length > 0;
               }
             }
-          } catch (e) {
+          } catch (e: any) {
             console.warn('[intelligence-scan] Subscription check failed (non-critical):', e);
           }
 
@@ -372,7 +372,7 @@ Deno.serve(async (req) => {
           errorLog.push({ module: mod.key, status: moduleResp.status, errorType, error: errorMessage, timestamp: moduleCompletedAt });
           console.error(`[intelligence-scan] ${mod.key} failed: HTTP ${moduleResp.status}`);
         }
-      } catch (e) {
+      } catch (e: any) {
         const moduleCompletedAt = new Date().toISOString();
         const msg = e instanceof Error ? e.message : 'Unknown error';
         const isTimeout = msg.includes('abort') || msg.includes('timeout') || msg.includes('signal');
@@ -677,7 +677,7 @@ Deno.serve(async (req) => {
       circuit_breaker_tripped: circuitBreakerTripped,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[intelligence-scan] Unhandled error:', error);
     return new Response(JSON.stringify({
       success: false,

@@ -152,7 +152,7 @@ Style: Saturday morning cartoon meets corporate satire. Bright saturated colors,
     return new Response(JSON.stringify({ imageUrl: publicUrl.publicUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch (e: any) {
     console.error("battle-image error:", e);
     return new Response(
       JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),

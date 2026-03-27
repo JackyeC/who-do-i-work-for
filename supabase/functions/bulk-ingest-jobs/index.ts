@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
 
         // Rate-limit: wait 2s between companies
         await new Promise(r => setTimeout(r, 2000));
-      } catch (e) {
+      } catch (e: any) {
         results.push({
           company: company.name,
           status: 'error',
@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
       results,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Bulk ingest error:', error);
     return new Response(JSON.stringify({
       success: false,

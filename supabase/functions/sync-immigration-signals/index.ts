@@ -40,7 +40,7 @@ async function fetchH1BData(companyName: string): Promise<any[]> {
       console.warn(`[H-1B] ${resp.status} for "${searchName}"`);
     }
     await new Promise(r => setTimeout(r, 500));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[H-1B] Error:', e);
   }
 
@@ -54,7 +54,7 @@ async function fetchH1BData(companyName: string): Promise<any[]> {
         const data = await resp.json();
         if (Array.isArray(data)) allResults.push(...data);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[LCA fallback] Error:', e);
     }
   }
@@ -81,7 +81,7 @@ async function fetchGuestWorkerData(companyName: string): Promise<any[]> {
         console.warn(`[${visaType.toUpperCase()}] ${resp.status} for "${searchName}"`);
       }
       await new Promise(r => setTimeout(r, 500));
-    } catch (e) {
+    } catch (e: any) {
       console.warn(`[${visaType.toUpperCase()}] Error:`, e);
     }
   }
@@ -113,7 +113,7 @@ async function fetchImmigrationEnforcement(companyName: string): Promise<any[]> 
       }
     }
     await new Promise(r => setTimeout(r, 500));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[Immigration Enforcement] Error:', e);
   }
 
@@ -314,7 +314,7 @@ Deno.serve(async (req) => {
       stats,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-immigration] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

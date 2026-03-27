@@ -345,7 +345,7 @@ Use the provided tool to return structured results.`;
     return new Response(JSON.stringify({ success: true, score: scoreResult }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("offer-strength-score error:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },

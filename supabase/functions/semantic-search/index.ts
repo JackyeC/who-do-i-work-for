@@ -108,7 +108,7 @@ Response format:
     return new Response(JSON.stringify({ expandedTerms: [query], relatedTitles: [] }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch (e: any) {
     console.error("semantic-search error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
       status: 500,

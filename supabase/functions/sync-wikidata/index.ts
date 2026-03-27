@@ -126,7 +126,7 @@ async function getEntityDetails(entityId: string): Promise<WikidataEntity | null
         subsidiaryCount: parseInt(val('subsidiaryCount') || '0'),
       },
     };
-  } catch (err) {
+  } catch (err: any) {
     console.error('[sync-wikidata] SPARQL error:', err);
     return null;
   }
@@ -277,7 +277,7 @@ Deno.serve(async (req) => {
       subsidiaryCount: props.subsidiaryCount,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-wikidata] Error:', error);
     return new Response(JSON.stringify({
       success: false,

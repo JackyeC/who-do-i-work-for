@@ -146,7 +146,7 @@ Deno.serve(async (req: Request) => {
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
-  } catch (err) {
+  } catch (err: any) {
     console.error("News ingestion error:", err);
     return new Response(
       JSON.stringify({ error: err.message }),
@@ -241,7 +241,7 @@ async function fetchExternalNews() {
 
       // Rate limit courtesy: small delay between queries
       await new Promise(r => setTimeout(r, 500));
-    } catch (err) {
+    } catch (err: any) {
       console.error(`Error fetching query "${query}":`, err);
     }
   }

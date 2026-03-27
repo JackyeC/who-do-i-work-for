@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
 
         // If we have enough results, stop searching more variants
         if (allFilings.length >= 20) break;
-      } catch (e) {
+      } catch (e: any) {
         console.error(`[sync-lobbying] Error searching variant "${variant}":`, e);
       }
     }
@@ -272,7 +272,7 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-lobbying] Error:', error);
     return new Response(
       JSON.stringify({

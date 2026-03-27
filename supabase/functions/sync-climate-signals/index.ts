@@ -39,7 +39,7 @@ async function fetchGHGRPData(companyName: string): Promise<any[]> {
       console.warn(`[GHGRP] ${resp.status} for "${searchName}"`);
     }
     await new Promise(r => setTimeout(r, 500));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[GHGRP] Error:', e);
   }
 
@@ -53,7 +53,7 @@ async function fetchGHGRPData(companyName: string): Promise<any[]> {
         const data = await resp.json();
         if (Array.isArray(data)) allResults.push(...data);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.warn('[GHGRP facility fallback] Error:', e);
     }
   }
@@ -79,7 +79,7 @@ async function fetchECHOData(companyName: string): Promise<any[]> {
       console.warn(`[ECHO] ${resp.status} for "${searchName}"`);
     }
     await new Promise(r => setTimeout(r, 500));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[ECHO] Error:', e);
   }
 
@@ -106,7 +106,7 @@ async function fetchEPAEnforcement(companyName: string): Promise<any[]> {
       }
     }
     await new Promise(r => setTimeout(r, 500));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[EPA Enforcement] Error:', e);
   }
 
@@ -297,7 +297,7 @@ Deno.serve(async (req) => {
       stats,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-climate] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false,

@@ -90,7 +90,7 @@ Generate 2-3 tailored interview questions.`;
     return new Response(JSON.stringify({ questions: parsed.questions }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e) {
+  } catch (e: any) {
     console.error("job-questions error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error", questions: [] }), {
       status: 500,

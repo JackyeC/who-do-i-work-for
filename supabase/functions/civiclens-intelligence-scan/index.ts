@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
               sourcesScanned++;
             }
           }
-        } catch (e) {
+        } catch (e: any) {
           console.error('Careers scrape failed', e);
         }
       }
@@ -308,7 +308,7 @@ ${truncated}`;
       scannedAt: now,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Intelligence scan error:', error);
     return new Response(JSON.stringify({
       success: false,

@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
       message: `Company "${companyName}" created and flagged for Insider Audit`,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Ingest unknown company error:', error);
     return new Response(JSON.stringify({
       success: false,

@@ -47,7 +47,7 @@ async function fetchCFPBComplaints(companyName: string): Promise<any[]> {
       console.warn(`[CFPB] ${resp.status} for "${searchName}"`);
     }
     await new Promise(r => setTimeout(r, 1000));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[CFPB] Error:', e);
   }
   return results;
@@ -78,7 +78,7 @@ async function fetchCPSCRecalls(companyName: string): Promise<any[]> {
       }
     }
     await new Promise(r => setTimeout(r, 1000));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[CPSC] Error:', e);
   }
   return results;
@@ -108,7 +108,7 @@ async function fetchFDAEnforcement(companyName: string): Promise<any[]> {
       }
     }
     await new Promise(r => setTimeout(r, 1000));
-  } catch (e) {
+  } catch (e: any) {
     console.warn('[FDA] Error:', e);
   }
   return results;
@@ -312,7 +312,7 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ success: true, totalSignals: signals.length, stats }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-consumer-protection] Fatal error:', error);
     return new Response(JSON.stringify({
       success: false, error: error instanceof Error ? error.message : 'Unknown error',

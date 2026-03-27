@@ -65,7 +65,7 @@ async function fetchEPAViolations(companyName: string): Promise<any[]> {
         });
       }
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error('EPA ECHO fetch error:', e);
   }
   return results;
@@ -103,7 +103,7 @@ async function fetchOSHAViolations(companyName: string): Promise<any[]> {
         confidence: 'high',
       });
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error('OSHA fetch error:', e);
   }
   return results;
@@ -145,7 +145,7 @@ async function fetchDOLEnforcement(companyName: string): Promise<any[]> {
         confidence: 'high',
       });
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error('DOL enforcement fetch error:', e);
   }
   return results;
@@ -258,7 +258,7 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (err) {
+  } catch (err: any) {
     console.error('sync-regulatory-violations error:', err);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,

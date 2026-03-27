@@ -79,7 +79,7 @@ async function scrapeWithFirecrawl(url: string, _query: string): Promise<ScrapeR
       sourceUrls: [url],
       error: markdown.length <= 50 ? 'Insufficient content extracted' : undefined,
     };
-  } catch (e) {
+  } catch (e: any) {
     const msg = e instanceof Error ? e.message : 'Unknown error';
     if (msg.includes('timeout') || msg.includes('deadline')) {
       return { success: false, content: null, error: msg, errorType: 'timeout' };
@@ -111,7 +111,7 @@ async function scrapeWithScrapingBee(url: string, _query: string): Promise<Scrap
       content: { text, format: 'scrapingbee_text' },
       sourceUrls: [url],
     };
-  } catch (e) {
+  } catch (e: any) {
     return { success: false, content: null, error: e instanceof Error ? e.message : 'Unknown', errorType: 'unknown' };
   }
 }
@@ -307,7 +307,7 @@ Deno.serve(async (req) => {
       { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('refresh-intelligence error:', error);
     return new Response(
       JSON.stringify({ success: false, error: 'An internal error occurred' }),

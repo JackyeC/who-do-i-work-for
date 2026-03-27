@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
       status: result.success ? 200 : 403,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Turnstile verification error:", err);
     return new Response(JSON.stringify({ success: false, error: "Verification failed" }), {
       status: 500,

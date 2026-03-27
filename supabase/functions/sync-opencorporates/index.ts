@@ -52,7 +52,7 @@ async function searchOpenCorporates(query: string): Promise<OCCompany[]> {
     const data = await resp.json();
     const companies = data?.results?.companies || [];
     return companies.map((c: any) => c.company).filter(Boolean);
-  } catch (err) {
+  } catch (err: any) {
     console.error('[sync-opencorporates] Search error:', err);
     return [];
   }
@@ -217,7 +217,7 @@ Deno.serve(async (req) => {
       officersFound: structureRecords.filter(r => r.entity_type === 'officer').length,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[sync-opencorporates] Unhandled error:', error);
     return new Response(JSON.stringify({
       success: false,

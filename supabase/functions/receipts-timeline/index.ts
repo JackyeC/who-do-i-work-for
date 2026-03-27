@@ -324,7 +324,7 @@ Deno.serve(async (req) => {
       event_type_counts: typeCounts,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[receipts-timeline] Error:', error);
     return new Response(JSON.stringify({
       success: false,
