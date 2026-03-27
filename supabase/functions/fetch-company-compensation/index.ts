@@ -235,7 +235,7 @@ function mergeSources(primary: CompData, ...secondaries: (CompData | null)[]): C
 }
 
 /* ── Main handler ── */
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   // Auth gate: require service-role key or valid user JWT

@@ -59,7 +59,7 @@ function categorizePatent(title: string): string {
   return "Other";
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

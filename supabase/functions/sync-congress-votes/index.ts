@@ -166,7 +166,7 @@ async function fetchMemberDetails(bioguideId: string, apiKey: string): Promise<a
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

@@ -17,7 +17,7 @@ const CONTROVERSIAL_AGENCIES = [
   { name: 'Bureau of Alcohol Tobacco Firearms', acronym: 'ATF', category: 'law_enforcement' },
 ];
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

@@ -66,7 +66,7 @@ const SAFEPATH_RISK_KEYWORDS = [
   'black-box', 'black box', 'proprietary algorithm', 'undisclosed scoring',
 ];
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

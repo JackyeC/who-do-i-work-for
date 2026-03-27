@@ -14,7 +14,7 @@ const CREDIT_PACKS: Record<string, { priceId: string; credits: number; amount: n
   pack20: { priceId: "price_1TAuat7Qj0W6UtN98LIrnNAT", credits: 20, amount: 2999 },
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

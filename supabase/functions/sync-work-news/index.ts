@@ -175,7 +175,7 @@ async function fetchGDELT(): Promise<any[]> {
 
 // ─── Main handler ───
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   // Auth gate: require service-role key

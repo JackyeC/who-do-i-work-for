@@ -125,7 +125,7 @@ async function fecFetch(endpoint: string, params: Record<string, string | string
   return resp.json();
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

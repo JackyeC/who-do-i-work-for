@@ -30,7 +30,7 @@ const LABOR_COMPANIES = [
   { name: 'Apple', slug: 'apple', industry: 'Technology', state: 'CA', description: 'Technology giant facing retail union organizing at Apple Stores nationwide, with IAM and CWA unions leading campaigns.', known_for: 'Retail union drives, IAM/CWA organizing, Towson store' },
 ];
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

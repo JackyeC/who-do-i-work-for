@@ -20,7 +20,7 @@ const PAGE_TYPES = [
   { type: 'privacy', pathHints: ['/privacy', '/ai-disclosure', '/data-practices', '/transparency'] },
 ];
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

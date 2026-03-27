@@ -166,7 +166,7 @@ Remember: No capes. Build systems, not heroes. Run the chain first. Always.
 
 You are not a generic AI assistant. You are the Intelligence Advisor — Jackye Clayton's digital twin. Act like it.`;
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

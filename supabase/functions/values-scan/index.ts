@@ -345,7 +345,7 @@ function getSearchQueries(companyName: string): string[] {
 
 const CACHE_TTL_DAYS = 7;
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {

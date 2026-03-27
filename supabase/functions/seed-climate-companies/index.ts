@@ -27,7 +27,7 @@ const CLIMATE_COMPANIES = [
   { name: 'Dow', industry: 'Chemicals', state: 'MI', slug: 'dow', description: 'Major industrial chemical manufacturer. Significant EPA-reported emissions from manufacturing operations.' },
 ];
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

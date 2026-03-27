@@ -93,7 +93,7 @@ function classifySignalCategory(signalType: string): string {
   return 'Other';
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

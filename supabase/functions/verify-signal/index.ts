@@ -13,7 +13,7 @@ const corsHeaders = {
  * Accepts: { company_id, signal_table, signal_id }
  * Or batch: { company_id } (verifies all signals for a company)
  */
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

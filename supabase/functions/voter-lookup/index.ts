@@ -158,7 +158,7 @@ function computeConfidence(sources: string[]): { level: string; score: number } 
   return { level: 'low', score: 0.4 };
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

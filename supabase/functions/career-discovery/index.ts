@@ -265,7 +265,7 @@ Each action should be specific and actionable. Include courses, skills, projects
 Never be presumptuous. Don't assume they can get you a job. Be genuinely curious about their experience.`,
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   // Auth gate: require valid user JWT

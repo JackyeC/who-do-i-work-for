@@ -116,7 +116,7 @@ async function fetchCongressData(bioguideId: string, apiKey: string) {
   }
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

@@ -49,7 +49,7 @@ function topicMatchesCategory(stanceTopic: string, issueCategory: string): boole
   return issueCategory.toLowerCase().includes(normalizedTopic.split(' ')[0]);
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

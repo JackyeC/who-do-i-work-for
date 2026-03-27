@@ -24,7 +24,7 @@ const BENEFIT_CATEGORIES: Record<string, string[]> = {
   'Equity & Stock': ['stock options', 'RSU', 'restricted stock', 'ESPP'],
 };
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

@@ -24,7 +24,7 @@ const PROGRESS_ORGS = [
   "Economic Policy Institute",
 ];
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {

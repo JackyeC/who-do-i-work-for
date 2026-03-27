@@ -156,7 +156,7 @@ function parseOrgProfile(markdown: string): Partial<EnrichmentRecord> {
   return result;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

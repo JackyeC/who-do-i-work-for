@@ -33,7 +33,7 @@ const GOV_SOURCES = [
   { name: 'detect-contradictions', label: 'Contradiction Detection (Statement vs Spending)' },
 ] as const;
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

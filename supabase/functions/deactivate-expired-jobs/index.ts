@@ -11,7 +11,7 @@ const logStep = (step: string, details?: any) => {
   console.log(`[DEACTIVATE-EXPIRED-JOBS] ${step}${detailsStr}`);
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

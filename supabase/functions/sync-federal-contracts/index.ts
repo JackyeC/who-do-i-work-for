@@ -88,7 +88,7 @@ async function searchUSASpending(searchText: string, awardTypes: string[]): Prom
   return { results: data.results || [], total: data.page_metadata?.total || 0 };
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

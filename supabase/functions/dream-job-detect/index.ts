@@ -10,7 +10,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
  * Smarter matching: uses keyword extraction from titles, fuzzy skill matching,
  * and a lower first-run threshold to ensure users get actionable results.
  */
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

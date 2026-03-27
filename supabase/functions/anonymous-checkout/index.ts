@@ -14,7 +14,7 @@ const ANONYMOUS_PRODUCTS: Record<string, { priceId: string; name: string }> = {
   },
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

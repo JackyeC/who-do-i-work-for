@@ -86,7 +86,7 @@ function interpretPipelineResult(result: any): { sourcesScanned: number; signals
 const DAILY_FREE_SCAN_LIMIT = 2;
 const DAILY_PAID_SCAN_LIMIT = 20;
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

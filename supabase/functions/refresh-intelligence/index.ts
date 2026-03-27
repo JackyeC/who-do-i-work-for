@@ -124,7 +124,7 @@ const PROVIDERS: Record<string, (url: string, query: string) => Promise<ScrapeRe
 
 const DEFAULT_CHAIN: ProviderName[] = ['firecrawl', 'scrapingbee'];
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

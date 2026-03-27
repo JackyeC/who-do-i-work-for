@@ -26,7 +26,7 @@ const SUBSCRIPTION_PRICES = new Set([
   "price_1TEEw589MyCOs8yvQI8FpHJx", // The Executive $999/yr
 ]);
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

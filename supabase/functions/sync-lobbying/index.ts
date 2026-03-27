@@ -28,7 +28,7 @@ function generateNameVariants(name: string): string[] {
   return [...new Set(variants)];
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

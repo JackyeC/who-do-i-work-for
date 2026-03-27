@@ -15,7 +15,7 @@ const COURTLISTENER_SEARCH_URL = "https://www.courtlistener.com/api/rest/v4/sear
  * Discovery layer: CourtListener RECAP search
  * Verification: Cross-reference with existing records to avoid duplicates
  */
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

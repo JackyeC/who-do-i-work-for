@@ -181,7 +181,7 @@ function mapEnforcementToSignal(record: any, companyId: string): any {
 
 // ─── Main Handler ───
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

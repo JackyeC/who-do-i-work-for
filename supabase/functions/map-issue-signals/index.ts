@@ -344,7 +344,7 @@ const AGENCY_ISSUE_MAP: Record<string, string[]> = {
   'Department of Housing and Urban Development': ['civil_rights'],
 };
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

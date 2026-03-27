@@ -46,7 +46,7 @@ async function findHeadshot(name: string, company: string, firecrawlKey: string)
   return null;
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

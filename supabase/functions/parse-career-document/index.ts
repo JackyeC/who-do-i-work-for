@@ -83,7 +83,7 @@ function getMimeType(filename: string): string {
   return mimes[ext] || "application/octet-stream";
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {

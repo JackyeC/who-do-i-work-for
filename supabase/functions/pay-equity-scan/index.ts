@@ -17,7 +17,7 @@ const REFERENCE_SOURCES = {
   aauw: { label: 'AAUW Pay Gap Tracker', url: 'https://www.aauw.org/resources/research/simple-truth/', stat: 'Women earn ~84% of what men earn' },
 };
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
