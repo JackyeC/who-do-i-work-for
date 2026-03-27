@@ -247,8 +247,8 @@ html, body {
   color: var(--red);
   font-size: 9px;
 }
-.case-file.declassified::before { background: var(--green); }
-.case-file.declassified .case-status { color: var(--green); }
+.case-file.declassified::before { background: var(--gold); }
+.case-file.declassified .case-status { color: var(--gold); }
 
 .case-name {
   font-size: 12px;
@@ -1091,6 +1091,269 @@ html, body {
 .embed-mode .top-bar { display: none !important; }
 .embed-mode .status-bar { display: none !important; }
 
+/* =========================================================
+   WATCHLIST & SIGNALS
+   ========================================================= */
+
+/* Sidebar tabs */
+.sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-tab {
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 9px;
+  font-family: var(--font-mono);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--fg-dim);
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.sidebar-tab:hover { color: var(--fg-muted); }
+.sidebar-tab.active {
+  color: var(--gold);
+  background: var(--gold-dim);
+}
+.sidebar-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: var(--gold);
+}
+.sidebar-tab .tab-count {
+  display: inline-block;
+  background: var(--red);
+  color: white;
+  font-size: 8px;
+  font-weight: 700;
+  min-width: 14px;
+  height: 14px;
+  line-height: 14px;
+  border-radius: 7px;
+  padding: 0 4px;
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: pulse-dot 2s ease infinite;
+}
+.sidebar-tab .tab-count.empty { display: none; }
+
+/* Watch toggle in dossier */
+.watch-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  user-select: none;
+}
+.watch-toggle:hover { background: var(--surface-2); }
+.watch-toggle .watch-icon {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--fg-dim);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.watch-toggle.active .watch-icon {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--bg);
+  box-shadow: 0 0 12px rgba(240,192,64,0.3);
+}
+.watch-toggle .watch-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+.watch-toggle.active .watch-label { color: var(--gold); }
+
+/* Surveillance list items */
+.surveillance-item {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.surveillance-item:hover {
+  border-color: var(--border-bright);
+  background: var(--surface-2);
+}
+.surveillance-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--gold);
+}
+.surveillance-item .surv-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+.surveillance-item .surv-status {
+  font-size: 9px;
+  color: var(--fg-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.surveillance-item .surv-signals {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+.signal-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  animation: pulse-dot 2s ease infinite;
+}
+.signal-dot.fec { background: var(--gold); }
+.signal-dot.lobbying { background: var(--blue); }
+.signal-dot.workforce { background: var(--red); }
+.signal-dot.leadership { background: var(--pink); }
+
+/* Signal badge on case files */
+.case-file .signal-badge {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: var(--red);
+  color: white;
+  font-size: 8px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  line-height: 16px;
+  border-radius: 8px;
+  padding: 0 4px;
+  text-align: center;
+  animation: pulse-dot 2s ease infinite;
+}
+
+/* Intel debrief in dossier */
+.intel-debrief {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,59,74,0.06) 0%, transparent 100%);
+}
+.intel-debrief-header {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intel-debrief-header::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: pulse-dot 1.5s ease infinite;
+}
+.signal-entry {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.signal-entry:last-child { border-bottom: none; }
+.signal-entry .signal-type {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+.signal-type.fec { background: var(--gold-dim); color: var(--gold); }
+.signal-type.lobbying { background: var(--blue-dim); color: var(--blue); }
+.signal-type.workforce { background: var(--red-dim); color: var(--red); }
+.signal-type.leadership { background: rgba(232,121,168,0.12); color: var(--pink); }
+.signal-entry .signal-date {
+  font-size: 9px;
+  color: var(--fg-dim);
+  margin-top: 2px;
+}
+.signal-entry .signal-desc {
+  color: var(--fg-muted);
+}
+.signal-severity {
+  display: inline-block;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.signal-severity.high { background: var(--red); }
+.signal-severity.medium { background: var(--gold); }
+.signal-severity.low { background: var(--fg-dim); }
+
+.no-signals {
+  padding: 16px 20px;
+  font-size: 11px;
+  color: var(--fg-dim);
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+/* Empty surveillance state */
+.surveillance-empty {
+  padding: 24px 16px;
+  text-align: center;
+}
+.surveillance-empty .empty-icon {
+  font-size: 24px;
+  color: var(--fg-dim);
+  margin-bottom: 12px;
+}
+.surveillance-empty p {
+  font-size: 11px;
+  color: var(--fg-dim);
+  line-height: 1.7;
+}
+
+/* Unwatch button */
+.unwatch-btn {
+  display: block;
+  width: calc(100% - 40px);
+  margin: 8px 20px;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid var(--fg-dim);
+  color: var(--fg-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+.unwatch-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .sidebar { width: 220px; }
@@ -1176,8 +1439,8 @@ html, body {
 <!-- SUMMARY OVERLAY -->
 <div id="summary-overlay">
   <div class="summary-card">
-    <h2>INVESTIGATION COMPLETE</h2>
-    <div class="summary-subtitle">All case files declassified</div>
+    <h2>ALL CASES OPENED</h2>
+    <div class="summary-subtitle">Investigation ongoing — new signals will surface</div>
     <div class="summary-stats" id="summary-stats"></div>
     <div class="summary-verdict" id="summary-verdict"></div>
     <div class="summary-cta">
@@ -1207,8 +1470,12 @@ html, body {
   <div class="main-area">
     <!-- LEFT: CASE FILES -->
     <div class="sidebar">
-      <div class="sidebar-header">Case Files</div>
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" id="tab-cases" onclick="switchTab('cases')">Case Files</button>
+        <button class="sidebar-tab" id="tab-surveillance" onclick="switchTab('surveillance')">Surveillance <span class="tab-count empty" id="surv-count"></span></button>
+      </div>
       <div class="case-list" id="case-list"></div>
+      <div class="case-list" id="surveillance-list" style="display:none;"></div>
     </div>
 
     <!-- CENTER: EVIDENCE BOARD -->
@@ -1627,6 +1894,17 @@ async function runBoot() {
 // =========================================================
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+function formatSignalDate(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  const now = new Date();
+  const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+  const formatted = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  if (diffDays === 0) return 'TODAY — ' + formatted;
+  if (diffDays === 1) return 'YESTERDAY — ' + formatted;
+  if (diffDays < 7) return diffDays + ' DAYS AGO — ' + formatted;
+  return formatted;
+}
+
 function showToast(msg, duration=2500) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1717,7 +1995,7 @@ function typewriterReveal(el, text, speed = 15) {
 function showDataVerified(caseData) {
   const overlay = document.getElementById('verified-overlay');
   document.getElementById('verified-subtitle').textContent = 
-    caseData.company.toUpperCase() + ' — INVESTIGATION COMPLETE';
+    caseData.company.toUpperCase() + ' — SIGNALS NOW ACTIVE';
   
   const beats = caseData.beats;
   document.getElementById('verified-details').innerHTML = `
@@ -1794,7 +2072,7 @@ function updateGuidedHighlights() {
     const cases = document.querySelectorAll('.case-file:not(.classified):not(.active)');
     for (const c of cases) {
       const text = c.textContent;
-      if (!text.includes('FULLY DECLASSIFIED')) {
+      if (!text.includes('INVESTIGATION ONGOING')) {
         c.classList.add('pulse-gold');
         return;
       }
@@ -1828,15 +2106,17 @@ function renderCaseList() {
     
     const isLocked = c.status === 'classified' && !STATE.declassifiedCases.has(c.id);
     
+    const newSigCount = getNewSignalCount(c.id);
     el.innerHTML = `
       <div class="case-name">${c.company}</div>
       <div class="case-amount">${isLocked ? '██████' : c.amount}</div>
       <div class="case-status">${
         isLocked ? 'CLASSIFIED — Investigate to unlock' :
-        (STATE.revealedBeats[c.id] || []).length === 3 ? 'FULLY DECLASSIFIED' :
+        (STATE.revealedBeats[c.id] || []).length === 3 ? 'INVESTIGATION ONGOING' :
         (STATE.revealedBeats[c.id] || []).length > 0 ? 'UNDER INVESTIGATION' :
         'OPEN — Click to investigate'
       }</div>
+      ${newSigCount > 0 ? `<div class="signal-badge">${newSigCount}</div>` : ''}
     `;
     
     el.addEventListener('click', () => {
@@ -2109,14 +2389,83 @@ function renderDossier(c, newlyRevealedBeat) {
     }
   });
   
-  // If all 3 beats revealed, show "case closed" + search widget + connected investigations
+  // If all 3 beats revealed, show watch toggle + signals + search widget + connected investigations
   if (revealed.length === 3) {
+    // WATCH TOGGLE ("Mark as Asset")
+    const watchToggle = document.createElement('div');
+    const watched = isWatched(c.id);
+    watchToggle.className = 'watch-toggle' + (watched ? ' active' : '');
+    watchToggle.innerHTML = `
+      <div class="watch-icon">${watched ? '\u{1F4E1}' : ''}</div>
+      <div class="watch-label">${watched ? 'ASSET UNDER SURVEILLANCE' : 'MARK AS ASSET — Monitor for new signals'}</div>
+    `;
+    watchToggle.addEventListener('click', () => toggleWatch(c.id));
+    body.appendChild(watchToggle);
+    
+    // INTEL DEBRIEF — "What Changed Since You Last Checked"
+    if (watched) {
+      const newSignals = getNewSignals(c.id);
+      const allSignals = SIGNALS_DB[c.id] || [];
+      
+      if (newSignals.length > 0) {
+        const debrief = document.createElement('div');
+        debrief.className = 'intel-debrief';
+        debrief.innerHTML = `
+          <div class="intel-debrief-header">WHAT CHANGED SINCE YOU LAST CHECKED</div>
+          ${newSignals.map(s => `
+            <div class="signal-entry">
+              <span class="signal-severity ${s.severity}"></span>
+              <span class="signal-type ${s.type}">${s.type.toUpperCase()}</span>
+              <span class="signal-desc">${s.desc}</span>
+              <div class="signal-date">${formatSignalDate(s.date)}</div>
+            </div>
+          `).join('')}
+        `;
+        body.appendChild(debrief);
+      } else {
+        const noSig = document.createElement('div');
+        noSig.className = 'no-signals';
+        noSig.textContent = '\u2713 NO NEW SIGNALS SINCE LAST CHECK';
+        body.appendChild(noSig);
+      }
+      
+      // Show all signals as intel history
+      if (allSignals.length > newSignals.length) {
+        const history = document.createElement('div');
+        history.style.cssText = 'padding:12px 20px;border-bottom:1px solid var(--border);';
+        history.innerHTML = `
+          <div style="font-size:9px;letter-spacing:2px;color:var(--fg-dim);margin-bottom:8px;">FULL SIGNAL HISTORY</div>
+          ${allSignals.filter(s => !newSignals.includes(s)).map(s => `
+            <div class="signal-entry" style="opacity:0.5;">
+              <span class="signal-type ${s.type}">${s.type.toUpperCase()}</span>
+              <span class="signal-desc">${s.desc}</span>
+              <div class="signal-date">${formatSignalDate(s.date)}</div>
+            </div>
+          `).join('')}
+        `;
+        body.appendChild(history);
+      }
+      
+      // Mark as checked NOW
+      setLastChecked(c.id);
+      updateSurveillanceCount();
+      renderCaseList();
+      
+      // Unwatch button
+      const unwatchBtn = document.createElement('button');
+      unwatchBtn.className = 'unwatch-btn';
+      unwatchBtn.textContent = 'DROP SURVEILLANCE';
+      unwatchBtn.addEventListener('click', () => toggleWatch(c.id));
+      body.appendChild(unwatchBtn);
+    }
+    
     const closed = document.createElement('div');
     closed.style.cssText = 'padding:20px;text-align:center;';
     closed.innerHTML = `
-      <div style="font-size:10px;letter-spacing:2px;color:var(--green);margin-bottom:8px;">✓ CASE FULLY DECLASSIFIED</div>
+      <div style="font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;">\u26a0 INVESTIGATION ONGOING</div>
       <div style="font-size:12px;color:var(--fg-muted);line-height:1.7;">
-        You followed ${c.company}'s money from PAC contributions through political access to real-world impact. This is one of ${CASES.length} active investigations.
+        You followed ${c.company}'s money from PAC contributions through political access to real-world impact. 
+        ${watched ? 'New signals will surface as filings are made.' : 'Mark as asset to receive signal updates.'}
       </div>
     `;
     body.appendChild(closed);
@@ -2268,7 +2617,7 @@ function showSummary() {
     You traced ${moneyStr} in PAC money and lobbying from ${CASES.length} corporations through political access points to real-world consequences. 
     These aren't hypotheticals — they're public records from FEC filings, Senate LDA disclosures, and USASpending.gov contracts.
     <br><br>
-    <strong style="color:var(--gold);">The question isn't whether your employer does this. It's whether you know.</strong>
+    <strong style="color:var(--gold);">The investigation doesn't end here. Mark companies as assets to track new signals — FEC filings, lobbying registrations, workforce violations, and leadership changes.</strong>
   `;
   
   document.getElementById('summary-overlay').classList.add('visible');
@@ -2302,11 +2651,203 @@ document.getElementById('start-btn').addEventListener('click', () => {
   updateScoreDisplay();
   updateClearance();
   updateHudTime();
+  updateSurveillanceCount();
   setInterval(updateHudTime, 1000);
   setTimeout(updateGuidedHighlights, 300);
 });
 
+// =========================================================
+// SIGNALS DATA — Realistic intel for each company
+// =========================================================
+const SIGNALS_DB = {
+  boeing: [
+    { type: 'fec', severity: 'high', date: '2026-03-20', desc: 'Boeing PAC disbursed $127,500 to 14 House Armed Services members in Q1 2026 filing' },
+    { type: 'lobbying', severity: 'high', date: '2026-03-18', desc: 'New lobbying registration: Boeing retained Akin Gump to lobby on FAA reauthorization bill (S.1847)' },
+    { type: 'workforce', severity: 'medium', date: '2026-03-15', desc: 'OSHA issued Boeing Renton facility citation for 3 serious violations — $284,000 proposed penalty' },
+    { type: 'leadership', severity: 'medium', date: '2026-03-12', desc: 'Boeing appointed former Pentagon procurement official James Chen as VP of Government Relations' },
+    { type: 'fec', severity: 'medium', date: '2026-03-05', desc: 'Boeing employees contributed $43,200 to Sen. Wicker (R-MS) Armed Services Committee ranking member' },
+    { type: 'lobbying', severity: 'low', date: '2026-02-28', desc: 'Q4 2025 lobbying disclosure: Boeing spent $3.1M on 7 bills including defense appropriations' },
+  ],
+  amazon: [
+    { type: 'workforce', severity: 'high', date: '2026-03-22', desc: 'NLRB Regional Director filed complaint: Amazon illegally surveilled union organizers at 4 warehouses' },
+    { type: 'fec', severity: 'high', date: '2026-03-19', desc: 'Amazon PAC increased Q1 giving 34% YoY — $89,000 to Senate Commerce Committee members' },
+    { type: 'lobbying', severity: 'medium', date: '2026-03-14', desc: 'Amazon registered 3 new lobbyists targeting AI regulation bills in Senate Commerce Committee' },
+    { type: 'leadership', severity: 'high', date: '2026-03-10', desc: 'Former FTC Commissioner Noah Phillips joined Amazon as SVP of Regulatory Strategy' },
+    { type: 'workforce', severity: 'medium', date: '2026-03-03', desc: 'BLS data: Amazon warehouse injury rate rose to 6.6 per 100 workers — industry avg remains 3.2' },
+    { type: 'lobbying', severity: 'low', date: '2026-02-25', desc: 'Amazon lobbied against Warehouse Worker Protection Act (H.R.3190) — bill would mandate ergonomic standards' },
+  ],
+  jpmorgan: [
+    { type: 'fec', severity: 'high', date: '2026-03-21', desc: 'JPMorgan PAC gave $218,000 to 22 members of Senate Banking Committee — largest single-quarter bank PAC spend' },
+    { type: 'lobbying', severity: 'high', date: '2026-03-16', desc: 'JPMorgan lobbied against SEC proposed rule on bank capital requirements (Basel III Endgame)' },
+    { type: 'leadership', severity: 'medium', date: '2026-03-11', desc: 'Former Treasury Deputy Secretary Wally Adeyemo joined JPMorgan board of directors' },
+    { type: 'workforce', severity: 'low', date: '2026-03-07', desc: 'JPMorgan mandated full 5-day return to office — 3,200 employees filed internal complaints' },
+    { type: 'fec', severity: 'medium', date: '2026-03-01', desc: 'JPMorgan-connected donors gave $67,000 to newly appointed Senate Banking subcommittee chair' },
+    { type: 'lobbying', severity: 'medium', date: '2026-02-22', desc: 'JPMorgan spent $2.4M lobbying in Q4 2025 — targeted cryptocurrency regulation and fintech oversight bills' },
+  ],
+  mcdonalds: [
+    { type: 'workforce', severity: 'high', date: '2026-03-23', desc: 'DOL investigation found McDonald\'s franchisees in 4 states employed 14-year-olds past legal hours' },
+    { type: 'lobbying', severity: 'high', date: '2026-03-17', desc: 'National Restaurant Association (McDonald\'s lead member) launched $2M campaign against Raise the Wage Act reintroduction' },
+    { type: 'fec', severity: 'medium', date: '2026-03-13', desc: 'McDonald\'s PAC contributed $31,000 to 8 members of House Education and Workforce Committee' },
+    { type: 'leadership', severity: 'low', date: '2026-03-09', desc: 'McDonald\'s hired former DOL Wage & Hour Division official as VP of Government Affairs' },
+    { type: 'workforce', severity: 'medium', date: '2026-03-02', desc: 'UC Berkeley updated study: McDonald\'s worker public assistance cost now $1.4B annually — up from $1.2B' },
+    { type: 'lobbying', severity: 'low', date: '2026-02-20', desc: 'NRA testified before Senate HELP Committee against proposed federal paid sick leave mandate' },
+  ],
+  starbucks: [
+    { type: 'workforce', severity: 'high', date: '2026-03-24', desc: 'NLRB judge ordered Starbucks to reopen 2 stores closed in retaliation for union organizing' },
+    { type: 'lobbying', severity: 'high', date: '2026-03-19', desc: 'Starbucks filed Supreme Court amicus brief supporting Amazon\'s challenge to NLRB constitutionality' },
+    { type: 'leadership', severity: 'medium', date: '2026-03-14', desc: 'New Starbucks CEO announced "partner reinvention" — union leaders call it rebranded union avoidance' },
+    { type: 'workforce', severity: 'medium', date: '2026-03-08', desc: 'Starbucks Workers United filed 47 new unfair labor practice charges across 12 states in February' },
+    { type: 'fec', severity: 'low', date: '2026-03-04', desc: 'Starbucks PAC reactivated after 2-year pause — initial $15,000 disbursement to 6 members of Congress' },
+    { type: 'lobbying', severity: 'low', date: '2026-02-18', desc: 'Starbucks retained Jones Day to challenge NLRB election procedures in pending 6th Circuit case' },
+  ],
+  disney: [
+    { type: 'fec', severity: 'high', date: '2026-03-22', desc: 'Disney PAC resumed Florida political giving — $95,000 to state legislators after DeSantis détente' },
+    { type: 'lobbying', severity: 'high', date: '2026-03-17', desc: 'Disney lobbied for Copyright Extension Amendment Act — would add 20 years to corporate copyrights' },
+    { type: 'workforce', severity: 'medium', date: '2026-03-12', desc: 'Disney World cast members union filed grievance: 1,200 workers denied promised wage increases' },
+    { type: 'leadership', severity: 'medium', date: '2026-03-06', desc: 'Disney appointed former FCC Commissioner as head of content regulation strategy' },
+    { type: 'fec', severity: 'low', date: '2026-03-01', desc: 'Disney-connected donors gave $42,000 to House Judiciary IP subcommittee members' },
+    { type: 'lobbying', severity: 'low', date: '2026-02-15', desc: 'Disney spent $1.8M lobbying in Q4 2025 — focused on streaming regulation and theme park tax incentives' },
+  ]
+};
+
+// =========================================================
+// WATCHLIST — localStorage persistence
+// =========================================================
+const WATCH_KEY = 'ftm_watchlist';
+const LAST_CHECK_KEY = 'ftm_last_checked';
+
+function getWatchlist() {
+  try { return JSON.parse(localStorage.getItem(WATCH_KEY)) || []; }
+  catch { return []; }
+}
+function saveWatchlist(list) {
+  localStorage.setItem(WATCH_KEY, JSON.stringify(list));
+}
+function isWatched(caseId) {
+  return getWatchlist().includes(caseId);
+}
+function toggleWatch(caseId) {
+  const list = getWatchlist();
+  const idx = list.indexOf(caseId);
+  if (idx === -1) {
+    list.push(caseId);
+    sfxUnlock();
+    showToast('\u{1F4E1} SURVEILLANCE ACTIVE — ' + CASES.find(c=>c.id===caseId).company.toUpperCase());
+    // Set initial last-checked to now so all existing signals show as "new"
+    setLastChecked(caseId);
+  } else {
+    list.splice(idx, 1);
+    sfxClick();
+    showToast('\u{1F6AB} SURVEILLANCE DROPPED — ' + CASES.find(c=>c.id===caseId).company.toUpperCase());
+  }
+  saveWatchlist(list);
+  updateSurveillanceCount();
+  renderCaseList();
+  renderSurveillanceList();
+  // Re-render dossier if this case is active
+  if (STATE.activeCaseId === caseId) {
+    const c = CASES.find(x => x.id === caseId);
+    if (c) renderDossier(c);
+  }
+}
+
+function getLastChecked(caseId) {
+  try {
+    const data = JSON.parse(localStorage.getItem(LAST_CHECK_KEY)) || {};
+    return data[caseId] || null;
+  } catch { return null; }
+}
+function setLastChecked(caseId) {
+  try {
+    const data = JSON.parse(localStorage.getItem(LAST_CHECK_KEY)) || {};
+    data[caseId] = new Date().toISOString();
+    localStorage.setItem(LAST_CHECK_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+function getNewSignals(caseId) {
+  const signals = SIGNALS_DB[caseId] || [];
+  const lastChecked = getLastChecked(caseId);
+  if (!lastChecked) return signals; // All signals are new
+  return signals.filter(s => new Date(s.date) > new Date(lastChecked));
+}
+
+function getNewSignalCount(caseId) {
+  if (!isWatched(caseId)) return 0;
+  return getNewSignals(caseId).length;
+}
+
+function getTotalNewSignals() {
+  return getWatchlist().reduce((sum, id) => sum + getNewSignalCount(id), 0);
+}
+
+// =========================================================
+// SIDEBAR TABS
+// =========================================================
+let currentTab = 'cases';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-cases').classList.toggle('active', tab === 'cases');
+  document.getElementById('tab-surveillance').classList.toggle('active', tab === 'surveillance');
+  document.getElementById('case-list').style.display = tab === 'cases' ? '' : 'none';
+  document.getElementById('surveillance-list').style.display = tab === 'surveillance' ? '' : 'none';
+  if (tab === 'surveillance') renderSurveillanceList();
+}
+
+function updateSurveillanceCount() {
+  const count = getTotalNewSignals();
+  const el = document.getElementById('surv-count');
+  if (count > 0) {
+    el.textContent = count;
+    el.classList.remove('empty');
+  } else {
+    el.classList.add('empty');
+  }
+}
+
+function renderSurveillanceList() {
+  const list = document.getElementById('surveillance-list');
+  const watchlist = getWatchlist();
+  
+  if (watchlist.length === 0) {
+    list.innerHTML = `
+      <div class="surveillance-empty">
+        <div class="empty-icon">\u{1F4E1}</div>
+        <p>No assets under surveillance.<br><br>Investigate a company, then click<br><strong style="color:var(--gold);">MARK AS ASSET</strong> in the dossier<br>to begin monitoring signals.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  list.innerHTML = '';
+  watchlist.forEach(caseId => {
+    const c = CASES.find(x => x.id === caseId);
+    if (!c) return;
+    const newCount = getNewSignalCount(caseId);
+    const signals = SIGNALS_DB[caseId] || [];
+    const signalTypes = [...new Set(signals.slice(0, 4).map(s => s.type))];
+    
+    const el = document.createElement('div');
+    el.className = 'surveillance-item';
+    el.innerHTML = `
+      <div class="surv-name">${c.company}</div>
+      <div class="surv-status">${newCount > 0 ? newCount + ' NEW SIGNAL' + (newCount > 1 ? 'S' : '') + ' DETECTED' : 'MONITORING — NO NEW SIGNALS'}</div>
+      <div class="surv-signals">
+        ${signalTypes.map(t => `<div class="signal-dot ${t}" title="${t.toUpperCase()}"></div>`).join('')}
+      </div>
+    `;
+    el.addEventListener('click', () => {
+      switchTab('cases');
+      selectCase(caseId);
+    });
+    list.appendChild(el);
+  });
+}
+
+// =========================================================
 // Boot on load
+// =========================================================
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', runBoot);
 } else {
