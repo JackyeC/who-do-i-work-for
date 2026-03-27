@@ -93,6 +93,8 @@ export default function RequestCorrection() {
       .map((s) => s.trim())
       .filter(Boolean);
 
+    const { data: { user } } = await supabase.auth.getUser();
+
     const { error } = await supabase.from("correction_requests").insert({
       company_name: form.company_name.trim(),
       company_profile_url: form.company_profile_url.trim() || null,
@@ -101,6 +103,7 @@ export default function RequestCorrection() {
       issue_type: form.issue_type,
       description: form.description.trim(),
       source_links: sourceLinksArray,
+      user_id: user?.id ?? null,
     });
 
     setLoading(false);

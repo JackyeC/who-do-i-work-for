@@ -47,6 +47,8 @@ export function InlineReportForm({ personName, companyName, onClose, onDeparture
 
     const description = `${ISSUE_OPTIONS.find(o => o.value === issueType)?.label || issueType}: ${personName} at ${companyName}`;
 
+    const { data: { user } } = await supabase.auth.getUser();
+
     const { error } = await supabase.from("correction_requests").insert({
       company_name: companyName,
       contact_name: "Anonymous Reporter",
@@ -54,6 +56,7 @@ export function InlineReportForm({ personName, companyName, onClose, onDeparture
       issue_type: issueType === "departed" ? "outdated" : "data_error",
       description,
       source_links: sourceLink ? [sourceLink] : [],
+      user_id: user?.id ?? null,
     });
 
     setSubmitting(false);
