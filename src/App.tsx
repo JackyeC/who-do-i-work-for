@@ -103,6 +103,8 @@ const AutoApplyOnboarding = lazy(() => import("./pages/AutoApply"));
 const SampleDossier = lazy(() => import("./pages/SampleDossier"));
 const Welcome = lazy(() => import("./pages/Welcome"));
 const Quiz = lazy(() => import("./pages/Quiz"));
+const AlignmentQuiz = lazy(() => import("./pages/AlignmentQuiz"));
+const AdvancedAlignmentSettings = lazy(() => import("./pages/AdvancedAlignmentSettings"));
 const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
 const AdminTicker = lazy(() => import("./pages/AdminTicker"));
 const About = lazy(() => import("./pages/About"));
@@ -275,6 +277,8 @@ const App = () => (
                   <Route path="/policy-intelligence" element={<PolicyIntelligence />} />
                   <Route path="/negotiation-simulator" element={<NegotiationSimulator />} />
                   <Route path="/quiz" element={<Quiz />} />
+                  <Route path="/alignment-quiz" element={<AlignmentQuiz />} />
+                  <Route path="/advanced-alignment-settings" element={<AdvancedAlignmentSettings />} />
                   <Route path="/join" element={<EarlyAccess />} />
                   <Route path="/early-access" element={<Navigate to="/join" replace />} />
                   <Route path="/decision-engine" element={<DecisionEngine />} />
