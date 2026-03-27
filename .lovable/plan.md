@@ -1,199 +1,179 @@
 
 
-## Production-Grade Platform Protection
+## Product Defensibility — Evidence Taxonomy, Confidence Scoring, and Signal Trust Architecture
 
-### 1. Fix build (critical — everything is blocked)
+### Priority 0: Fix Build (blocking everything)
 
 **File: `supabase/functions/parse-career-document/index.ts`**
 
-Replace all `npm:` specifiers with `https://esm.sh/` URLs:
-- `npm:mammoth@1.6.0` → `https://esm.sh/mammoth@1.6.0`
-- `npm:jszip@3.10.1` → `https://esm.sh/jszip@3.10.1`
-- `npm:pdf-parse/lib/pdf-parse.js` → `https://esm.sh/pdf-parse@1.1.1`
-
-This is the sole cause of the current build failure.
+Replace 3 `npm:` dynamic imports with `https://esm.sh/` equivalents:
+- Line 27: `npm:mammoth@1.6.0` → `https://esm.sh/mammoth@1.6.0`
+- Line 40: `npm:jszip@3.10.1` → `https://esm.sh/jszip@3.10.1`
+- Line 62: `npm:pdf-parse/lib/pdf-parse.js` → `https://esm.sh/pdf-parse@1.1.1`
 
 ---
 
-### 2. Shared security module
+### 1. Evidence Taxonomy Utility
 
-**New file: `supabase/functions/_shared/security.ts`**
+**New file: `src/lib/evidence-taxonomy.ts`**
 
-Centralized utilities every edge function imports:
+Implements the 5-tier source classification system from your existing architecture:
 
-| Utility | What it does |
-|---|---|
-| `getStrictCorsHeaders(req)` | Returns CORS headers scoped to origin allowlist: `who-do-i-work-for.lovable.app`, `*.lovable.app` previews, `localhost:*` |
-| `rateLimiter(ip, endpoint, limit, windowSec)` | In-memory IP rate limiter with configurable windows |
-| `safeError(status, publicMsg)` | Returns generic error Response; logs real error server-side only |
-| `validateBodySize(req, maxBytes)` | Rejects requests over size limit (default 1MB) |
-| `withTimeout(promise, ms)` | Wraps async calls with AbortController timeout |
-| `auditLog(supabase, event)` | Inserts into `security_audit_log` table |
-| `requireAuth(req, supabase)` | Validates JWT and returns user; logs failures |
-| `requireServiceRole(req)` | Validates service-role key for admin endpoints |
-
----
-
-### 3. Database: `security_audit_log` table
-
-```sql
-CREATE TABLE public.security_audit_log (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  event_type text NOT NULL,        -- 'rate_limit_hit', 'auth_failed', 'scraping_detected', 'oversized_request'
-  ip_address text,
-  endpoint text,
-  user_id uuid,
-  metadata jsonb DEFAULT '{}',
-  created_at timestamptz DEFAULT now()
-);
-ALTER TABLE public.security_audit_log ENABLE ROW LEVEL SECURITY;
--- No public policies — service_role only
+```text
+Tier 1 — Government Record    (weight 1.0)  → FEC, SEC, OSHA, BLS, Congress.gov
+Tier 2 — Company Disclosure   (weight 0.8)  → Annual reports, 10-K, proxy statements
+Tier 3 — Major Reporting      (weight 0.6)  → Reuters, AP, WSJ investigations
+Tier 4 — Commercial Enrichment(weight 0.4)  → Glassdoor, LinkedIn aggregation
+Tier 5 — Unverified/Forums    (weight 0.1)  → Reddit, Blind, anonymous tips
 ```
 
----
-
-### 4. Endpoint classification & rate limits
-
-Every function gets the shared middleware applied. Here is the full classification:
-
-#### Public endpoints (no auth required)
-
-| Endpoint | Rate limit | Abuse risk |
-|---|---|---|
-| `company-research` | 5/min/IP | High — scraping, data harvesting |
-| `voter-lookup` | 5/min/IP | High — PII adjacent, enumeration |
-| `social-scan` | 5/min/IP | Medium — AI cost |
-| `company-discover` | 10/min/IP | Medium — enumeration |
-| `fetch-job-feeds` | 10/min/IP | Low — RSS proxy |
-| `fetch-stock-chart` | 10/min/IP | Low — proxy |
-| `fetch-company-branding` | 10/min/IP | Low |
-| `fetch-company-compensation` | 10/min/IP | Low |
-| `dynamic-sitemap` | 3/min/IP | Low |
-| `verify-turnstile` | 10/min/IP | Low |
-| `anonymous-checkout` | 3/min/IP | Medium — payment abuse |
-| `generate-og-card` | 10/min/IP | Low |
-
-#### Auth-required endpoints (JWT validated in code)
-
-| Endpoint | Rate limit | Abuse risk |
-|---|---|---|
-| `ask-jackye` / `ask-jackye-chat` | 10/min/user | Medium — AI cost |
-| `offer-clarity-scan` | 5/min/user | Medium — AI cost |
-| `offer-strength-score` | 5/min/user | Medium |
-| `career-discovery` / `career-gap-analysis` | 5/min/user | Medium |
-| `dream-job-detect` | 5/min/user | Medium |
-| `negotiation-coach` / `negotiation-simulator` | 5/min/user | Medium |
-| `generate-briefing` / `debug-briefing` | 5/min/user | Medium |
-| `tailor-resume` / `parse-resume` | 5/min/user | Medium — file upload |
-| `parse-career-document` | 5/min/user | Medium — file upload |
-| `email-career-results` | 3/min/user | Medium — email abuse |
-| `create-checkout` / `customer-portal` | 5/min/user | Medium — payment |
-| `purchase-credits` / `verify-credit-purchase` | 5/min/user | Medium |
-| `check-subscription` | 10/min/user | Low |
-| `calculate-alignment-scores` | 5/min/user | Low |
-| `candidate-voting-summary` | 5/min/user | Low |
-| `generate-values-check` / `values-scan` / `values-job-matcher` | 5/min/user | Medium |
-| `ideology-scan` | 5/min/user | Medium |
-| `generate-smart-goals` / `skill-gap-gigs` | 5/min/user | Low |
-| `generate-application-payload` | 5/min/user | Low |
-| `job-questions` | 5/min/user | Low |
-| `survivor-alert` | 5/min/user | Low |
-| `translate-signals` | 5/min/user | Low |
-| `assign-beta-role` | 3/min/user | Medium — brute force |
-
-#### Admin/internal endpoints (service-role key required)
-
-| Endpoint | Rate limit | Abuse risk |
-|---|---|---|
-| `osint-parallel-scan` | None (already guarded) | Low if auth holds |
-| `sync-*` (all 18 sync functions) | None | Low — internal |
-| `seed-*` (all 7 seed functions) | None | Low — internal |
-| `bulk-*` (3 functions) | None | Low — internal |
-| `daily-*` (2 functions) | None | Low — cron |
-| `detect-contradictions` | None | Low |
-| `generate-company-signals` | None | Low |
-| `enrich-private-company` | None | Low |
-| `map-issue-signals` | None | Low |
-| `news-ingestion` | None | Low |
-| `scheduled-leadership-refresh` | None | Low |
-| `deactivate-expired-jobs` | None | Low |
-| Various scan internals (`patent-scan`, `pay-equity-scan`, `eeoc-*`, etc.) | None | Low |
+Exports:
+- `classifySource(sourceType)` → returns tier, weight, label, and description
+- `EVIDENCE_TIERS` constant with all tier metadata
+- `getSourceTierFromSignal(signal)` → infers tier from `source_type`, `detection_method`, or `confidence_level` fields already in `company_signal_scans`
 
 ---
 
-### 5. Anomaly detection
+### 2. Reusable SignalAttribution Component
 
-**New file: `supabase/functions/detect-anomalies/index.ts`**
+**New file: `src/components/signals/SignalAttribution.tsx`**
 
-Queries `security_audit_log` for patterns:
-- Same IP hitting > 50 endpoints in 5 minutes → flag `scraping_detected`
-- Same IP getting > 10 `auth_failed` events in 5 minutes → flag `auth_probing`
-- Same IP hitting same endpoint > 20 times in 1 minute → flag `endpoint_abuse`
+A compact, reusable footer that attaches to any signal card. Displays:
 
-Stores alerts back into `security_audit_log` with `event_type = 'anomaly_detected'`. Can be invoked by cron or by the rate limiter when thresholds are crossed.
+| Element | Source |
+|---|---|
+| **Evidence type badge** | `"Fact"`, `"Signal"`, `"Risk"`, `"Interpretation"` — derived from source tier + confidence |
+| **Source tier indicator** | Colored dot + label from evidence taxonomy |
+| **Confidence level** | High / Medium / Low badge using existing `ConfidenceBadge` |
+| **Freshness** | Uses existing `SignalFreshness` component with `scan_timestamp` or `last_verified_at` |
+| **Source reference** | Link to `source_url` when available |
+| **Hedged language** | Prefixes like "Records show" vs "Pattern suggests" based on tier |
+
+Props: `{ sourceType, confidence, lastUpdated, sourceUrl, signalCategory, compact? }`
 
 ---
 
-### 6. What gets applied to every function
+### 3. Signal Type Labels — Fact vs Signal vs Risk vs Interpretation
 
-Each edge function gets this pattern at the top:
+**New file: `src/components/signals/SignalTypeLabel.tsx`**
+
+Four distinct label types with clear visual hierarchy:
+
+```text
+┌─────────────────┬────────────────────────────────────┬─────────┐
+│ Type            │ When used                          │ Color   │
+├─────────────────┼────────────────────────────────────┼─────────┤
+│ Verified Fact   │ Tier 1-2 source, high confidence   │ Green   │
+│ Detected Signal │ Tier 3-4, medium+ confidence       │ Blue    │
+│ Identified Risk │ Negative direction or threshold     │ Yellow  │
+│ Interpretation  │ AI-inferred, low confidence, T5    │ Gray    │
+└─────────────────┴────────────────────────────────────┴─────────┘
+```
+
+Automatic classification: `deriveSignalType(tier, confidence, direction)` returns one of the four types. No manual tagging needed — the system classifies based on existing data fields.
+
+---
+
+### 4. Confidence Scoring with Weighted Formula
+
+**New file: `src/hooks/useSignalConfidence.ts`**
+
+Implements the documented weighted formula:
+- 0.35 × source quality (tier weight)
+- 0.25 × entity match (exact vs fuzzy)
+- 0.20 × recency (1.0 for <30d, 0.7 for <6mo, 0.4 for 1yr+)
+- 0.10 × coverage (signals-per-category count)
+- 0.10 × verification count
+
+Returns: `{ score: 0-1, level: "high"|"medium"|"low", breakdown }`. Works with data already in `company_signal_scans` — no schema changes needed.
+
+---
+
+### 5. Enhanced Source Freshness
+
+**Update: `src/components/SignalFreshness.tsx`**
+
+Enhancements:
+- Add "stale data" warning banner when signal is >30 days old (per platform rules)
+- Add decay indicator showing weighted recency score
+- Show `REFRESH_CADENCES` contextually (e.g., "PAC data updates monthly" next to freshness dot)
+- Add tooltip showing exact date and days since last update
+
+---
+
+### 6. Signal History / Trendline
+
+**New file: `src/components/signals/SignalTrendline.tsx`**
+
+A compact sparkline component that queries `company_signal_scans` for a given `company_id` + `signal_category` over time, showing direction changes. Uses existing Recharts (already imported in `CompanyHistoryTimeline`).
+
+Displays: mini area chart with direction arrows (↑ increase, ↓ decrease, → stable) alongside the current signal value.
+
+---
+
+### 7. "Why This Matters" Explanations
+
+**New file: `src/lib/why-this-matters.ts`**
+
+Maps each `signal_category` to plain-English impact explanations:
 
 ```typescript
-import { getStrictCorsHeaders, rateLimiter, safeError, validateBodySize } from '../_shared/security.ts';
-
-Deno.serve(async (req) => {
-  const corsHeaders = getStrictCorsHeaders(req);
-  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
-
-  // Size limit
-  const sizeCheck = validateBodySize(req, 1_000_000);
-  if (sizeCheck) return sizeCheck;
-
-  // Rate limit (public endpoints)
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
-  const rl = rateLimiter(ip, 'endpoint-name', 5, 60);
-  if (rl) return rl;
-
-  try {
-    // ... existing logic ...
-  } catch (error) {
-    console.error('Internal:', error);
-    return safeError(500, 'Internal server error', corsHeaders);
-  }
-});
+{
+  compensation_transparency: {
+    positive: "This employer publicly discloses pay ranges, giving you leverage in negotiations.",
+    negative: "Pay data is not disclosed — you may be negotiating blind.",
+    neutral: "Some compensation data is available but incomplete."
+  },
+  workforce_stability: { ... },
+  hiring_activity: { ... },
+  // ... all categories
+}
 ```
+
+Each explanation is direction-aware (`positive`, `negative`, `neutral`) and uses hedged language per tier. Consumed by `SignalAttribution` and surfaced as a one-liner beneath any signal card.
 
 ---
 
-### 7. Global security headers
+### 8. Integration Points
 
-Added to every response via `getStrictCorsHeaders`:
+Apply `SignalAttribution` + `SignalTypeLabel` to:
 
-```
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-Referrer-Policy: strict-origin-when-cross-origin
-Content-Security-Policy: default-src 'none'
-```
+| Component | What changes |
+|---|---|
+| `BeforeYouAcceptBlock` | Each signal bullet gets type label + source attribution |
+| `RealitySignals` | Each badge gets evidence type suffix |
+| `CategoryAlignmentCard` | Score bar gets confidence breakdown |
+| `FullEvidenceLayer` | Each evidence item gets tier badge + freshness |
+| `EVPSignalsPanel` | Each signal row gets attribution footer |
+| `CompanyHistoryTimeline` | Timeline events get type labels |
 
 ---
 
-### 8. Implementation order
+### Implementation Order
 
-1. Fix `parse-career-document` `npm:` imports → unblock build
-2. Create `_shared/security.ts` with all utilities
-3. Create `security_audit_log` table (migration)
-4. Apply middleware to high-risk public endpoints first (company-research, voter-lookup, social-scan)
-5. Apply to remaining public endpoints
-6. Apply auth validation to user-facing endpoints
-7. Verify admin endpoints have service-role guards
-8. Create `detect-anomalies` function
-9. Verify build succeeds
+1. Fix `parse-career-document` build error (unblocks everything)
+2. Create `evidence-taxonomy.ts`
+3. Create `SignalTypeLabel.tsx`
+4. Create `useSignalConfidence.ts` hook
+5. Create `SignalAttribution.tsx` (composes the above)
+6. Create `why-this-matters.ts`
+7. Create `SignalTrendline.tsx`
+8. Enhance `SignalFreshness.tsx`
+9. Apply to key surfaces (BeforeYouAccept, Reality, Alignment, Evidence, EVP)
 
-### Files changed
-- `supabase/functions/parse-career-document/index.ts` (fix imports)
-- `supabase/functions/_shared/security.ts` (new)
-- `supabase/functions/detect-anomalies/index.ts` (new)
-- Migration for `security_audit_log` table
-- ~40 edge function files (add security middleware imports)
+### Files created/changed
+
+- `supabase/functions/parse-career-document/index.ts` (fix build)
+- `src/lib/evidence-taxonomy.ts` (new)
+- `src/lib/why-this-matters.ts` (new)
+- `src/components/signals/SignalAttribution.tsx` (new)
+- `src/components/signals/SignalTypeLabel.tsx` (new)
+- `src/components/signals/SignalTrendline.tsx` (new)
+- `src/hooks/useSignalConfidence.ts` (new)
+- `src/components/SignalFreshness.tsx` (enhanced)
+- `src/components/career/BeforeYouAcceptBlock.tsx` (integrate)
+- `src/components/jobs/RealitySignals.tsx` (integrate)
+- `src/components/alignment/CategoryAlignmentCard.tsx` (integrate)
+- `src/components/dossier/FullEvidenceLayer.tsx` (integrate)
+- `src/components/recruiting/evp/EVPSignalsPanel.tsx` (integrate)
 
