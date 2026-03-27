@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useTurnstile } from "@/hooks/useTurnstile";
+import { verifyTurnstileToken } from "@/lib/verifyTurnstile";
 import { X } from "lucide-react";
 
 interface InlineReportFormProps {
@@ -23,10 +25,24 @@ export function InlineReportForm({ personName, companyName, onClose, onDeparture
   const [issueType, setIssueType] = useState("");
   const [sourceLink, setSourceLink] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const { containerRef, getToken, resetToken } = useTurnstile();
 
   const handleSubmit = async () => {
     if (!issueType) return;
+
+    setVerifying(true);
+    const token = await getToken();
+    const verified = token ? await verifyTurnstileToken(token) : false;
+    setVerifying(false);
+    resetToken();
+
+    if (!verified) {
+      toast({ title: "Verification failed", description: "Please try again.", variant: "destructive" });
+      return;
+    }
+
     setSubmitting(true);
 
     const description = `${ISSUE_OPTIONS.find(o => o.value === issueType)?.label || issueType}: ${personName} at ${companyName}`;
@@ -102,9 +118,10 @@ export function InlineReportForm({ personName, companyName, onClose, onDeparture
         />
       </div>
 
+      <div ref={containerRef} />
       <div className="flex items-center gap-2">
-        <Button size="sm" onClick={handleSubmit} disabled={!issueType || submitting} className="text-xs h-7 px-3">
-          {submitting ? "Submitting..." : "Submit report"}
+        <Button size="sm" onClick={handleSubmit} disabled={!issueType || submitting || verifying} className="text-xs h-7 px-3">
+          {verifying ? "Verifying..." : submitting ? "Submitting..." : "Submit report"}
         </Button>
         <button onClick={onClose} className="text-xs text-muted-foreground hover:text-foreground">Cancel</button>
       </div>
