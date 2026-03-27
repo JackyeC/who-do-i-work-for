@@ -19,8 +19,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0A0A0A;--surface:#121212;--surface-2:#18171F;
-  --fg:#F2F2F2;--muted:#9898A0;--primary:#F0C040;
-  --gold-dim:rgba(240,192,64,0.15);--success:#34D399;--danger:#FF3B4A;
+  --fg:#F2F2F2;--muted:#9898A0;--primary:#BA9731;
+  --gold-dim:rgba(186,151,49,0.15);--success:#34D399;--danger:#FF3B4A;
   --border:#242424;--border-bright:rgba(255,255,255,0.14);
   --purple:#A78BFA;--purple-dim:rgba(167,139,250,0.12);
   --sidebar-w:220px;--toolbar-w:52px;
@@ -64,7 +64,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   flex:1;position:relative;overflow:hidden;
   background:var(--bg);
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(240,192,64,0.015) 0%, transparent 50%),
+    radial-gradient(circle at 20% 30%, rgba(186,151,49,0.015) 0%, transparent 50%),
     radial-gradient(circle at 80% 70%, rgba(167,139,250,0.01) 0%, transparent 50%);
   cursor:default;
 }
@@ -90,14 +90,14 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   display:flex;align-items:center;gap:8px;padding:6px 10px;
   cursor:grab;transition:background .12s;
 }
-.sidebar-item:hover{background:rgba(240,192,64,0.06)}
+.sidebar-item:hover{background:rgba(186,151,49,0.06)}
 .sidebar-item:active{cursor:grabbing}
 .sidebar-item .si-emoji{font-size:26px;width:36px;text-align:center;flex-shrink:0}
 .sidebar-item .si-name{font-size:13px;color:var(--primary);font-family:var(--font-mono);line-height:1.3;font-weight:500}
 .sidebar-item .si-tier{font-size:10px;color:#B0A8C8;font-family:var(--font-mono);text-transform:uppercase}
 .sidebar-item.new-item{animation:sidebarFlash .8s ease-out}
 
-@keyframes sidebarFlash{0%{background:rgba(240,192,64,0.2)}100%{background:transparent}}
+@keyframes sidebarFlash{0%{background:rgba(186,151,49,0.2)}100%{background:transparent}}
 
 /* Canvas elements (draggable) */
 .canvas-el{
@@ -105,7 +105,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   align-items:center;gap:2px;padding:8px;border-radius:12px;
   transition:box-shadow .15s;z-index:1;touch-action:none;
 }
-.canvas-el:hover{z-index:5;box-shadow:0 0 20px rgba(240,192,64,0.15)}
+.canvas-el:hover{z-index:5;box-shadow:0 0 20px rgba(186,151,49,0.15)}
 .canvas-el:active{cursor:grabbing;z-index:10}
 .canvas-el .ce-emoji{font-size:42px;line-height:1;pointer-events:none}
 .canvas-el .ce-name{
@@ -115,7 +115,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 }
 .canvas-el.combining{
   animation:combPulse .3s ease-out;
-  box-shadow:0 0 30px rgba(240,192,64,0.4);
+  box-shadow:0 0 30px rgba(186,151,49,0.4);
 }
 @keyframes combPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 
@@ -135,7 +135,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 #splash.show{display:flex}
 #splash .splash-rays{
   position:absolute;inset:0;overflow:hidden;pointer-events:none;
-  background:radial-gradient(circle at 50% 45%, rgba(240,192,64,0.08) 0%, transparent 60%);
+  background:radial-gradient(circle at 50% 45%, rgba(186,151,49,0.08) 0%, transparent 60%);
 }
 @keyframes rayRotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 #splash .splash-emoji{font-size:80px;animation:splashPop .5s cubic-bezier(.34,1.56,.64,1);position:relative;z-index:2}
@@ -379,11 +379,11 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 }
 .gate-founder-input input:focus{border-color:var(--primary)}
 .gate-founder-input button{
-  background:var(--gold-dim);border:1px solid rgba(240,192,64,0.2);color:var(--primary);
+  background:var(--gold-dim);border:1px solid rgba(186,151,49,0.2);color:var(--primary);
   font-size:12px;font-family:var(--font-mono);padding:10px 16px;border-radius:8px;
   cursor:pointer;white-space:nowrap;
 }
-.gate-founder-input button:hover{background:rgba(240,192,64,0.25)}
+.gate-founder-input button:hover{background:rgba(186,151,49,0.25)}
 .gate-success{color:var(--success);font-size:13px;font-weight:600;margin-top:8px;display:none}
 .gate-error{color:var(--danger);font-size:12px;margin-top:6px;display:none}
 
@@ -405,7 +405,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   padding:16px 18px;cursor:pointer;transition:all .2s;text-align:left;
 }
 .drive-card:hover{border-color:var(--primary);background:var(--gold-dim)}
-.drive-card.selected{border-color:var(--primary);background:var(--gold-dim);box-shadow:0 0 20px rgba(240,192,64,0.15)}
+.drive-card.selected{border-color:var(--primary);background:var(--gold-dim);box-shadow:0 0 20px rgba(186,151,49,0.15)}
 .drive-card .dc-emoji{font-size:28px;margin-bottom:6px}
 .drive-card .dc-label{font-size:15px;font-weight:700;color:var(--fg);margin-bottom:2px}
 .drive-card .dc-desc{font-size:13px;color:#B0A8C8;font-family:var(--font-mono);line-height:1.5}
@@ -435,7 +435,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 /* Sidebar tooltip pulse */
 .sidebar-tooltip{
   position:absolute;bottom:12px;left:8px;right:8px;
-  background:rgba(17,17,24,0.97);border:1px solid rgba(240,192,64,0.3);border-radius:10px;
+  background:rgba(17,17,24,0.97);border:1px solid rgba(186,151,49,0.3);border-radius:10px;
   padding:12px 14px;font-size:12px;color:#D4BFFA;font-family:var(--font-mono);
   line-height:1.6;z-index:25;animation:tooltipPulse 2s ease-in-out 3;
   pointer-events:none;text-align:center;
@@ -479,10 +479,10 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 }
 #share-cta button{
   font-family:var(--font-mono);font-size:12px;color:var(--primary);
-  background:var(--gold-dim);border:1px solid rgba(240,192,64,0.25);
+  background:var(--gold-dim);border:1px solid rgba(186,151,49,0.25);
   padding:6px 16px;border-radius:8px;cursor:pointer;transition:all .15s;
 }
-#share-cta button:hover{background:rgba(240,192,64,0.25);transform:scale(1.02)}
+#share-cta button:hover{background:rgba(186,151,49,0.25);transform:scale(1.02)}
 #share-copied{
   position:absolute;top:-24px;left:50%;transform:translateX(-50%);
   font-size:10px;color:var(--success);white-space:nowrap;display:none;
@@ -492,7 +492,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 #splash .splash-bridge{
   margin-top:10px;font-size:13px;font-family:var(--font-mono);
   color:var(--primary);padding:10px 22px;border-radius:10px;
-  background:transparent;border:1px solid rgba(240,192,64,0.4);
+  background:transparent;border:1px solid rgba(186,151,49,0.4);
   animation:splashFade .6s ease-out .45s both;position:relative;z-index:2;
   cursor:pointer;transition:all .15s;display:none;
 }
@@ -532,10 +532,10 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 
 .cert-card{
   background:linear-gradient(160deg,#13121A 0%,#18171F 100%);
-  border:2px solid rgba(240,192,64,0.5);border-radius:20px;
+  border:2px solid rgba(186,151,49,0.5);border-radius:20px;
   width:100%;max-width:560px;padding:36px 32px;text-align:center;
   animation:splashPop .4s ease-out;
-  box-shadow:0 0 40px rgba(240,192,64,0.12),0 0 80px rgba(240,192,64,0.06);
+  box-shadow:0 0 40px rgba(186,151,49,0.12),0 0 80px rgba(186,151,49,0.06);
   position:relative;
 }
 .cert-card .cert-wordmark{
@@ -604,7 +604,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 /* Certificate toast */
 #cert-toast{
   position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  background:rgba(17,17,24,0.97);border:1px solid rgba(240,192,64,0.3);border-radius:10px;
+  background:rgba(17,17,24,0.97);border:1px solid rgba(186,151,49,0.3);border-radius:10px;
   padding:10px 20px;font-size:12px;color:var(--success);font-family:var(--font-mono);
   z-index:180;display:none;white-space:nowrap;
   animation:splashFade .3s ease-out;
@@ -701,7 +701,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 <div id="intro">
   <!-- Screen 1: What drives you? -->
   <div class="onboard-step active" id="onboard-1">
-    <div class="intro-logo"><span style="color:#F0EBE0">W</span><span style="color:#F0C040">?</span></div>
+    <div class="intro-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <h1>PeoplePuzzles</h1>
     <p class="onboard-subtitle">Every company runs a background check on you.<br>This game teaches you to run one on them.</p>
     <div class="drive-cards" id="drive-cards">
@@ -735,7 +735,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 
   <!-- Screen 1.5: Name + Email Input -->
   <div id="name-step">
-    <div class="name-logo"><span style="color:#F0EBE0">W</span><span style="color:#F0C040">?</span></div>
+    <div class="name-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <div class="name-prompt">Before we start — who are you?</div>
     <div class="name-sub">Your certificates will be personalized and emailed to you.</div>
     <input type="text" class="name-input" id="player-name-input" placeholder="Full name" autocomplete="name">
@@ -746,7 +746,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 
   <!-- Screen 2: Your first discovery (auto-combine) -->
   <div class="onboard-step" id="onboard-2">
-    <div class="intro-logo"><span style="color:#F0EBE0">W</span><span style="color:#F0C040">?</span></div>
+    <div class="intro-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <h1 style="font-size:clamp(1.2rem,4vw,1.8rem)">Your first discovery</h1>
     <p class="onboard-subtitle" id="onboard-2-desc"></p>
     <div class="auto-combine-stage" id="ac-stage">
@@ -773,7 +773,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 <div id="game" style="display:none">
   <!-- Left toolbar -->
   <div id="toolbar">
-    <div class="tool-btn" id="btn-logo" title="PeoplePuzzles" style="font-family:var(--font-logo);font-weight:900;font-size:14px;margin-bottom:8px"><span style="color:#F0EBE0">W</span><span style="color:#F0C040">?</span></div>
+    <div class="tool-btn" id="btn-logo" title="PeoplePuzzles" style="font-family:var(--font-logo);font-weight:900;font-size:14px;margin-bottom:8px"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <button class="tool-btn" id="btn-cleanup" title="Clean up canvas">🧹<span class="tool-label">Clear</span></button>
     <button class="tool-btn" id="btn-encyclopedia" title="Encyclopedia">📖<span class="badge" id="enc-badge" style="display:none">0</span><span class="tool-label">Guide</span></button>
     <button class="tool-btn" id="btn-hint" title="Hint">💡<span class="tool-label">Hint</span></button>
@@ -872,7 +872,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 <!-- Campaign gate modal -->
 <div id="gate-modal">
   <div class="gate-panel">
-    <div class="gate-logo"><span style="color:#F0EBE0">W</span><span style="color:#F0C040">?</span></div>
+    <div class="gate-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <h2>You're on a roll.</h2>
     <p class="gate-sub">You've unlocked Tier 1 — but there's more to discover. Enter your info to keep playing and get early access when the full game launches April 6th.</p>
     <div class="gate-countdown" id="gate-countdown"></div>
@@ -959,7 +959,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 
 <!-- Watermark -->
 <div id="watermark">
-  <span class="wm-logo"><span style="color:#F0EBE0">W</span><span style="color:#F0C040">?</span></span>
+  <span class="wm-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></span>
   <span class="wm-text">PeoplePuzzles</span>
 </div>
 
@@ -2385,7 +2385,7 @@ document.getElementById('cert-download').addEventListener('click',function(){
   ctx.fillRect(0,0,W,H);
 
   // Gold border
-  ctx.strokeStyle='rgba(240,192,64,0.5)';
+  ctx.strokeStyle='rgba(186,151,49,0.5)';
   ctx.lineWidth=4;
   ctx.roundRect?ctx.roundRect(8,8,W-16,H-16,16):ctx.rect(8,8,W-16,H-16);
   ctx.stroke();
@@ -2397,7 +2397,7 @@ document.getElementById('cert-download').addEventListener('click',function(){
   ctx.fillText('PEOPLEPUZZLES',W/2,50);
 
   // Certificate of Achievement
-  ctx.fillStyle='#F0C040';
+  ctx.fillStyle='#BA9731';
   ctx.font='11px monospace';
   ctx.fillText('CERTIFICATE OF ACHIEVEMENT',W/2,70);
 
@@ -2406,7 +2406,7 @@ document.getElementById('cert-download').addEventListener('click',function(){
   ctx.fillText(cert.badge,W/2,130);
 
   // Cert name
-  ctx.fillStyle='#F0C040';
+  ctx.fillStyle='#BA9731';
   ctx.font='bold 32px sans-serif';
   ctx.fillText(cert.name,W/2,180);
 
@@ -2452,9 +2452,9 @@ document.getElementById('cert-download').addEventListener('click',function(){
   // Gold line
   var lineY=afterInsight+45;
   var grad=ctx.createLinearGradient(W/2-200,0,W/2+200,0);
-  grad.addColorStop(0,'rgba(240,192,64,0)');
-  grad.addColorStop(0.5,'#F0C040');
-  grad.addColorStop(1,'rgba(240,192,64,0)');
+  grad.addColorStop(0,'rgba(186,151,49,0)');
+  grad.addColorStop(0.5,'#BA9731');
+  grad.addColorStop(1,'rgba(186,151,49,0)');
   ctx.strokeStyle=grad;
   ctx.lineWidth=1;
   ctx.beginPath();
@@ -2463,7 +2463,7 @@ document.getElementById('cert-download').addEventListener('click',function(){
   ctx.stroke();
 
   // Signature
-  ctx.fillStyle='#F0C040';
+  ctx.fillStyle='#BA9731';
   ctx.font='italic 28px cursive';
   ctx.fillText('Jackye Clayton',W/2,lineY+36);
 
@@ -2473,7 +2473,7 @@ document.getElementById('cert-download').addEventListener('click',function(){
   ctx.fillText('Founder, PeoplePuzzles | WDIWF',W/2,lineY+56);
 
   // Game URL
-  ctx.fillStyle='rgba(240,192,64,0.4)';
+  ctx.fillStyle='rgba(186,151,49,0.4)';
   ctx.font='11px monospace';
   ctx.fillText(getGameURL(),W/2,H-20);
 
@@ -2676,7 +2676,7 @@ function checkTextioEmail(inputEl) {
     // 3rd attempt — playful message with a flash
     msg = 'No really\u2026 I\u2019m leaving my exes in the past. Try a personal email. \uD83D\uDE18';
     inputEl.style.transition = 'background 0.15s';
-    inputEl.style.background = 'rgba(240,192,64,0.2)';
+    inputEl.style.background = 'rgba(186,151,49,0.2)';
     setTimeout(function() { inputEl.style.background = ''; }, 400);
     // Clear field after a moment
     setTimeout(function() { inputEl.value = ''; }, 1200);
@@ -2694,7 +2694,7 @@ function showTextioMsg(inputEl, msg) {
 
   var el = document.createElement('div');
   el.className = 'textio-msg';
-  el.style.cssText = 'font-size:12px;color:#F0C040;margin-top:4px;font-family:var(--font-mono);animation:splashFade .3s ease-out';
+  el.style.cssText = 'font-size:12px;color:#BA9731;margin-top:4px;font-family:var(--font-mono);animation:splashFade .3s ease-out';
   el.textContent = msg;
   inputEl.parentElement.appendChild(el);
 

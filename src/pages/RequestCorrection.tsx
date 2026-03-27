@@ -11,8 +11,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AlertCircle, CheckCircle2, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { useTurnstile } from "@/hooks/useTurnstile";
-import { verifyTurnstileToken } from "@/lib/verifyTurnstile";
 import { z } from "zod";
 
 const correctionSchema = z.object({
@@ -38,9 +36,7 @@ export default function RequestCorrection() {
   const [searchParams] = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [verifying, setVerifying] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { containerRef, getToken, resetToken } = useTurnstile();
 
   const prefilledCompany = searchParams.get("company") || "";
   const prefilledPerson = searchParams.get("person") || "";
@@ -76,24 +72,11 @@ export default function RequestCorrection() {
       return;
     }
 
-    setVerifying(true);
-    const token = await getToken();
-    const verified = token ? await verifyTurnstileToken(token) : false;
-    setVerifying(false);
-    resetToken();
-
-    if (!verified) {
-      toast({ title: "Verification failed", description: "Please try again.", variant: "destructive" });
-      return;
-    }
-
     setLoading(true);
     const sourceLinksArray = form.source_links
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean);
-
-    const { data: { user } } = await supabase.auth.getUser();
 
     const { error } = await supabase.from("correction_requests").insert({
       company_name: form.company_name.trim(),
@@ -103,7 +86,6 @@ export default function RequestCorrection() {
       issue_type: form.issue_type,
       description: form.description.trim(),
       source_links: sourceLinksArray,
-      user_id: user?.id ?? null,
     });
 
     setLoading(false);
@@ -160,7 +142,6 @@ export default function RequestCorrection() {
         </Card>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div ref={containerRef} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="company_name">Company Name *</Label>
@@ -243,8 +224,8 @@ export default function RequestCorrection() {
             />
           </div>
 
-          <Button type="submit" disabled={loading || verifying} className="w-full sm:w-auto">
-            {verifying ? "Verifying..." : loading ? "Submitting..." : "Submit Correction Request"}
+          <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+            {loading ? "Submitting..." : "Submit Correction Request"}
           </Button>
         </form>
       </main>
