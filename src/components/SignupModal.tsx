@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mail, Lock, ArrowRight } from "lucide-react";
+import { Loader2, Mail, Lock, ArrowRight, Linkedin } from "lucide-react";
+import { useLinkedIn } from "@/hooks/use-linkedin";
 
 interface SignupModalProps {
   open: boolean;
@@ -28,6 +29,8 @@ export function SignupModal({
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const { connectLinkedIn } = useLinkedIn();
+
   const handleGoogle = async () => {
     const { error } = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
@@ -35,6 +38,10 @@ export function SignupModal({
     if (error) {
       toast({ title: "Google sign-in failed", description: String(error), variant: "destructive" });
     }
+  };
+
+  const handleLinkedIn = () => {
+    connectLinkedIn(window.location.pathname);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,6 +99,16 @@ export function SignupModal({
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
           </svg>
           Continue with Google
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full gap-2 mb-4 font-mono text-xs tracking-wider uppercase"
+          onClick={handleLinkedIn}
+        >
+          <Linkedin className="w-4 h-4" style={{ color: "#0A66C2" }} />
+          Continue with LinkedIn
         </Button>
 
         <div className="flex items-center gap-3 mb-4">

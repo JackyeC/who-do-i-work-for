@@ -142,3 +142,12 @@ verify_jwt = false
 
 [functions.parse-resume]
 verify_jwt = false
+
+[functions.linkedin-auth]
+verify_jwt = false
+
+[functions.linkedin-callback]
+verify_jwt = false
+
+[functions.linkedin-share-certificate]
+verify_jwt = false

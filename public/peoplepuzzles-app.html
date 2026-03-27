@@ -2335,13 +2335,53 @@ function getGameURL(){
   return window.location.origin+window.location.pathname;
 }
 
-// LinkedIn share
+// LinkedIn share — try real API via parent frame, fall back to clipboard+share
 document.getElementById('cert-share-linkedin').addEventListener('click',function(){
   if(!currentCertData) return;
   var cert=currentCertData;
   var gameURL=getGameURL();
+
+  // Try posting via parent frame's LinkedIn API integration
+  if(window.parent !== window){
+    // Generate certificate image as base64 for API posting
+    var certCanvas = document.createElement('canvas');
+    certCanvas.width = 1200; certCanvas.height = 630;
+    var cCtx = certCanvas.getContext('2d');
+    // Draw certificate (simplified version for API)
+    cCtx.fillStyle='#0A0A0E'; cCtx.fillRect(0,0,1200,630);
+    cCtx.strokeStyle='#F0C040'; cCtx.lineWidth=3;
+    cCtx.strokeRect(24,24,1152,582);
+    cCtx.fillStyle='#F0C040'; cCtx.font='bold 28px DM Sans,sans-serif'; cCtx.textAlign='center';
+    cCtx.fillText('PeoplePuzzles\u2122 Certificate',600,80);
+    cCtx.fillStyle='#fff'; cCtx.font='bold 36px DM Sans,sans-serif';
+    cCtx.fillText(playerName||'Player',600,180);
+    cCtx.font='24px DM Sans,sans-serif';
+    cCtx.fillText(cert.name+' '+cert.badge,600,240);
+    cCtx.fillStyle='#A78BFA'; cCtx.font='italic 20px DM Sans,sans-serif';
+    var lines=wrapText(cCtx,cert.insight,1000); var iy=310;
+    lines.forEach(function(l){cCtx.fillText(l,600,iy);iy+=28;});
+    cCtx.fillStyle='#888'; cCtx.font='16px DM Sans,sans-serif';
+    cCtx.fillText('Issued by Jackye Clayton \u00B7 WDIWF',600,540);
+    cCtx.fillText(new Date().toLocaleDateString(),600,570);
+
+    var imageBase64 = certCanvas.toDataURL('image/png').split(',')[1];
+
+    window.parent.postMessage({
+      type: 'WDIWF_LINKEDIN_SHARE',
+      payload: {
+        playerName: playerName||'Player',
+        certName: cert.name,
+        certBadge: cert.badge,
+        insightQuote: cert.insight,
+        imageBase64: imageBase64
+      }
+    }, '*');
+    showCertToast('Sharing to LinkedIn...');
+    return;
+  }
+
+  // Fallback: clipboard + share dialog
   var postText='\uD83C\uDFC6 I just earned the '+cert.name+' certification on PeoplePuzzles by @Jackye Clayton!\n\n"'+cert.insight+'"\n\n72 elements to discover. Every combo teaches you something real about recruiting, hiring intelligence, and career decisions.\n\nPlay \u2192 '+gameURL+'\n\n#PeoplePuzzles #WDIWF #TalentAcquisition #Recruiting #HRTech';
-  // Copy post text to clipboard
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(postText).then(function(){
       showCertToast('Post text copied! Paste it in your LinkedIn post.');
@@ -2353,9 +2393,29 @@ document.getElementById('cert-share-linkedin').addEventListener('click',function
     fallbackCopy(postText);
     showCertToast('Post text copied! Paste it in your LinkedIn post.');
   }
-  // Open LinkedIn share
   var shareURL='https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(gameURL);
   window.open(shareURL,'_blank','width=600,height=600');
+});
+
+// Helper: wrap text for canvas certificate
+function wrapText(ctx,text,maxW){
+  var words=text.split(' '),lines=[],line='';
+  for(var i=0;i<words.length;i++){
+    var test=line+(line?' ':'')+words[i];
+    if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=words[i];}
+    else line=test;
+  }
+  if(line)lines.push(line);
+  return lines;
+}
+
+// Listen for responses from parent frame
+window.addEventListener('message',function(e){
+  if(e.data&&e.data.type==='WDIWF_LINKEDIN_RESULT'){
+    if(e.data.success) showCertToast('\uD83C\uDF89 Certificate posted to LinkedIn!');
+    else if(e.data.needsAuth) showCertToast('Connect LinkedIn first to auto-share.');
+    else showCertToast(e.data.error||'Sharing failed. Try the copy+paste method.');
+  }
 });
 
 // X/Twitter share
