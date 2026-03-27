@@ -793,6 +793,207 @@ html, body {
 }
 .cta-secondary:hover { border-color: var(--fg-muted); color: var(--fg); }
 
+/* =========================================================
+   WATCHLIST & SIGNALS
+   ========================================================= */
+/* Sidebar tabs */
+.sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-tab {
+  flex: 1;
+  padding: 10px 8px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: all 0.2s ease;
+  position: relative;
+}
+.sidebar-tab:hover { color: var(--fg-muted); }
+.sidebar-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+.sidebar-tab .tab-badge {
+  display: inline-block;
+  min-width: 16px;
+  height: 16px;
+  line-height: 16px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--gold-dim);
+  color: var(--gold);
+  border-radius: 8px;
+  margin-left: 4px;
+  padding: 0 4px;
+}
+
+/* Watch button */
+.watch-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: calc(100% - 40px);
+  margin: 12px 20px 4px;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border-bright);
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+.watch-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.watch-btn.watching {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-dim);
+}
+.watch-btn.watching:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: var(--red-dim);
+}
+
+/* Signal badge on case files */
+.case-signal-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--red);
+  color: #fff;
+  border-radius: 9px;
+  padding: 0 5px;
+  animation: badgePulse 2s ease infinite;
+}
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,59,74,0.4); }
+  50% { box-shadow: 0 0 0 4px rgba(255,59,74,0); }
+}
+
+/* Watch dot indicator on case file */
+.case-watch-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* What Changed section */
+.signals-section {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+}
+.signals-header {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.signals-header .signal-count {
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--red-dim);
+  color: var(--red);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.signal-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-left: 2px solid var(--fg-dim);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  background: var(--surface-2);
+  border-radius: 0 4px 4px 0;
+}
+.signal-item.fec { border-left-color: var(--gold); }
+.signal-item.lobbying { border-left-color: var(--blue); }
+.signal-item.workforce { border-left-color: var(--green); }
+.signal-item.leadership { border-left-color: var(--pink); }
+.signal-type {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.signal-item.fec .signal-type { color: var(--gold); }
+.signal-item.lobbying .signal-type { color: var(--blue); }
+.signal-item.workforce .signal-type { color: var(--green); }
+.signal-item.leadership .signal-type { color: var(--pink); }
+.signal-date {
+  font-size: 9px;
+  color: var(--fg-dim);
+  margin-top: 2px;
+}
+.signal-severity {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.signal-severity.high { background: var(--red-dim); color: var(--red); }
+.signal-severity.medium { background: var(--gold-dim); color: var(--gold); }
+.signal-severity.low { background: var(--green-dim); color: var(--green); }
+
+.no-signals {
+  padding: 12px;
+  font-size: 11px;
+  color: var(--fg-dim);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Watchlist empty state */
+.watchlist-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--fg-dim);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.watchlist-empty .empty-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
 /* Embed mode */
 .embed-mode .top-bar { display: none !important; }
 .embed-mode .status-bar { display: none !important; }
@@ -867,8 +1068,8 @@ html, body {
 <!-- SUMMARY OVERLAY -->
 <div id="summary-overlay">
   <div class="summary-card">
-    <h2>INVESTIGATION COMPLETE</h2>
-    <div class="summary-subtitle">All case files declassified</div>
+    <h2>ALL CASES OPENED</h2>
+    <div class="summary-subtitle">Investigations ongoing — watch for new signals</div>
     <div class="summary-stats" id="summary-stats"></div>
     <div class="summary-verdict" id="summary-verdict"></div>
     <div class="summary-cta">
@@ -895,8 +1096,12 @@ html, body {
   <div class="main-area">
     <!-- LEFT: CASE FILES -->
     <div class="sidebar">
-      <div class="sidebar-header">Case Files</div>
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" id="tab-cases" onclick="switchTab('cases')">Cases</button>
+        <button class="sidebar-tab" id="tab-watchlist" onclick="switchTab('watchlist')">Watchlist <span class="tab-badge" id="watchlist-badge" style="display:none">0</span></button>
+      </div>
       <div class="case-list" id="case-list"></div>
+      <div class="case-list" id="watchlist-list" style="display:none"></div>
     </div>
 
     <!-- CENTER: EVIDENCE BOARD -->
@@ -1213,6 +1418,210 @@ CASES.forEach(c => {
 });
 
 // =========================================================
+// WATCHLIST (localStorage persistence)
+// =========================================================
+const WATCHLIST_KEY = 'ftm_watchlist';
+const LAST_CHECKED_KEY = 'ftm_last_checked';
+
+function getWatchlist() {
+  try {
+    return JSON.parse(localStorage.getItem(WATCHLIST_KEY)) || [];
+  } catch { return []; }
+}
+
+function saveWatchlist(list) {
+  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(list));
+}
+
+function isWatching(caseId) {
+  return getWatchlist().includes(caseId);
+}
+
+function toggleWatch(caseId) {
+  const list = getWatchlist();
+  const idx = list.indexOf(caseId);
+  if (idx >= 0) {
+    list.splice(idx, 1);
+  } else {
+    list.push(caseId);
+  }
+  saveWatchlist(list);
+  renderCaseList();
+  renderWatchlist();
+  updateWatchlistBadge();
+  if (STATE.activeCaseId === caseId) {
+    const c = CASES.find(x => x.id === caseId);
+    if (c) renderDossier(c);
+  }
+}
+
+function getLastChecked(caseId) {
+  try {
+    const data = JSON.parse(localStorage.getItem(LAST_CHECKED_KEY)) || {};
+    return data[caseId] ? new Date(data[caseId]) : null;
+  } catch { return null; }
+}
+
+function updateLastChecked(caseId) {
+  try {
+    const data = JSON.parse(localStorage.getItem(LAST_CHECKED_KEY)) || {};
+    data[caseId] = new Date().toISOString();
+    localStorage.setItem(LAST_CHECKED_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+// =========================================================
+// SIGNALS DATA (mock/simulated)
+// =========================================================
+const SIGNAL_TYPES = ['fec', 'lobbying', 'workforce', 'leadership'];
+
+const SIGNALS_DB = {
+  boeing: [
+    { type: 'fec', date: '2026-03-25', description: 'Boeing PAC disbursed $12,500 to Rep. Mike Rogers (R-AL), Armed Services Committee member', severity: 'high' },
+    { type: 'lobbying', date: '2026-03-22', description: 'New lobbying disclosure: $1.2M spent on FAA reauthorization bill provisions', severity: 'high' },
+    { type: 'workforce', date: '2026-03-18', description: 'OSHA cited Boeing Renton facility for 3 new safety violations, $145K in fines', severity: 'medium' },
+    { type: 'leadership', date: '2026-03-15', description: 'New VP of Government Relations appointed — former Pentagon procurement official', severity: 'high' },
+    { type: 'fec', date: '2026-03-10', description: 'Q1 PAC receipts up 18% year-over-year, $2.1M raised from employee contributions', severity: 'medium' },
+    { type: 'workforce', date: '2026-03-05', description: 'Machinists union filed grievance over mandatory overtime at St. Louis facility', severity: 'low' },
+    { type: 'lobbying', date: '2026-02-28', description: 'Lobbied against proposed whistleblower protection expansion in defense contracts', severity: 'high' },
+  ],
+  amazon: [
+    { type: 'fec', date: '2026-03-24', description: 'Amazon PAC contributed $8,200 to Sen. Cantwell re-election committee', severity: 'medium' },
+    { type: 'workforce', date: '2026-03-21', description: 'NLRB complaint filed at DFW4 warehouse — alleged surveillance of union organizers', severity: 'high' },
+    { type: 'lobbying', date: '2026-03-17', description: 'Amazon lobbied on AI regulation bill, seeking to weaken workplace monitoring provisions', severity: 'high' },
+    { type: 'leadership', date: '2026-03-12', description: 'Chief Lobbyist transition — former FTC commissioner joins Amazon policy team', severity: 'high' },
+    { type: 'workforce', date: '2026-03-08', description: 'Injury rate report: Q4 2025 serious injuries at 6.8 per 100 workers (industry avg: 3.3)', severity: 'medium' },
+    { type: 'fec', date: '2026-03-02', description: 'Andy Jassy maxed out personal contributions to 3 Commerce Committee members', severity: 'medium' },
+    { type: 'lobbying', date: '2026-02-25', description: 'New lobbying registration targeting antitrust enforcement budget appropriations', severity: 'medium' },
+  ],
+  jpmorgan: [
+    { type: 'fec', date: '2026-03-26', description: 'JPMorgan PAC made $175K in contributions to Senate Banking Committee members', severity: 'high' },
+    { type: 'lobbying', date: '2026-03-20', description: 'Lobbied against proposed Basel III endgame capital requirements', severity: 'high' },
+    { type: 'leadership', date: '2026-03-14', description: 'Former Treasury Deputy Secretary joined JPMorgan advisory board', severity: 'high' },
+    { type: 'workforce', date: '2026-03-09', description: 'Return-to-office mandate expanded — employee petition with 1,200 signatures', severity: 'low' },
+    { type: 'fec', date: '2026-03-03', description: 'Jamie Dimon hosted fundraiser for bipartisan group of 8 senators', severity: 'medium' },
+    { type: 'lobbying', date: '2026-02-26', description: 'Filed comment opposing SEC proposed rule on climate risk disclosure', severity: 'medium' },
+  ],
+  mcdonalds: [
+    { type: 'lobbying', date: '2026-03-23', description: 'NRA (restaurant) lobbied against state-level minimum wage increases in 4 states', severity: 'high' },
+    { type: 'workforce', date: '2026-03-19', description: 'DOL investigation opened at 12 franchise locations for child labor violations', severity: 'high' },
+    { type: 'fec', date: '2026-03-13', description: "McDonald's PAC contributed $6,500 to labor committee members opposing wage bill", severity: 'medium' },
+    { type: 'leadership', date: '2026-03-07', description: 'New Chief People Officer named — previously led anti-union consulting firm', severity: 'high' },
+    { type: 'workforce', date: '2026-03-01', description: 'Wage theft class action expanded to 3 additional states, now covers 45K workers', severity: 'medium' },
+    { type: 'lobbying', date: '2026-02-23', description: 'Lobbied for franchise liability shield in proposed labor reform bill', severity: 'medium' },
+  ],
+  starbucks: [
+    { type: 'workforce', date: '2026-03-25', description: 'NLRB ordered reinstatement of 7 fired union organizers in Memphis and Phoenix', severity: 'high' },
+    { type: 'lobbying', date: '2026-03-19', description: 'Joined amicus brief challenging NLRB constitutionality before Supreme Court', severity: 'high' },
+    { type: 'leadership', date: '2026-03-16', description: 'New CEO made first public statement opposing card-check unionization process', severity: 'medium' },
+    { type: 'workforce', date: '2026-03-11', description: '15 more stores filed for union election — total now at 420+ stores', severity: 'medium' },
+    { type: 'fec', date: '2026-03-04', description: 'Starbucks PAC increased giving to labor committee members by 40% this quarter', severity: 'medium' },
+    { type: 'lobbying', date: '2026-02-27', description: 'Hired 3rd anti-union law firm to handle West Coast NLRB proceedings', severity: 'high' },
+  ],
+  disney: [
+    { type: 'lobbying', date: '2026-03-24', description: 'Disney lobbied on AI-generated content copyright bill — seeking expanded IP protections', severity: 'high' },
+    { type: 'fec', date: '2026-03-18', description: 'Disney PAC contributed $22K to Florida delegation ahead of tax incentive vote', severity: 'medium' },
+    { type: 'workforce', date: '2026-03-14', description: 'Theme park workers union rejected proposed 3% raise — demanded living wage adjustment', severity: 'medium' },
+    { type: 'leadership', date: '2026-03-10', description: 'Former FCC commissioner appointed to Disney board of directors', severity: 'high' },
+    { type: 'lobbying', date: '2026-03-06', description: 'Filed 2 new lobbying registrations targeting streaming content regulation', severity: 'medium' },
+    { type: 'fec', date: '2026-02-28', description: 'Bob Iger hosted private donor dinner for 6 members of IP subcommittee', severity: 'high' },
+  ]
+};
+
+function getSignalsForCase(caseId) {
+  return SIGNALS_DB[caseId] || [];
+}
+
+function getNewSignals(caseId) {
+  const lastChecked = getLastChecked(caseId);
+  const signals = getSignalsForCase(caseId);
+  if (!lastChecked) return signals;
+  return signals.filter(s => new Date(s.date) > lastChecked);
+}
+
+function getNewSignalCount(caseId) {
+  return getNewSignals(caseId).length;
+}
+
+// =========================================================
+// SIDEBAR TABS
+// =========================================================
+let activeTab = 'cases';
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tab-cases').classList.toggle('active', tab === 'cases');
+  document.getElementById('tab-watchlist').classList.toggle('active', tab === 'watchlist');
+  document.getElementById('case-list').style.display = tab === 'cases' ? '' : 'none';
+  document.getElementById('watchlist-list').style.display = tab === 'watchlist' ? '' : 'none';
+  if (tab === 'watchlist') renderWatchlist();
+}
+
+function updateWatchlistBadge() {
+  const watchlist = getWatchlist();
+  const badge = document.getElementById('watchlist-badge');
+  const totalNew = watchlist.reduce((sum, id) => sum + getNewSignalCount(id), 0);
+  if (watchlist.length > 0) {
+    badge.style.display = '';
+    badge.textContent = totalNew > 0 ? totalNew : watchlist.length;
+    badge.style.background = totalNew > 0 ? 'var(--red-dim)' : 'var(--gold-dim)';
+    badge.style.color = totalNew > 0 ? 'var(--red)' : 'var(--gold)';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderWatchlist() {
+  const list = document.getElementById('watchlist-list');
+  const watchlist = getWatchlist();
+
+  if (watchlist.length === 0) {
+    list.innerHTML = `
+      <div class="watchlist-empty">
+        <div class="empty-icon">◉</div>
+        <div>No watched companies yet.</div>
+        <div style="margin-top:4px;color:var(--fg-dim);">Open a case file and click<br>"Watch Company" to start monitoring.</div>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = '';
+  watchlist.forEach(caseId => {
+    const c = CASES.find(x => x.id === caseId);
+    if (!c) return;
+
+    const el = document.createElement('div');
+    let cls = 'case-file';
+    if (c.id === STATE.activeCaseId) cls += ' active';
+    el.className = cls;
+    el.style.cursor = 'pointer';
+
+    const newCount = getNewSignalCount(caseId);
+    const isLocked = c.status === 'classified' && !STATE.declassifiedCases.has(c.id);
+
+    el.innerHTML = `
+      ${newCount > 0 ? `<div class="case-signal-badge">${newCount}</div>` : ''}
+      <div class="case-name"><span class="case-watch-dot"></span>${c.company}</div>
+      <div class="case-amount">${isLocked ? '██████' : c.amount}</div>
+      <div class="case-status">${newCount > 0 ? newCount + ' NEW SIGNAL' + (newCount > 1 ? 'S' : '') : 'NO NEW SIGNALS'}</div>
+    `;
+
+    el.addEventListener('click', () => {
+      if (isLocked) {
+        showToast('⚠ CLASSIFIED — Investigate open cases to earn clearance');
+        return;
+      }
+      sfxClick();
+      switchTab('cases');
+      selectCase(c.id);
+    });
+
+    list.appendChild(el);
+  });
+}
+
+// =========================================================
 // AUDIO (Web Audio API — procedural)
 // =========================================================
 let audioCtx;
@@ -1307,6 +1716,17 @@ async function runBoot() {
 // =========================================================
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+function formatSignalDate(dateStr) {
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now - d;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return diffDays + ' days ago';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 function showToast(msg, duration=2500) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1361,12 +1781,16 @@ function renderCaseList() {
     
     const isLocked = c.status === 'classified' && !STATE.declassifiedCases.has(c.id);
     
+    const watched = isWatching(c.id);
+    const newCount = watched ? getNewSignalCount(c.id) : 0;
+
     el.innerHTML = `
-      <div class="case-name">${c.company}</div>
+      ${watched && newCount > 0 ? `<div class="case-signal-badge">${newCount}</div>` : ''}
+      <div class="case-name">${watched ? '<span class="case-watch-dot"></span>' : ''}${c.company}</div>
       <div class="case-amount">${isLocked ? '██████' : c.amount}</div>
       <div class="case-status">${
         isLocked ? 'CLASSIFIED — Investigate to unlock' :
-        (STATE.revealedBeats[c.id] || []).length === 3 ? 'FULLY DECLASSIFIED' :
+        (STATE.revealedBeats[c.id] || []).length === 3 ? 'INVESTIGATION ONGOING' :
         (STATE.revealedBeats[c.id] || []).length > 0 ? 'UNDER INVESTIGATION' :
         'OPEN — Click to investigate'
       }</div>
@@ -1392,12 +1816,22 @@ function selectCase(caseId) {
   STATE.activeCaseId = caseId;
   const c = CASES.find(x => x.id === caseId);
   if (!c) return;
-  
+
   renderCaseList();
   renderEvidenceBoard(c);
   renderDossier(c);
-  
+
   document.getElementById('dossier-panel').classList.remove('collapsed');
+
+  // Update last checked timestamp for watched companies
+  if (isWatching(caseId)) {
+    // Defer to allow "what changed" section to render with signals first
+    setTimeout(() => {
+      updateLastChecked(caseId);
+      updateWatchlistBadge();
+      renderWatchlist();
+    }, 500);
+  }
 }
 
 // =========================================================
@@ -1577,10 +2011,60 @@ function updateNodePositions(c) {
 function renderDossier(c) {
   document.getElementById('dossier-title').textContent = c.company;
   document.getElementById('dossier-subtitle').textContent = c.summary;
-  
+
   const body = document.getElementById('dossier-body');
   body.innerHTML = '';
-  
+
+  // Watch Company button
+  const isLocked = c.status === 'classified' && !STATE.declassifiedCases.has(c.id);
+  if (!isLocked) {
+    const watchBtn = document.createElement('button');
+    const watched = isWatching(c.id);
+    watchBtn.className = 'watch-btn' + (watched ? ' watching' : '');
+    watchBtn.innerHTML = watched ? '◉ WATCHING' : '○ WATCH COMPANY';
+    watchBtn.addEventListener('click', () => {
+      toggleWatch(c.id);
+    });
+    watchBtn.addEventListener('mouseenter', () => {
+      if (isWatching(c.id)) watchBtn.innerHTML = '✕ UNWATCH';
+    });
+    watchBtn.addEventListener('mouseleave', () => {
+      if (isWatching(c.id)) watchBtn.innerHTML = '◉ WATCHING';
+      else watchBtn.innerHTML = '○ WATCH COMPANY';
+    });
+    body.appendChild(watchBtn);
+  }
+
+  // "What Changed Since You Last Checked" section
+  if (isWatching(c.id)) {
+    const newSignals = getNewSignals(c.id);
+    const signalsSection = document.createElement('div');
+    signalsSection.className = 'signals-section';
+
+    let headerHTML = '<div class="signals-header">WHAT CHANGED SINCE YOU LAST CHECKED';
+    if (newSignals.length > 0) {
+      headerHTML += `<span class="signal-count">${newSignals.length} NEW</span>`;
+    }
+    headerHTML += '</div>';
+
+    if (newSignals.length === 0) {
+      signalsSection.innerHTML = headerHTML + '<div class="no-signals">No new signals since your last visit.</div>';
+    } else {
+      let signalsHTML = headerHTML;
+      newSignals.forEach(s => {
+        signalsHTML += `
+          <div class="signal-item ${s.type}">
+            <div class="signal-type">${s.type.toUpperCase()}<span class="signal-severity ${s.severity}">${s.severity.toUpperCase()}</span></div>
+            <div>${s.description}</div>
+            <div class="signal-date">${formatSignalDate(s.date)}</div>
+          </div>
+        `;
+      });
+      signalsSection.innerHTML = signalsHTML;
+    }
+    body.appendChild(signalsSection);
+  }
+
   const revealed = STATE.revealedBeats[c.id] || [];
   
   c.beats.forEach((beat, i) => {
@@ -1616,9 +2100,9 @@ function renderDossier(c) {
     const closed = document.createElement('div');
     closed.style.cssText = 'padding:20px;text-align:center;';
     closed.innerHTML = `
-      <div style="font-size:10px;letter-spacing:2px;color:var(--green);margin-bottom:8px;">✓ CASE FULLY DECLASSIFIED</div>
+      <div style="font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;">◉ INVESTIGATION ONGOING</div>
       <div style="font-size:12px;color:var(--fg-muted);line-height:1.7;">
-        You followed ${c.company}'s money from PAC contributions through political access to real-world impact. This is one of ${CASES.length} active investigations.
+        You followed ${c.company}'s money from PAC contributions through political access to real-world impact. This investigation remains active — watch for new signals.
       </div>
     `;
     body.appendChild(closed);
@@ -1691,7 +2175,9 @@ async function revealBeat(caseId, beatIndex) {
   renderEvidenceBoard(c);
   renderDossier(c);
   renderCaseList();
-  
+  renderWatchlist();
+  updateWatchlistBadge();
+
   // Check if this unlocks classified cases
   const totalRevealed = Object.values(STATE.revealedBeats).reduce((sum, arr) => sum + arr.length, 0);
   
@@ -1778,6 +2264,8 @@ document.getElementById('start-btn').addEventListener('click', () => {
   document.getElementById('intro-overlay').classList.remove('visible');
   STATE.started = true;
   renderCaseList();
+  renderWatchlist();
+  updateWatchlistBadge();
   updateScoreDisplay();
   updateHudTime();
   setInterval(updateHudTime, 1000);
