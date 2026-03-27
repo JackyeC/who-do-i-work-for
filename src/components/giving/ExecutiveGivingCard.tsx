@@ -75,7 +75,7 @@ function ExecCard({ exec, recipients, companyName, companySlug, locked }: {
         <div className="absolute inset-0 z-10 flex items-center justify-center" style={{ backdropFilter: "blur(6px)", background: "rgba(13,12,15,0.5)" }}>
           <div className="text-center px-6">
             <Lock className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground mb-3">Unlock all executive records</p>
+            <p className="text-sm text-muted-foreground mb-3">Unlock all donor records</p>
             <Link
               to="/pricing"
               className="inline-block px-5 py-2 text-sm font-semibold rounded-full"
@@ -141,7 +141,7 @@ function ExecCard({ exec, recipients, companyName, companySlug, locked }: {
         </div>
       ) : (
         <div className="px-4 py-4">
-          <p className="text-xs text-muted-foreground">No FEC disclosures found for this executive.</p>
+          <p className="text-xs text-muted-foreground">No FEC disclosures found for this individual.</p>
         </div>
       )}
 
@@ -215,7 +215,7 @@ export function ExecutiveGivingSection({ companyId, companyName, companySlug }: 
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-base font-semibold text-foreground mb-1">Leadership Political Giving</h3>
+        <h3 className="text-base font-semibold text-foreground mb-1">Employee Political Giving</h3>
       </div>
 
       {/* Disclaimer — always visible, never collapsible */}
@@ -229,7 +229,7 @@ export function ExecutiveGivingSection({ companyId, companyName, companySlug }: 
         borderRadius: "0 8px 8px 0",
         marginBottom: "16px",
       }}>
-        Individual donation data is public record per FEC disclosure requirements (contributions over $200). This data reflects personal giving by named executives and does not represent company policy. WDIWF presents this for transparency only. We connect the dots — you make the call.
+        Individual donation data is public record per FEC disclosure requirements (contributions over $200). Donors self-report their employer and job title on FEC filings — these are personal contributions, not company spending, and may include employees at any level. WDIWF presents this for transparency only. We connect the dots — you make the call.
       </div>
 
       {/* Executive cards */}
@@ -253,7 +253,7 @@ export function ExecutiveGivingSection({ companyId, companyName, companySlug }: 
             className="inline-block px-6 py-2.5 text-sm font-semibold rounded-full"
             style={{ background: "#f0c040", color: "#0a0a0e" }}
           >
-            See all {executives.length} executive giving records — upgrade to Scout
+            See all {executives.length} employee giving records — upgrade to Scout
           </Link>
         </div>
       )}
@@ -267,7 +267,7 @@ export function ExecutiveGivingSection({ companyId, companyName, companySlug }: 
         borderTop: "1px solid rgba(255,255,255,0.07)",
         paddingTop: "12px",
       }}>
-        Individual donation data sourced from FEC public records pursuant to 52 U.S.C. §30104. Contributions over $200 are required by law to be publicly disclosed. Cause classifications are based on publicly available voting records, congressional scorecards, and watchdog organization ratings (HRC, LCV, Brennan Center, AFL-CIO). This data reflects personal giving and does not represent company policy. WDIWF does not make character assessments or political endorsements. We connect the dots — you make the call.
+        Individual donation data sourced from FEC public records pursuant to 52 U.S.C. §30104. Contributions over $200 are required by law to be publicly disclosed. Cause classifications are based on publicly available voting records, congressional scorecards, and watchdog organization ratings (HRC, LCV, Brennan Center, AFL-CIO). This data reflects personal giving and does not represent company policy. Individuals listed may hold any role at the company. WDIWF does not make character assessments or political endorsements. We connect the dots — you make the call.
       </p>
     </div>
   );

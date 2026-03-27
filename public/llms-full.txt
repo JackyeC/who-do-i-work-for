@@ -158,7 +158,7 @@ Each company profile can include:
 5. **Dark Money**: 501(c)(4) and trade association connections
 6. **Revolving Door**: Former government officials now at company (and vice versa)
 7. **Board Intelligence**: Board composition, independence, interlocking directorates
-8. **Executive Leadership**: C-suite profiles, political donations, tenure
+8. **Employee Political Donations**: Individual FEC donation records from employees who listed this company as their employer. Titles are self-reported by donors.
 9. **Workforce Signals**: Sentiment, stability, flight risk indicators
 10. **AI Hiring Signals**: Automated hiring tool usage, bias audit compliance
 11. **Compensation**: Salary benchmarks, benefits data, pay equity

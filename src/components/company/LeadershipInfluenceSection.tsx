@@ -94,10 +94,21 @@ interface LeadershipInfluenceSectionProps {
   onContractsClick: () => void;
 }
 
-function SourceNote() {
+function DonorSourceNote() {
   return (
     <p className="text-xs text-muted-foreground mt-2" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-      Leadership data sourced from SEC proxy statements, public disclosures, and 8-K filings.{" "}
+      Individual donation data sourced from FEC individual contribution filings. Donors self-report their employer and occupation. These are personal political contributions — not company spending.{" "}
+      <Link to="/request-correction" className="underline hover:text-primary transition-colors">
+        Found an error? Report it →
+      </Link>
+    </p>
+  );
+}
+
+function ExecutiveSourceNote() {
+  return (
+    <p className="text-xs text-muted-foreground mt-2" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      Executive data sourced from SEC proxy statements, public disclosures, and 8-K filings.{" "}
       <Link to="/request-correction" className="underline hover:text-primary transition-colors">
         Found an error? Report it →
       </Link>
@@ -233,23 +244,26 @@ export function LeadershipInfluenceSection({
         <h2 className="text-lg font-bold text-foreground">Leadership & Influence</h2>
       </div>
 
-      {/* ── Executive Leadership ── */}
+      {/* ── Employee Political Donations (FEC) ── */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
-            <Briefcase className="w-4 h-4 text-primary" />
-            Executive Leadership
+            <DollarSign className="w-4 h-4 text-primary" />
+            Employee Political Donations
             {confirmedExecs.length > 0 && (
               <Badge variant="secondary" className="text-xs ml-auto">{confirmedExecs.length}</Badge>
             )}
           </CardTitle>
+          <p className="text-xs text-muted-foreground mt-1">
+            Individuals who listed {companyName} as their employer on FEC donation filings. Job titles are self-reported by donors — not verified by WDIWF.
+          </p>
         </CardHeader>
         <CardContent className="pt-0">
           {execsStale && <StalenessWarning companyName={companyName} />}
 
           {confirmedExecs.length === 0 && unverifiedExecs.length === 0 && (
             <p className="text-sm text-muted-foreground py-2">
-              Executive data pending — sourced from SEC proxy filings
+              No individual donation records found in FEC filings
             </p>
           )}
           {confirmedExecs.length > 0 && (
@@ -257,11 +271,8 @@ export function LeadershipInfluenceSection({
               {confirmedExecs.map(renderExecRow)}
             </div>
           )}
-          {confirmedExecs.length >= 1 && confirmedExecs.length <= 2 && (
-            <p className="text-xs text-muted-foreground mt-2">Additional leadership data pending</p>
-          )}
 
-          {/* Unverified executives */}
+          {/* Unverified donors */}
           {unverifiedExecs.length > 0 && (
             <div className="mt-3 rounded-lg" style={{ border: "1px solid rgba(240,192,64,0.3)" }}>
               <button
@@ -269,7 +280,7 @@ export function LeadershipInfluenceSection({
                 className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-muted/30 rounded-lg transition-colors"
               >
                 <span className="text-xs font-medium" style={{ color: "#f0c040", fontFamily: "'DM Sans', sans-serif" }}>
-                  Unverified — may no longer be current ({unverifiedExecs.length})
+                  Unverified — employment status may have changed ({unverifiedExecs.length})
                 </span>
                 <ChevronDown
                   className="w-4 h-4 transition-transform"
@@ -279,7 +290,7 @@ export function LeadershipInfluenceSection({
               {showUnverifiedExecs && (
                 <div className="px-3 pb-3">
                   <p className="text-xs text-muted-foreground mb-2" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                    These individuals appeared in filings but current status could not be confirmed. Verify independently.
+                    These individuals appeared in FEC filings but current employment could not be confirmed. Verify independently.
                   </p>
                   <div className="divide-y divide-border/50">
                     {unverifiedExecs.map(renderExecRow)}
@@ -289,7 +300,7 @@ export function LeadershipInfluenceSection({
             </div>
           )}
 
-          <SourceNote />
+          <DonorSourceNote />
         </CardContent>
       </Card>
 
@@ -346,7 +357,7 @@ export function LeadershipInfluenceSection({
             </div>
           )}
 
-          <SourceNote />
+          <ExecutiveSourceNote />
         </CardContent>
       </Card>
 

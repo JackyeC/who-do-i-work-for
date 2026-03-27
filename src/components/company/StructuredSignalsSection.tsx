@@ -282,9 +282,9 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
   } else {
     if (props.executiveCount > 0)
       leadershipSignals.push({
-        summary: `${props.executiveCount} executive(s) identified with public donation records.`,
+        summary: `${props.executiveCount} employee(s) found with public donation records in FEC filings.`,
         confidence: "Medium", recency,
-        detail: "Executive donation records are sourced from FEC filings. Personal political contributions by company leaders can signal organizational culture and policy priorities.",
+        detail: "Individual donation records are sourced from FEC filings where donors self-report their employer. These are personal political contributions — not company spending, and the individuals may hold any role at the company.",
         deepLinks: [
           { label: "Follow the Money", to: `/follow-the-money?company=${slug}` },
           { label: "Influence Graph", to: `/influence-graph?company=${slug}` },

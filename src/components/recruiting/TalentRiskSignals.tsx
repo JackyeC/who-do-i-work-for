@@ -59,10 +59,10 @@ export function TalentRiskSignals({ companyId, companyName }: Props) {
         });
       }
 
-      // Executive/leadership changes via revolving door
+      // Leadership changes via revolving door
       if (revDoorRes.data && revDoorRes.data.length > 0) {
         detected.push({
-          label: "Executive Leadership Change detected",
+          label: "Leadership Change detected",
           description: `${revDoorRes.data.length} revolving door connection${revDoorRes.data.length > 1 ? "s" : ""} between government and company leadership`,
           severity: "medium",
           sourceUrl: `https://www.opensecrets.org/revolving/search-result.php?search=${encodeURIComponent(companyName)}`,
