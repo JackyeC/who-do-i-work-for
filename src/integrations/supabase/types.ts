@@ -4308,6 +4308,7 @@ export type Database = {
           reviewer_notes: string | null
           source_links: string[] | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           company_name: string
@@ -4322,6 +4323,7 @@ export type Database = {
           reviewer_notes?: string | null
           source_links?: string[] | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           company_name?: string
@@ -4336,6 +4338,7 @@ export type Database = {
           reviewer_notes?: string | null
           source_links?: string[] | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
