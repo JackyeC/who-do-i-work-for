@@ -1,34 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--
-   ______                            __
-  / ____/___  ____ ___  ____  __  __/ /____  _____
- / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
-/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
-\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
-                    /_/
-        Created with Perplexity Computer
-        https://www.perplexity.ai/computer
--->
-<meta name="generator" content="Perplexity Computer">
-<meta name="author" content="Perplexity Computer">
-<meta property="og:see_also" content="https://www.perplexity.ai/computer">
-<link rel="author" href="https://www.perplexity.ai/computer">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PeoplePuzzles™ by WDIWF</title>
+<title>PeoplePuzzles by WDIWF — The Career Intelligence Game</title>
 <meta name="description" content="An alchemy-style strategy game for recruiters. Combine fundamental elements to discover recruiting concepts. Every combo links to a real WDIWF feature.">
+<meta property="og:title" content="PeoplePuzzles — The Career Intelligence Game">
+<meta property="og:description" content="Every company runs a background check on you. This game teaches you to run one on them. 72 elements to discover. Pick your path: Money, Stability, Values, Growth, or Truth.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wdiwf.jackyeclayton.com/peoplepuzzles-app.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PeoplePuzzles — The Career Intelligence Game">
+<meta name="twitter:description" content="Every company runs a background check on you. This game teaches you to run one on them.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=Inter:wght@900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0A0A0E;--surface:#111118;--surface-2:#18171F;
-  --fg:#F0EBE0;--muted:#7A7590;--primary:#F0C040;
-  --gold-dim:rgba(240,192,64,0.15);--success:#34D399;--danger:#FF3B4A;
-  --border:rgba(255,255,255,0.08);--border-bright:rgba(255,255,255,0.14);
+  --bg:#0A0A0A;--surface:#121212;--surface-2:#18171F;
+  --fg:#F2F2F2;--muted:#9898A0;--primary:#BA9731;
+  --gold-dim:rgba(186,151,49,0.15);--success:#34D399;--danger:#FF3B4A;
+  --border:#242424;--border-bright:rgba(255,255,255,0.14);
   --purple:#A78BFA;--purple-dim:rgba(167,139,250,0.12);
   --sidebar-w:220px;--toolbar-w:52px;
   --font-display:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
@@ -71,7 +64,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   flex:1;position:relative;overflow:hidden;
   background:var(--bg);
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(240,192,64,0.015) 0%, transparent 50%),
+    radial-gradient(circle at 20% 30%, rgba(186,151,49,0.015) 0%, transparent 50%),
     radial-gradient(circle at 80% 70%, rgba(167,139,250,0.01) 0%, transparent 50%);
   cursor:default;
 }
@@ -97,14 +90,14 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   display:flex;align-items:center;gap:8px;padding:6px 10px;
   cursor:grab;transition:background .12s;
 }
-.sidebar-item:hover{background:rgba(240,192,64,0.06)}
+.sidebar-item:hover{background:rgba(186,151,49,0.06)}
 .sidebar-item:active{cursor:grabbing}
 .sidebar-item .si-emoji{font-size:26px;width:36px;text-align:center;flex-shrink:0}
 .sidebar-item .si-name{font-size:13px;color:var(--primary);font-family:var(--font-mono);line-height:1.3;font-weight:500}
 .sidebar-item .si-tier{font-size:10px;color:#B0A8C8;font-family:var(--font-mono);text-transform:uppercase}
 .sidebar-item.new-item{animation:sidebarFlash .8s ease-out}
 
-@keyframes sidebarFlash{0%{background:rgba(240,192,64,0.2)}100%{background:transparent}}
+@keyframes sidebarFlash{0%{background:rgba(186,151,49,0.2)}100%{background:transparent}}
 
 /* Canvas elements (draggable) */
 .canvas-el{
@@ -112,7 +105,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   align-items:center;gap:2px;padding:8px;border-radius:12px;
   transition:box-shadow .15s;z-index:1;touch-action:none;
 }
-.canvas-el:hover{z-index:5;box-shadow:0 0 20px rgba(240,192,64,0.15)}
+.canvas-el:hover{z-index:5;box-shadow:0 0 20px rgba(186,151,49,0.15)}
 .canvas-el:active{cursor:grabbing;z-index:10}
 .canvas-el .ce-emoji{font-size:42px;line-height:1;pointer-events:none}
 .canvas-el .ce-name{
@@ -122,7 +115,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 }
 .canvas-el.combining{
   animation:combPulse .3s ease-out;
-  box-shadow:0 0 30px rgba(240,192,64,0.4);
+  box-shadow:0 0 30px rgba(186,151,49,0.4);
 }
 @keyframes combPulse{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
 
@@ -142,7 +135,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 #splash.show{display:flex}
 #splash .splash-rays{
   position:absolute;inset:0;overflow:hidden;pointer-events:none;
-  background:radial-gradient(circle at 50% 45%, rgba(240,192,64,0.08) 0%, transparent 60%);
+  background:radial-gradient(circle at 50% 45%, rgba(186,151,49,0.08) 0%, transparent 60%);
 }
 @keyframes rayRotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 #splash .splash-emoji{font-size:80px;animation:splashPop .5s cubic-bezier(.34,1.56,.64,1);position:relative;z-index:2}
@@ -167,7 +160,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   animation:splashFade .6s ease-out .4s both;position:relative;z-index:2;
   cursor:pointer;font-weight:600;
 }
-#splash .splash-wdiwf:hover{background:#F5D060;transform:scale(1.02)}
+#splash .splash-wdiwf:hover{background:#DACE84;transform:scale(1.02)}
 #splash .splash-dismiss{
   position:relative;margin-top:16px;font-size:15px;color:var(--fg);font-weight:600;
   font-family:var(--font-mono);animation:splashFade .6s ease-out .5s both;
@@ -250,7 +243,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   z-index:15;display:flex;align-items:center;gap:8px;
   opacity:0.25;pointer-events:none;
 }
-#watermark .wm-logo{font-family:var(--font-logo);font-weight:900;font-size:24px;color:var(--primary)}
+#watermark .wm-logo{font-family:var(--font-logo);font-weight:900;font-size:24px}
 #watermark .wm-text{font-family:var(--font-mono);font-size:10px;color:var(--muted)}
 
 /* Discovery counter on canvas */
@@ -265,10 +258,10 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 /* Footer attribution */
 #footer-attr{
   position:fixed;bottom:6px;left:var(--toolbar-w);z-index:15;
-  font-size:10px;color:#9990A8;font-family:var(--font-mono);
+  font-size:10px;color:#9898A0;font-family:var(--font-mono);
   padding:0 12px;opacity:0.5;
 }
-#footer-attr a{color:#9990A8;text-decoration:underline}
+#footer-attr a{color:#9898A0;text-decoration:underline}
 
 /* Intro overlay */
 #intro{
@@ -277,7 +270,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   overflow-y:auto;padding:24px 0;
 }
 #intro.hidden{display:none}
-#intro .intro-logo{font-family:var(--font-logo);font-weight:900;font-size:56px;color:var(--primary)}
+#intro .intro-logo{font-family:var(--font-logo);font-weight:900;font-size:56px}
 #intro h1{font-size:clamp(1.5rem,5vw,2.5rem);font-weight:700;text-align:center}
 #intro .intro-sub{font-family:var(--font-mono);font-size:14px;color:#C8C0D8;text-align:center;max-width:420px;line-height:1.8}
 #intro .intro-starters{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:8px 0}
@@ -348,7 +341,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   width:90%;max-width:480px;padding:36px 32px;text-align:center;
   animation:splashPop .3s ease-out;position:relative;
 }
-.gate-panel .gate-logo{font-family:var(--font-logo);font-weight:900;font-size:36px;color:var(--primary);margin-bottom:4px}
+.gate-panel .gate-logo{font-family:var(--font-logo);font-weight:900;font-size:36px;margin-bottom:4px}
 .gate-panel h2{font-size:22px;font-weight:700;margin-bottom:8px}
 .gate-panel .gate-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto 20px;font-family:var(--font-mono)}
 .gate-panel .gate-countdown{font-size:11px;color:var(--purple);font-family:var(--font-mono);margin-bottom:16px;letter-spacing:0.5px}
@@ -386,11 +379,11 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 }
 .gate-founder-input input:focus{border-color:var(--primary)}
 .gate-founder-input button{
-  background:var(--gold-dim);border:1px solid rgba(240,192,64,0.2);color:var(--primary);
+  background:var(--gold-dim);border:1px solid rgba(186,151,49,0.2);color:var(--primary);
   font-size:12px;font-family:var(--font-mono);padding:10px 16px;border-radius:8px;
   cursor:pointer;white-space:nowrap;
 }
-.gate-founder-input button:hover{background:rgba(240,192,64,0.25)}
+.gate-founder-input button:hover{background:rgba(186,151,49,0.25)}
 .gate-success{color:var(--success);font-size:13px;font-weight:600;margin-top:8px;display:none}
 .gate-error{color:var(--danger);font-size:12px;margin-top:6px;display:none}
 
@@ -412,7 +405,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   padding:16px 18px;cursor:pointer;transition:all .2s;text-align:left;
 }
 .drive-card:hover{border-color:var(--primary);background:var(--gold-dim)}
-.drive-card.selected{border-color:var(--primary);background:var(--gold-dim);box-shadow:0 0 20px rgba(240,192,64,0.15)}
+.drive-card.selected{border-color:var(--primary);background:var(--gold-dim);box-shadow:0 0 20px rgba(186,151,49,0.15)}
 .drive-card .dc-emoji{font-size:28px;margin-bottom:6px}
 .drive-card .dc-label{font-size:15px;font-weight:700;color:var(--fg);margin-bottom:2px}
 .drive-card .dc-desc{font-size:13px;color:#B0A8C8;font-family:var(--font-mono);line-height:1.5}
@@ -442,7 +435,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 /* Sidebar tooltip pulse */
 .sidebar-tooltip{
   position:absolute;bottom:12px;left:8px;right:8px;
-  background:rgba(17,17,24,0.97);border:1px solid rgba(240,192,64,0.3);border-radius:10px;
+  background:rgba(17,17,24,0.97);border:1px solid rgba(186,151,49,0.3);border-radius:10px;
   padding:12px 14px;font-size:12px;color:#D4BFFA;font-family:var(--font-mono);
   line-height:1.6;z-index:25;animation:tooltipPulse 2s ease-in-out 3;
   pointer-events:none;text-align:center;
@@ -486,10 +479,10 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 }
 #share-cta button{
   font-family:var(--font-mono);font-size:12px;color:var(--primary);
-  background:var(--gold-dim);border:1px solid rgba(240,192,64,0.25);
+  background:var(--gold-dim);border:1px solid rgba(186,151,49,0.25);
   padding:6px 16px;border-radius:8px;cursor:pointer;transition:all .15s;
 }
-#share-cta button:hover{background:rgba(240,192,64,0.25);transform:scale(1.02)}
+#share-cta button:hover{background:rgba(186,151,49,0.25);transform:scale(1.02)}
 #share-copied{
   position:absolute;top:-24px;left:50%;transform:translateX(-50%);
   font-size:10px;color:var(--success);white-space:nowrap;display:none;
@@ -499,7 +492,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 #splash .splash-bridge{
   margin-top:10px;font-size:13px;font-family:var(--font-mono);
   color:var(--primary);padding:10px 22px;border-radius:10px;
-  background:transparent;border:1px solid rgba(240,192,64,0.4);
+  background:transparent;border:1px solid rgba(186,151,49,0.4);
   animation:splashFade .6s ease-out .45s both;position:relative;z-index:2;
   cursor:pointer;transition:all .15s;display:none;
 }
@@ -510,7 +503,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   display:none;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:440px;padding:0 20px;
 }
 #name-step.active{display:flex}
-#name-step .name-logo{font-family:var(--font-logo);font-weight:900;font-size:42px;color:var(--primary)}
+#name-step .name-logo{font-family:var(--font-logo);font-weight:900;font-size:42px}
 #name-step .name-prompt{font-size:20px;font-weight:700;text-align:center;color:var(--fg)}
 #name-step .name-input{
   width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
@@ -539,10 +532,10 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 
 .cert-card{
   background:linear-gradient(160deg,#13121A 0%,#18171F 100%);
-  border:2px solid rgba(240,192,64,0.5);border-radius:20px;
+  border:2px solid rgba(186,151,49,0.5);border-radius:20px;
   width:100%;max-width:560px;padding:36px 32px;text-align:center;
   animation:splashPop .4s ease-out;
-  box-shadow:0 0 40px rgba(240,192,64,0.12),0 0 80px rgba(240,192,64,0.06);
+  box-shadow:0 0 40px rgba(186,151,49,0.12),0 0 80px rgba(186,151,49,0.06);
   position:relative;
 }
 .cert-card .cert-wordmark{
@@ -611,7 +604,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 /* Certificate toast */
 #cert-toast{
   position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-  background:rgba(17,17,24,0.97);border:1px solid rgba(240,192,64,0.3);border-radius:10px;
+  background:rgba(17,17,24,0.97);border:1px solid rgba(186,151,49,0.3);border-radius:10px;
   padding:10px 20px;font-size:12px;color:var(--success);font-family:var(--font-mono);
   z-index:180;display:none;white-space:nowrap;
   animation:splashFade .3s ease-out;
@@ -708,8 +701,8 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 <div id="intro">
   <!-- Screen 1: What drives you? -->
   <div class="onboard-step active" id="onboard-1">
-    <div class="intro-logo">W?</div>
-    <h1>PeoplePuzzles™</h1>
+    <div class="intro-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
+    <h1>PeoplePuzzles</h1>
     <p class="onboard-subtitle">Every company runs a background check on you.<br>This game teaches you to run one on them.</p>
     <div class="drive-cards" id="drive-cards">
       <div class="drive-card" data-drive="money">
@@ -742,7 +735,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 
   <!-- Screen 1.5: Name + Email Input -->
   <div id="name-step">
-    <div class="name-logo">W?</div>
+    <div class="name-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <div class="name-prompt">Before we start — who are you?</div>
     <div class="name-sub">Your certificates will be personalized and emailed to you.</div>
     <input type="text" class="name-input" id="player-name-input" placeholder="Full name" autocomplete="name">
@@ -753,7 +746,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 
   <!-- Screen 2: Your first discovery (auto-combine) -->
   <div class="onboard-step" id="onboard-2">
-    <div class="intro-logo">W?</div>
+    <div class="intro-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <h1 style="font-size:clamp(1.2rem,4vw,1.8rem)">Your first discovery</h1>
     <p class="onboard-subtitle" id="onboard-2-desc"></p>
     <div class="auto-combine-stage" id="ac-stage">
@@ -780,7 +773,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 <div id="game" style="display:none">
   <!-- Left toolbar -->
   <div id="toolbar">
-    <div class="tool-btn" id="btn-logo" title="PeoplePuzzles™" style="color:var(--primary);font-family:var(--font-logo);font-weight:900;font-size:14px;margin-bottom:8px">W?</div>
+    <div class="tool-btn" id="btn-logo" title="PeoplePuzzles" style="font-family:var(--font-logo);font-weight:900;font-size:14px;margin-bottom:8px"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <button class="tool-btn" id="btn-cleanup" title="Clean up canvas">🧹<span class="tool-label">Clear</span></button>
     <button class="tool-btn" id="btn-encyclopedia" title="Encyclopedia">📖<span class="badge" id="enc-badge" style="display:none">0</span><span class="tool-label">Guide</span></button>
     <button class="tool-btn" id="btn-hint" title="Hint">💡<span class="tool-label">Hint</span></button>
@@ -879,7 +872,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 <!-- Campaign gate modal -->
 <div id="gate-modal">
   <div class="gate-panel">
-    <div class="gate-logo">W?</div>
+    <div class="gate-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <h2>You're on a roll.</h2>
     <p class="gate-sub">You've unlocked Tier 1 — but there's more to discover. Enter your info to keep playing and get early access when the full game launches April 6th.</p>
     <div class="gate-countdown" id="gate-countdown"></div>
@@ -923,7 +916,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 <!-- Certificate Modal -->
 <div id="cert-modal">
   <div class="cert-card" id="cert-card">
-    <div class="cert-wordmark">PeoplePuzzles™</div>
+    <div class="cert-wordmark">PeoplePuzzles</div>
     <div class="cert-achievement">Certificate of Achievement</div>
     <div class="cert-badge" id="cert-modal-badge"></div>
     <div class="cert-name" id="cert-modal-name"></div>
@@ -934,7 +927,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
     <div class="cert-issuer">Issued by Jackye Clayton · WDIWF</div>
     <div class="cert-gold-line"></div>
     <div class="cert-signature">Jackye Clayton</div>
-    <div class="cert-sig-title">Founder, PeoplePuzzles™ | WDIWF</div>
+    <div class="cert-sig-title">Founder, PeoplePuzzles | WDIWF</div>
   </div>
   <div class="cert-share-btns">
     <button class="cert-btn-linkedin" id="cert-share-linkedin">in &nbsp;Share on LinkedIn</button>
@@ -966,13 +959,13 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 
 <!-- Watermark -->
 <div id="watermark">
-  <span class="wm-logo">W?</span>
-  <span class="wm-text">PeoplePuzzles™</span>
+  <span class="wm-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></span>
+  <span class="wm-text">PeoplePuzzles</span>
 </div>
 
 <!-- Footer -->
 <div id="footer-attr">
-  Created by Jackye Clayton · <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+  Created by Jackye Clayton · WDIWF
 </div>
 
 <script>
@@ -1096,7 +1089,7 @@ var CERTS = [
   {name:'Due Diligence',req:['reality-check','informed-decision','employer-receipt'],badge:'\uD83D\uDEE1\uFE0F',insight:"You\u2019re protecting candidates from bad fits."},
   {name:'Advocacy',req:['follow-the-money','fair-process','values-alignment'],badge:'\u2696\uFE0F',insight:"You\u2019re not just filling roles \u2014 you\u2019re fighting for equity."},
   {name:'Truth-Teller',req:['integrity-score','corporate-xray','accountability-report'],badge:'\uD83E\uDE9E',insight:"You don\u2019t hide the truth. You hand it over and let people choose."},
-  {name:'Mastery',req:['dream-job','recruiter-mastery','the-equity-edge'],badge:'\uD83D\uDC51',insight:"Certified People Puzzler\u2122 \u2014 you see the whole board."},
+  {name:'Mastery',req:['dream-job','recruiter-mastery','the-equity-edge'],badge:'\uD83D\uDC51',insight:"Certified People Puzzler \u2014 you see the whole board."},
   {name:'Inclusion Architect',req:['inclusive-hiring-system','bias-interruption','neurodiversity'],badge:'\uD83E\uDDE9',insight:"You don\u2019t add inclusion to the process. You build the process around it."},
 ];
 
@@ -2236,7 +2229,7 @@ function updatePersonaDisplay(){
 
 document.getElementById('share-btn').addEventListener('click',function(){
   if(!currentPersona) return;
-  var shareText='I play like '+currentPersona.name+' '+currentPersona.emoji+' on PeoplePuzzles\u2122 by WDIWF \u2014 \u201C'+currentPersona.quote+'\u201D Play \u2192 '+window.location.href;
+  var shareText='I play like '+currentPersona.name+' '+currentPersona.emoji+' on PeoplePuzzles by WDIWF \u2014 \u201C'+currentPersona.quote+'\u201D Play \u2192 '+window.location.href;
 
   if(navigator.share){
     navigator.share({text:shareText}).catch(function(){});
@@ -2347,7 +2340,7 @@ document.getElementById('cert-share-linkedin').addEventListener('click',function
   if(!currentCertData) return;
   var cert=currentCertData;
   var gameURL=getGameURL();
-  var postText='\uD83C\uDFC6 I just earned the '+cert.name+' certification on PeoplePuzzles\u2122 by @Jackye Clayton!\n\n"'+cert.insight+'"\n\n72 elements to discover. Every combo teaches you something real about recruiting, hiring intelligence, and career decisions.\n\nPlay \u2192 '+gameURL+'\n\n#PeoplePuzzles #WDIWF #TalentAcquisition #Recruiting #HRTech';
+  var postText='\uD83C\uDFC6 I just earned the '+cert.name+' certification on PeoplePuzzles by @Jackye Clayton!\n\n"'+cert.insight+'"\n\n72 elements to discover. Every combo teaches you something real about recruiting, hiring intelligence, and career decisions.\n\nPlay \u2192 '+gameURL+'\n\n#PeoplePuzzles #WDIWF #TalentAcquisition #Recruiting #HRTech';
   // Copy post text to clipboard
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(postText).then(function(){
@@ -2370,7 +2363,7 @@ document.getElementById('cert-share-x').addEventListener('click',function(){
   if(!currentCertData) return;
   var cert=currentCertData;
   var gameURL=getGameURL();
-  var tweetText='\uD83C\uDFC6 Just earned the '+cert.name+' cert on PeoplePuzzles\u2122 by @JackyeClayton!\n\n"'+cert.insight+'"\n\nPlay \u2192 '+gameURL+'\n\n#PeoplePuzzles #WDIWF #Recruiting';
+  var tweetText='\uD83C\uDFC6 Just earned the '+cert.name+' cert on PeoplePuzzles by @JackyeClayton!\n\n"'+cert.insight+'"\n\nPlay \u2192 '+gameURL+'\n\n#PeoplePuzzles #WDIWF #Recruiting';
   var tweetURL='https://twitter.com/intent/tweet?text='+encodeURIComponent(tweetText);
   window.open(tweetURL,'_blank','width=600,height=400');
 });
@@ -2392,19 +2385,19 @@ document.getElementById('cert-download').addEventListener('click',function(){
   ctx.fillRect(0,0,W,H);
 
   // Gold border
-  ctx.strokeStyle='rgba(240,192,64,0.5)';
+  ctx.strokeStyle='rgba(186,151,49,0.5)';
   ctx.lineWidth=4;
   ctx.roundRect?ctx.roundRect(8,8,W-16,H-16,16):ctx.rect(8,8,W-16,H-16);
   ctx.stroke();
 
   // PeoplePuzzles wordmark
-  ctx.fillStyle='#7A7590';
+  ctx.fillStyle='#9898A0';
   ctx.font='12px monospace';
   ctx.textAlign='center';
-  ctx.fillText('PEOPLEPUZZLES\u2122',W/2,50);
+  ctx.fillText('PEOPLEPUZZLES',W/2,50);
 
   // Certificate of Achievement
-  ctx.fillStyle='#F0C040';
+  ctx.fillStyle='#BA9731';
   ctx.font='11px monospace';
   ctx.fillText('CERTIFICATE OF ACHIEVEMENT',W/2,70);
 
@@ -2413,17 +2406,17 @@ document.getElementById('cert-download').addEventListener('click',function(){
   ctx.fillText(cert.badge,W/2,130);
 
   // Cert name
-  ctx.fillStyle='#F0C040';
+  ctx.fillStyle='#BA9731';
   ctx.font='bold 32px sans-serif';
   ctx.fillText(cert.name,W/2,180);
 
   // Awarded to
-  ctx.fillStyle='#7A7590';
+  ctx.fillStyle='#9898A0';
   ctx.font='12px monospace';
   ctx.fillText('AWARDED TO',W/2,215);
 
   // Player name
-  ctx.fillStyle='#F0EBE0';
+  ctx.fillStyle='#F2F2F2';
   ctx.font='bold 28px sans-serif';
   ctx.fillText(playerName,W/2,255);
 
@@ -2449,7 +2442,7 @@ document.getElementById('cert-download').addEventListener('click',function(){
   var afterInsight=insightY+lines.length*24+20;
 
   // Date
-  ctx.fillStyle='#7A7590';
+  ctx.fillStyle='#9898A0';
   ctx.font='11px monospace';
   ctx.fillText(formatCertDate(),W/2,afterInsight);
 
@@ -2459,9 +2452,9 @@ document.getElementById('cert-download').addEventListener('click',function(){
   // Gold line
   var lineY=afterInsight+45;
   var grad=ctx.createLinearGradient(W/2-200,0,W/2+200,0);
-  grad.addColorStop(0,'rgba(240,192,64,0)');
-  grad.addColorStop(0.5,'#F0C040');
-  grad.addColorStop(1,'rgba(240,192,64,0)');
+  grad.addColorStop(0,'rgba(186,151,49,0)');
+  grad.addColorStop(0.5,'#BA9731');
+  grad.addColorStop(1,'rgba(186,151,49,0)');
   ctx.strokeStyle=grad;
   ctx.lineWidth=1;
   ctx.beginPath();
@@ -2470,17 +2463,17 @@ document.getElementById('cert-download').addEventListener('click',function(){
   ctx.stroke();
 
   // Signature
-  ctx.fillStyle='#F0C040';
+  ctx.fillStyle='#BA9731';
   ctx.font='italic 28px cursive';
   ctx.fillText('Jackye Clayton',W/2,lineY+36);
 
   // Sig title
-  ctx.fillStyle='#7A7590';
+  ctx.fillStyle='#9898A0';
   ctx.font='10px monospace';
-  ctx.fillText('Founder, PeoplePuzzles\u2122 | WDIWF',W/2,lineY+56);
+  ctx.fillText('Founder, PeoplePuzzles | WDIWF',W/2,lineY+56);
 
   // Game URL
-  ctx.fillStyle='rgba(240,192,64,0.4)';
+  ctx.fillStyle='rgba(186,151,49,0.4)';
   ctx.font='11px monospace';
   ctx.fillText(getGameURL(),W/2,H-20);
 
@@ -2650,6 +2643,102 @@ capturePlayerInfo=function(){
 var _saveInterval=setInterval(function(){
   if(state.discovered.length>0&&state.discovered.length%5===0) saveLead();
 },10000);
+
+
+// ============================
+// EASTER EGG: TEXTIO EMAIL BLOCKER
+// ============================
+var textioAttempts = {};
+
+function checkTextioEmail(inputEl) {
+  var email = inputEl.value.trim().toLowerCase();
+  if (!email.endsWith('@textio.com')) {
+    // Reset counter for non-textio emails
+    delete textioAttempts[inputEl.id];
+    return true; // allow
+  }
+
+  var id = inputEl.id;
+  if (!textioAttempts[id]) textioAttempts[id] = 0;
+  textioAttempts[id]++;
+
+  if (textioAttempts[id] >= 4) {
+    // 4th attempt — let it through, reset
+    delete textioAttempts[id];
+    return true;
+  }
+
+  // Show validation message
+  var msg;
+  if (textioAttempts[id] <= 2) {
+    msg = 'Please enter a valid email.';
+  } else {
+    // 3rd attempt — playful message with a flash
+    msg = 'No really\u2026 I\u2019m leaving my exes in the past. Try a personal email. \uD83D\uDE18';
+    inputEl.style.transition = 'background 0.15s';
+    inputEl.style.background = 'rgba(186,151,49,0.2)';
+    setTimeout(function() { inputEl.style.background = ''; }, 400);
+    // Clear field after a moment
+    setTimeout(function() { inputEl.value = ''; }, 1200);
+  }
+
+  // Show the message near the input
+  showTextioMsg(inputEl, msg);
+  return false; // block
+}
+
+function showTextioMsg(inputEl, msg) {
+  // Remove any existing textio message
+  var existing = inputEl.parentElement.querySelector('.textio-msg');
+  if (existing) existing.remove();
+
+  var el = document.createElement('div');
+  el.className = 'textio-msg';
+  el.style.cssText = 'font-size:12px;color:#BA9731;margin-top:4px;font-family:var(--font-mono);animation:splashFade .3s ease-out';
+  el.textContent = msg;
+  inputEl.parentElement.appendChild(el);
+
+  // Auto-remove after 4 seconds
+  setTimeout(function() { if (el.parentElement) el.remove(); }, 4000);
+}
+
+// Hook into form submissions
+// 1. Name step "Let's go" button — player-email-input
+var _origCapturePI = capturePlayerInfo;
+capturePlayerInfo = function() {
+  var emailInput = document.getElementById('player-email-input');
+  if (emailInput && emailInput.value.trim()) {
+    if (!checkTextioEmail(emailInput)) return; // blocked
+  }
+  _origCapturePI();
+};
+
+// 2. Gate form — gate-email
+var gateForm = document.getElementById('gate-form');
+var _origGateSubmit = gateForm.onsubmit;
+gateForm.addEventListener('submit', function(e) {
+  var emailInput = document.getElementById('gate-email');
+  if (emailInput && emailInput.value.trim()) {
+    if (!checkTextioEmail(emailInput)) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return false;
+    }
+  }
+}, true); // capture phase to run before the existing handler
+
+// 3. Signup form — signup-email
+var signupForm = document.getElementById('signup-form');
+signupForm.addEventListener('submit', function(e) {
+  var emailInput = document.getElementById('signup-email');
+  if (emailInput && emailInput.value.trim()) {
+    if (!checkTextioEmail(emailInput)) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return false;
+    }
+  }
+}, true); // capture phase
 
 // ============================
 // INIT
