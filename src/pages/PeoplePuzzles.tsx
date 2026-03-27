@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { usePageSEO } from "@/hooks/usePageSEO";
+import { usePageSEO } from "@/hooks/use-page-seo";
 
 const PeoplePuzzles = () => {
   usePageSEO({
