@@ -793,6 +793,300 @@ html, body {
 }
 .cta-secondary:hover { border-color: var(--fg-muted); color: var(--fg); }
 
+/* =========================================================
+   REACTIVE UI ENHANCEMENTS
+   ========================================================= */
+
+/* Pulsing gold guide — shows player exactly where to click next */
+.pulse-gold {
+  animation: pulse-border 2s infinite;
+  border-color: var(--gold) !important;
+  position: relative;
+}
+.pulse-gold::after {
+  content: '⟵ CLICK HERE';
+  position: absolute;
+  right: -90px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  opacity: 0.6;
+  animation: hint-fade 2s infinite;
+  white-space: nowrap;
+  pointer-events: none;
+}
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(240,192,64,0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(240,192,64,0); }
+  100% { box-shadow: 0 0 0 0 rgba(240,192,64,0); }
+}
+@keyframes hint-fade {
+  0%,100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+/* Pulsing guide on case files in sidebar */
+.case-file.pulse-gold::after {
+  right: auto;
+  left: calc(100% + 8px);
+  content: '⟵';
+}
+
+/* Typewriter reveal for beat text */
+.typewriter-container {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.typewriter-container.revealed {
+  max-height: 600px;
+}
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--gold);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink-cursor 0.8s step-end infinite;
+}
+@keyframes blink-cursor {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Clearance Level bar */
+.clearance-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+}
+.clearance-rank {
+  color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 11px;
+  transition: all 0.3s ease;
+}
+.clearance-rank.leveling-up {
+  animation: rank-flash 0.8s ease;
+}
+@keyframes rank-flash {
+  0% { color: white; transform: scale(1.3); text-shadow: 0 0 20px var(--gold); }
+  100% { color: var(--gold); transform: scale(1); text-shadow: none; }
+}
+.clearance-progress {
+  width: 80px;
+  height: 4px;
+  background: var(--surface-3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.clearance-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--red));
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 8px rgba(240,192,64,0.4);
+}
+
+/* Data Verified overlay */
+#verified-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  background: rgba(6,6,8,0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+#verified-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.verified-stamp {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 6px;
+  text-shadow: 0 0 40px rgba(52,211,153,0.4);
+  opacity: 0;
+  transform: scale(0.5) rotate(-5deg);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#verified-overlay.visible .verified-stamp {
+  opacity: 1;
+  transform: scale(1) rotate(-2deg);
+}
+.verified-subtitle {
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin-top: 16px;
+  letter-spacing: 2px;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.4s;
+}
+#verified-overlay.visible .verified-subtitle {
+  opacity: 1;
+}
+.verified-details {
+  margin-top: 32px;
+  display: flex;
+  gap: 32px;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.7s;
+}
+#verified-overlay.visible .verified-details {
+  opacity: 1;
+}
+.verified-detail {
+  text-align: center;
+}
+.verified-detail .vd-val {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+}
+.verified-detail .vd-val.gold { color: var(--gold); }
+.verified-detail .vd-val.red { color: var(--red); }
+.verified-detail .vd-val.blue { color: var(--blue); }
+.verified-detail .vd-lbl {
+  font-size: 9px;
+  color: var(--fg-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.verified-scanlines {
+  position: absolute;
+  inset: 0;
+  background: var(--scanline);
+  pointer-events: none;
+  opacity: 0.5;
+}
+.verified-continue {
+  margin-top: 40px;
+  padding: 12px 32px;
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0;
+  transition: all 0.3s ease, opacity 0.4s ease 1s;
+}
+#verified-overlay.visible .verified-continue {
+  opacity: 1;
+}
+.verified-continue:hover {
+  background: var(--green);
+  color: var(--bg);
+  box-shadow: 0 0 20px rgba(52,211,153,0.3);
+}
+
+/* Employer Search Widget in dossier */
+.employer-search-widget {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--gold-dim) 0%, transparent 100%);
+}
+.employer-search-widget h4 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.employer-search-widget p {
+  font-size: 11px;
+  color: var(--fg-muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.search-input-wrapper {
+  display: flex;
+  gap: 8px;
+}
+.search-input-wrapper input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-bright);
+  border-radius: 4px;
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.search-input-wrapper input::placeholder {
+  color: var(--fg-dim);
+}
+.search-input-wrapper input:focus {
+  border-color: var(--gold);
+}
+.search-input-wrapper button {
+  padding: 10px 16px;
+  background: var(--gold);
+  border: none;
+  border-radius: 4px;
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: box-shadow 0.2s ease;
+}
+.search-input-wrapper button:hover {
+  box-shadow: 0 0 16px rgba(240,192,64,0.3);
+}
+
+/* Rank-up notification banner */
+.rank-up-banner {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--surface-3);
+  border: 1px solid var(--gold);
+  padding: 12px 32px;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 2px;
+  border-radius: 6px;
+  z-index: 700;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 30px rgba(240,192,64,0.2);
+  text-align: center;
+}
+.rank-up-banner.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.rank-up-banner .rank-label {
+  display: block;
+  font-size: 9px;
+  color: var(--fg-muted);
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
 /* Embed mode */
 .embed-mode .top-bar { display: none !important; }
 .embed-mode .status-bar { display: none !important; }
@@ -847,6 +1141,21 @@ html, body {
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- RANK UP BANNER -->
+<div class="rank-up-banner" id="rank-up-banner">
+  <span class="rank-label">CLEARANCE UPGRADED</span>
+  <span id="rank-up-text"></span>
+</div>
+
+<!-- DATA VERIFIED OVERLAY -->
+<div id="verified-overlay">
+  <div class="verified-scanlines"></div>
+  <div class="verified-stamp" id="verified-stamp">DATA VERIFIED</div>
+  <div class="verified-subtitle" id="verified-subtitle"></div>
+  <div class="verified-details" id="verified-details"></div>
+  <button class="verified-continue" id="verified-continue">CONTINUE INVESTIGATION</button>
+</div>
+
 <!-- INTRO OVERLAY -->
 <div id="intro-overlay">
   <div class="intro-card">
@@ -886,9 +1195,12 @@ html, body {
       <div class="top-bar-status">TERMINAL ACTIVE</div>
     </div>
     <div class="score-display">
+      <div class="clearance-bar">
+        <span class="clearance-rank" id="clearance-rank">INTERN</span>
+        <div class="clearance-progress"><div class="clearance-fill" id="clearance-fill" style="width:0%"></div></div>
+      </div>
       <div class="score-item">INTEL <strong id="score-intel">0</strong></div>
       <div class="score-item">CONNECTIONS <strong id="score-connections">0/0</strong></div>
-      <div class="score-item">DEPTH <strong id="score-depth">0</strong></div>
     </div>
   </div>
 
@@ -1205,6 +1517,14 @@ const STATE = {
   nodesOnBoard: [],   // { el, caseId, nodeKey, x, y }
   started: false,
   complete: false,
+  currentRank: 'INTERN',
+  clearanceLevels: [
+    { rank: 'INTERN', minIntel: 0 },
+    { rank: 'ANALYST', minIntel: 500 },
+    { rank: 'INVESTIGATOR', minIntel: 1500 },
+    { rank: 'SPECIAL AGENT', minIntel: 3000 },
+    { rank: 'CHIEF AUDITOR', minIntel: 5000 }
+  ]
 };
 
 // Count total connections
@@ -1332,7 +1652,154 @@ function addIntel(pts, x, y) {
 
 function updateScoreDisplay() {
   document.getElementById('score-connections').textContent = STATE.connectionsFound + '/' + STATE.totalConnections;
-  document.getElementById('score-depth').textContent = STATE.maxDepth;
+}
+
+// =========================================================
+// CLEARANCE LEVEL SYSTEM
+// =========================================================
+function updateClearance() {
+  const levels = STATE.clearanceLevels;
+  let newRank = levels[0];
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (STATE.intel >= levels[i].minIntel) { newRank = levels[i]; break; }
+  }
+  
+  // Update progress bar
+  const maxIntel = levels[levels.length - 1].minIntel;
+  const pct = Math.min((STATE.intel / maxIntel) * 100, 100);
+  document.getElementById('clearance-fill').style.width = pct + '%';
+  
+  // Check for rank up
+  if (newRank.rank !== STATE.currentRank) {
+    const oldRank = STATE.currentRank;
+    STATE.currentRank = newRank.rank;
+    
+    // Update rank display with animation
+    const rankEl = document.getElementById('clearance-rank');
+    rankEl.textContent = newRank.rank;
+    rankEl.classList.add('leveling-up');
+    setTimeout(() => rankEl.classList.remove('leveling-up'), 800);
+    
+    // Show rank-up banner
+    sfxDeclassify();
+    const banner = document.getElementById('rank-up-banner');
+    document.getElementById('rank-up-text').textContent = newRank.rank;
+    banner.classList.add('visible');
+    setTimeout(() => banner.classList.remove('visible'), 3000);
+  }
+}
+
+// =========================================================
+// TYPEWRITER EFFECT
+// =========================================================
+function typewriterReveal(el, text, speed = 15) {
+  el.textContent = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'typewriter-cursor';
+  el.appendChild(cursor);
+  
+  let i = 0;
+  function type() {
+    if (i < text.length) {
+      el.insertBefore(document.createTextNode(text[i]), cursor);
+      i++;
+      setTimeout(type, speed + Math.random() * 10);
+    } else {
+      setTimeout(() => cursor.remove(), 1500);
+    }
+  }
+  type();
+}
+
+// =========================================================
+// DATA VERIFIED OVERLAY
+// =========================================================
+function showDataVerified(caseData) {
+  const overlay = document.getElementById('verified-overlay');
+  document.getElementById('verified-subtitle').textContent = 
+    caseData.company.toUpperCase() + ' — INVESTIGATION COMPLETE';
+  
+  const beats = caseData.beats;
+  document.getElementById('verified-details').innerHTML = `
+    <div class="verified-detail">
+      <div class="vd-val gold">${beats[0].amount}</div>
+      <div class="vd-lbl">Money Tracked</div>
+    </div>
+    <div class="verified-detail">
+      <div class="vd-val blue">${beats[1].amount}</div>
+      <div class="vd-lbl">${beats[1].detail}</div>
+    </div>
+    <div class="verified-detail">
+      <div class="vd-val red">${beats[2].amount}</div>
+      <div class="vd-lbl">${beats[2].detail}</div>
+    </div>
+  `;
+  
+  overlay.classList.add('visible');
+  sfxComplete();
+}
+
+document.getElementById('verified-continue').addEventListener('click', () => {
+  document.getElementById('verified-overlay').classList.remove('visible');
+});
+
+// =========================================================
+// EMPLOYER SEARCH
+// =========================================================
+function searchEmployer() {
+  const input = document.getElementById('employer-search-input');
+  if (!input) return;
+  const query = input.value.trim();
+  if (!query) {
+    showToast('\u26a0 Enter a company name to investigate');
+    return;
+  }
+  sfxClick();
+  const url = 'https://www.opensecrets.org/search?q=' + encodeURIComponent(query) + '&type=orgs';
+  window.open(url, '_blank', 'noopener,noreferrer');
+  showToast('\ud83d\udd0d Opening OpenSecrets dossier on ' + query.toUpperCase());
+}
+
+// =========================================================
+// GUIDED HIGHLIGHTS
+// =========================================================
+function updateGuidedHighlights() {
+  // Remove all existing pulse-gold classes
+  document.querySelectorAll('.pulse-gold').forEach(el => el.classList.remove('pulse-gold'));
+  
+  if (!STATE.started || STATE.complete) return;
+  
+  // If no case is selected, highlight the first available open case
+  if (!STATE.activeCaseId) {
+    const cases = document.querySelectorAll('.case-file:not(.classified)');
+    if (cases.length > 0) cases[0].classList.add('pulse-gold');
+    return;
+  }
+  
+  // If a case is selected, highlight the investigate button
+  const btns = document.querySelectorAll('.investigate-btn');
+  for (const btn of btns) {
+    const txt = btn.textContent;
+    if (txt.includes('FOLLOW') || txt.includes('UNCOVER') || txt.includes('EXPOSE')) {
+      btn.classList.add('pulse-gold');
+      // Scroll it into view
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
+  }
+  
+  // If current case is done, highlight next available case
+  const revealed = STATE.revealedBeats[STATE.activeCaseId] || [];
+  if (revealed.length === 3) {
+    const cases = document.querySelectorAll('.case-file:not(.classified):not(.active)');
+    for (const c of cases) {
+      const text = c.textContent;
+      if (!text.includes('FULLY DECLASSIFIED')) {
+        c.classList.add('pulse-gold');
+        return;
+      }
+    }
+  }
 }
 
 function flash(isRed = false) {
@@ -1398,6 +1865,7 @@ function selectCase(caseId) {
   renderDossier(c);
   
   document.getElementById('dossier-panel').classList.remove('collapsed');
+  setTimeout(updateGuidedHighlights, 100);
 }
 
 // =========================================================
@@ -1574,7 +2042,7 @@ function updateNodePositions(c) {
 // =========================================================
 // DOSSIER PANEL
 // =========================================================
-function renderDossier(c) {
+function renderDossier(c, newlyRevealedBeat) {
   document.getElementById('dossier-title').textContent = c.company;
   document.getElementById('dossier-subtitle').textContent = c.summary;
   
@@ -1584,23 +2052,53 @@ function renderDossier(c) {
   const revealed = STATE.revealedBeats[c.id] || [];
   
   c.beats.forEach((beat, i) => {
+    const isRevealed = revealed.includes(i);
+    const isNew = (newlyRevealedBeat === i);
     const div = document.createElement('div');
-    div.className = 'receipt-beat' + (revealed.includes(i) ? '' : ' locked');
+    div.className = 'receipt-beat' + (isRevealed ? '' : ' locked');
+    if (isNew) div.style.opacity = '0';
     
     const amountColor = beat.type === 'money' ? 'gold' : beat.type === 'impact' ? 'red' : '';
     
     div.innerHTML = `
       <div class="beat-tag ${beat.type}">${beat.tag}</div>
-      <div class="beat-headline">${beat.headline}</div>
-      <div class="beat-amount ${amountColor}">${beat.amount}</div>
-      <div style="font-size:10px;color:var(--fg-dim);margin-bottom:8px;">${beat.detail}</div>
-      <div class="beat-body">${beat.body}</div>
+      <div class="beat-headline"></div>
+      <div class="beat-amount ${amountColor}">${isRevealed ? beat.amount : ''}</div>
+      <div style="font-size:10px;color:var(--fg-dim);margin-bottom:8px;">${isRevealed ? beat.detail : ''}</div>
+      <div class="beat-body"></div>
     `;
+    
+    // For revealed beats, populate text (typewriter for newly revealed)
+    const headlineEl = div.querySelector('.beat-headline');
+    const bodyEl = div.querySelector('.beat-body');
+    
+    if (isRevealed && isNew) {
+      // Typewriter effect on new beat
+      setTimeout(() => {
+        div.style.transition = 'opacity 0.4s ease';
+        div.style.opacity = '1';
+        typewriterReveal(headlineEl, beat.headline, 12);
+        setTimeout(() => {
+          typewriterReveal(bodyEl, beat.body, 8);
+          // Fill in amount and detail with a fade
+          const amountEl = div.querySelector('.beat-amount');
+          const detailEl = amountEl.nextElementSibling;
+          amountEl.textContent = beat.amount;
+          detailEl.textContent = beat.detail;
+        }, beat.headline.length * 14 + 200);
+      }, 300);
+    } else if (isRevealed) {
+      headlineEl.textContent = beat.headline;
+      bodyEl.textContent = beat.body;
+    } else {
+      headlineEl.textContent = beat.headline;
+      bodyEl.textContent = beat.body;
+    }
     
     body.appendChild(div);
     
     // Add investigate button after each locked beat (only next one)
-    if (!revealed.includes(i) && (i === 0 || revealed.includes(i - 1))) {
+    if (!isRevealed && (i === 0 || revealed.includes(i - 1))) {
       const btn = document.createElement('button');
       btn.className = 'investigate-btn' + (beat.type === 'impact' ? ' red-btn' : '');
       btn.textContent = i === 0 ? '▶ FOLLOW THE MONEY' :
@@ -1611,7 +2109,7 @@ function renderDossier(c) {
     }
   });
   
-  // If all 3 beats revealed, show "case closed" + connected investigations
+  // If all 3 beats revealed, show "case closed" + search widget + connected investigations
   if (revealed.length === 3) {
     const closed = document.createElement('div');
     closed.style.cssText = 'padding:20px;text-align:center;';
@@ -1622,6 +2120,19 @@ function renderDossier(c) {
       </div>
     `;
     body.appendChild(closed);
+    
+    // Employer search widget
+    const searchWidget = document.createElement('div');
+    searchWidget.className = 'employer-search-widget';
+    searchWidget.innerHTML = `
+      <h4>🔍 SEARCH YOUR EMPLOYER</h4>
+      <p>Think your company isn't in the game? Every Fortune 500 company has a political spending footprint. Search OpenSecrets to see your employer's PAC contributions, lobbying spend, and political influence.</p>
+      <div class="search-input-wrapper">
+        <input type="text" placeholder="Enter company name..." id="employer-search-input" onkeydown="if(event.key==='Enter')searchEmployer()" />
+        <button onclick="searchEmployer()">INVESTIGATE</button>
+      </div>
+    `;
+    body.appendChild(searchWidget);
     
     // Show connected investigations
     const others = CASES.filter(x => x.id !== c.id);
@@ -1687,10 +2198,20 @@ async function revealBeat(caseId, beatIndex) {
   const labels = ['MONEY TRAIL REVEALED', 'ACCESS POINT UNCOVERED', 'IMPACT EXPOSED'];
   showToast('🔓 ' + labels[beatIndex]);
   
-  // Re-render
+  // Update clearance & guided highlights
+  updateClearance();
+  
+  // Re-render with typewriter on the newly revealed beat
   renderEvidenceBoard(c);
-  renderDossier(c);
+  renderDossier(c, beatIndex);
   renderCaseList();
+  setTimeout(updateGuidedHighlights, 100);
+  
+  // Show Data Verified overlay when case fully declassified
+  if (STATE.revealedBeats[caseId].length === 3) {
+    await sleep(800);
+    showDataVerified(c);
+  }
   
   // Check if this unlocks classified cases
   const totalRevealed = Object.values(STATE.revealedBeats).reduce((sum, arr) => sum + arr.length, 0);
@@ -1779,8 +2300,10 @@ document.getElementById('start-btn').addEventListener('click', () => {
   STATE.started = true;
   renderCaseList();
   updateScoreDisplay();
+  updateClearance();
   updateHudTime();
   setInterval(updateHudTime, 1000);
+  setTimeout(updateGuidedHighlights, 300);
 });
 
 // Boot on load
