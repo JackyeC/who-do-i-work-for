@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import { LoadingState } from "@/components/LoadingState";
 import { PartyBadge, computeRecipientMix } from "@/components/PartyBadge";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { toast } from "sonner";
+import { deduplicatePeople } from "@/lib/executive-utils";
 
 interface PACDetailDrawerProps {
   open: boolean;
@@ -79,6 +80,27 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
     },
     enabled: !!companyId && open,
   });
+
+  // Deduplicate executives to prevent duplicate entries
+  const dedupedExecutives = useMemo(
+    () => deduplicatePeople((executives || []) as any[]),
+    [executives]
+  );
+
+  // Deduplicate party breakdown — aggregate amounts for same party
+  const dedupedParty = useMemo(() => {
+    const map = new Map<string, any>();
+    for (const p of (partyBreakdown || [])) {
+      const key = (p as any).party?.toLowerCase().trim();
+      const existing = map.get(key);
+      if (existing) {
+        existing.amount += (p as any).amount || 0;
+      } else {
+        map.set(key, { ...p });
+      }
+    }
+    return Array.from(map.values());
+  }, [partyBreakdown]);
 
   const isLoading = partyLoading || candidatesLoading || execLoading;
   const flaggedCandidates = (candidates || []).filter((c: any) => c.flagged);
@@ -177,14 +199,14 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
               )}
 
               {/* Party breakdown chart */}
-              {partyBreakdown && partyBreakdown.length > 0 && (
+              {dedupedParty && dedupedParty.length > 0 && (
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-3">Party Split</h3>
                   <div className="h-40">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie data={partyBreakdown} cx="50%" cy="50%" innerRadius={40} outerRadius={65} paddingAngle={3} dataKey="amount" nameKey="party">
-                          {partyBreakdown.map((entry: any, i: number) => (
+                        <Pie data={dedupedParty} cx="50%" cy="50%" innerRadius={40} outerRadius={65} paddingAngle={3} dataKey="amount" nameKey="party">
+                          {dedupedParty.map((entry: any, i: number) => (
                             <Cell key={i} fill={entry.color} />
                           ))}
                         </Pie>
@@ -193,7 +215,7 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
                     </ResponsiveContainer>
                   </div>
                   <div className="flex justify-center gap-4 mt-2">
-                    {partyBreakdown.map((p: any) => (
+                    {dedupedParty.map((p: any) => (
                       <div key={p.party} className="flex items-center gap-1.5 text-xs">
                         <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
                         <span className="text-muted-foreground">{p.party}: {formatCurrency(p.amount)}</span>
@@ -204,7 +226,7 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
               )}
 
               {/* No individual recipients yet — show explanation */}
-              {(!candidates || candidates.length === 0) && partyBreakdown && partyBreakdown.length > 0 && (
+              {(!candidates || candidates.length === 0) && dedupedParty && dedupedParty.length > 0 && (
                 <div className="p-4 rounded-lg bg-muted/30 border border-border/60">
                   <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
                     <Flag className="w-4 h-4 text-muted-foreground" />
@@ -214,7 +236,7 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
                     We know how {companyName}'s PAC money splits by party. Pull individual recipient records from FEC to see exactly who gets the money.
                   </p>
                   <div className="space-y-2 mb-3">
-                    {partyBreakdown.filter((p: any) => p.amount > 0).map((p: any) => (
+                    {dedupedParty.filter((p: any) => p.amount > 0).map((p: any) => (
                       <div key={p.party} className="flex items-center justify-between p-2.5 rounded-lg bg-card border border-border/50">
                         <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color }} />
@@ -353,14 +375,14 @@ export function PACDetailDrawer({ open, onOpenChange, companyId, companyName, to
               )}
 
               {/* Executive donors */}
-              {executives && executives.length > 0 && (
+              {dedupedExecutives && dedupedExecutives.length > 0 && (
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                     <Users className="w-4 h-4 text-muted-foreground" />
                     Top Executive Donors (Personal Giving)
                   </h3>
                   <div className="space-y-1.5">
-                    {executives.map((exec: any) => (
+                    {dedupedExecutives.map((exec: any) => (
                       <div
                         key={exec.id}
                         className={cn(

@@ -22,7 +22,16 @@ interface InnovationSignalsProps {
 export function InnovationSignals({ companyId, companyName }: InnovationSignalsProps) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["patent-scan", companyName, companyId],
-    queryFn: () => fetchPatentData(companyName, companyId),
+    queryFn: ({ signal }) => {
+      // Race the fetch against a 15-second timeout to avoid indefinite loading
+      return Promise.race([
+        fetchPatentData(companyName, companyId),
+        new Promise<never>((_, reject) => {
+          const t = setTimeout(() => reject(new Error("USPTO request timed out")), 15_000);
+          signal?.addEventListener("abort", () => clearTimeout(t));
+        }),
+      ]);
+    },
     enabled: !!companyName,
     staleTime: 1000 * 60 * 60,
     retry: 1,

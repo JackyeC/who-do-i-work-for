@@ -167,22 +167,34 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
   const { data: canonicalSignals } = useCanonicalSignals(props.companyId);
   const slug = props.companySlug;
 
-  const signalMap = new Map(
-    (canonicalSignals || []).map(s => [s.signal_category, s])
-  );
+  // Group canonical signals by category — keep all signals, not just the last one
+  const signalMap = new Map<string, any[]>();
+  for (const s of (canonicalSignals || [])) {
+    const existing = signalMap.get(s.signal_category);
+    if (existing) {
+      existing.push(s);
+    } else {
+      signalMap.set(s.signal_category, [s]);
+    }
+  }
 
-  const staleWarning = getStaleWarning(canonicalSignals || null);
+  const staleWarning = getStaleWarning(canonicalSignals ?? null);
 
   // ── Hiring Reality ──
   const hiringSignals: Signal[] = [];
-  const hiringCanonical = signalMap.get('hiring_activity');
-  if (hiringCanonical?.summary) {
-    hiringSignals.push(buildSignalFromCanonical(
-      hiringCanonical,
-      [{ label: "Workforce Brief", to: `/workforce-brief?company=${slug}` }],
-      "Hiring activity is derived from active job postings, ATS detection, and career page analysis. Patterns like sudden surges or drops can indicate restructuring, growth, or ghost-job behavior."
-    ));
-  } else {
+  const hiringCanonicals = signalMap.get('hiring_activity') || [];
+  if (hiringCanonicals.length > 0) {
+    for (const hc of hiringCanonicals) {
+      if (hc.summary) {
+        hiringSignals.push(buildSignalFromCanonical(
+          hc,
+          [{ label: "Workforce Brief", to: `/workforce-brief?company=${slug}` }],
+          "Hiring activity is derived from active job postings, ATS detection, and career page analysis. Patterns like sudden surges or drops can indicate restructuring, growth, or ghost-job behavior."
+        ));
+      }
+    }
+  }
+  if (hiringSignals.length === 0) {
     if (props.hasJobPostings)
       hiringSignals.push({
         summary: `Active job postings detected. ${props.activeJobCount ? props.activeJobCount + " live role" + (props.activeJobCount !== 1 ? "s" : "") + " indexed." : "No unusual hiring patterns flagged."}`,
@@ -207,14 +219,19 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
 
   // ── Workforce Stability ──
   const stabilitySignals: Signal[] = [];
-  const stabilityCanonical = signalMap.get('workforce_stability');
-  if (stabilityCanonical?.summary) {
-    stabilitySignals.push(buildSignalFromCanonical(
-      stabilityCanonical,
-      [{ label: "Workforce Brief", to: `/workforce-brief?company=${slug}` }],
-      "Workforce stability is assessed through WARN Act filings, news reports of layoffs, and organizational restructuring signals detected in public filings."
-    ));
-  } else {
+  const stabilityCanonicals = signalMap.get('workforce_stability') || [];
+  if (stabilityCanonicals.length > 0) {
+    for (const sc of stabilityCanonicals) {
+      if (sc.summary) {
+        stabilitySignals.push(buildSignalFromCanonical(
+          sc,
+          [{ label: "Workforce Brief", to: `/workforce-brief?company=${slug}` }],
+          "Workforce stability is assessed through WARN Act filings, news reports of layoffs, and organizational restructuring signals detected in public filings."
+        ));
+      }
+    }
+  }
+  if (stabilitySignals.length === 0) {
     if (props.hasWarnNotices)
       stabilitySignals.push({
         summary: "WARN Act notices filed within the past 12 months — potential layoffs or plant closings.",
@@ -239,14 +256,19 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
 
   // ── Compensation & Market Position ──
   const compSignals: Signal[] = [];
-  const compCanonical = signalMap.get('compensation_transparency');
-  if (compCanonical?.summary) {
-    compSignals.push(buildSignalFromCanonical(
-      compCanonical,
-      undefined,
-      "Compensation transparency reflects whether the company publishes salary ranges, benefits details, and pay equity data. Higher transparency correlates with stronger employer branding."
-    ));
-  } else {
+  const compCanonicals = signalMap.get('compensation_transparency') || [];
+  if (compCanonicals.length > 0) {
+    for (const cc of compCanonicals) {
+      if (cc.summary) {
+        compSignals.push(buildSignalFromCanonical(
+          cc,
+          undefined,
+          "Compensation transparency reflects whether the company publishes salary ranges, benefits details, and pay equity data. Higher transparency correlates with stronger employer branding."
+        ));
+      }
+    }
+  }
+  if (compSignals.length === 0) {
     if (props.hasPayEquity)
       compSignals.push({
         summary: "Pay equity data available — signals suggest some level of compensation reporting.",
@@ -269,17 +291,22 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
 
   // ── Leadership & Influence ──
   const leadershipSignals: Signal[] = [];
-  const behaviorCanonical = signalMap.get('company_behavior');
-  if (behaviorCanonical?.summary) {
-    leadershipSignals.push(buildSignalFromCanonical(
-      behaviorCanonical,
-      [
-        { label: "Follow the Money", to: `/follow-the-money?company=${slug}` },
-        { label: "Influence Graph", to: `/influence-graph?company=${slug}` },
-      ],
-      "Company behavior signals aggregate political spending, lobbying activity, revolving-door connections, and public policy positions into a holistic influence profile."
-    ));
-  } else {
+  const behaviorCanonicals = signalMap.get('company_behavior') || [];
+  if (behaviorCanonicals.length > 0) {
+    for (const bc of behaviorCanonicals) {
+      if (bc.summary) {
+        leadershipSignals.push(buildSignalFromCanonical(
+          bc,
+          [
+            { label: "Follow the Money", to: `/follow-the-money?company=${slug}` },
+            { label: "Influence Graph", to: `/influence-graph?company=${slug}` },
+          ],
+          "Company behavior signals aggregate political spending, lobbying activity, revolving-door connections, and public policy positions into a holistic influence profile."
+        ));
+      }
+    }
+  }
+  if (leadershipSignals.length === 0) {
     if (props.executiveCount > 0)
       leadershipSignals.push({
         summary: `${props.executiveCount} executive(s) identified in public filings.`,
@@ -315,24 +342,28 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
 
   // ── Innovation & Growth ──
   const innovationSignals: Signal[] = [];
-  const innovCanonical = signalMap.get('innovation_activity');
-  if (innovCanonical?.summary) {
-    innovationSignals.push(buildSignalFromCanonical(
-      innovCanonical,
-      undefined,
-      "Innovation signals are derived from patent filings, R&D investment disclosures, and technology adoption patterns. Active innovation often correlates with job growth and competitive positioning."
-    ));
+  const innovCanonicals = signalMap.get('innovation_activity') || [];
+  for (const ic of innovCanonicals) {
+    if (ic.summary) {
+      innovationSignals.push(buildSignalFromCanonical(
+        ic,
+        undefined,
+        "Innovation signals are derived from patent filings, R&D investment disclosures, and technology adoption patterns. Active innovation often correlates with job growth and competitive positioning."
+      ));
+    }
   }
 
   // ── Employee Experience ──
   const sentimentSignals: Signal[] = [];
-  const sentCanonical = signalMap.get('public_sentiment');
-  if (sentCanonical?.summary) {
-    sentimentSignals.push(buildSignalFromCanonical(
-      sentCanonical,
-      undefined,
-      "Employee sentiment is gathered from public review platforms, social media mentions, and workforce surveys. Trends in sentiment can predict retention challenges and cultural shifts."
-    ));
+  const sentCanonicals = signalMap.get('public_sentiment') || [];
+  for (const sc of sentCanonicals) {
+    if (sc.summary) {
+      sentimentSignals.push(buildSignalFromCanonical(
+        sc,
+        undefined,
+        "Employee sentiment is gathered from public review platforms, social media mentions, and workforce surveys. Trends in sentiment can predict retention challenges and cultural shifts."
+      ));
+    }
   }
 
   return (

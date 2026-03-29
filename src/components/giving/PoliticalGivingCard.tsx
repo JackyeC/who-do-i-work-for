@@ -34,7 +34,7 @@ export function PoliticalGivingCard({ companyId, companyName, companySlug }: Pol
   const totalPac = company?.total_pac_spending || 0;
   const lobbyingSpend = company?.lobbying_spend || 0;
 
-  // Calculate party percentages
+  // Calculate party percentages — aggregate by party to handle duplicates
   const demAmount = partyBreakdown.filter((p: any) => p.party?.toLowerCase().includes("democrat")).reduce((s: number, p: any) => s + (p.amount || 0), 0);
   const repAmount = partyBreakdown.filter((p: any) => p.party?.toLowerCase().includes("republican")).reduce((s: number, p: any) => s + (p.amount || 0), 0);
   const otherAmount = Math.max(0, totalPac - demAmount - repAmount);

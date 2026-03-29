@@ -158,7 +158,22 @@ export function LeadershipInfluenceSection({
   const showSection = hasAnyData || executives.length === 0;
   if (!showSection && candidates.length === 0 && revolvingDoor.length === 0 && darkMoney.length === 0) return null;
 
-  const totalParty = partyBreakdown.reduce((s, p) => s + p.amount, 0);
+  // Deduplicate party breakdown — aggregate amounts for same party name
+  const deduplicatedParty = useMemo(() => {
+    const map = new Map<string, PartyBreakdown>();
+    for (const p of partyBreakdown) {
+      const key = p.party.toLowerCase().trim();
+      const existing = map.get(key);
+      if (existing) {
+        existing.amount += p.amount;
+      } else {
+        map.set(key, { ...p });
+      }
+    }
+    return Array.from(map.values());
+  }, [partyBreakdown]);
+
+  const totalParty = deduplicatedParty.reduce((s, p) => s + p.amount, 0);
 
   const renderExecRow = (exec: Executive) => (
     <div key={exec.id}>
@@ -384,11 +399,11 @@ export function LeadershipInfluenceSection({
               </button>
             )}
 
-            {partyBreakdown.length > 0 && totalParty > 0 && (
+            {deduplicatedParty.length > 0 && totalParty > 0 && (
               <div className="pt-1">
                 <p className="text-xs text-muted-foreground mb-2">Party Split</p>
                 <div className="flex h-3 rounded-full overflow-hidden bg-muted">
-                  {partyBreakdown.map((p) => (
+                  {deduplicatedParty.map((p) => (
                     <div
                       key={p.party}
                       className="h-full transition-all"
@@ -398,7 +413,7 @@ export function LeadershipInfluenceSection({
                   ))}
                 </div>
                 <div className="flex flex-wrap gap-3 mt-2">
-                  {partyBreakdown.map((p) => (
+                  {deduplicatedParty.map((p) => (
                     <div key={p.party} className="flex items-center gap-1.5">
                       <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
                       <span className="text-xs text-muted-foreground">{p.party}</span>
