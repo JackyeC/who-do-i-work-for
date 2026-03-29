@@ -125,7 +125,7 @@ Deno.serve(async (req: Request) => {
             .select('role')
             .eq('user_id', userId)
             .in('role', ['owner', 'admin', 'internal_test']);
-          isPrivilegedUser = (roleData && roleData.length > 0);
+                    isPrivilegedUser = !!(roleData && roleData.length > 0);
         } catch (e: any) {
           console.warn('[intelligence-scan] Role check failed (non-critical):', e);
         }
