@@ -23,7 +23,7 @@ const CREDENTIAL_BADGES: { label: string; url: string | null }[] = [
 
 const About = () => {
   usePageSEO({
-    title: "About — WDIWF by Jackye Clayton",
+    title: "About — Who Do I Work For by Jackye Clayton",
     description:
       "Meet Jackye Clayton — TA architect, HR Tech strategist, and voice behind the Inclusive AF podcast and But First, Coffee. After years inside the hiring machines of major HR tech companies, she built the tool she wished candidates always had.",
     path: "/about",
@@ -44,7 +44,7 @@ const About = () => {
             After years of building hiring systems for companies, I realized nobody was building the reverse.
           </h1>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[52ch]">
-            A system that lets people evaluate companies with the same rigor companies use to evaluate them. That's WDIWF.
+            A system that lets people evaluate companies with the same rigor companies use to evaluate them. That's Who Do I Work For.
           </p>
         </section>
 
@@ -54,7 +54,7 @@ const About = () => {
             <div className="bg-card border border-border rounded-lg overflow-hidden max-w-[320px]">
               <img
                 src={jackyeHeadshotSm}
-                alt="Jackye Clayton, Founder of WDIWF"
+                alt="Jackye Clayton, Founder of Who Do I Work For"
                 className="w-full aspect-square object-cover object-top"
                 loading="lazy"
                 decoding="async"
@@ -67,21 +67,21 @@ const About = () => {
                   Jackye Clayton has spent her career inside the machinery of hiring — building recruiting tech stacks, auditing talent acquisition pipelines, and advising HR teams on everything from AI screening tools to DEIB strategy. She's spoken on stages at Unleash America, Workhuman Live, and Transform, and currently serves as Associate Editor at <a href="https://hr-gazette.com/category/news-reviews/events/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">The HR Gazette</a>.
                 </p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Along the way, she noticed a fundamental asymmetry: companies have sophisticated systems for evaluating candidates. Candidates have Glassdoor and Google. That's the gap WDIWF was built to close.
+                  Along the way, she noticed a fundamental asymmetry: companies have sophisticated systems for evaluating candidates. Candidates have Glassdoor and Google. That's the gap Who Do I Work For was built to close.
                 </p>
               </div>
 
               <div>
                 <h2 className="font-sans text-lg font-bold text-foreground mb-3">The Why</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  The hiring process is a one-way mirror. Companies run background checks, behavioral assessments, and AI screenings on you while you're left making career decisions based on marketing copy and anonymous reviews. WDIWF flips that dynamic by giving candidates and employees the same quality of intelligence that companies use to evaluate them.
+                  The hiring process is a one-way mirror. Companies run background checks, behavioral assessments, and AI screenings on you while you're left making career decisions based on marketing copy and anonymous reviews. Who Do I Work For flips that dynamic by giving candidates and employees the same quality of intelligence that companies use to evaluate them.
                 </p>
               </div>
 
               <div>
                 <h2 className="font-sans text-lg font-bold text-foreground mb-3">The Voice Behind It</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  As the host of the <a href="https://www.inclusiveafpodcast.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Inclusive AF podcast</a>, co-host of <a href="https://wrkdefined.com/podcast/but-first-coffee" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">But First, Coffee</a> and <a href="https://www.linkedin.com/posts/jackyeclayton_people-in-squares-valentines-day-show-activity-7428078957075525633-kxn8" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">People in Squares</a>, and as a <a href="https://www.linkedin.com/learning/human-resources-writing-an-effective-job-description" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LinkedIn Learning instructor</a>, Jackye has spent years having the conversations the industry avoids — about accountability, performative diversity, and what "people-first culture" actually looks like when the cameras are off. WDIWF is the logical next step: turning those conversations into a tool.
+                  As the host of the <a href="https://www.inclusiveafpodcast.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Inclusive AF podcast</a>, co-host of <a href="https://wrkdefined.com/podcast/but-first-coffee" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">But First, Coffee</a> and <a href="https://www.linkedin.com/posts/jackyeclayton_people-in-squares-valentines-day-show-activity-7428078957075525633-kxn8" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">People in Squares</a>, and as a <a href="https://www.linkedin.com/learning/human-resources-writing-an-effective-job-description" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LinkedIn Learning instructor</a>, Jackye has spent years having the conversations the industry avoids — about accountability, performative diversity, and what "people-first culture" actually looks like when the cameras are off. Who Do I Work For is the logical next step: turning those conversations into a tool.
                 </p>
               </div>
 

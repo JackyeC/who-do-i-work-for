@@ -26,10 +26,10 @@ export function SiteFooter() {
             </p>
           </div>
 
-          {/* WDIWF Links */}
+          {/* Who Do I Work For Links */}
           <div>
             <p className="font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground/50 mb-3">
-              WDIWF
+              Who Do I Work For
             </p>
             <nav className="flex flex-col gap-2">
               <Link
@@ -148,7 +148,7 @@ export function SiteFooter() {
 
         <div className="border-t border-border pt-4 flex justify-between items-center flex-wrap gap-3">
           <p className="font-sans text-xs text-muted-foreground/50">
-            © {new Date().getFullYear()} WDIWF. A People Puzzles venture. Built
+            © {new Date().getFullYear()} Who Do I Work For. A People Puzzles venture. Built
             because you deserve to know.
           </p>
           <p className="font-sans text-xs text-muted-foreground/50">

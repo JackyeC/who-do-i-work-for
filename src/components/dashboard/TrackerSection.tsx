@@ -29,7 +29,7 @@ const COLUMNS: { key: TrackedApp["status"]; label: string; color: string }[] = [
 const INITIAL_APPS: TrackedApp[] = [
   { id: "1", company: "Meridian Health Systems", role: "People Operations Manager", appliedDate: "Mar 15, 2026", integrityScore: 82, status: "interviewing", notes: "Phone screen scheduled for Mar 22" },
   { id: "2", company: "Lighthouse Education Partners", role: "Curriculum Design Lead", appliedDate: "Mar 12, 2026", integrityScore: 88, status: "applied", notes: "" },
-  { id: "3", company: "Canopy Financial Group", role: "Senior Data Analyst", appliedDate: "Mar 10, 2026", integrityScore: 74, status: "offer", notes: "Offer letter received — reviewing with WDIWF dossier" },
+  { id: "3", company: "Canopy Financial Group", role: "Senior Data Analyst", appliedDate: "Mar 10, 2026", integrityScore: 74, status: "offer", notes: "Offer letter received — reviewing with Who Do I Work For dossier" },
   { id: "4", company: "Bloom Urban Agriculture", role: "Operations Manager", appliedDate: "Mar 8, 2026", integrityScore: 85, status: "applied", notes: "" },
   { id: "5", company: "TerraForge Manufacturing", role: "Sustainability Director", appliedDate: "Mar 5, 2026", integrityScore: 68, status: "archived", notes: "Passed — narrative gap concerns" },
 ];

@@ -161,7 +161,7 @@ export default function RepresentativeProfile() {
               {dataSources.map(s => (
                 <Badge key={s} variant="outline" className="text-xs px-1.5 py-0 border-border text-muted-foreground gap-1">
                   {s === "congress.gov" ? <Shield className="w-2.5 h-2.5" /> : <Database className="w-2.5 h-2.5" />}
-                  {s === "congress.gov" ? "Congress.gov" : s === "fec" ? "FEC" : "CivicLens DB"}
+                  {s === "congress.gov" ? "Congress.gov" : s === "fec" ? "FEC" : "Who Do I Work For DB"}
                 </Badge>
               ))}
               <span className="flex items-center gap-1 text-xs text-muted-foreground/50">

@@ -566,10 +566,10 @@ export default function InterviewDossier() {
         `}</style>
 
       <div className="top">
-        <div className="logo">WDIWF</div>
+        <div className="logo">Who Do I Work For</div>
         <div className="badge" style={{ background: `${T.green}22`, border: `1px solid ${T.green}55`, color: T.green }}>📋 INTERVIEW DOSSIER</div>
         <div style={{ color: "rgba(255,255,255,0.28)", fontSize: "0.75rem", fontFamily: "'DM Mono',monospace" }}>
-          Research updated {co.researchDate} · Powered by WDIWF Intelligence
+          Research updated {co.researchDate} · Powered by Who Do I Work For Intelligence
         </div>
         <div className="co-pills">
           {Object.entries(COMPANIES).map(([k, c]) => (
@@ -1112,7 +1112,7 @@ export default function InterviewDossier() {
               <div className="section">
                 <div style={{ fontWeight: 800, fontSize: "1rem", marginBottom: "0.85rem" }}>Market Intelligence</div>
                 <div style={{ background: `${T.gold}14`, border: `1.5px solid ${T.gold}40`, borderRadius: 11, padding: "0.85rem 1rem", marginBottom: "0.85rem" }}>
-                  <div style={{ color: T.muted, fontSize: "0.65rem", fontWeight: 700, fontFamily: "'DM Mono',monospace", marginBottom: "0.15rem" }}>MARKET RANGE — WDIWF COMP DATA</div>
+                  <div style={{ color: T.muted, fontSize: "0.65rem", fontWeight: 700, fontFamily: "'DM Mono',monospace", marginBottom: "0.15rem" }}>MARKET RANGE — Who Do I Work For COMP DATA</div>
                   <div style={{ color: T.gold, fontFamily: "'DM Mono',monospace", fontWeight: 900, fontSize: "1.35rem" }}>{co.negotiation?.marketRange}</div>
                   <div style={{ color: T.muted, fontSize: "0.72rem", lineHeight: 1.5, marginTop: "0.38rem" }}>{co.negotiation?.rsuNote}</div>
                 </div>
@@ -1226,7 +1226,7 @@ export default function InterviewDossier() {
                     {([
                       ["YOUR NAME *", recName, setRecName, "e.g. Jackye Clayton"] as const,
                       ["TITLE / ROLE", recTitle, setRecTitle, "e.g. Senior Recruiter, Agency Partner"] as const,
-                      ["FIRM OR COMPANY", recFirm, setRecFirm, "e.g. Clayton Consulting · WDIWF Partner"] as const,
+                      ["FIRM OR COMPANY", recFirm, setRecFirm, "e.g. Clayton Consulting · Who Do I Work For Partner"] as const,
                       ["YOUR EMAIL", recEmail, setRecEmail, "e.g. jackye@yourfirm.com"] as const,
                     ] as const).map(([label, val, setter, ph]) => (
                       <div key={label}>
@@ -1274,7 +1274,7 @@ export default function InterviewDossier() {
                 <div className="section" style={{ border: `1.5px solid ${recDisclosed ? T.green + "55" : T.border}`, background: recDisclosed ? `${T.green}05` : T.card }}>
                   <div style={{ fontWeight: 700, fontSize: "0.9rem", marginBottom: "0.25rem" }}>Recruiter Disclosure Pledge</div>
                   <div style={{ color: T.muted, fontSize: "0.74rem", lineHeight: 1.55, marginBottom: "0.65rem" }}>
-                    Sending a WDIWF dossier means you're committed to candidate transparency — not just placement velocity. This is what separates a bad-ass recruiter from one who just fills requisitions.
+                    Sending a Who Do I Work For dossier means you're committed to candidate transparency — not just placement velocity. This is what separates a bad-ass recruiter from one who just fills requisitions.
                   </div>
                   <label style={{ display: "flex", alignItems: "flex-start", gap: "0.65rem", cursor: "pointer" }}>
                     <input type="checkbox" checked={recDisclosed} onChange={e => setRecDisclosed(e.target.checked)} style={{ accentColor: T.green, marginTop: "0.1rem", flexShrink: 0 }} />
@@ -1313,7 +1313,7 @@ export default function InterviewDossier() {
                       <div style={{ fontWeight: 800, fontSize: "0.72rem", color: T.fg, fontFamily: "'DM Mono',monospace" }}>CANDIDATE PREVIEW — This is what your candidate will receive</div>
                     </div>
                     <div style={{ background: T.fg, padding: "1.1rem 1.25rem" }}>
-                      <div style={{ color: T.gold, fontWeight: 900, fontSize: "1.05rem", marginBottom: "0.15rem" }}>WDIWF Interview Dossier</div>
+                      <div style={{ color: T.gold, fontWeight: 900, fontSize: "1.05rem", marginBottom: "0.15rem" }}>Who Do I Work For Interview Dossier</div>
                       <div style={{ color: "rgba(240,235,224,0.5)", fontSize: "0.7rem", fontFamily: "'DM Mono',monospace", marginBottom: "0.75rem" }}>{co.emoji} {co.name} · Prepared by {recName}{recTitle ? `, ${recTitle}` : ""}{recFirm ? ` · ${recFirm}` : ""}</div>
                       {recNote && (
                         <div style={{ background: `${T.gold}15`, border: `1px solid ${T.gold}30`, borderRadius: 10, padding: "0.75rem 0.9rem", marginBottom: "0.75rem" }}>

@@ -646,7 +646,7 @@ export default function HRTechIntelligence() {
             <p className="text-xs text-muted-foreground">
               Last updated: March 25, 2026 · A{" "}
               <a href="/" className="text-primary/80 hover:text-primary">
-                WDIWF
+                Who Do I Work For
               </a>{" "}
               investigation · by{" "}
               <a href="/about" className="text-primary/80 hover:text-primary">

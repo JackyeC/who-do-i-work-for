@@ -10,7 +10,7 @@ import {
 import { Navigate } from "react-router-dom";
 
 const CATEGORY_CONFIG: Record<string, { icon: any; color: string; label: string }> = {
-  wdiwf_intel: { icon: Shield, color: "hsl(var(--primary))", label: "WDIWF Intel" },
+  wdiwf_intel: { icon: Shield, color: "hsl(var(--primary))", label: "Who Do I Work For Intel" },
   policy: { icon: AlertTriangle, color: "#E87040", label: "Policy" },
   dei: { icon: TrendingUp, color: "#9B6FE8", label: "DEI" },
   layoffs: { icon: AlertTriangle, color: "#E84040", label: "Layoffs" },
@@ -95,7 +95,7 @@ export default function BriefingPage() {
         <div className="text-center max-w-md">
           <Newspaper className="w-12 h-12 text-primary mx-auto mb-4" />
           <h2 className="text-lg font-semibold text-foreground font-display">Your briefing is loading.</h2>
-          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">WDIWF curates career intelligence from public records, federal filings, and workforce data. Your personalized briefing updates daily.</p>
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">Who Do I Work For curates career intelligence from public records, federal filings, and workforce data. Your personalized briefing updates daily.</p>
           <button onClick={() => fetchBriefing(true)} className="mt-6 inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg text-sm font-semibold hover:brightness-110 transition-all">
             <RefreshCw className="w-4 h-4" /> Generate Briefing
           </button>
@@ -265,7 +265,7 @@ export default function BriefingPage() {
                   <span className="text-sm font-bold text-foreground font-mono">{news.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-muted-foreground">WDIWF Intel</span>
+                  <span className="text-xs text-muted-foreground">Who Do I Work For Intel</span>
                   <span className="text-sm font-bold text-primary font-mono">{news.filter((n: any) => n.category === "wdiwf_intel").length}</span>
                 </div>
                 <div className="flex justify-between items-center">

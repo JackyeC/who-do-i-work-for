@@ -2,12 +2,7 @@ import { TopBar } from "./TopBar";
 import { MarketingNav } from "./MarketingNav";
 import { SiteFooter } from "./SiteFooter";
 import { Footer } from "@/components/Footer";
-import { Suspense, lazy } from "react";
 import { useLocation } from "react-router-dom";
-
-const BetaAgreementModal = lazy(() =>
-  import("@/components/BetaAgreementModal").then((m) => ({ default: m.BetaAgreementModal }))
-);
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -40,9 +35,6 @@ export function AppShell({ children }: AppShellProps) {
         <main className="flex-1 min-w-0">
           {children}
         </main>
-        <Suspense fallback={null}>
-          <BetaAgreementModal />
-        </Suspense>
       </div>
     );
   }
@@ -56,9 +48,6 @@ export function AppShell({ children }: AppShellProps) {
           {children}
         </main>
         <SiteFooter />
-        <Suspense fallback={null}>
-          <BetaAgreementModal />
-        </Suspense>
       </div>
     );
   }
@@ -74,9 +63,6 @@ export function AppShell({ children }: AppShellProps) {
         {children}
       </main>
       <Footer />
-      <Suspense fallback={null}>
-        <BetaAgreementModal />
-      </Suspense>
     </div>
   );
 }

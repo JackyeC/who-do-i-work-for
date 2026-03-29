@@ -95,7 +95,7 @@ export function HiringTransparencyCard({ companyName, dbCompanyId }: HiringTrans
   const handleDeepDive = async () => {
     setScanning(true);
     try {
-      const { data, error } = await supabase.functions.invoke("civiclens-intelligence-scan", {
+      const { data, error } = await supabase.functions.invoke("whodoiworkfor-intelligence-scan", {
         body: { companyId: dbCompanyId, companyName, scanParts: ['ai_hiring', 'audit_hunt'] },
       });
       if (error) throw error;

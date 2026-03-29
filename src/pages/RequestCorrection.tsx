@@ -159,7 +159,7 @@ export default function RequestCorrection() {
                 id="company_profile_url"
                 value={form.company_profile_url}
                 onChange={(e) => handleChange("company_profile_url", e.target.value)}
-                placeholder="https://civic-align.lovable.app/company/..."
+                placeholder="https://whodoiworkfor.com/company/..."
               />
             </div>
           </div>

@@ -358,7 +358,7 @@ export default function Methodology() {
             {/* ───── Legal Disclaimer ───── */}
             <section className="border-t border-border/60 pt-10">
               <p className="text-caption text-muted-foreground leading-relaxed">
-                WDIWF reports publicly available data and does not provide character assessments, legal advice, or employment recommendations.
+                Who Do I Work For reports publicly available data and does not provide character assessments, legal advice, or employment recommendations.
                 All signals are sourced from public records and verified watchdog databases (SPLC, ADL, FEC, SEC, BLS, EPA, OSHA, NLRB, CourtListener). 
                 Individual executive donations reflect personal giving and do not necessarily represent corporate policy.
                 Users should independently verify information before making employment decisions.

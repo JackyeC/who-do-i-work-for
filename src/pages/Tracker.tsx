@@ -94,7 +94,7 @@ export default function Tracker() {
 
   return (
     <>
-      <Helmet><title>My Application Tracker — WDIWF</title></Helmet>
+      <Helmet><title>My Application Tracker — Who Do I Work For</title></Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">

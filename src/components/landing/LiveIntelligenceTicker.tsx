@@ -55,7 +55,7 @@ export function LiveIntelligenceTicker() {
           {
             id: "fallback-1",
             headline: "Live intelligence scanning active \u2014 world-of-work news loading",
-            source_name: "WDIWF",
+            source_name: "Who Do I Work For",
             source_url: null,
             category: "general",
             is_controversy: false,

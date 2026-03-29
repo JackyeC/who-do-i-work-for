@@ -200,7 +200,7 @@ export function InstitutionalDNACard({ companyId, companyName }: Props) {
           <ShieldCheck className="w-3.5 h-3.5 text-muted-foreground shrink-0 mt-0.5" />
           <p className="text-xs text-muted-foreground leading-relaxed">
             Institutional alignment indicates which policy blueprints a company or its leadership supports
-            through funding or board membership. WDIWF provides these receipts so you can align your career
+            through funding or board membership. Who Do I Work For provides these receipts so you can align your career
             with the future you believe in. Sources: FEC filings · OpenSecrets · Organization leadership
             directories · Public board disclosures · SEC filings.
           </p>

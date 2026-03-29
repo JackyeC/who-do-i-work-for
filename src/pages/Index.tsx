@@ -25,16 +25,16 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const [heroQuery, setHeroQuery] = useState("");
 
   usePageSEO({
-    title: "WDIWF — Know Who You're Really Working For",
-    description: "WDIWF is career intelligence for people who refuse to find out the hard way. Forensically evaluate companies before you accept the offer.",
+    title: "Who Do I Work For — Career Intelligence by Jackye Clayton",
+    description: "Career intelligence built on public records. Research any employer — SEC filings, OSHA violations, political giving, compensation data. Know before you sign.",
     path: "/",
     jsonLd: {
       "@type": "WebApplication",
-      name: "WDIWF — Who Do I Work For?",
-      description: "Career intelligence platform that forensically evaluates companies — so you never accept an offer blind again.",
+      name: "Who Do I Work For",
+      description: "Career intelligence platform founded by Jackye Clayton. Research any employer using public records — so you never accept an offer blind again.",
       applicationCategory: "BusinessApplication",
       creator: { "@type": "Person", name: "Jackye Clayton" },
-      url: "https://wdiwf.jackyeclayton.com",
+      url: "https://whodoiworkfor.com",
     },
   });
 
@@ -113,9 +113,6 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           <p className="font-mono text-[10px] text-muted-foreground/50 mt-3 tracking-wide" style={{ opacity: 0, animation: "heroFadeIn 0.4s ease 1.2s forwards" }}>
             Powered by FEC, SEC EDGAR, BLS, OSHA, NLRB, and Senate Lobbying data.
           </p>
-          <p className="font-sans text-foreground mt-8 mb-2 tracking-tight" style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 800, letterSpacing: "-0.5px", opacity: 0, animation: "heroFadeIn 0.4s ease 1.4s forwards" }}>
-            Stop applying. Start aligning.
-          </p>
         </div>
       </section>
 
@@ -188,17 +185,17 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
       </section>
 
-      {/* ── SECTION 4: WHAT IS WDIWF? ── */}
+      {/* ── SECTION 4: WHAT IS Who Do I Work For? ── */}
       <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-24">
         <div className="max-w-[1100px] mx-auto">
           <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-3 text-center">
-            What is WDIWF?
+            What We Do
           </p>
           <h2 className="font-sans text-foreground leading-[1.1] mb-6 text-center" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)", fontWeight: 800 }}>
             Every company runs a background check on you. This is yours on them.
           </h2>
           <p className="font-sans text-sm text-muted-foreground leading-relaxed max-w-[600px] mx-auto text-center mb-14">
-            WDIWF aggregates public data — PAC filings, OSHA citations, lobbying disclosures, WARN Act notices, SEC filings — and turns it into a forensic employer profile. So you can see the receipts before you sign.
+            We aggregate public data — PAC filings, OSHA citations, lobbying disclosures, WARN Act notices, SEC filings — and turn it into a forensic employer profile. So you can see the receipts before you sign.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
@@ -206,7 +203,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               {
                 icon: <FileSearch className="w-8 h-8 text-primary" strokeWidth={1.5} />,
                 title: "Forensic Intelligence",
-                body: "Go deeper than Glassdoor. WDIWF pulls the data companies hope you never see — leadership turnover, DEIB follow-through, legal filings, and the gap between what they promise and what they deliver.",
+                body: "Go deeper than Glassdoor. We pull the data companies hope you never see — leadership turnover, DEIB follow-through, legal filings, and the gap between what they promise and what they deliver.",
               },
               {
                 icon: <Layers className="w-8 h-8 text-primary" strokeWidth={1.5} />,
@@ -311,7 +308,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 Companies interview you. But who's interviewing them?
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                The Integrity Gap is the distance between what a company says about itself and what it actually does. Their careers page says "people-first." Their turnover data says otherwise. WDIWF closes that gap — giving you the forensic tools to evaluate employers with the same rigor they use to evaluate you.
+                The Integrity Gap is the distance between what a company says about itself and what it actually does. Their careers page says "people-first." Their turnover data says otherwise. Who Do I Work For closes that gap — giving you the forensic tools to evaluate employers with the same rigor they use to evaluate you.
               </p>
             </div>
             <div>
@@ -350,12 +347,12 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               {
                 persona: "Career Coaches & Advisors",
                 quote: '"My client deserves better intel."',
-                body: "Give your clients real data to fuel career decisions. WDIWF turns your coaching conversations from opinion-based to evidence-based.",
+                body: "Give your clients real data to fuel career decisions. Who Do I Work For turns your coaching conversations from opinion-based to evidence-based.",
               },
               {
                 persona: "TA Leaders",
                 quote: '"Is our house in order?"',
-                body: "The best candidates are already researching you. WDIWF shows you what they'll find — so you can fix it before it costs you a hire.",
+                body: "The best candidates are already researching you. Who Do I Work For shows you what they'll find — so you can fix it before it costs you a hire.",
               },
             ].map((card) => (
               <div key={card.persona} className="rounded-xl p-7 bg-card border border-border hover:border-primary/30 transition-colors">
@@ -385,7 +382,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 items-start">
                 <img
                   src={jackyeHeadshotSm}
-                  alt="Jackye Clayton, Founder of WDIWF"
+                  alt="Jackye Clayton, Founder of Who Do I Work For"
                   className="w-24 h-24 rounded-full object-cover"
                   width={96}
                   height={96}
@@ -394,7 +391,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 />
                 <div>
                   <p className="font-sans text-muted-foreground leading-relaxed mb-6" style={{ fontSize: "15px", maxWidth: "56ch" }}>
-                    WDIWF is created by Jackye Clayton — TA architect, HR Tech strategist, LinkedIn Learning instructor, and Associate Editor at The HR Gazette. Host of the Inclusive AF podcast, co-host of But First, Coffee and People in Squares. After years inside the hiring machines of major HR tech companies, she's now building the tool she wished candidates always had.
+                    Who Do I Work For is created by Jackye Clayton — TA architect, HR Tech strategist, LinkedIn Learning instructor, and Associate Editor at The HR Gazette. Host of the Inclusive AF podcast, co-host of But First, Coffee and People in Squares. After years inside the hiring machines of major HR tech companies, she's now building the tool she wished candidates always had.
                   </p>
                   <div className="flex items-center gap-3 flex-wrap">
                     {[

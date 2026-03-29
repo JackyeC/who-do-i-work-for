@@ -338,7 +338,7 @@ export default function AutoApply() {
   const [submitting, setSubmitting] = useState(false);
 
   usePageSEO({
-    title: "Apply When It Counts™ — WDIWF",
+    title: "Apply When It Counts™ — Who Do I Work For",
     description: "Configure your AI job search agent. Tell us your aligned role, values, and non-negotiables.",
     path: "/auto-apply",
   });
@@ -593,7 +593,7 @@ export default function AutoApply() {
   if (done) {
     return (
       <div className="min-h-screen flex flex-col items-center px-6 py-16" style={{ background: "#0a0a0e" }}>
-        <Helmet><title>Agent Ready — WDIWF</title></Helmet>
+        <Helmet><title>Agent Ready — Who Do I Work For</title></Helmet>
         <svg className="fixed inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0, opacity: 0.04 }}>
           <filter id="aa-grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" /></filter>
           <rect width="100%" height="100%" filter="url(#aa-grain)" />
@@ -664,7 +664,7 @@ export default function AutoApply() {
 
   return (
     <div className="min-h-screen flex flex-col items-center px-6 py-16" style={{ background: "#0a0a0e" }}>
-      <Helmet><title>Set Up Your Job Search Agent — WDIWF</title></Helmet>
+      <Helmet><title>Set Up Your Job Search Agent — Who Do I Work For</title></Helmet>
       <svg className="fixed inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0, opacity: 0.04 }}>
         <filter id="aa-grain2"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch" /></filter>
         <rect width="100%" height="100%" filter="url(#aa-grain2)" />

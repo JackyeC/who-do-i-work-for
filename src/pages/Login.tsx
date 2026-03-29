@@ -15,8 +15,8 @@ import { Shield, ArrowRight, Mail, Loader2, Sparkles } from "lucide-react";
 
 export default function Login() {
   usePageSEO({
-    title: "Get Started — WDIWF Career Intelligence",
-    description: "Join WDIWF to forensically evaluate any employer. Access company intelligence, offer reviews, and career strategy tools.",
+    title: "Get Started — Who Do I Work For Career Intelligence",
+    description: "Join Who Do I Work For to forensically evaluate any employer. Access company intelligence, offer reviews, and career strategy tools.",
     path: "/login",
   });
 

@@ -16,7 +16,7 @@ export function ShareVoteCard({ brandName, brandEmoji, opponentName, regionName,
 
   const tensionLine = tensionLabel ? `\nTension: ${tensionLabel}` : "";
   const shareText = `I just backed ${brandEmoji} ${brandName} over ${opponentName} in the ${regionName} Region of Brand Madness 2026!${tensionLine} ${votePercent}% agree with me. See the receipts 👇`;
-  const shareUrl = "https://who-do-i-work-for.lovable.app/brand-madness";
+  const shareUrl = "https://whodoiworkfor.com/brand-madness";
 
   const shareToTwitter = () => {
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, "_blank");

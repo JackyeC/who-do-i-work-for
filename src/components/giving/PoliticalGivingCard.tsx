@@ -160,7 +160,7 @@ export function PoliticalGivingCard({ companyId, companyName, companySlug }: Pol
         borderTop: "1px solid rgba(255,255,255,0.07)",
         paddingTop: "12px",
       }}>
-        Individual donation data sourced from FEC public records pursuant to 52 U.S.C. §30104. Contributions over $200 are required by law to be publicly disclosed. Cause classifications are based on publicly available voting records, congressional scorecards, and watchdog organization ratings (HRC, LCV, Brennan Center, AFL-CIO). This data reflects personal giving and does not represent company policy. WDIWF does not make character assessments or political endorsements. We connect the dots — you make the call.
+        Individual donation data sourced from FEC public records pursuant to 52 U.S.C. §30104. Contributions over $200 are required by law to be publicly disclosed. Cause classifications are based on publicly available voting records, congressional scorecards, and watchdog organization ratings (HRC, LCV, Brennan Center, AFL-CIO). This data reflects personal giving and does not represent company policy. Who Do I Work For does not make character assessments or political endorsements. We connect the dots — you make the call.
       </p>
     </div>
   );

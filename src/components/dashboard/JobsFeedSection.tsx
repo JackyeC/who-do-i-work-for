@@ -156,7 +156,7 @@ export function JobsFeedSection() {
         <div className="flex items-center gap-3">
           <Shield className="w-5 h-5 text-civic-green shrink-0" />
           <p className="text-sm text-foreground/90">
-            <span className="font-semibold">WDIWF only shows you roles at companies that passed our integrity check.</span>
+            <span className="font-semibold">Who Do I Work For only shows you roles at companies that passed our integrity check.</span>
             {" "}Every listing here has been screened for transparency, governance, and worker treatment signals.
           </p>
         </div>

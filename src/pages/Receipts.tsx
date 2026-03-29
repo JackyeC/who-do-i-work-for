@@ -202,7 +202,7 @@ export default function Receipts() {
             How We Verify Our Investigations
           </h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Every Receipts report follows the WDIWF framework: four pillars of
+            Every Receipts report follows the Who Do I Work For framework: four pillars of
             analysis (Integrity Gap, Labor Impact, Safety Alert, Connected Dots),
             with all data sourced from Tier 1 government records and Tier 2
             company disclosures. No anonymous tips. No AI hallucinations. Just
@@ -217,7 +217,7 @@ export default function Receipts() {
         </div>
         <p className="text-sm text-muted-foreground text-center">
           <strong className="text-foreground">Jackye Clayton</strong> — Building
-          WDIWF to give workers the intelligence they deserve.
+          Who Do I Work For to give workers the intelligence they deserve.
         </p>
       </section>
     </div>

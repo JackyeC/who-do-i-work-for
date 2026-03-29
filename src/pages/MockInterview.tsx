@@ -29,7 +29,7 @@ const PREP_QUESTIONS: PrepQuestion[] = [
   {
     question: "How do you approach building consensus across teams with competing priorities?",
     category: "Leadership",
-    tip: "Focus on the process, not the outcome. WDIWF-aligned candidates show they listen before persuading. Mention how you surface hidden objections — that signals emotional intelligence.",
+    tip: "Focus on the process, not the outcome. Who Do I Work For-aligned candidates show they listen before persuading. Mention how you surface hidden objections — that signals emotional intelligence.",
   },
   {
     question: "Describe a project where the right thing to do conflicted with the fastest thing to do.",
@@ -39,7 +39,7 @@ const PREP_QUESTIONS: PrepQuestion[] = [
   {
     question: "What does accountability look like to you — both from leadership and from yourself?",
     category: "Culture",
-    tip: "Ask yourself: does this company actually practice accountability, or just talk about it? Use your WDIWF dossier to compare their stated values to employee reviews. Your answer should signal you expect reciprocity.",
+    tip: "Ask yourself: does this company actually practice accountability, or just talk about it? Use your Who Do I Work For dossier to compare their stated values to employee reviews. Your answer should signal you expect reciprocity.",
   },
   {
     question: "Ask them about the gap between their careers page and their employee reviews — they will tell you everything.",
@@ -187,7 +187,7 @@ export default function MockInterview() {
   return (
     <>
       <Helmet>
-        <title>Mock Interview — WDIWF</title>
+        <title>Mock Interview — Who Do I Work For</title>
       </Helmet>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         {/* Header */}
@@ -320,7 +320,7 @@ export default function MockInterview() {
                         <div className="px-4 pb-4">
                           <div className="rounded-lg bg-[hsl(var(--civic-gold))]/5 border border-[hsl(var(--civic-gold))]/10 p-3">
                             <p className="text-xs font-medium text-[hsl(var(--civic-gold-muted))] flex items-center gap-1.5 mb-1.5">
-                              <Lightbulb className="w-3 h-3" /> WDIWF Coaching Tip
+                              <Lightbulb className="w-3 h-3" /> Who Do I Work For Coaching Tip
                             </p>
                             <p className="text-sm text-foreground/80 leading-relaxed">{q.tip}</p>
                           </div>

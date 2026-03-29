@@ -127,7 +127,7 @@ export function InsiderScoreBreakdown({ companyId, companyName, insiderScore }: 
         </button>
         {explainerOpen && (
           <div className="px-4 pb-4 text-xs text-muted-foreground leading-relaxed border-t border-border/30 pt-3">
-            Every company runs a background check on candidates. WDIWF checks whether the people already inside got there on merit — or on who they know. This score is sourced from SEC proxy statements, ProPublica's nonprofit explorer, and public board disclosures. It is a transparency metric, not a character assessment.
+            Every company runs a background check on candidates. Who Do I Work For checks whether the people already inside got there on merit — or on who they know. This score is sourced from SEC proxy statements, ProPublica's nonprofit explorer, and public board disclosures. It is a transparency metric, not a character assessment.
           </div>
         )}
       </div>

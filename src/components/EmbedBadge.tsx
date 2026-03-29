@@ -13,14 +13,14 @@ interface EmbedBadgeProps {
 export function EmbedBadge({ slug, companyName }: EmbedBadgeProps) {
   const [copied, setCopied] = useState<string | null>(null);
 
-  const scriptTag = `<script src="https://civic-align.lovable.app/embed/civiclens-badge.js" defer></script>`;
+  const scriptTag = `<script src="https://whodoiworkfor.com/embed/whodoiworkfor-badge.js" defer></script>`;
 
   const lightEmbed = `<!-- Who Do I Work For? Transparency Badge for ${companyName} -->
-<div data-civiclens-badge="${slug}"></div>
+<div data-whodoiworkfor-badge="${slug}"></div>
 ${scriptTag}`;
 
   const darkEmbed = `<!-- Who Do I Work For? Transparency Badge for ${companyName} (Dark) -->
-<div data-civiclens-badge="${slug}" data-theme="dark"></div>
+<div data-whodoiworkfor-badge="${slug}" data-theme="dark"></div>
 ${scriptTag}`;
 
   const handleCopy = (code: string, label: string) => {
@@ -62,7 +62,7 @@ ${scriptTag}`;
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground font-medium tracking-wide">CIVIC FOOTPRINT</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Transparency Profile Available · WDIWF?</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Transparency Profile Available · Who Do I Work For?</div>
                 </div>
               </div>
             </div>
@@ -90,7 +90,7 @@ ${scriptTag}`;
                 </div>
                 <div>
                   <div className="text-xs font-medium tracking-wide" style={{ color: "hsl(var(--muted-foreground))" }}>CIVIC FOOTPRINT</div>
-                  <div className="text-xs mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>Transparency Profile Available · WDIWF?</div>
+                  <div className="text-xs mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>Transparency Profile Available · Who Do I Work For?</div>
                 </div>
               </div>
             </div>

@@ -4,7 +4,7 @@ import { useLinkedIn } from "@/hooks/use-linkedin";
 
 const PeoplePuzzles = () => {
   usePageSEO({
-    title: "PeoplePuzzles™ — The Recruiting Intelligence Game | WDIWF",
+    title: "PeoplePuzzles™ — The Recruiting Intelligence Game | Who Do I Work For",
     description: "Every company runs a background check on you. This game teaches you to run one on them. 72 combos. 6 tiers. 8 certifications. Built on real recruiting intelligence by Jackye Clayton.",
     path: "/peoplepuzzles"
   });
@@ -14,7 +14,7 @@ const PeoplePuzzles = () => {
 
   // Listen for LinkedIn share requests from the game iframe
   const handleMessage = useCallback(async (event: MessageEvent) => {
-    if (event.data?.type !== "WDIWF_LINKEDIN_SHARE") return;
+    if (event.data?.type !== "Who Do I Work For_LINKEDIN_SHARE") return;
 
     const { playerName, certName, certBadge, insightQuote, imageBase64 } = event.data.payload;
     const iframe = iframeRef.current?.contentWindow;
@@ -22,7 +22,7 @@ const PeoplePuzzles = () => {
     if (!isConnected) {
       // Tell the game iframe the user needs to connect LinkedIn first
       iframe?.postMessage({
-        type: "WDIWF_LINKEDIN_RESULT",
+        type: "Who Do I Work For_LINKEDIN_RESULT",
         success: false,
         needsAuth: true,
         error: "Connect LinkedIn first to auto-share."
@@ -41,14 +41,14 @@ const PeoplePuzzles = () => {
         imageBase64,
       });
       iframe?.postMessage({
-        type: "WDIWF_LINKEDIN_RESULT",
+        type: "Who Do I Work For_LINKEDIN_RESULT",
         success: true,
         postId: result.postId,
       }, "*");
     } catch (err: any) {
       if (err.message === "NEEDS_AUTH") {
         iframe?.postMessage({
-          type: "WDIWF_LINKEDIN_RESULT",
+          type: "Who Do I Work For_LINKEDIN_RESULT",
           success: false,
           needsAuth: true,
           error: "LinkedIn session expired. Reconnecting..."
@@ -56,7 +56,7 @@ const PeoplePuzzles = () => {
         connectLinkedIn("/peoplepuzzles");
       } else {
         iframe?.postMessage({
-          type: "WDIWF_LINKEDIN_RESULT",
+          type: "Who Do I Work For_LINKEDIN_RESULT",
           success: false,
           error: err.message || "Failed to share on LinkedIn"
         }, "*");
@@ -74,7 +74,7 @@ const PeoplePuzzles = () => {
       <iframe
         ref={iframeRef}
         src="/peoplepuzzles-app.html"
-        title="PeoplePuzzles™ by WDIWF"
+        title="PeoplePuzzles™ by Who Do I Work For"
         style={{
           width: "100%",
           height: "100%",

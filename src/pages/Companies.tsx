@@ -531,7 +531,7 @@ export default function Companies() {
       <section className="px-4 pb-16">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs text-muted-foreground/70 leading-relaxed">
-            Listings are based on publicly available data. WDIWF does not endorse any organization.
+            Listings are based on publicly available data. Who Do I Work For does not endorse any organization.
             Verification reflects data consistency, not a value judgment. <Link to="/methodology" className="text-primary hover:underline">See methodology →</Link>
           </p>
         </div>

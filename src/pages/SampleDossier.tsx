@@ -86,7 +86,7 @@ export default function SampleDossier() {
   const navigate = useNavigate();
 
   usePageSEO({
-    title: "Audit Any Employer — WDIWF Company Dossier",
+    title: "Audit Any Employer — Who Do I Work For Company Dossier",
     description:
       "Search any company and get a full integrity dossier powered by public data. Know who you're working for before you accept the offer.",
     path: "/dossier",
@@ -99,7 +99,7 @@ export default function SampleDossier() {
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#0a0a0e" }}>
       <Helmet>
-        <title>Audit Any Employer — WDIWF Company Dossier</title>
+        <title>Audit Any Employer — Who Do I Work For Company Dossier</title>
       </Helmet>
 
       {/* Grain */}

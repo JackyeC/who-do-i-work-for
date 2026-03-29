@@ -30,7 +30,7 @@ export function DemoSafeModeProvider({ children }: { children: ReactNode }) {
 
   const [isDemoSafe, setDemoSafe] = useState(false);
   const [previewTier, setPreviewTierState] = useState<PremiumTier | null>(() => {
-    const saved = localStorage.getItem("civiclens-preview-tier");
+    const saved = localStorage.getItem("whodoiworkfor-preview-tier");
     return saved === "free" || saved === "candidate" || saved === "professional" ? saved : null;
   });
 
@@ -40,18 +40,18 @@ export function DemoSafeModeProvider({ children }: { children: ReactNode }) {
     if (!canToggle) {
       setDemoSafe(false);
       setPreviewTierState(null);
-      localStorage.removeItem("civiclens-demo-safe");
-      localStorage.removeItem("civiclens-preview-tier");
+      localStorage.removeItem("whodoiworkfor-demo-safe");
+      localStorage.removeItem("whodoiworkfor-preview-tier");
       return;
     }
     // Restore persisted preference for authorized users
-    if (localStorage.getItem("civiclens-demo-safe") === "true") {
+    if (localStorage.getItem("whodoiworkfor-demo-safe") === "true") {
       setDemoSafe(true);
     }
     // Auto-activate for internal_test users
     if (isInternalTest && !isDemoSafe) {
       setDemoSafe(true);
-      localStorage.setItem("civiclens-demo-safe", "true");
+      localStorage.setItem("whodoiworkfor-demo-safe", "true");
     }
   }, [isLoading, canToggle, isInternalTest]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -59,7 +59,7 @@ export function DemoSafeModeProvider({ children }: { children: ReactNode }) {
     if (!canToggle) return;
     setDemoSafe((prev) => {
       const next = !prev;
-      localStorage.setItem("civiclens-demo-safe", String(next));
+      localStorage.setItem("whodoiworkfor-demo-safe", String(next));
       return next;
     });
   }, [canToggle]);
@@ -68,9 +68,9 @@ export function DemoSafeModeProvider({ children }: { children: ReactNode }) {
     if (!canToggle) return;
     setPreviewTierState(tier);
     if (tier) {
-      localStorage.setItem("civiclens-preview-tier", tier);
+      localStorage.setItem("whodoiworkfor-preview-tier", tier);
     } else {
-      localStorage.removeItem("civiclens-preview-tier");
+      localStorage.removeItem("whodoiworkfor-preview-tier");
     }
   }, [canToggle]);
 

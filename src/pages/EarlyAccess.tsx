@@ -125,7 +125,7 @@ export default function EarlyAccess() {
             <span className="inline-block mb-6 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-[2.5px] border"
               style={{ background: "rgba(240,192,64,0.10)", borderColor: "rgba(240,192,64,0.28)", color: "#F0C040" }}
             >
-              Join WDIWF &nbsp;·&nbsp; Now Live
+              Join Who Do I Work For &nbsp;·&nbsp; Now Live
             </span>
 
             <h1 className="text-center max-w-[680px] mb-5" style={{ fontWeight: 800, fontSize: "clamp(32px, 5vw, 52px)", color: "#f0ebe0", letterSpacing: "-1.5px", lineHeight: 1.08 }}>
@@ -199,7 +199,7 @@ export default function EarlyAccess() {
             </div>
             <h2 className="text-3xl font-extrabold text-white tracking-tight mb-3">You're on the list.</h2>
             <p className="text-white/50 text-sm leading-relaxed mb-6">
-              Welcome to WDIWF. The public record isn't going anywhere — and neither are we.
+              Welcome to Who Do I Work For. The public record isn't going anywhere — and neither are we.
             </p>
             <Link to="/browse" className="inline-block px-6 py-3 rounded-full text-sm font-bold transition-all hover:brightness-110" style={{ background: "#F0C040", color: "#0a0a0e" }}>
               Start Auditing →

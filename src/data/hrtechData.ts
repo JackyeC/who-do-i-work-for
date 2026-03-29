@@ -1,4 +1,4 @@
-// HR Tech Ecosystem Data for WDIWF
+// HR Tech Ecosystem Data for Who Do I Work For
 // This file contains the vendor intelligence data for the HR Tech page
 
 export type VendorRating = "aligns" | "mixed" | "follow-the-money";

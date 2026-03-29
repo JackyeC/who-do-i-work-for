@@ -12,7 +12,7 @@ export default function Contact() {
   const { containerRef, getToken, resetToken } = useTurnstile();
 
   usePageSEO({
-    title: "Contact — WDIWF",
+    title: "Contact — Who Do I Work For",
     description: "Get in touch — media inquiries, speaking, advisory, company partnerships, or general questions.",
     path: "/contact",
   });
@@ -41,7 +41,7 @@ export default function Contact() {
       return;
     }
 
-    const subject = `WDIWF Contact: ${data.get("reason") || "General"}`;
+    const subject = `Who Do I Work For Contact: ${data.get("reason") || "General"}`;
     const body = `From: ${name} (${email})\nReason: ${data.get("reason")}\n\n${message}`;
     window.open(`mailto:hello@wdiwf.jackyeclayton.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, "_blank");
     setSubmitted(true);
@@ -70,7 +70,7 @@ export default function Contact() {
             <div>
               <h2 className="font-sans text-lg font-bold text-foreground mb-3">Reach out directly.</h2>
               <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-                We read everything. Response times depend on volume, but if it's relevant to the WDIWF mission, we'll get back to you.
+                We read everything. Response times depend on volume, but if it's relevant to the Who Do I Work For mission, we'll get back to you.
               </p>
 
               <div className="space-y-4">

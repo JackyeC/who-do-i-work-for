@@ -66,7 +66,7 @@ const partyColors: Record<string, string> = {
 const sourceIcons: Record<string, { label: string; icon: typeof Shield }> = {
   "congress.gov": { label: "Congress.gov", icon: Shield },
   fec: { label: "FEC", icon: Database },
-  database: { label: "CivicLens DB", icon: Database },
+  database: { label: "Who Do I Work For DB", icon: Database },
   ai: { label: "AI Inference", icon: Globe },
 };
 

@@ -264,7 +264,7 @@ export function AskJackyeWidget() {
                 </Button>
               </form>
               <p className="text-xs text-muted-foreground mt-1.5 text-center">
-                Powered by WDIWF Intelligence Engine
+                Powered by Who Do I Work For Intelligence Engine
               </p>
             </div>
           </motion.div>

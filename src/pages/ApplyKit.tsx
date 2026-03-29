@@ -37,7 +37,7 @@ const RESUME_TIPS = [
   {
     icon: Zap,
     title: "Tailor your 'Why This Company' to their reality",
-    body: "Use WDIWF dossier data to reference specific signals — not the careers page tagline. 'I noticed your board added an independent ethics chair in 2024' beats 'I love your culture of innovation.'",
+    body: "Use Who Do I Work For dossier data to reference specific signals — not the careers page tagline. 'I noticed your board added an independent ethics chair in 2024' beats 'I love your culture of innovation.'",
   },
 ];
 
@@ -55,7 +55,7 @@ function CoverLetterBuilder() {
       setOutput(
 `Dear Hiring Team at ${company.trim()},
 
-I'm writing to express my interest in the ${role.trim()} position. After reviewing ${company.trim()}'s public integrity record through WDIWF — including governance transparency, workforce signals, and stated commitments — I'm confident this is a company where my values and skills align.
+I'm writing to express my interest in the ${role.trim()} position. After reviewing ${company.trim()}'s public integrity record through Who Do I Work For — including governance transparency, workforce signals, and stated commitments — I'm confident this is a company where my values and skills align.
 
 ${jobDesc.trim() ? `The role description emphasizes ${jobDesc.trim().split(" ").slice(0, 8).join(" ")}… — areas where I've built meaningful experience. ` : ""}My career has consistently centered on accountability, evidence-based decision-making, and building systems that serve people, not just metrics.
 
@@ -115,14 +115,14 @@ With integrity,
 
 export default function ApplyKit() {
   usePageSEO({
-    title: "Apply Kit — WDIWF",
+    title: "Apply Kit — Who Do I Work For",
     description: "Cover letter builder and alignment-focused resume tips for values-driven job seekers.",
     path: "/apply-kit",
   });
 
   return (
     <>
-      <Helmet><title>Apply Kit — WDIWF</title></Helmet>
+      <Helmet><title>Apply Kit — Who Do I Work For</title></Helmet>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <h1 className="text-2xl font-bold text-foreground tracking-tight mb-1">Apply Kit</h1>

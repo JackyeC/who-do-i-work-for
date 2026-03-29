@@ -123,7 +123,7 @@ const JACKYE_CONTENT = [
     title: "Use the Interview Dossier Before Every Interview — Not After",
     desc: "The Dossier shows you what the company's public record says vs. what their careers page promises. Read the 'Smart Questions' tab and ask at least 2 in the room.",
     link: "/interview-dossier",
-    source: "WDIWF Interview Dossier",
+    source: "Who Do I Work For Interview Dossier",
     internal: true,
   },
   {

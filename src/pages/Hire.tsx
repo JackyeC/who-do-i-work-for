@@ -20,7 +20,7 @@ export default function Hire() {
   const [submitting, setSubmitting] = useState(false);
 
   usePageSEO({
-    title: "Who Works For You? — Values-Aligned Hiring by WDIWF",
+    title: "Who Works For You? — Values-Aligned Hiring by Who Do I Work For",
     description:
       "The first AI recruiting tool that audits the company before it screens the candidate. Values-aligned hiring built on 15 years of recruiting intelligence.",
     path: "/hire",
@@ -71,7 +71,7 @@ export default function Hire() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: "#0a0a0e" }}>
       <Helmet>
-        <title>Who Works For You? — WDIWF</title>
+        <title>Who Works For You? — Who Do I Work For</title>
       </Helmet>
 
       <div
@@ -80,7 +80,7 @@ export default function Hire() {
       >
         <Shield className="w-4 h-4 shrink-0" style={{ color: "#f0c040" }} />
         <span style={{ color: "#f0ebe0" }}>
-          Powered by WDIWF intelligence — every company is audited before candidates are screened.
+          Powered by Who Do I Work For intelligence — every company is audited before candidates are screened.
         </span>
       </div>
 
@@ -101,7 +101,7 @@ export default function Hire() {
         </p>
 
         <p className="text-xs uppercase tracking-[2px] mb-10" style={{ color: "rgba(240,235,224,0.35)" }}>
-          A WDIWF product by Jackye Clayton
+          A Who Do I Work For product by Jackye Clayton
         </p>
 
         {submitted ? (

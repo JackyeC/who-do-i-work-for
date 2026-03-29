@@ -4,7 +4,7 @@ import { Shield, Eye, CheckCircle2, ArrowRight } from "lucide-react";
 
 const ForEmployers = () => {
   usePageSEO({
-    title: "For Companies — WDIWF",
+    title: "For Companies — Who Do I Work For",
     description:
       "The best talent is doing their homework. Is your company ready for the audit? Get ahead of your Integrity Score.",
     path: "/for-employers",
@@ -25,7 +25,7 @@ const ForEmployers = () => {
             The best talent is doing their homework. Is your company ready for the audit?
           </h1>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[52ch]">
-            Top candidates evaluate employers before they accept. WDIWF shows them what they'll find. Get ahead of it.
+            Top candidates evaluate employers before they accept. Who Do I Work For shows them what they'll find. Get ahead of it.
           </p>
         </section>
 
@@ -41,12 +41,12 @@ const ForEmployers = () => {
               {
                 icon: <Eye className="w-6 h-6 text-primary" strokeWidth={1.5} />,
                 title: "Identify the Gaps",
-                body: "Find the distance between your employer brand and your reality. WDIWF surfaces the data points where your messaging doesn't match your outcomes — turnover, diversity metrics, legal records, and more.",
+                body: "Find the distance between your employer brand and your reality. Who Do I Work For surfaces the data points where your messaging doesn't match your outcomes — turnover, diversity metrics, legal records, and more.",
               },
               {
                 icon: <CheckCircle2 className="w-6 h-6 text-primary" strokeWidth={1.5} />,
                 title: "Signal Transparency",
-                body: "Companies that opt into WDIWF are signaling that they welcome scrutiny. In a market where trust is the new currency, transparency is your competitive advantage.",
+                body: "Companies that opt into Who Do I Work For are signaling that they welcome scrutiny. In a market where trust is the new currency, transparency is your competitive advantage.",
               },
             ].map((card) => (
               <div
@@ -78,7 +78,7 @@ const ForEmployers = () => {
               {[
                 {
                   bold: "86% of job seekers",
-                  rest: " research company reviews and ratings before deciding where to apply. They're already looking. WDIWF just gives them better tools.",
+                  rest: " research company reviews and ratings before deciding where to apply. They're already looking. Who Do I Work For just gives them better tools.",
                 },
                 {
                   bold: "The cost of a bad employer brand",

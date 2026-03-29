@@ -86,7 +86,7 @@ export function RecruiterIntegrityCard({ result }: Props) {
         </div>
 
         <p className="text-xs text-muted-foreground">
-          Source: WDIWF Intelligence Pipeline · Recruiter-grade analysis
+          Source: Who Do I Work For Intelligence Pipeline · Recruiter-grade analysis
         </p>
       </CardContent>
     </Card>

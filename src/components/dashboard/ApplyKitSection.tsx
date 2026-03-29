@@ -11,7 +11,7 @@ import { toast } from "sonner";
 const RESUME_TIPS = [
   { title: "Lead with impact, not duties", tip: "Replace 'Responsible for managing a team' with 'Led a 12-person team that reduced attrition by 34%.' Quantify outcomes." },
   { title: "Mirror their mission language", tip: "Study the company's about page and annual report. Use their exact language for values like 'equity,' 'transparency,' or 'community impact.'" },
-  { title: "Show alignment, not just skills", tip: "Include a brief 'Why this company' line in your summary. WDIWF dossier data can give you the language." },
+  { title: "Show alignment, not just skills", tip: "Include a brief 'Why this company' line in your summary. Who Do I Work For dossier data can give you the language." },
   { title: "Remove filler, add evidence", tip: "Cut phrases like 'results-oriented professional.' Instead, show results: '3x pipeline growth in Q2 2025.'" },
   { title: "Flag your values explicitly", tip: "If you led DEI initiatives, published salary bands, or built ethical frameworks — say so. These aren't soft skills, they're differentiators." },
 ];
@@ -45,7 +45,7 @@ export function ApplyKitSection() {
       return;
     }
     setShowLetter(true);
-    toast.success("Cover letter generated with WDIWF intelligence");
+    toast.success("Cover letter generated with Who Do I Work For intelligence");
   };
 
   return (
@@ -69,7 +69,7 @@ export function ApplyKitSection() {
             <Textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} placeholder="Paste the full job posting here for better alignment..." className="mt-1" rows={4} />
           </div>
           <Button onClick={handleGenerate} className="w-full sm:w-auto">
-            <Sparkles className="w-4 h-4 mr-2" /> Generate with WDIWF Intelligence
+            <Sparkles className="w-4 h-4 mr-2" /> Generate with Who Do I Work For Intelligence
           </Button>
         </div>
 
@@ -102,7 +102,7 @@ export function ApplyKitSection() {
       <TabsContent value="resume-tips" className="space-y-4">
         <div className="text-center py-2">
           <Badge variant="outline" className="text-xs bg-primary/5 text-primary border-primary/20">
-            <Lightbulb className="w-3 h-3 mr-1" /> WDIWF Alignment Tips
+            <Lightbulb className="w-3 h-3 mr-1" /> Who Do I Work For Alignment Tips
           </Badge>
         </div>
         {RESUME_TIPS.map((tip, i) => (

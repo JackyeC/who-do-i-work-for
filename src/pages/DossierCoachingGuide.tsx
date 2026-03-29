@@ -522,7 +522,7 @@ function FullDossierContent({ data }: { data: CompanyDossier }) {
         <div className="border border-border/30 bg-muted/30 px-5 py-4 text-xs text-muted-foreground leading-relaxed font-mono">
           <span className="text-primary font-semibold tracking-wider uppercase text-xs">NOTE</span>{" "}
           This coaching guide is generated from public records and documented signals. It does not constitute legal or employment advice.
-          WDIWF does not evaluate the content of your mission. We evaluate whether you're living it.
+          Who Do I Work For does not evaluate the content of your mission. We evaluate whether you're living it.
         </div>
       </Reveal>
     </>
@@ -543,7 +543,7 @@ export default function DossierCoachingGuide() {
   return (
     <>
       <Helmet>
-        <title>{data.name} — Coaching Guide | WDIWF</title>
+        <title>{data.name} — Coaching Guide | Who Do I Work For</title>
         <meta name="description" content={`Candidate coaching dossier for ${data.name}. Integrity signals, interview prep, and cover letter strategy.`} />
       </Helmet>
 

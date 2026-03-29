@@ -134,7 +134,7 @@ export default function AdminTicker() {
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Source Tag</Label>
-            <Input value={sourceTag} onChange={e => setSourceTag(e.target.value)} placeholder="e.g. FEC, SEC, WDIWF" />
+            <Input value={sourceTag} onChange={e => setSourceTag(e.target.value)} placeholder="e.g. FEC, SEC, Who Do I Work For" />
           </div>
         </div>
         <div>

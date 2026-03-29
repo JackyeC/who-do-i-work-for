@@ -278,7 +278,7 @@ export function CareerWrappedStep({ profile, careerPaths, companies, skillGap, f
           </div>
         )}
         <p className="text-xs text-muted-foreground text-center italic pt-2 border-t border-border">
-          Career Mapped by CivicLens · {new Date().toLocaleDateString()} · civiclens.com/career-map
+          Career Mapped by Who Do I Work For · {new Date().toLocaleDateString()} · whodoiworkfor.com/career-map
         </p>
       </div>
 

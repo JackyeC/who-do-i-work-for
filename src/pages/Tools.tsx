@@ -57,7 +57,7 @@ const TOOLS = [
 export default function Tools() {
   usePageSEO({
     title: "All Tools — Who Do I Work For?",
-    description: "Explore every tool on the WDIWF platform: Receipts, Career Map, Compare, Follow the Money, Recruiter Brief, Signal Alerts, and Job Board.",
+    description: "Explore every tool on the Who Do I Work For platform: Receipts, Career Map, Compare, Follow the Money, Recruiter Brief, Signal Alerts, and Job Board.",
     path: "/tools",
   });
 

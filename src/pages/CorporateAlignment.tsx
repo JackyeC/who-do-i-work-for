@@ -257,7 +257,7 @@ export default function CorporateAlignment() {
             • Alignment analysis may be incomplete. Not all corporate activities are publicly disclosed or captured in available datasets.
           </p>
           <p className="text-xs text-muted-foreground/70 mt-3 pt-3 border-t border-border/50">
-            WDIWF reports public data and does not provide character assessments. Verified watchdog data is used to connect public dots.
+            Who Do I Work For reports public data and does not provide character assessments. Verified watchdog data is used to connect public dots.
           </p>
         </div>
       </main>

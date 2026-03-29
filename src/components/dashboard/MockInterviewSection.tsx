@@ -27,7 +27,7 @@ const SAMPLE_QUESTIONS: InterviewQ[] = [
   {
     question: "Ask them about the gap between their careers page and their employee reviews — they'll tell you everything.",
     category: "Integrity Check",
-    coachingTip: "This is your WDIWF power move. Frame it respectfully: 'I noticed some themes in employee feedback that differ from the careers page. Can you help me understand the context?' Watch their reaction closely.",
+    coachingTip: "This is your Who Do I Work For power move. Frame it respectfully: 'I noticed some themes in employee feedback that differ from the careers page. Can you help me understand the context?' Watch their reaction closely.",
   },
   {
     question: "Describe a project where you had to influence without authority.",
@@ -68,7 +68,7 @@ export function MockInterviewSection() {
           <div className="text-center space-y-2">
             <Mic className="w-8 h-8 text-primary mx-auto" />
             <h3 className="text-lg font-semibold">Mock Interview Prep</h3>
-            <p className="text-sm text-muted-foreground">Get role-specific questions with WDIWF coaching tips based on company integrity signals.</p>
+            <p className="text-sm text-muted-foreground">Get role-specific questions with Who Do I Work For coaching tips based on company integrity signals.</p>
           </div>
           <div className="space-y-3">
             <div><Label>Company Name</Label><Input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="e.g. Meridian Health Systems" className="mt-1" /></div>
@@ -102,7 +102,7 @@ export function MockInterviewSection() {
               <Collapsible open={openItems.has(i)} onOpenChange={() => toggleItem(i)}>
                 <CollapsibleTrigger className="w-full flex items-center justify-center gap-1.5 py-2 border-t border-border/20 text-xs text-muted-foreground hover:text-foreground transition-colors">
                   <Lightbulb className="w-3 h-3" />
-                  WDIWF coaching tip
+                  Who Do I Work For coaching tip
                   <ChevronDown className={cn("w-3 h-3 transition-transform", openItems.has(i) && "rotate-180")} />
                 </CollapsibleTrigger>
                 <CollapsibleContent className="px-5 pb-4">

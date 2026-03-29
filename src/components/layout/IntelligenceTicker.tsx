@@ -2,7 +2,7 @@ import { useTickerItems, getTickerItemColor } from "@/hooks/use-ticker-items";
 import { Link } from "react-router-dom";
 
 const FALLBACK_MESSAGE =
-  "WDIWF is monitoring 850+ companies across FEC, SEC, OSHA, NLRB, BLS, and USASpending.gov — intelligence updates as new filings are detected.";
+  "Who Do I Work For is monitoring 850+ companies across FEC, SEC, OSHA, NLRB, BLS, and USASpending.gov — intelligence updates as new filings are detected.";
 
 export function IntelligenceTicker() {
   const { data: items } = useTickerItems();

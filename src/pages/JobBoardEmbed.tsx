@@ -22,7 +22,7 @@ export default function JobBoardEmbed() {
     iframe.style.height = "calc(100vh - 160px)";
     iframe.style.border = "none";
     iframe.loading = "lazy";
-    iframe.title = "WDIWF Job Board";
+    iframe.title = "Who Do I Work For Job Board";
     iframe.allow = "clipboard-write";
 
     widgetRef.current.appendChild(iframe);

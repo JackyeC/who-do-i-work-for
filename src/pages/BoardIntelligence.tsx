@@ -97,7 +97,7 @@ const DOCUMENTS = [
 
 export default function BoardIntelligence() {
   usePageSEO({
-    title: "Board Intelligence — How Corporate Boards Actually Work | CivicLens",
+    title: "Board Intelligence — How Corporate Boards Actually Work | Who Do I Work For",
     description: "Understand corporate board committees, governance structures, and how board decisions affect employees, candidates, and company strategy.",
   });
 

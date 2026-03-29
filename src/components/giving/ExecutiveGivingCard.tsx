@@ -229,7 +229,7 @@ export function ExecutiveGivingSection({ companyId, companyName, companySlug }: 
         borderRadius: "0 8px 8px 0",
         marginBottom: "16px",
       }}>
-        Individual donation data is public record per FEC disclosure requirements (contributions over $200). Donors self-report their employer and job title on FEC filings — these are personal contributions, not company spending, and may include employees at any level. WDIWF presents this for transparency only. We connect the dots — you make the call.
+        Individual donation data is public record per FEC disclosure requirements (contributions over $200). Donors self-report their employer and job title on FEC filings — these are personal contributions, not company spending, and may include employees at any level. Who Do I Work For presents this for transparency only. We connect the dots — you make the call.
       </div>
 
       {/* Executive cards */}
@@ -267,7 +267,7 @@ export function ExecutiveGivingSection({ companyId, companyName, companySlug }: 
         borderTop: "1px solid rgba(255,255,255,0.07)",
         paddingTop: "12px",
       }}>
-        Individual donation data sourced from FEC public records pursuant to 52 U.S.C. §30104. Contributions over $200 are required by law to be publicly disclosed. Cause classifications are based on publicly available voting records, congressional scorecards, and watchdog organization ratings (HRC, LCV, Brennan Center, AFL-CIO). This data reflects personal giving and does not represent company policy. Individuals listed may hold any role at the company. WDIWF does not make character assessments or political endorsements. We connect the dots — you make the call.
+        Individual donation data sourced from FEC public records pursuant to 52 U.S.C. §30104. Contributions over $200 are required by law to be publicly disclosed. Cause classifications are based on publicly available voting records, congressional scorecards, and watchdog organization ratings (HRC, LCV, Brennan Center, AFL-CIO). This data reflects personal giving and does not represent company policy. Individuals listed may hold any role at the company. Who Do I Work For does not make character assessments or political endorsements. We connect the dots — you make the call.
       </p>
     </div>
   );

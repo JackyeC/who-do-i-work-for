@@ -126,7 +126,7 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
         supabase.functions.invoke("company-intelligence-scan", {
           body: { companyId, companyName, forceRescan },
         }),
-        supabase.functions.invoke("civiclens-intelligence-scan", {
+        supabase.functions.invoke("whodoiworkfor-intelligence-scan", {
           body: { companyId, companyName, scanParts: ['benefits', 'ai_hiring', 'audit_hunt'] },
         }),
         supabase.functions.invoke("osint-parallel-scan", {

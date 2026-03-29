@@ -53,7 +53,7 @@ export default function Welcome() {
           initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16, duration: 0.5 }}
           className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10"
         >
-          Before you apply, interview, or accept — check the receipts. WDIWF audits employers using public data so you can make career decisions based on evidence, not marketing.
+          Before you apply, interview, or accept — check the receipts. Who Do I Work For audits employers using public data so you can make career decisions based on evidence, not marketing.
         </motion.p>
 
         <motion.div
@@ -90,7 +90,7 @@ export default function Welcome() {
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
         >
           <h2 className="font-serif text-xl sm:text-2xl text-foreground text-center mb-8" style={{ fontWeight: 700 }}>
-            What WDIWF gives you
+            What Who Do I Work For gives you
           </h2>
           <div className="space-y-4">
             {capabilities.map((item) => (
