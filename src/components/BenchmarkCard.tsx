@@ -103,7 +103,7 @@ export function BenchmarkCard({ data }: { data: Benchmark }) {
 
         <div className="space-y-4">
           <ComparisonBar
-            label="Civic Footprint Score"
+            label="Employer Clarity Score"
             companyValue={data.companyCivicFootprint}
             peerValue={data.peerAvgCivicFootprint}
             formatter={(v) => `${v}/100`}

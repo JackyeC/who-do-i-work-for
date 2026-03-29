@@ -153,7 +153,7 @@ export default function AskJackyePage() {
     path: "/ask-jackye",
     jsonLd: {
       "@type": "WebApplication",
-      name: "Ask Jackye — AI Career Intelligence Advisor",
+      name: "Check the Receipts — AI Career Intelligence Advisor",
       description: "AI-powered career strategy assistant built on Jackye Clayton's 15+ years of HR expertise. Analyze companies, leadership, and market signals.",
       applicationCategory: "BusinessApplication",
       creator: { "@type": "Person", name: "Jackye Clayton" },

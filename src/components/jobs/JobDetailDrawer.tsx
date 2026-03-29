@@ -76,7 +76,7 @@ export function JobDetailDrawer({ job, companyValueSignals = [], companySignals 
         </SheetHeader>
 
         <div className="mt-4 space-y-5">
-          {/* Match + Civic Score */}
+          {/* Match + Employer Clarity Score */}
           <div className="flex items-center gap-3">
             {matchScore != null && (
               <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-muted/50 flex-1">
@@ -86,7 +86,7 @@ export function JobDetailDrawer({ job, companyValueSignals = [], companySignals 
               </div>
             )}
             <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-muted/50 flex-1">
-              <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Civic Score</span>
+              <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Employer Clarity Score</span>
               <CivicScoreCard score={company?.civic_footprint_score || 0} size="sm" showLabel={false} />
               <CivicScoreBadge score={company?.civic_footprint_score || 0} />
             </div>

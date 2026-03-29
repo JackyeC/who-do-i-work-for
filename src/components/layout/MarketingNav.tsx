@@ -82,7 +82,7 @@ export function MarketingNav() {
               </Button>
             ) : (
               <Button size="sm" onClick={() => navigate("/join")} className="font-sans text-sm rounded-full px-5">
-                Get Early Access
+                Get Started Free
               </Button>
             )}
           </nav>
@@ -128,7 +128,7 @@ export function MarketingNav() {
               </Button>
             ) : (
               <Button size="sm" onClick={() => { setMobileMenuOpen(false); navigate("/join"); }} className="w-full mt-2">
-                Get Early Access
+                Get Started Free
               </Button>
             )}
           </nav>

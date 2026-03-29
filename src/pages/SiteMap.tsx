@@ -57,7 +57,7 @@ const sections: SiteSection[] = [
       { label: "Job Board", path: "/jobs", icon: Briefcase, description: "Browse values-aligned jobs with intelligence built in" },
       { label: "Job Dashboard", path: "/job-dashboard", icon: LayoutDashboard, auth: true, description: "Track applications and matched jobs" },
       { label: "Relationship Intelligence", path: "/relationship-intelligence", icon: Users, auth: true, description: "Manage your professional network" },
-      { label: "Ask Jackye", path: "/ask-jackye", icon: MessageSquare, description: "AI career coach powered by Jackye Clayton" },
+      { label: "Check the Receipts", path: "/ask-jackye", icon: MessageSquare, description: "AI career coach powered by Jackye Clayton" },
     ],
   },
   {

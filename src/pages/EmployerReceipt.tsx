@@ -343,7 +343,7 @@ export default function EmployerReceipt() {
             onClick={() => navigate("/ask-jackye")}
             className="border border-border text-muted-foreground px-6 py-3 font-mono text-[0.7rem] tracking-wider uppercase hover:border-primary hover:text-primary transition-all flex items-center gap-2"
           >
-            <MessageCircle className="w-3.5 h-3.5" /> Ask Jackye
+            <MessageCircle className="w-3.5 h-3.5" /> Check the Receipts
           </button>
         </div>
       </div>

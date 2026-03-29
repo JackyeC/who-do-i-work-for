@@ -38,7 +38,7 @@ const sections = [
   {
     icon: BarChart3,
     title: "7. Analytical Scoring Notice",
-    content: `Scores and ratings presented on the platform — including the Offer Strength Score™, Career Alignment Score™, and Civic Footprint Score — represent analytical interpretations of available data and user preferences. These scores are intended to provide context and insight rather than definitive judgments about any company or employer.`,
+    content: `Scores and ratings presented on the platform — including the Offer Strength Score™, Career Alignment Score™, and Employer Clarity Score — represent analytical interpretations of available data and user preferences. These scores are intended to provide context and insight rather than definitive judgments about any company or employer.`,
   },
 ];
 

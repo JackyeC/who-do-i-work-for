@@ -85,7 +85,7 @@ const OnePager = () => {
         {/* Pricing */}
         <div className="grid grid-cols-3 gap-px bg-border border border-border mb-8">
           {[
-            { tier: "Pro", price: "$19", per: "per month", featured: false, items: ["Unlimited AI job audits", "Values alignment scoring", "Real-time signal alerts", "Ask Jackye — unlimited"] },
+            { tier: "Pro", price: "$19", per: "per month", featured: false, items: ["Unlimited AI job audits", "Values alignment scoring", "Real-time signal alerts", "Check the Receipts AI — unlimited"] },
             { tier: "The Dossier", price: "$199", per: "one-time", featured: true, items: ["Full employer dossier", "Negotiation talking points", "Compensation benchmarks", "Interview intelligence brief"] },
             { tier: "Executive", price: "$999", per: "per year", featured: false, items: ["Apply When It Counts™ engine", "Full career mapping", "Priority 1-on-1 with Jackye", "All Pro + Dossier features"] },
           ].map(p => (

@@ -105,7 +105,7 @@ export function MiniReportTeaser() {
                     <div className={`text-2xl font-bold font-data ${scoreColor(report.civic_footprint_score)}`}>
                       {report.civic_footprint_score}
                     </div>
-                    <div className="font-mono text-xs uppercase text-muted-foreground">Civic Score</div>
+                    <div className="font-mono text-xs uppercase text-muted-foreground">Employer Clarity Score</div>
                   </div>
                 </div>
 

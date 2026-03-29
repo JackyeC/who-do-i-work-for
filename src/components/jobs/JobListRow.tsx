@@ -201,11 +201,11 @@ export function JobListRow({ job, companyValueSignals = [], companySignalFlags =
                 >
                   {civicScore}
                 </div>
-                <span className="text-xs text-muted-foreground">Civic Score</span>
+                <span className="text-xs text-muted-foreground">Employer Clarity Score</span>
               </Link>
             </TooltipTrigger>
             <TooltipContent side="left" className="max-w-[220px] text-xs leading-relaxed">
-              <p className="font-semibold mb-1">Civic Footprint Score™ ({civicScore}/100)</p>
+              <p className="font-semibold mb-1">Employer Clarity Score™ ({civicScore}/100)</p>
               <p className="text-muted-foreground">{getCivicScoreExplainer(civicScore)}</p>
               <p className="text-primary mt-1 text-xs">Click to view full company profile →</p>
             </TooltipContent>

@@ -239,7 +239,7 @@ const PRICING_TIERS = [
     price: "$19",
     interval: "/month",
     description: "24/7 AI coach. Audit any job link. Know before you apply.",
-    features: ["Unlimited AI job-link audits", "Values alignment scoring", "Signal alerts", "Ask Jackye — unlimited"],
+    features: ["Unlimited AI job-link audits", "Values alignment scoring", "Signal alerts", "Check the Receipts AI — unlimited"],
     cta: "Activate AI Coach",
     highlighted: true,
   },

@@ -128,7 +128,7 @@ export function AskJackyeWidget() {
         }
       }
     } catch (e: any) {
-      console.error("Ask Jackye error:", e);
+      console.error("Check the Receipts error:", e);
       setMessages((prev) => [
         ...prev,
         {
@@ -160,7 +160,7 @@ export function AskJackyeWidget() {
               <Sparkles className="w-6 h-6" />
             </Button>
             <Badge className="absolute -top-1 -left-1 text-xs px-1.5 py-0.5 bg-primary text-primary-foreground shadow-md">
-              Ask Jackye
+              Check the Receipts
             </Badge>
           </motion.div>
         )}
@@ -180,7 +180,7 @@ export function AskJackyeWidget() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-muted/30">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-primary" />
-                <span className="font-semibold text-sm text-foreground">Ask Jackye</span>
+                <span className="font-semibold text-sm text-foreground">Check the Receipts</span>
                 <Badge variant="outline" className="text-xs">AI</Badge>
               </div>
               <div className="flex gap-1">

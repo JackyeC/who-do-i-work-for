@@ -126,7 +126,7 @@ export function generateCandidateAdvocacyPdf(data: AdvocacyDossierData): jsPDF {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...C.charcoal);
-  const summaryText = `This candidate is applying via the Who Do I Work For? Intelligence Network. ${data.candidateName} has specifically selected ${data.companyName} based on a ${data.alignmentScore}% alignment with the company's 2026 Institutional DNA${data.civicFootprintScore ? ` (Civic Footprint Score: ${data.civicFootprintScore}/100)` : ""}.`;
+  const summaryText = `This candidate is applying via the Who Do I Work For? Intelligence Network. ${data.candidateName} has specifically selected ${data.companyName} based on a ${data.alignmentScore}% alignment with the company's 2026 Institutional DNA${data.civicFootprintScore ? ` (Employer Clarity Score: ${data.civicFootprintScore}/100)` : ""}.`;
   const summaryLines = wrapText(doc, summaryText, CW - 8);
   doc.text(summaryLines, ML + 4, y + 6);
 

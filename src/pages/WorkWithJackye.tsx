@@ -308,7 +308,7 @@ export default function WorkWithJackye() {
             onClick={() => navigate("/ask-jackye")}
             className="border border-border text-muted-foreground px-7 py-3 font-mono text-xs tracking-wider uppercase hover:border-primary hover:text-primary transition-all"
           >
-            Try Ask Jackye AI
+            Try Check the Receipts AI
           </button>
         </div>
       </section>

@@ -368,7 +368,7 @@ export default function Jobs() {
             </p>
             <p className="text-muted-foreground text-xs mt-1.5 flex items-center gap-1.5">
               <span className="inline-block w-2 h-2 rounded-full bg-[hsl(var(--civic-green))]" />
-              <span><strong className="text-foreground/80">Civic Score</strong> measures employer transparency across governance, lobbying, workforce data, and public accountability. Hover or tap any score to learn more.</span>
+              <span><strong className="text-foreground/80">Employer Clarity Score</strong> measures employer transparency across governance, lobbying, workforce data, and public accountability. Hover or tap any score to learn more.</span>
             </p>
           </div>
 

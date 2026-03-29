@@ -441,7 +441,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               onClick={() => navigate(user ? "/dashboard" : "/join")}
               className="bg-primary text-primary-foreground px-8 py-3.5 font-sans text-sm font-semibold rounded-lg hover:brightness-110 transition-all"
             >
-              Join the Waitlist
+              Get Started Free
             </button>
             <button
               onClick={() => navigate("/receipts")}

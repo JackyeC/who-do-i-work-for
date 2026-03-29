@@ -125,7 +125,7 @@ const About = () => {
               to="/join"
               className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 font-sans text-sm font-semibold rounded-lg hover:brightness-110 transition-all"
             >
-              Get Early Access <ArrowRight className="w-4 h-4" />
+              Get Started Free <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/receipts"

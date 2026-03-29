@@ -15,7 +15,7 @@ export default function EarlyAccess() {
   const { containerRef, getToken, resetToken } = useTurnstile();
 
   usePageSEO({
-    title: "Get Early Access — Who Do I Work For?",
+    title: "Get Started Free — Who Do I Work For?",
     description:
       "Research any employer using public records — FEC filings, SEC reports, WARN notices, OSHA violations — all in one audit. Built by a recruiter, for everyone.",
     path: "/join",
@@ -184,7 +184,7 @@ export default function EarlyAccess() {
                 className="w-full py-3.5 rounded-full font-bold text-sm transition-all disabled:opacity-60"
                 style={{ background: "#F0C040", color: "#0a0a0e" }}
               >
-                {loading ? "Requesting..." : "Request Early Access →"}
+                {loading ? "Requesting..." : "Get Started Free →"}
               </button>
             </form>
 

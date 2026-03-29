@@ -144,7 +144,7 @@ const Demo = () => {
             </TabsTrigger>
             <TabsTrigger value="jackye" className="font-mono text-xs uppercase tracking-wider">
               <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
-              Ask Jackye
+              Check the Receipts
             </TabsTrigger>
           </TabsList>
 
@@ -170,7 +170,7 @@ const Demo = () => {
                       {DEMO_COMPANY.civicScore}
                     </div>
                     <div className="font-mono text-xs uppercase text-muted-foreground tracking-wider">
-                      Civic Score — Grade {scoreGrade(DEMO_COMPANY.civicScore)}
+                      Employer Clarity Score — Grade {scoreGrade(DEMO_COMPANY.civicScore)}
                     </div>
                   </div>
                 </div>
@@ -345,7 +345,7 @@ const Demo = () => {
               <CardHeader>
                 <CardTitle className="font-serif text-base flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-primary" />
-                  Ask Jackye — AI Career Coach
+                  Check the Receipts — AI Career Coach
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -385,7 +385,7 @@ const Demo = () => {
 
                 <div className="text-center pt-2">
                   <p className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
-                    This is a simulated conversation showing how Ask Jackye works
+                    This is a simulated conversation showing how Check the Receipts works
                   </p>
                 </div>
               </CardContent>

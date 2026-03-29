@@ -132,7 +132,7 @@ export function AskJackyeWidget() {
         <button
           onClick={() => setOpen(true)}
           className="fixed bottom-6 right-6 z-50 bg-primary text-primary-foreground w-14 h-14 flex items-center justify-center shadow-lg hover:brightness-110 transition-all group"
-          title="Ask Jackye"
+          title="Check the Receipts"
         >
           <MessageCircle className="w-6 h-6" />
         </button>
@@ -162,7 +162,7 @@ export function AskJackyeWidget() {
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                 <MessageCircle className="w-6 h-6 text-primary" />
               </div>
-              <p className="font-serif text-sm text-primary mb-2">Ask Jackye Anything</p>
+              <p className="font-serif text-sm text-primary mb-2">Check the Receipts</p>
               <p className="text-xs text-muted-foreground mb-5 leading-relaxed max-w-[280px]">
                 Get personalized career advice, offer analysis, negotiation scripts, and company intelligence — powered by 15+ years of recruiting expertise.
               </p>
@@ -246,7 +246,7 @@ export function AskJackyeWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send(input)}
-                placeholder="Ask Jackye anything..."
+                placeholder="Check the Receipts..."
                 className="flex-1 bg-surface-2 border-none outline-none px-4 py-3 text-foreground font-sans text-[12px] placeholder:text-muted-foreground"
                 disabled={isLoading}
               />

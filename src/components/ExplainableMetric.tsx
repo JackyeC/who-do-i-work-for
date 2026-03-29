@@ -15,7 +15,7 @@ interface MetricExplanation {
 const METRIC_EXPLANATIONS: Record<string, MetricExplanation> = {
   // ── Summary metrics ──
   "civic-footprint": {
-    title: "Civic Footprint Score",
+    title: "Employer Clarity Score",
     what: "A 0–100 composite score measuring how much political activity we've detected for this company — PAC spending, lobbying, executive donations, government contracts, and organizational ties.",
     why: "Higher doesn't mean worse. It means this company is more politically active. A score of 0 means we found no political spending. A score of 80+ means significant political engagement across multiple channels.",
     source: "FEC, Senate LDA, USASpending.gov",

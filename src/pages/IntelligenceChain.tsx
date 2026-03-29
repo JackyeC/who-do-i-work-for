@@ -208,7 +208,7 @@ export default function IntelligenceChain() {
               { label: "What Am I Supporting?", path: "/what-am-i-supporting", icon: Globe },
               { label: "Company Intelligence", path: "/browse", icon: Search },
               { label: "Offer Intelligence", path: "/check", icon: FileText },
-              { label: "Ask Jackye", path: "/ask-jackye", icon: MessageCircle },
+              { label: "Check the Receipts", path: "/ask-jackye", icon: MessageCircle },
             ].map(item => (
               <button key={item.path} onClick={() => navigate(item.path)} className="flex items-center gap-2 p-4 border border-border bg-card text-left hover:border-primary transition-colors group">
                 <item.icon className="w-4 h-4 text-primary shrink-0" strokeWidth={1.5} />

@@ -46,7 +46,7 @@ const tracks = [
       "Unlimited AI job-link audits",
       "Values alignment scoring",
       "Real-time signal alerts",
-      "Ask Jackye — unlimited questions",
+      "Check the Receipts AI — unlimited",
     ],
   },
   {
