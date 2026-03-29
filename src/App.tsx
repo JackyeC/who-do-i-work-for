@@ -278,6 +278,7 @@ const App = () => (
                   <Route path="/policy-intelligence" element={<PolicyIntelligence />} />
                   <Route path="/negotiation-simulator" element={<NegotiationSimulator />} />
                   <Route path="/quiz" element={<Quiz />} />
+                  <Route path="/workplace-dna" element={<Navigate to="/quiz" replace />} />
                   <Route path="/join" element={<EarlyAccess />} />
                   <Route path="/early-access" element={<Navigate to="/join" replace />} />
                   <Route path="/decision-engine" element={<DecisionEngine />} />

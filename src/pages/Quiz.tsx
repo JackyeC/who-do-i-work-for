@@ -860,7 +860,7 @@ function ResultsScreen({
           animation: "quizFadeUp 0.6s ease both",
         }}
       >
-        Your Intelligence Profile
+        Your Workplace DNA
       </span>
 
       {/* Primary persona name */}
