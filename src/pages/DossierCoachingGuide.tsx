@@ -92,7 +92,7 @@ const COMPANY_DATA: Record<string, CompanyDossier> = {
       },
       {
         icon: "civic",
-        label: "Civic Footprint",
+        label: "Employer Clarity",
         status: "confirmed",
         detail: "1% for the Planet member since founding. $140M+ donated to environmental causes. B Corp certified.",
       },

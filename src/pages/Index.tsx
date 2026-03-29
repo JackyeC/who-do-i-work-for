@@ -246,41 +246,41 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="border border-border bg-card p-7 flex flex-col">
               <Search className="w-8 h-8 text-primary mb-4" strokeWidth={1.5} />
-              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">For Candidates</span>
-              <h3 className="font-sans font-bold text-foreground text-lg mb-2">Is your offer safe?</h3>
+              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">I'm Curious</span>
+              <h3 className="font-sans font-bold text-foreground text-lg mb-2">Know before you sign.</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed mb-6 flex-1">
-                Run a forensic audit on any employer before you sign.
+                Search any company. See the basics. Read the Receipts. Free forever.
               </p>
-              <Button onClick={() => navigate("/pricing")} className="w-full mb-2">
-                Get a Candidate Report — $49
+              <Button onClick={() => navigate("/join")} variant="outline" className="w-full mb-2">
+                Start Free
               </Button>
-              <p className="text-[11px] text-muted-foreground text-center">Full integrity dossier on one employer, delivered in 48 hours.</p>
+              <p className="text-[11px] text-muted-foreground text-center">Employer Clarity Scores, news ticker, Workplace DNA quiz & more.</p>
             </div>
 
-            <div className="border border-border bg-card p-7 flex flex-col">
+            <div className="border border-primary bg-card p-7 flex flex-col ring-1 ring-primary/20 shadow-lg shadow-primary/10">
               <Briefcase className="w-8 h-8 text-primary mb-4" strokeWidth={1.5} />
-              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">For Recruiters</span>
-              <h3 className="font-sans font-bold text-foreground text-lg mb-2">Stop losing talent to the Integrity Gap.</h3>
+              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">The Signal</span>
+              <h3 className="font-sans font-bold text-foreground text-lg mb-2">I'm actively looking.</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed mb-6 flex-1">
-                Show candidates your company passes the receipts test before they walk.
+                Full dossiers. Comp data. Interview prep. Values matching.
               </p>
-              <Button onClick={() => navigate("/recruiter-brief")} variant="outline" className="w-full mb-2">
-                Get the RecruiterBrief
+              <Button onClick={() => navigate("/pricing")} className="w-full mb-2">
+                Get The Signal — $49/mo
               </Button>
-              <p className="text-[11px] text-muted-foreground text-center">Candidate-facing integrity report you can share during the hiring process.</p>
+              <p className="text-[11px] text-muted-foreground text-center">Unlimited audits, comp benchmarks, interview intel & more.</p>
             </div>
 
             <div className="border border-border bg-card p-7 flex flex-col">
               <Shield className="w-8 h-8 text-primary mb-4" strokeWidth={1.5} />
-              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">For Executives</span>
-              <h3 className="font-sans font-bold text-foreground text-lg mb-2">Is your brand audit-proof?</h3>
+              <span className="font-mono text-[11px] tracking-[0.15em] uppercase text-primary font-semibold mb-2">The Match</span>
+              <h3 className="font-sans font-bold text-foreground text-lg mb-2">Find me my job.</h3>
               <p className="font-sans text-sm text-muted-foreground leading-relaxed mb-6 flex-1">
-                Before your next executive hire finds your PAC filings — we will.
+                Auto-matched jobs. Application tracking. Priority alerts.
               </p>
-              <Button onClick={() => { window.location.href = "mailto:jackye@jackyeclayton.com"; }} variant="outline" className="w-full mb-2">
-                Book a Corporate Integrity Audit
+              <Button onClick={() => navigate("/pricing")} variant="outline" className="w-full mb-2">
+                Get The Match — $149/mo
               </Button>
-              <p className="text-[11px] text-muted-foreground text-center">White-glove corporate integrity assessment with Jackye Clayton.</p>
+              <p className="text-[11px] text-muted-foreground text-center">Smart job matching, auto-apply, career mapping & more.</p>
             </div>
           </div>
         </div>

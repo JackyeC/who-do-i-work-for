@@ -65,11 +65,11 @@ export const SIGNAL_PRIORITY: Record<PersonaId, string[]> = {
   job_seeker: ["Integrity Gap score", "Comp Transparency", "Labor Impact"],
   recruiter: ["Glassdoor Trajectory", "Employee Experience", "Hiring Activity"],
   executive: ["Integrity Gap", "Workforce Stability", "Peer Benchmarking"],
-  researcher: ["Lobbying/PAC data", "Institutional Links", "Civic Footprint"],
+  researcher: ["Lobbying/PAC data", "Institutional Links", "Employer Clarity"],
   sales: ["Financial Stability", "Leadership Network", "Government Contracts"],
   marketing: ["Employer Brand vs. Record", "Narrative Risk", "Glassdoor Gap"],
   investor: ["Leadership Stability", "Workforce Health", "Connected Dots"],
-  journalist: ["Civic Footprint", "Board Interlocks", "Institutional Links"],
+  journalist: ["Employer Clarity", "Board Interlocks", "Institutional Links"],
   career_changer: ["Integrity Gap", "Culture vs. Claims", "Industry Stability"],
 };
 

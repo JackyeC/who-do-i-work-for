@@ -78,7 +78,7 @@ async function buildIntegrityFromDB(companyName: string, companyId?: string): Pr
   if (company.jackye_insight) {
     summaryParts.push(company.jackye_insight);
   } else {
-    summaryParts.push(`${company.name} has a civic footprint score of ${cfs}/100.`);
+    summaryParts.push(`${company.name} has a employer clarity score of ${cfs}/100.`);
   }
 
   if (totalStances > 0) {

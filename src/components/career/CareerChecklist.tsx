@@ -101,7 +101,7 @@ const DEFAULT_CHECKLIST: Omit<ChecklistItem, "id">[] = [
   { text: "Enroll in one course to close your biggest skill gap", type: "course", completed: false },
   { text: "Reach out to 2 people in your target industry", type: "connect", completed: false },
   { text: "Run Career Discovery to map your career paths", type: "project", completed: false },
-  { text: "Review 5 company civic footprint scores", type: "company", completed: false },
+  { text: "Review 5 company employer clarity scores", type: "company", completed: false },
   { text: "Set up job alerts for your target roles", type: "skill", completed: false },
   { text: "Practice answering 'Why this company?' for your top pick", type: "project", completed: false },
   { text: "Upload your LinkedIn connections to find warm intros", type: "connect", completed: false },

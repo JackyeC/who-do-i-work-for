@@ -21,7 +21,7 @@ export default function SearchResults() {
 
   usePageSEO({
     title: initialQuery ? `Search: ${initialQuery} — Company Results` : "Search Companies",
-    description: `Search employer intelligence database for "${initialQuery}". View civic footprint scores, PAC spending, and career signals.`,
+    description: `Search employer intelligence database for "${initialQuery}". View employer clarity scores, PAC spending, and career signals.`,
     path: "/search",
   });
 

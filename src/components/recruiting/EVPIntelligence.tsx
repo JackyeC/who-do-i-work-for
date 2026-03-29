@@ -181,7 +181,7 @@ export function EVPIntelligence() {
 
       if (company.civic_footprint_score) {
         signals.push({
-          category: "Civic Footprint",
+          category: "Employer Clarity",
           detail: `Score: ${company.civic_footprint_score}/100`,
           sentiment: company.civic_footprint_score >= 60 ? "positive" : company.civic_footprint_score >= 40 ? "neutral" : "caution",
         });
