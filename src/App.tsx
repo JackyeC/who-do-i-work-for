@@ -134,6 +134,7 @@ const PreviewTierToolbar = lazy(() => import("./components/PreviewTierToolbar").
 const Receipts = lazy(() => import("./pages/Receipts"));
 const ReceiptsReport = lazy(() => import("./pages/ReceiptsReport"));
 const SubmitTip = lazy(() => import("./pages/SubmitTip"));
+const Newsletter = lazy(() => import("./pages/Newsletter"));
 const HRTechIntelligence = lazy(() => import("./pages/HRTechIntelligence"));
 const WhoDidIVoteForPage = lazy(() => import("./pages/WhoDidIVoteForPage"));
 
@@ -198,6 +199,7 @@ const App = () => (
                   <Route path="/receipts" element={<Receipts />} />
                   <Route path="/receipts/:slug" element={<ReceiptsReport />} />
                   <Route path="/submit-tip" element={<SubmitTip />} />
+                  <Route path="/newsletter" element={<Newsletter />} />
                   <Route path="/hrtech" element={<HRTechIntelligence />} />
                   <Route path="/company/:id" element={<CompanyProfile />} />
                   <Route path="/company/:id/influence" element={<ProtectedRoute><InfluenceGraph /></ProtectedRoute>} />

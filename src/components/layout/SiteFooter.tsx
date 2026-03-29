@@ -80,6 +80,12 @@ export function SiteFooter() {
               >
                 Submit a Tip
               </Link>
+              <Link
+                to="/newsletter"
+                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Newsletter
+              </Link>
             </nav>
           </div>
 
