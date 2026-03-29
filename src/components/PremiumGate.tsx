@@ -24,7 +24,7 @@ export function PremiumGate({ feature, description, requiredTier = "candidate", 
 
   if (hasAccess) return <>{children}</>;
 
-  const targetTier = requiredTier === "professional" ? STRIPE_TIERS.professional : STRIPE_TIERS.candidate;
+  const targetTier = requiredTier === "professional" ? STRIPE_TIERS.match : STRIPE_TIERS.signal;
 
   const handleUpgrade = () => {
     if (!isLoggedIn) {
@@ -89,7 +89,7 @@ export function PremiumGate({ feature, description, requiredTier = "candidate", 
           )}
         </div>
         <p className="text-micro text-muted-foreground mt-4">
-          Candidate $29/mo · Professional $99/mo
+          The Signal $49/mo · The Match $149/mo
         </p>
       </CardContent>
     </Card>

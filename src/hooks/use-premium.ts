@@ -56,24 +56,24 @@ export const STRIPE_TIERS = {
     label: "Founding Partner Certification",
     price: "$599/yr",
   },
-  // ── Live-mode tiers (current pricing) ──
-  pro: {
+  // ── Live-mode tiers (current pricing — April 2026) ──
+  signal: {
     price_id: "price_1TEEvt89MyCOs8yv7SV1TeUJ",
     product_id: "prod_UCeDHlvmHhO9tX",
-    label: "Pro",
-    price: "$19/mo",
+    label: "The Signal",
+    price: "$49/mo",
   },
-  dossier: {
+  closer: {
     price_id: "price_1TEEvz89MyCOs8yvWbLINfKw",
     product_id: "prod_UCeEak56pqgewl",
-    label: "The Dossier",
+    label: "The Closer",
     price: "$199",
   },
-  executive: {
+  match: {
     price_id: "price_1TEEw589MyCOs8yvQI8FpHJx",
     product_id: "prod_UCeELQ7Cmi386u",
-    label: "The Executive",
-    price: "$999/yr",
+    label: "The Match",
+    price: "$149/mo",
   },
   // ── Legacy test-mode tiers (kept for backward compat) ──
   executive_autopilot: {
@@ -157,9 +157,9 @@ const PROFESSIONAL_FEATURES: PremiumFeatures = {
 function getTierFromProductId(productId: string | null): PremiumTier {
   if (productId === STRIPE_TIERS.professional.product_id) return "professional";
   if (productId === STRIPE_TIERS.candidate.product_id) return "candidate";
-  // Live-mode products
-  if (productId === STRIPE_TIERS.pro.product_id) return "candidate";
-  if (productId === STRIPE_TIERS.executive.product_id) return "professional";
+  // Live-mode products (April 2026 pricing)
+  if (productId === STRIPE_TIERS.signal.product_id) return "candidate";
+  if (productId === STRIPE_TIERS.match.product_id) return "professional";
   // Legacy test-mode products
   if (productId === STRIPE_TIERS.executive_autopilot.product_id) return "professional";
   if (productId === STRIPE_TIERS.scout.product_id) return "candidate";

@@ -61,29 +61,29 @@ export function DossierPaywall({ companyId, companyName, layerIndex }: DossierPa
         ) : tier === "free" ? (
           <Button
             size="lg"
-            onClick={() => handleSubscribe(STRIPE_TIERS.scout.price_id)}
+            onClick={() => handleSubscribe(STRIPE_TIERS.signal.price_id)}
             disabled={checkoutLoading}
             className="gap-2"
           >
             {checkoutLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-            Go Pro — $19/mo
+            Get The Signal — $49/mo
           </Button>
         ) : (
           <Button
             size="lg"
-            onClick={() => handleSubscribe(STRIPE_TIERS.strategist.price_id)}
+            onClick={() => handleSubscribe(STRIPE_TIERS.closer.price_id)}
             disabled={checkoutLoading}
             className="gap-2"
           >
             {checkoutLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-            Get My Dossier — $199
+            Get The Closer — $199
           </Button>
         )}
 
         <div className="mt-6 flex items-center justify-center gap-6 text-micro text-muted-foreground">
-          <span>Pro $19/mo · AI coach</span>
-          <span>Dossier $199 · full report</span>
-          <span>Executive $999/yr · autopilot</span>
+          <span>The Signal $49/mo</span>
+          <span>The Closer $199 one-time</span>
+          <span>The Match $149/mo</span>
         </div>
       </div>
     </div>

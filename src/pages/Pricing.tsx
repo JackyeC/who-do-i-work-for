@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 import { Button } from "@/components/ui/button";
-import { Shield, Check, Loader2 } from "lucide-react";
+import { Shield, Check, Loader2, FileSearch, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -106,14 +106,14 @@ export default function Pricing() {
     jsonLd: {
       "@type": "WebPage",
       name: "Pricing — Who Do I Work For?",
-      description: "Four plans for every stage of your career intelligence journey.",
+      description: "Career intelligence plans: Free, The Signal ($49/mo), The Match ($149/mo), The Closer ($199 one-time).",
       mainEntity: {
         "@type": "ItemList",
         itemListElement: [
-          { "@type": "Offer", name: "The Check", price: "0", priceCurrency: "USD" },
-          { "@type": "Offer", name: "The Signal", price: "19", priceCurrency: "USD" },
-          { "@type": "Offer", name: "The Analyst", price: "49", priceCurrency: "USD" },
-          { "@type": "Offer", name: "The Brief", price: "99", priceCurrency: "USD" },
+          { "@type": "Offer", name: "I'm Curious", price: "0", priceCurrency: "USD" },
+          { "@type": "Offer", name: "The Signal", price: "49", priceCurrency: "USD" },
+          { "@type": "Offer", name: "The Match", price: "149", priceCurrency: "USD" },
+          { "@type": "Offer", name: "The Closer", price: "199", priceCurrency: "USD" },
         ],
       },
     },
@@ -271,6 +271,60 @@ export default function Pricing() {
                 </div>
               );
             })}
+          </div>
+        </section>
+
+        {/* The Closer — one-time deep-dive */}
+        <section className="px-6 lg:px-16 pb-16">
+          <div className="max-w-[800px] mx-auto">
+            <div className="rounded-xl border border-primary/30 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 p-6 lg:p-8">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-3">
+                    <FileSearch className="w-5 h-5 text-primary" />
+                    <h3 className="text-xl font-bold text-foreground">The Closer</h3>
+                    <span className="text-xs font-mono tracking-wider uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20">
+                      One-time
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed max-w-lg">
+                    You've got the offer. Now get the full picture. A deep-dive dossier on one company —
+                    leadership accountability, political spending, compensation benchmarks, workforce stability,
+                    and everything public records reveal. Delivered as a downloadable PDF.
+                  </p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {[
+                      "Full company dossier with sourced citations",
+                      "Executive leadership & political donation map",
+                      "Compensation benchmarks vs. market",
+                      "OSHA, NLRB, WARN Act history",
+                      "Interview intelligence brief",
+                      "Downloadable PDF — yours to keep",
+                    ].map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-foreground">
+                        <Zap className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="text-center lg:text-right shrink-0">
+                  <div className="flex items-baseline gap-1 justify-center lg:justify-end">
+                    <span className="text-4xl font-bold text-foreground">$199</span>
+                    <span className="text-muted-foreground text-sm">one-time</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1 mb-4">No subscription required</p>
+                  <Button
+                    onClick={() => {
+                      toast("The Closer launches April 6 — check back soon!");
+                    }}
+                    className="w-full lg:w-auto"
+                  >
+                    Get The Closer
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

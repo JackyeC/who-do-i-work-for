@@ -40,7 +40,7 @@ export function PostPurchaseUpsell({ onDismiss }: PostPurchaseUpsellProps) {
             </h3>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
               Stop buying one report at a time. Get <strong className="text-foreground">unlimited access</strong> to
-              full intelligence dossiers, offer checks, and Check the Receipts — starting at just $29/mo.
+              full intelligence dossiers, offer checks, and Check the Receipts — starting at just $49/mo.
             </p>
 
             <div className="flex flex-wrap items-center gap-3">
