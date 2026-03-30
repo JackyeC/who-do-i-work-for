@@ -125,6 +125,12 @@ export default function Pricing() {
       return;
     }
 
+    if (!user) {
+      toast("Sign in to subscribe");
+      navigate("/login");
+      return;
+    }
+
     const priceId = isAnnual ? tier.annualPriceId : tier.monthlyPriceId;
     if (!priceId || priceId.includes("placeholder")) {
       toast("Coming soon — check back soon!");
