@@ -89,6 +89,37 @@ const PATTERN_ICONS: Record<string, typeof AlertTriangle> = {
   messaging_vs_action_gap: AlertTriangle,
 };
 
+// ─── Source Tier Config (Ground News inspired) ───
+
+const SOURCE_TIER_CONFIG: Record<string, { tier: string; color: string }> = {
+  "FEC":           { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "SEC":           { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "SEC EDGAR":     { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "BLS":           { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "Senate LDA":    { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "WARN":          { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "USASpending":   { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "CourtListener": { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "PACER":         { tier: "Gov", color: "bg-[hsl(var(--civic-green))]/10 text-[hsl(var(--civic-green))] border-[hsl(var(--civic-green))]/30" },
+  "GDELT":         { tier: "Media", color: "bg-[hsl(var(--civic-blue))]/10 text-[hsl(var(--civic-blue))] border-[hsl(var(--civic-blue))]/30" },
+  "NewsAPI":       { tier: "Media", color: "bg-[hsl(var(--civic-blue))]/10 text-[hsl(var(--civic-blue))] border-[hsl(var(--civic-blue))]/30" },
+};
+
+function getSourceTier(sourceName: string): { tier: string; color: string } | null {
+  // Exact match first
+  if (SOURCE_TIER_CONFIG[sourceName]) return SOURCE_TIER_CONFIG[sourceName];
+  // Partial match
+  const lower = sourceName.toLowerCase();
+  if (lower.includes("fec") || lower.includes("election")) return SOURCE_TIER_CONFIG["FEC"];
+  if (lower.includes("sec") || lower.includes("edgar")) return SOURCE_TIER_CONFIG["SEC"];
+  if (lower.includes("court") || lower.includes("pacer")) return SOURCE_TIER_CONFIG["CourtListener"];
+  if (lower.includes("warn")) return SOURCE_TIER_CONFIG["WARN"];
+  if (lower.includes("lda") || lower.includes("lobby")) return SOURCE_TIER_CONFIG["Senate LDA"];
+  if (lower.includes("gdelt")) return SOURCE_TIER_CONFIG["GDELT"];
+  if (lower.includes("usa") || lower.includes("spending")) return SOURCE_TIER_CONFIG["USASpending"];
+  return null;
+}
+
 // ─── Helpers ───
 
 function formatDate(dateStr: string): string {
@@ -407,8 +438,16 @@ export function ReceiptsTimeline({ companyId, companyName }: ReceiptsTimelinePro
                             {event.summary}
                           </p>
 
-                          {/* Bottom row: source + impact tags */}
+                          {/* Bottom row: source tier + source + impact tags */}
                           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                            {(() => {
+                              const tier = getSourceTier(event.source_name);
+                              return tier ? (
+                                <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 border", tier.color)}>
+                                  {tier.tier}
+                                </Badge>
+                              ) : null;
+                            })()}
                             {event.source_url ? (
                               <a
                                 href={event.source_url}
