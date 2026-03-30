@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { COMPANY_REPORTS, type CompanyReportData } from "@/data/receiptsData";
+import { BiasDistribution } from "@/components/BiasDistribution";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -1431,8 +1432,16 @@ function GeneralizedReport({ data }: { data: CompanyReportData }) {
           </div>
         </div>
 
-        {/* Sources */}
+        {/* Bias Distribution */}
         <div className="mt-16 mb-8">
+          <BiasDistribution
+            sources={data.sources.flatMap((s) => s.links.map((l) => l.text))}
+            title={`${data.companyName} — Source Bias Distribution`}
+          />
+        </div>
+
+        {/* Sources */}
+        <div className="mt-8 mb-8">
           <h3 className="text-xl font-bold text-foreground mb-2">Sources</h3>
           <p className="text-xs text-muted-foreground mb-6">All data sourced from public records. Dollar amounts, dates, and bill numbers drawn directly from primary sources cited below.</p>
           <div className="space-y-2">
@@ -1616,8 +1625,16 @@ export default function ReceiptsReport() {
           </div>
         </div>
 
-        {/* Sources */}
+        {/* Bias Distribution */}
         <div className="mt-16 mb-8">
+          <BiasDistribution
+            sources={data.sources.flatMap((s) => s.links.map((l) => l.text))}
+            title={`${data.companyName} — Source Bias Distribution`}
+          />
+        </div>
+
+        {/* Sources */}
+        <div className="mt-8 mb-8">
           <h3 className="text-xl font-bold text-foreground mb-2">Sources</h3>
           <p className="text-xs text-muted-foreground mb-6">All data sourced from public records. Dollar amounts, dates, and bill numbers are drawn directly from primary sources cited below.</p>
           <div className="space-y-2">
