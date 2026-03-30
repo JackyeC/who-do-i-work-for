@@ -44,8 +44,8 @@ const TIERS = [
     annualPrice: 399,
     annualMonthly: 33,
     annualSavings: 189,
-    monthlyPriceId: "price_signal_monthly_placeholder",
-    annualPriceId: "price_signal_annual_placeholder",
+    monthlyPriceId: "price_1TEEvt89MyCOs8yv7SV1TeUJ",
+    annualPriceId: "price_1TF2Wd89MyCOs8yv0GXHpkUE",
     features: [
       "Everything in Free, plus:",
       "Full company dossiers — all signals unlocked",
@@ -72,8 +72,8 @@ const TIERS = [
     annualPrice: 1199,
     annualMonthly: 100,
     annualSavings: 589,
-    monthlyPriceId: "price_match_monthly_placeholder",
-    annualPriceId: "price_match_annual_placeholder",
+    monthlyPriceId: "price_1TEEw589MyCOs8yvQI8FpHJx",
+    annualPriceId: "price_1TEEw589MyCOs8yvQI8FpHJx",
     features: [
       "Everything in The Signal, plus:",
       "Smart job matching — jobs delivered to you",
