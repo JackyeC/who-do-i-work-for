@@ -1,35 +1,33 @@
 
 
-# Fix All Build Errors to Enable Deployment
+# Fix All Build Errors
 
-## Problem
-6 files have errors blocking the build. The domain setup requires a working deployment.
+There are 6 distinct issues causing build failures. Here's the plan:
 
-## Changes
+## 1. Fix syntax error in `supabase/functions/_shared/linkedin.ts` (line 12)
+Missing closing quote and comma: `'code` → `'code',`
 
-### 1. Fix syntax error in `supabase/functions/_shared/linkedin.ts` (line 12)
-Missing closing quote on `response_type: 'code` → should be `response_type: 'code',`
-
-### 2. Fix OAuth calls in `src/components/SignupModal.tsx` (line 34) and `src/pages/Login.tsx` (lines 74, 87)
-Change from 2-argument form `signInWithOAuth("google", { redirectTo })` to single-object form:
-```typescript
-supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin } })
+## 2. Fix `signInWithOAuth` calls (SignupModal.tsx line 34, Login.tsx lines 74, 87)
+The method takes a single object argument. Change from:
+```ts
+supabase.auth.signInWithOAuth("google", { redirectTo: ... })
 ```
-Same for Apple provider.
-
-### 3. Fix `src/hooks/use-linkedin.ts` (lines 26-36)
-Replace direct `.from("linkedin_profiles")` query with RPC call using `any` cast:
-```typescript
-const { data } = await (supabase as any).rpc("get_my_linkedin_profile");
-setLinkedinProfile((data as LinkedInProfile | null) ?? null);
+to:
+```ts
+supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: ... } })
 ```
+Three call sites: SignupModal (Google), Login (Google), Login (Apple).
 
-### 4. Fix `src/pages/Quiz.tsx` (lines 985, 1073, 1078)
-Add missing state declaration inside `ResultsScreen`:
-```typescript
-const [showShareModal, setShowShareModal] = useState(false);
-```
+## 3. Fix `use-linkedin.ts` — bypass TypeScript errors for `linkedin_profiles` table
+Use `(supabase as any)` for the `.from("linkedin_profiles")` call (line 26-27), and cast `data` before setting state (line 36).
 
-## After build succeeds
-User can connect `www.jackyeclayton.com` in Project Settings → Domains.
+## 4. Fix `ChromeExtension.tsx` — bypass TypeScript for `pro_waitlist` table
+Use `(supabase as any)` for `.from("pro_waitlist")` (line 52).
+
+## 5. Add `showShareModal` state to `ResultsScreen` in `Quiz.tsx`
+Add `const [showShareModal, setShowShareModal] = useState(false);` inside the `ResultsScreen` function body (after line 840), and add the `useState` import if missing.
+
+---
+
+**Files to edit**: 5 files, all straightforward single-line or few-line fixes.
 
