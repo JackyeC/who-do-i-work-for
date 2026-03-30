@@ -9,11 +9,14 @@ import type { FeedbackData } from "@/components/negotiation/RoundFeedback";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { useAuth } from "@/contexts/AuthContext";
+import { SignupGate } from "@/components/SignupGate";
 
 type Phase = "setup" | "active" | "summary";
 type Msg = { role: "user" | "assistant"; content: string };
 
 export default function NegotiationSimulator() {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [phase, setPhase] = useState<Phase>("setup");
   const [config, setConfig] = useState<SimulatorConfig | null>(null);
@@ -66,7 +69,13 @@ export default function NegotiationSimulator() {
           </p>
         </div>
 
-        {phase === "setup" && (
+        {!user && (
+          <SignupGate feature="the Negotiation Simulator">
+            <SimulatorSetup initialConfig={initialConfig} onStart={handleStart} />
+          </SignupGate>
+        )}
+
+        {user && phase === "setup" && (
           <SimulatorSetup initialConfig={initialConfig} onStart={handleStart} />
         )}
 

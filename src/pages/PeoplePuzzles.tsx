@@ -1,8 +1,13 @@
 import { useEffect, useRef, useCallback } from "react";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { useLinkedIn } from "@/hooks/use-linkedin";
+import { useAuth } from "@/contexts/AuthContext";
+import { SignupGate } from "@/components/SignupGate";
+import { Header } from "@/components/Header";
 
 const PeoplePuzzles = () => {
+  const { user } = useAuth();
+
   usePageSEO({
     title: "PeoplePuzzles™ — The Recruiting Intelligence Game | Who Do I Work For",
     description: "Every company runs a background check on you. This game teaches you to run one on them. 72 combos. 6 tiers. 8 certifications. Built on real recruiting intelligence by Jackye Clayton.",
@@ -68,6 +73,21 @@ const PeoplePuzzles = () => {
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   }, [handleMessage]);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-12 max-w-3xl">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-foreground mb-2">PeoplePuzzles™</h1>
+            <p className="text-muted-foreground text-sm">The Recruiting Intelligence Game. 72 combos. 6 tiers. 8 certifications. Built on real recruiting intelligence by Jackye Clayton.</p>
+          </div>
+          <SignupGate feature="PeoplePuzzles™ game" blurPreview={false} />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: "100vw", height: "100vh", overflow: "hidden", background: "#0A0A0E" }}>

@@ -8,6 +8,8 @@ import {
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { useAuth } from "@/contexts/AuthContext";
+import { SignupGate } from "@/components/SignupGate";
 
 const COMMITTEES = [
   {
@@ -96,6 +98,8 @@ const DOCUMENTS = [
 ];
 
 export default function BoardIntelligence() {
+  const { user } = useAuth();
+
   usePageSEO({
     title: "Board Intelligence — How Corporate Boards Actually Work | Who Do I Work For",
     description: "Understand corporate board committees, governance structures, and how board decisions affect employees, candidates, and company strategy.",
@@ -167,6 +171,20 @@ export default function BoardIntelligence() {
 
       <Separator className="mb-10" />
 
+      {/* Gate remaining content for unauthenticated users */}
+      {!user && (
+        <SignupGate feature="full board intelligence guides">
+          <section className="mb-10">
+            <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-primary" />
+              Board Documents — What to Look For
+            </h2>
+          </section>
+        </SignupGate>
+      )}
+
+      {/* Board Documents — visible to authenticated users */}
+      {user && <>
       {/* Board Documents */}
       <section className="mb-10">
         <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
@@ -218,6 +236,7 @@ export default function BoardIntelligence() {
           </Button>
         </CardContent>
       </Card>
+      </>}
     </div>
   );
 }

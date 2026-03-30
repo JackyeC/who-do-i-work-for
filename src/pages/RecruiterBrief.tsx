@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { generateCandidatePdf } from "@/lib/generateCandidatePdf";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { SignupGate } from "@/components/SignupGate";
 
 const COMPANY_FIELDS = "id, name, industry, employer_clarity_score, career_intelligence_score, confidence_rating, lobbying_spend, employee_count, jackye_insight, is_publicly_traded, description" as const;
 
@@ -48,6 +50,7 @@ function SectionCard({ icon: Icon, title, children, delay = 0 }: {
 }
 
 export default function RecruiterBrief() {
+  const { user } = useAuth();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
@@ -239,8 +242,24 @@ export default function RecruiterBrief() {
         </div>
       )}
 
-      {/* Brief */}
-      {brief && (
+      {/* Signup gate for unauthenticated users who searched */}
+      {brief && !user && (
+        <div className="max-w-2xl mx-auto px-4 py-6">
+          <SignupGate feature="Recruiter Intelligence Briefs">
+            <SectionCard icon={Activity} title="Company Reality Snapshot" delay={0}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-xl font-display font-bold text-foreground">{brief.companyName}</h1>
+                  <p className="text-xs text-muted-foreground mt-0.5">{brief.industry}</p>
+                </div>
+              </div>
+            </SectionCard>
+          </SignupGate>
+        </div>
+      )}
+
+      {/* Brief — authenticated users */}
+      {brief && user && (
         <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
 
           {/* 1 — COMPANY REALITY SNAPSHOT */}

@@ -4,6 +4,7 @@ import { DNAPanel, DEFAULT_DNA, type DNAValues } from "@/components/decision-eng
 import { DecisionJobCard, type DemoJob } from "@/components/decision-engine/DecisionJobCard";
 import { usePremium } from "@/hooks/use-premium";
 import { useNavigate } from "react-router-dom";
+import { SignupGate } from "@/components/SignupGate";
 import { cn } from "@/lib/utils";
 
 const DEMO_JOBS: DemoJob[] = [
@@ -141,12 +142,22 @@ export default function DecisionEngine() {
             <div className="flex-1 h-px bg-[#2a2a3a]" />
           </div>
 
-          {/* Cards grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {filtered.map((job) => (
-              <DecisionJobCard key={job.id} job={job} dna={dna} />
-            ))}
-          </div>
+          {/* Cards grid — gated for unauthenticated users */}
+          {!isLoggedIn ? (
+            <SignupGate feature="the Decision Engine job analysis">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {filtered.slice(0, 2).map((job) => (
+                  <DecisionJobCard key={job.id} job={job} dna={dna} />
+                ))}
+              </div>
+            </SignupGate>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {filtered.map((job) => (
+                <DecisionJobCard key={job.id} job={job} dna={dna} />
+              ))}
+            </div>
+          )}
         </main>
       </div>
     </>

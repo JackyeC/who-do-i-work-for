@@ -10,6 +10,8 @@ import { ScoreShowdown } from "@/components/compare/ScoreShowdown";
 import { MetricBattle } from "@/components/compare/MetricBattle";
 import { CompareShareBar } from "@/components/compare/CompareShareBar";
 import { BattleImage } from "@/components/compare/BattleImage";
+import { useAuth } from "@/contexts/AuthContext";
+import { SignupGate } from "@/components/SignupGate";
 
 interface CompanyData {
   id: string;
@@ -27,6 +29,7 @@ interface CompanyData {
 const COMPANY_FIELDS = "id, name, slug, industry, employer_clarity_score, total_pac_spending, lobbying_spend, government_contracts, employee_count, state";
 
 export default function CompareCompanies() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [companyA, setCompanyA] = useState<CompanyData | null>(null);
@@ -130,8 +133,23 @@ export default function CompareCompanies() {
           />
         </div>
 
-        {/* Results */}
-        {companyA && companyB && (
+        {/* Results — gated for unauthenticated users */}
+        {companyA && companyB && !user && (
+          <SignupGate feature="employer comparison results">
+            <BattleImage
+              companyA={companyA.name}
+              companyB={companyB.name}
+              industryA={companyA.industry}
+              industryB={companyB.industry}
+              scoreA={companyA.employer_clarity_score}
+              scoreB={companyB.employer_clarity_score}
+              slugA={companyA.slug}
+              slugB={companyB.slug}
+            />
+          </SignupGate>
+        )}
+
+        {companyA && companyB && user && (
           <>
             <BattleImage
               companyA={companyA.name}

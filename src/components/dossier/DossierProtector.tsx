@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DossierPaywall } from "@/components/dossier/DossierPaywall";
 import { SignalExamples } from "@/components/dossier/SignalExamples";
 import { InfluenceGauge } from "@/components/dossier/InfluenceGauge";
+import { SignupGate } from "@/components/SignupGate";
 
 interface DossierProtectorProps {
   companyId: string;
@@ -43,7 +44,29 @@ export function DossierProtector({
     );
   }
 
-  // Fuzzed / locked view
+  // Unauthenticated users: show overview + signup gate (no paywall yet)
+  if (!user) {
+    return (
+      <>
+        {overviewContent}
+
+        <div className="flex justify-center py-6">
+          <InfluenceGauge value={influenceScore} label="Influence Score" size="lg" />
+        </div>
+
+        <div className="rounded-2xl border border-border/40 bg-card p-6">
+          <SignalExamples />
+        </div>
+
+        {/* Signup gate — convert visitors to free accounts */}
+        <SignupGate feature="the full company dossier">
+          {fullContent}
+        </SignupGate>
+      </>
+    );
+  }
+
+  // Authenticated but not premium: existing paywall flow
   return (
     <>
       {/* Always visible: Layer 1 overview */}

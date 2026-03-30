@@ -83,7 +83,11 @@ function FullChainCard({ signal }: { signal: ChainSignal }) {
 }
 
 /* ── Main Page ── */
+import { useAuth } from "@/contexts/AuthContext";
+import { SignupGate } from "@/components/SignupGate";
+
 export default function IntelligenceChain() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [layerFilter, setLayerFilter] = useState<ChainLayer | "all">("all");
@@ -187,18 +191,31 @@ export default function IntelligenceChain() {
           </p>
         </div>
 
-        {/* Signals */}
-        <div className="space-y-4">
-          <div className="font-mono text-[0.6rem] uppercase tracking-widest text-muted-foreground">
-            {filteredSignals.length} traced signal{filteredSignals.length !== 1 ? "s" : ""}
-          </div>
-          {filteredSignals.map(s => <FullChainCard key={s.id} signal={s} />)}
-          {filteredSignals.length === 0 && (
-            <div className="border border-border bg-card p-8 text-center">
-              <p className="text-sm text-muted-foreground">No verified public signals found for this layer filter.</p>
+        {/* Signals — gated for unauthenticated users */}
+        {!user && (
+          <SignupGate feature="full intelligence chain signals">
+            <div className="space-y-4">
+              <div className="font-mono text-[0.6rem] uppercase tracking-widest text-muted-foreground">
+                {filteredSignals.length} traced signal{filteredSignals.length !== 1 ? "s" : ""}
+              </div>
+              {filteredSignals.slice(0, 2).map(s => <FullChainCard key={s.id} signal={s} />)}
             </div>
-          )}
-        </div>
+          </SignupGate>
+        )}
+
+        {user && (
+          <div className="space-y-4">
+            <div className="font-mono text-[0.6rem] uppercase tracking-widest text-muted-foreground">
+              {filteredSignals.length} traced signal{filteredSignals.length !== 1 ? "s" : ""}
+            </div>
+            {filteredSignals.map(s => <FullChainCard key={s.id} signal={s} />)}
+            {filteredSignals.length === 0 && (
+              <div className="border border-border bg-card p-8 text-center">
+                <p className="text-sm text-muted-foreground">No verified public signals found for this layer filter.</p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Navigation */}
         <div className="mt-12 border-t border-border pt-10">

@@ -11,6 +11,7 @@ import remarkGfm from "remark-gfm";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { SignupGate } from "@/components/SignupGate";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -543,6 +544,11 @@ export default function AskJackyePage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Signup gate for unauthenticated users */}
+      {!user && !loading && (
+        <SignupGate feature="the Intelligence Advisor" blurPreview={false} />
       )}
 
       {/* Terminal Input */}
