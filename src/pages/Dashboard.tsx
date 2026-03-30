@@ -5,6 +5,7 @@ import { PersonaQuizBanner } from "@/components/PersonaQuizBanner";
 import { Navigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
+import { NarrativeFeed } from "@/components/dashboard/NarrativeFeed";
 import { AlignedJobsList } from "@/components/jobs/AlignedJobsList";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";
 import { UserProfileForm } from "@/components/jobs/UserProfileForm";
@@ -95,7 +96,7 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (tab) {
       case "overview":
-        return <DashboardOverview onNavigate={setTab} />;
+        return <NarrativeFeed onNavigate={setTab} />;
       case "tracked":
         return <SlotManagementDashboard />;
       case "matches":
@@ -159,7 +160,7 @@ export default function Dashboard() {
       case "search-saved":
         return <SavedSection />;
       default:
-        return <DashboardOverview onNavigate={setTab} />;
+        return <NarrativeFeed onNavigate={setTab} />;
     }
   };
 

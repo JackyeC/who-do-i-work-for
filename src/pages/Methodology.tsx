@@ -434,7 +434,7 @@ export default function Methodology() {
                 <CardContent className="p-6">
                   <p className="text-body text-foreground font-medium mb-3">To request a correction:</p>
                   <ul className="text-body text-muted-foreground space-y-2 list-disc list-inside leading-relaxed">
-                    <li>Email <a href="mailto:corrections@whodoimworkfor.com" className="text-primary hover:underline">corrections@whodoimworkfor.com</a> with the company name and specific claim.</li>
+                    <li>Email <a href="mailto:jackye@jackyeclayton.com" className="text-primary hover:underline">jackye@jackyeclayton.com</a> with the company name and specific claim.</li>
                     <li>Include source material or documentation supporting your correction.</li>
                     <li>We review all submissions and update profiles within 7 business days.</li>
                     <li>Corrections are noted in the profile's revision history.</li>
