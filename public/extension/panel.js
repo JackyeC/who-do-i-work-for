@@ -1,6 +1,7 @@
 (() => {
   // src/sidepanel/panel.js
   var SITE_BASE = "https://wdiwf.jackyeclayton.com";
+  var LOGO_URL = typeof chrome !== "undefined" && chrome.runtime ? chrome.runtime.getURL("icons/icon-128.png") : "icons/icon-128.png";
   var RECEIPTS_SLUGS = /* @__PURE__ */ new Set([
     "meta",
     "google",
@@ -266,7 +267,7 @@
     app.innerHTML = `
     <div class="panel">
       <header class="header">
-        <div class="logo">W<span class="logo-q">?</span></div>
+        <img class="logo-img" src="${LOGO_URL}" alt="WDIWF" />
         <div class="header-text">
           <h1 class="header-title">Who Do I Work For?</h1>
           <p class="header-subtitle">Career intelligence at the moment of decision</p>
@@ -287,7 +288,7 @@
     app.innerHTML = `
     <div class="panel">
       <header class="header">
-        <div class="logo">W<span class="logo-q">?</span></div>
+        <img class="logo-img" src="${LOGO_URL}" alt="WDIWF" />
         <div class="header-text">
           <h1 class="header-title">Who Do I Work For?</h1>
         </div>
@@ -325,7 +326,7 @@
     app.innerHTML = `
     <div class="panel">
       <header class="header">
-        <div class="logo">W<span class="logo-q">?</span></div>
+        <img class="logo-img" src="${LOGO_URL}" alt="WDIWF" />
         <div class="header-text">
           <h1 class="header-title">${escapeHtml(state.companyName)}</h1>
           <p class="header-subtitle">${escapeHtml(state.platform || "")} \xB7 ${escapeHtml(confidence)} confidence</p>
@@ -395,7 +396,7 @@
     app.innerHTML = `
     <div class="panel">
       <header class="header">
-        <div class="logo">W<span class="logo-q">?</span></div>
+        <img class="logo-img" src="${LOGO_URL}" alt="WDIWF" />
         <div class="header-text">
           <h1 class="header-title">${escapeHtml(state.companyName || "WDIWF")}</h1>
         </div>

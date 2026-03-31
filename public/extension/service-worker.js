@@ -1,6 +1,9 @@
 /**
- * WDIWF Service Worker v4.1.0
+ * WDIWF Service Worker v4.2.1
  * Routes messages, queries Supabase, caches results, manages side panel.
+ * v4.2.0: Removed <all_urls> — generic career detection now triggered by icon click.
+ * v4.2.1: Fixed race condition — queue messages until panel sends PANEL_READY.
+ *         Fixed company_public_stances column names to match actual schema.
  */
 
 const SUPABASE_URL = 'https://tdetybqdxadmowjivtjy.supabase.co';
@@ -8,20 +11,63 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 const cache = new Map();
 
-// Open side panel on extension icon click
+// Track panel readiness and queue messages until it's ready
+let panelReady = false;
+let pendingMessages = [];
+
+function sendToPanel(msg) {
+  if (panelReady) {
+    chrome.runtime.sendMessage(msg).catch(() => {
+      // Panel was closed — mark as not ready and queue the message
+      panelReady = false;
+      pendingMessages.push(msg);
+    });
+  } else {
+    pendingMessages.push(msg);
+  }
+}
+
+function flushPendingMessages() {
+  const msgs = pendingMessages.splice(0);
+  for (const msg of msgs) {
+    chrome.runtime.sendMessage(msg).catch(() => {});
+  }
+}
+
+// On icon click: open side panel + inject generic career detector on current page
 chrome.action.onClicked.addListener(async (tab) => {
-  await chrome.sidePanel.open({ tabId: tab.id });
+  try {
+    await chrome.sidePanel.open({ tabId: tab.id });
+  } catch {}
+
+  // Inject the generic career detector into the active tab (uses activeTab permission)
+  if (tab.id && tab.url && !tab.url.startsWith('chrome://')) {
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['generic-career-detector.js'],
+      });
+    } catch (e) {
+      // Page may not allow script injection (e.g. chrome:// pages)
+      console.log('WDIWF: Could not inject career detector:', e.message);
+    }
+  }
 });
 
 // Handle messages from content scripts and side panel
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.type === 'PANEL_READY') {
+    panelReady = true;
+    flushPendingMessages();
+  }
+
   if (msg.type === 'COMPANY_DETECTED') {
     handleCompanyDetected(msg, sender);
   }
 
   if (msg.type === 'CHECK_COMPANY') {
     fetchCompanyData(msg.company_name).then(data => {
-      chrome.runtime.sendMessage({ type: 'COMPANY_DATA', data });
+      sendToPanel({ type: 'COMPANY_DATA', data });
     });
   }
 
@@ -42,17 +88,17 @@ async function handleCompanyDetected(msg, sender) {
     } catch {}
   }
 
-  // Forward detection to panel
-  chrome.runtime.sendMessage({
+  // Forward detection to panel (queued if panel isn't ready yet)
+  sendToPanel({
     type: 'COMPANY_DETECTED_FORWARD',
     name: msg.name,
     platform: msg.platform,
     confidence: msg.confidence,
   });
 
-  // Fetch data
+  // Fetch data (runs in parallel while panel loads)
   const data = await fetchCompanyData(msg.name);
-  chrome.runtime.sendMessage({ type: 'COMPANY_DATA', data });
+  sendToPanel({ type: 'COMPANY_DATA', data });
 }
 
 async function fetchCompanyData(companyName) {
@@ -123,13 +169,13 @@ async function enrichCompanyData(company) {
   const [executives, contracts, stances] = await Promise.all([
     fetchRelated('company_executives', company.id, 'name,title,total_donations,departed_at'),
     fetchRelated('company_agency_contracts', company.id, 'agency_name,contract_value,contract_description'),
-    fetchRelated('company_public_stances', company.id, 'stance_category,stance_summary,stance_direction'),
+    fetchRelated('company_public_stances', company.id, 'topic,public_position,spending_reality,gap'),
   ]);
 
   // Build reality gap evidence from stances
   const realityGapEvidence = (stances || []).slice(0, 3).map(s => ({
-    summary: s.stance_summary,
-    source: s.stance_category || 'Public stance',
+    summary: s.public_position || s.spending_reality || '',
+    source: s.topic || 'Public stance',
   }));
 
   // Build civic concerns from PAC/lobbying
