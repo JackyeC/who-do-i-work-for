@@ -151,23 +151,6 @@ export function getDemoChainSignals(company: string): ChainSignal[] {
       whyItMatters: "The scale of lobbying on environmental regulation is significant. The specific positions aren't always public, but the engagement level signals deep interest in shaping climate policy.",
     },
     {
-      id: "cs-3",
-      chain: [
-        { layer: "policy", entity: "H.R. 7567 (Bacon Act)", entityType: "Legislation", detail: "March 5, 2026 Farm Bill vote" },
-        { layer: "influence", entity: "2 YES-vote co-sponsors", entityType: "Legislators" },
-        { layer: "influence", entity: `${company} PAC`, entityType: "PAC", detail: "$5,000 donation" },
-        { layer: "company", entity: company, entityType: "Employer" },
-      ],
-      summary: `${company} PAC donated to 2 co-sponsors of H.R. 7567 who voted YES on March 5, 2026.`,
-      amount: 5000,
-      confidence: "Strong Evidence",
-      source: "FEC Filing",
-      sourceUrl: "https://www.fec.gov",
-      issueCategories: ["animal-welfare"],
-      alignmentStatus: "conflict",
-      whyItMatters: "If animal welfare matters to you, donations to legislators supporting the Bacon Act after the March 5 vote are a direct value conflict signal.",
-    },
-    {
       id: "cs-4",
       chain: [
         { layer: "policy", entity: "CFPB Data Privacy Rulemaking", entityType: "Regulation" },

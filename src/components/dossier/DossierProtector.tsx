@@ -20,7 +20,7 @@ interface DossierProtectorProps {
  * Higher-Order wrapper that enforces the fuzz/lock paywall.
  *
  * If the company IS in the user's tracked list → render full 7-layer dossier.
- * If NOT → show Overview + Influence Score + one Signal Example + blurred previews + CTA.
+ * If NOT → show Overview + Influence Score + real Signal Examples (if any) + blurred previews + CTA.
  */
 export function DossierProtector({
   companyId,
@@ -54,9 +54,7 @@ export function DossierProtector({
           <InfluenceGauge value={influenceScore} label="Influence Score" size="lg" />
         </div>
 
-        <div className="rounded-2xl border border-border/40 bg-card p-6">
-          <SignalExamples />
-        </div>
+        <SignalExamples companyId={companyId} />
 
         {/* Signup gate — convert visitors to free accounts */}
         <SignupGate feature="the full company dossier">
@@ -77,10 +75,8 @@ export function DossierProtector({
         <InfluenceGauge value={influenceScore} label="Influence Score" size="lg" />
       </div>
 
-      {/* Always visible: one signal example */}
-      <div className="rounded-2xl border border-border/40 bg-card p-6">
-        <SignalExamples />
-      </div>
+      {/* Real signals for this company (renders nothing if none exist) */}
+      <SignalExamples companyId={companyId} />
 
       {/* Paywall CTA */}
       <DossierPaywall companyId={companyId} companyName={companyName} />

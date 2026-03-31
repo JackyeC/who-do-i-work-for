@@ -828,10 +828,27 @@ function buildPoliticalReceipts(doc: jsPDF, data: DossierPdfData): number {
 }
 
 /* ═══════════════════════════════════════════
-   MARCH 2026 REGULATORY ALERT
+   REGULATORY ALERTS (data-driven)
    ═══════════════════════════════════════════ */
 
-function buildMarch2026Alert(doc: jsPDF, data: DossierPdfData): number {
+function buildRegulatoryAlerts(doc: jsPDF, data: DossierPdfData): number {
+  const flaggedCandidates = data.candidates.filter(c => c.flagged);
+  const recentWarns = data.warnNotices.filter(w => {
+    const d = new Date(w.notice_date);
+    return d.getFullYear() >= 2025;
+  });
+  const aiLobbying = data.lobbyingIssues.filter(l =>
+    l.issue_area.toLowerCase().includes("ftc") ||
+    l.issue_area.toLowerCase().includes("artificial intelligence") ||
+    l.issue_area.toLowerCase().includes("ai") ||
+    l.bill_number?.toLowerCase().includes("ftc")
+  );
+
+  // Skip this page entirely if there's no data to show
+  if (flaggedCandidates.length === 0 && recentWarns.length === 0 && aiLobbying.length === 0) {
+    return 0;
+  }
+
   doc.addPage();
   let y = 18;
 
@@ -841,124 +858,74 @@ function buildMarch2026Alert(doc: jsPDF, data: DossierPdfData): number {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7);
   doc.setTextColor(...C.white);
-  doc.text("⚠  REGULATORY ALERT", ML + 5, y + 6);
+  doc.text("⚠  REGULATORY ALERTS", ML + 5, y + 6);
   doc.setFontSize(11);
-  doc.text("March 2026 Truth Briefing", ML + 42, y + 6.5);
+  doc.text("Flagged Activity", ML + 42, y + 6.5);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
   doc.text(`As of ${AUDIT_DATE}`, ML + 42, y + 12.5);
   y += 24;
 
-  // H.R. 7567 (Bacon Act)
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(...C.navy);
-  doc.text("H.R. 7567 — The Bacon Act (March 5, 2026 Vote)", ML, y);
-  y += 5;
+  // Flagged candidates
+  if (flaggedCandidates.length > 0) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(...C.navy);
+    doc.text("Flagged Candidate Donations", ML, y);
+    y += 5;
 
-  doc.setFillColor(...C.fog);
-  doc.roundedRect(ML, y, CW, 20, 2, 2, "F");
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.setTextColor(...C.navy);
-  doc.text("Animal welfare bill voted March 5, 2026. Any PAC donations to a 'YES' voter after", ML + 6, y + 7);
-  doc.text("this date trigger a 'Value Conflict' badge in the Influence pipeline.", ML + 6, y + 13);
-  y += 26;
-
-  // Check for flagged candidates (Bacon Act sponsors)
-  const baconFlagged = data.candidates.filter(c => c.flagged);
-  if (baconFlagged.length > 0) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8);
     doc.setTextColor(...C.red);
-    doc.text(`⚠ ${baconFlagged.length} FLAGGED CANDIDATE(S) DETECTED`, ML, y);
+    doc.text(`⚠ ${flaggedCandidates.length} FLAGGED CANDIDATE(S) DETECTED`, ML, y);
     y += 4;
 
     doc.autoTable({
       ...tableStyle(y),
       head: [["Candidate", "Party", "Amount", "Flag Reason"]],
-      body: baconFlagged.map(c => [c.name, c.party, fmt$(c.amount), c.flag_reason || "Bacon Act Sponsor"]),
+      body: flaggedCandidates.map(c => [c.name, c.party, fmt$(c.amount), c.flag_reason || "Flagged"]),
       headStyles: { fillColor: C.red, textColor: C.white, fontStyle: "bold" as const, fontSize: 7 },
       columnStyles: { 2: { halign: "right" as const, cellWidth: 28 } },
     });
     y = doc.lastAutoTable.finalY + 10;
-  } else {
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(...C.green);
-    doc.text("✓ No flagged Bacon Act sponsor donations detected.", ML, y);
-    y += 10;
   }
 
-  // Q1 WARN Notices
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(...C.navy);
-  doc.text("Q1 2026 WARN Notices — Workforce Stability", ML, y);
-  y += 5;
+  // Recent WARN Notices
+  if (recentWarns.length > 0) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(...C.navy);
+    doc.text("Recent WARN Notices — Workforce Stability", ML, y);
+    y += 5;
 
-  const q1Warns = data.warnNotices.filter(w => {
-    const d = new Date(w.notice_date);
-    return d.getFullYear() >= 2025;
-  });
-
-  if (q1Warns.length > 0) {
-    const affected = q1Warns.reduce((s, w) => s + w.employees_affected, 0);
-    drawKpiBox(doc, ML, y, 55, "Recent WARN Notices", `${q1Warns.length}`, C.red);
+    const affected = recentWarns.reduce((s, w) => s + w.employees_affected, 0);
+    drawKpiBox(doc, ML, y, 55, "Recent WARN Notices", `${recentWarns.length}`, C.red);
     drawKpiBox(doc, ML + 59, y, 55, "Workers Affected", affected.toLocaleString(), C.amber);
     y += 28;
-  } else {
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(...C.green);
-    doc.text("✓ No recent WARN notices filed.", ML, y);
-    y += 10;
   }
 
-  // FTC Section 5 Lobbying
-  y = safeY(doc, y, 30);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(...C.navy);
-  doc.text("FTC Section 5 — AI Bias Audit Preemption", ML, y);
-  y += 5;
+  // AI / FTC-related lobbying
+  if (aiLobbying.length > 0) {
+    y = safeY(doc, y, 30);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(...C.navy);
+    doc.text("AI-Related Lobbying Activity", ML, y);
+    y += 5;
 
-  doc.setFillColor(...C.fog);
-  doc.roundedRect(ML, y, CW, 20, 2, 2, "F");
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.setTextColor(...C.navy);
-  doc.text("Tracking ATS providers lobbying under FTC Section 5 to block mandatory AI bias audits.", ML + 6, y + 7);
-  doc.text("Companies with active lobbying in this area are flagged as HR Tech Gatekeepers.", ML + 6, y + 13);
-  y += 26;
-
-  const ftcLobbying = data.lobbyingIssues.filter(l =>
-    l.issue_area.toLowerCase().includes("ftc") ||
-    l.issue_area.toLowerCase().includes("artificial intelligence") ||
-    l.issue_area.toLowerCase().includes("ai") ||
-    l.bill_number?.toLowerCase().includes("ftc")
-  );
-
-  if (ftcLobbying.length > 0) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8);
     doc.setTextColor(...C.red);
-    doc.text(`⚠ ${ftcLobbying.length} AI/FTC-related lobbying issue(s) detected`, ML, y);
+    doc.text(`⚠ ${aiLobbying.length} AI/FTC-related lobbying issue(s) detected`, ML, y);
     y += 4;
 
     doc.autoTable({
       ...tableStyle(y),
       head: [["Issue Area", "Spend", "Related Bill"]],
-      body: ftcLobbying.map(l => [l.issue_area, l.amount ? fmt$(l.amount) : "—", l.bill_number || "—"]),
+      body: aiLobbying.map(l => [l.issue_area, l.amount ? fmt$(l.amount) : "—", l.bill_number || "—"]),
       headStyles: { fillColor: C.amber, textColor: C.white, fontStyle: "bold" as const, fontSize: 7 },
     });
     y = doc.lastAutoTable.finalY + 10;
-  } else {
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(...C.green);
-    doc.text("✓ No AI bias audit lobbying detected.", ML, y);
-    y += 10;
   }
 
   return y;
@@ -1088,7 +1055,7 @@ export function generateDossierPdf(data: DossierPdfData): jsPDF {
   buildWorkforceIntel(doc, data);
   buildDecisionLogic(doc, data);
   buildPoliticalReceipts(doc, data);
-  buildMarch2026Alert(doc, data);
+  buildRegulatoryAlerts(doc, data);
   buildDisclaimerPage(doc);
   addPageNumbers(doc);
 

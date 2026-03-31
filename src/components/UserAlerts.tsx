@@ -1,5 +1,4 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { DemoAlerts } from "@/components/DemoAlerts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Badge } from "@/components/ui/badge";
@@ -157,8 +156,9 @@ export function UserAlertsList() {
         {isLoading ? (
           <p className="text-sm text-muted-foreground py-4">Loading alerts…</p>
         ) : filteredAlerts.length === 0 && (alerts || []).length === 0 ? (
-          /* Demo placeholder alerts when user has no real alerts */
-          <DemoAlerts />
+          <p className="text-sm text-muted-foreground py-4">
+            No alerts yet. Track companies to receive signals.
+          </p>
         ) : filteredAlerts.length === 0 ? (
           <p className="text-sm text-muted-foreground py-4">
             {filter === "all"
