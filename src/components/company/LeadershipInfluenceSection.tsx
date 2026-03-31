@@ -154,11 +154,8 @@ export function LeadershipInfluenceSection({
   const execsStale = useMemo(() => hasStaleRecords(processedExecs), [processedExecs]);
   const boardStale = useMemo(() => hasStaleRecords(processedBoard), [processedBoard]);
 
-  const hasAnyData = processedExecs.length > 0 || candidates.length > 0 || revolvingDoor.length > 0 || darkMoney.length > 0 || processedBoard.length > 0;
-  const showSection = hasAnyData || executives.length === 0;
-  if (!showSection && candidates.length === 0 && revolvingDoor.length === 0 && darkMoney.length === 0) return null;
-
   // Deduplicate party breakdown — aggregate amounts for same party name
+  // NOTE: All hooks MUST be above any early return to avoid React Rules of Hooks violation
   const deduplicatedParty = useMemo(() => {
     const map = new Map<string, PartyBreakdown>();
     for (const p of partyBreakdown) {
@@ -174,6 +171,10 @@ export function LeadershipInfluenceSection({
   }, [partyBreakdown]);
 
   const totalParty = deduplicatedParty.reduce((s, p) => s + p.amount, 0);
+
+  const hasAnyData = processedExecs.length > 0 || candidates.length > 0 || revolvingDoor.length > 0 || darkMoney.length > 0 || processedBoard.length > 0;
+  const showSection = hasAnyData || executives.length === 0;
+  if (!showSection && candidates.length === 0 && revolvingDoor.length === 0 && darkMoney.length === 0) return null;
 
   const renderExecRow = (exec: Executive) => (
     <div key={exec.id}>

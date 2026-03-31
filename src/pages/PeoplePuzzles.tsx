@@ -19,7 +19,7 @@ const PeoplePuzzles = () => {
 
   // Listen for LinkedIn share requests from the game iframe
   const handleMessage = useCallback(async (event: MessageEvent) => {
-    if (event.data?.type !== "Who Do I Work For_LINKEDIN_SHARE") return;
+    if (event.data?.type !== "WDIWF_LINKEDIN_SHARE") return;
 
     const { playerName, certName, certBadge, insightQuote, imageBase64 } = event.data.payload;
     const iframe = iframeRef.current?.contentWindow;
@@ -27,7 +27,7 @@ const PeoplePuzzles = () => {
     if (!isConnected) {
       // Tell the game iframe the user needs to connect LinkedIn first
       iframe?.postMessage({
-        type: "Who Do I Work For_LINKEDIN_RESULT",
+        type: "WDIWF_LINKEDIN_RESULT",
         success: false,
         needsAuth: true,
         error: "Connect LinkedIn first to auto-share."
@@ -46,14 +46,14 @@ const PeoplePuzzles = () => {
         imageBase64,
       });
       iframe?.postMessage({
-        type: "Who Do I Work For_LINKEDIN_RESULT",
+        type: "WDIWF_LINKEDIN_RESULT",
         success: true,
         postId: result.postId,
       }, "*");
     } catch (err: any) {
       if (err.message === "NEEDS_AUTH") {
         iframe?.postMessage({
-          type: "Who Do I Work For_LINKEDIN_RESULT",
+          type: "WDIWF_LINKEDIN_RESULT",
           success: false,
           needsAuth: true,
           error: "LinkedIn session expired. Reconnecting..."
@@ -61,7 +61,7 @@ const PeoplePuzzles = () => {
         connectLinkedIn("/peoplepuzzles");
       } else {
         iframe?.postMessage({
-          type: "Who Do I Work For_LINKEDIN_RESULT",
+          type: "WDIWF_LINKEDIN_RESULT",
           success: false,
           error: err.message || "Failed to share on LinkedIn"
         }, "*");
