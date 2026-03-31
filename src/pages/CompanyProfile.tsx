@@ -23,6 +23,7 @@ import { HowToReadThis } from "@/components/company/HowToReadThis";
 import { UpgradeMoment } from "@/components/company/UpgradeMoment";
 import { ValuesSignalMatch } from "@/components/company/ValuesSignalMatch";
 import { RealityGapBlock } from "@/components/company/RealityGapBlock";
+import { PerceptionGapModule } from "@/components/company/PerceptionGapModule";
 import { DecisionCheckpointBeforeSign } from "@/components/company/DecisionCheckpointBeforeSign";
 import { InnovationSignals } from "@/components/company/InnovationSignals";
 import { RecruiterIntegrityCard, RecruiterIntegrityCardSkeleton } from "@/components/company/RecruiterIntegrityCard";
@@ -554,10 +555,10 @@ export default function CompanyProfile() {
           {integrityResult && <RecruiterIntegrityCard result={integrityResult} />}
 
           {/* ═══════════════════════════════════════════════════════
-              2.5 REALITY GAP
+              2.5 PERCEPTION GAP™
              ═══════════════════════════════════════════════════════ */}
           {dbCompanyId && (
-            <RealityGapBlock
+            <PerceptionGapModule
               companyId={dbCompanyId}
               companyName={name}
               updatedAt={dbCompany?.updated_at}

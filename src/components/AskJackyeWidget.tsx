@@ -1,10 +1,19 @@
 import { useState, useRef, useEffect } from "react";
 import jackyeHeadshot from "@/assets/jackye-headshot.png";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
+import { ConversationModeSelector } from "./ConversationModeSelector";
+import { SendItToJackye } from "./SendItToJackye";
+import {
+  type ConversationMode,
+  CONVERSATION_MODES,
+  RESPONSE_TEMPLATES,
+  MODE_ANCHOR_LINE,
+  type UploadType,
+} from "@/lib/responseTemplates";
 
 const MarkdownWrapper = ({ content }: { content: string }) => (
   <div className="prose prose-sm prose-invert max-w-none [&_p]:mb-2 [&_p]:leading-relaxed [&_strong]:text-primary [&_li]:text-foreground">
@@ -33,11 +42,25 @@ export function AskJackyeWidget() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [conversationMode, setConversationMode] = useState<ConversationMode>("real-talk");
+  const [modeSelected, setModeSelected] = useState(false);
+  const [showSendIt, setShowSendIt] = useState(false);
+  const [showModeSelector, setShowModeSelector] = useState(true);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  const handleModeSelect = (mode: ConversationMode) => {
+    setConversationMode(mode);
+    setModeSelected(true);
+    setShowModeSelector(false);
+    // Add anchor line as first assistant message
+    if (messages.length === 0) {
+      setMessages([{ role: "assistant", content: MODE_ANCHOR_LINE }]);
+    }
+  };
 
   const send = async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -51,9 +74,14 @@ export function AskJackyeWidget() {
     setMessages(prev => [...prev, userMsg]);
     setInput("");
     setIsLoading(true);
+    setShowSendIt(false);
 
     let assistantSoFar = "";
     const allMessages = [...messages, userMsg];
+
+    // Prepend system tone based on selected mode
+    const modeTemplate = RESPONSE_TEMPLATES[conversationMode];
+    const systemContext = modeTemplate.systemPromptTone;
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -69,7 +97,11 @@ export function AskJackyeWidget() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ messages: allMessages }),
+        body: JSON.stringify({
+          messages: allMessages,
+          systemContext,
+          mode: conversationMode,
+        }),
       });
 
       if (!resp.ok || !resp.body) {
@@ -125,6 +157,19 @@ export function AskJackyeWidget() {
     setIsLoading(false);
   };
 
+  const handleSendItSubmit = (type: UploadType, content: string) => {
+    const typeLabels: Record<UploadType, string> = {
+      interview: "Here are my interview notes",
+      recruiter: "Here's a recruiter message I received",
+      offer: "Here's my offer letter details",
+      "gut-feeling": "Something feels off about this",
+    };
+    const prefixedContent = `${typeLabels[type]}:\n\n${content}`;
+    send(prefixedContent);
+  };
+
+  const currentModeConfig = CONVERSATION_MODES.find(m => m.id === conversationMode);
+
   return (
     <>
       {/* Floating button */}
@@ -140,17 +185,29 @@ export function AskJackyeWidget() {
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-4rem)] bg-card border border-border flex flex-col shadow-2xl">
+        <div className="fixed bottom-6 right-6 z-50 w-[400px] max-w-[calc(100vw-2rem)] h-[580px] max-h-[calc(100vh-4rem)] bg-card border border-border flex flex-col shadow-2xl">
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 bg-surface-2 border-b border-border shrink-0">
             <img src={jackyeHeadshot} alt="Jackye Clayton" className="w-10 h-10 rounded-full object-cover shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="font-serif text-sm font-bold text-primary">Jackye Clayton</div>
-              <div className="text-xs text-muted-foreground"><div className="text-xs text-muted-foreground">Your Career Advocate</div></div>
+              <div className="text-xs text-muted-foreground">Your Career Advocate</div>
             </div>
-            <div className="font-mono text-micro tracking-wider uppercase px-2 py-0.5 border border-primary/40 text-primary">
-              AI Coach
-            </div>
+            {modeSelected && (
+              <button
+                onClick={() => setShowModeSelector(!showModeSelector)}
+                className="inline-flex items-center gap-1 font-mono text-micro tracking-wider uppercase px-2 py-0.5 border border-primary/40 text-primary hover:bg-primary/5 transition-all"
+                title="Change conversation mode"
+              >
+                {currentModeConfig?.icon} {currentModeConfig?.label}
+                <ChevronDown className="w-3 h-3" />
+              </button>
+            )}
+            {!modeSelected && (
+              <div className="font-mono text-micro tracking-wider uppercase px-2 py-0.5 border border-primary/40 text-primary">
+                AI Coach
+              </div>
+            )}
             <button onClick={() => setOpen(false)} className="text-muted-foreground hover:text-foreground p-1">
               <X className="w-4 h-4" />
             </button>
@@ -176,8 +233,16 @@ export function AskJackyeWidget() {
             </div>
           )}
 
-          {/* Quick prompts (logged in only) */}
-          {user && messages.length === 0 && (
+          {/* Mode selector (shown initially or when toggled) */}
+          {user && showModeSelector && (
+            <ConversationModeSelector
+              selectedMode={conversationMode}
+              onSelect={handleModeSelect}
+            />
+          )}
+
+          {/* Quick prompts (logged in, mode selected, no messages yet) */}
+          {user && modeSelected && messages.length <= 1 && !showModeSelector && (
             <div className="flex flex-wrap gap-1.5 px-4 py-3 border-b border-border">
               {QUICK_PROMPTS.map(p => (
                 <button
@@ -192,7 +257,7 @@ export function AskJackyeWidget() {
           )}
 
           {/* Messages (logged in only) */}
-          {user && (
+          {user && modeSelected && (
             <div className="flex-1 overflow-y-auto scrollbar-thin">
               {messages.length === 0 && (
                 <div className="p-4 text-center text-muted-foreground text-[12px]">
@@ -239,24 +304,44 @@ export function AskJackyeWidget() {
             </div>
           )}
 
-          {/* Input (logged in only) */}
-          {user && (
-            <div className="flex border-t border-border shrink-0">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && send(input)}
-                placeholder="Check the Receipts..."
-                className="flex-1 bg-surface-2 border-none outline-none px-4 py-3 text-foreground font-sans text-[12px] placeholder:text-muted-foreground"
-                disabled={isLoading}
-              />
-              <button
-                onClick={() => send(input)}
-                disabled={isLoading || !input.trim()}
-                className="bg-primary text-primary-foreground px-4 font-mono text-xs tracking-wider uppercase font-semibold hover:brightness-110 transition-all disabled:opacity-50"
-              >
-                <Send className="w-4 h-4" />
-              </button>
+          {/* Send It to Jackye (toggle) */}
+          {user && modeSelected && showSendIt && (
+            <SendItToJackye
+              onSubmit={handleSendItSubmit}
+              isLoading={isLoading}
+              compact
+            />
+          )}
+
+          {/* Input (logged in + mode selected) */}
+          {user && modeSelected && (
+            <div className="shrink-0 border-t border-border">
+              {/* Send It toggle */}
+              <div className="flex items-center justify-between px-3 py-1.5 bg-surface-2 border-b border-border/50">
+                <button
+                  onClick={() => setShowSendIt(!showSendIt)}
+                  className="text-[10px] text-primary hover:text-primary/80 font-medium transition-colors"
+                >
+                  {showSendIt ? "← Back to chat" : "📎 Send it to me — interview notes, offer letters, gut feelings"}
+                </button>
+              </div>
+              <div className="flex">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && send(input)}
+                  placeholder="Check the Receipts..."
+                  className="flex-1 bg-surface-2 border-none outline-none px-4 py-3 text-foreground font-sans text-[12px] placeholder:text-muted-foreground"
+                  disabled={isLoading}
+                />
+                <button
+                  onClick={() => send(input)}
+                  disabled={isLoading || !input.trim()}
+                  className="bg-primary text-primary-foreground px-4 font-mono text-xs tracking-wider uppercase font-semibold hover:brightness-110 transition-all disabled:opacity-50"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           )}
         </div>
