@@ -21,7 +21,9 @@ import {
   FileText, BookOpen, TrendingDown, Eye, Building2,
   Briefcase, Zap, ChevronRight, Flame, Target,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useProject2025LinkedCompanyIds } from "@/hooks/use-project2025-linked-companies";
+import { Project2025DashboardBadge } from "@/components/project2025/Project2025DashboardBadge";
 
 interface NarrativeFeedProps {
   onNavigate: (tab: string) => void;
@@ -125,12 +127,19 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
 
   const trackedCompanies = briefing?.tracked?.length
     ? briefing.tracked.map((t: any) => ({
+        id: t.company?.id as string | undefined,
         name: t.company?.name,
         slug: t.company?.slug,
         industry: t.company?.industry,
         score: t.company?.civic_footprint_score ?? 0,
       }))
     : [];
+
+  const trackedCompanyIds = useMemo(
+    () => trackedCompanies.map((t) => t.id).filter(Boolean) as string[],
+    [trackedCompanies],
+  );
+  const { data: project2025CompanySet } = useProject2025LinkedCompanyIds(trackedCompanyIds);
 
   const alerts = briefing?.alerts || [];
 
@@ -332,6 +341,13 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
                   <span className="flex-1 min-w-0 truncate text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                     {t.name}
                   </span>
+                  {t.id && t.slug && (
+                    <Project2025DashboardBadge
+                      companySlug={t.slug}
+                      active={project2025CompanySet?.has(t.id) ?? false}
+                      className="shrink-0"
+                    />
+                  )}
                   <span className="text-xs text-muted-foreground hidden sm:block">{t.industry}</span>
                   <span className={`text-xs font-bold shrink-0 rounded-full px-2 py-0.5 ${scoreBgClass(t.score)}`}>
                     {t.score}

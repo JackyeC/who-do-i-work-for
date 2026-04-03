@@ -55,6 +55,7 @@ import { SituationContextBanner } from "@/components/policy-intelligence/Situati
 import { TrustFramingLine } from "@/components/TrustFramingLine";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Project2025DossierSection } from "@/components/project2025/Project2025DossierSection";
 
 /* ─── Lens config ─── */
 const LENS_META = {
@@ -390,6 +391,12 @@ export default function CompanyDossier() {
       </DossierLayer>
 
       {companyId && (
+        <div className="mt-4">
+          <Project2025DossierSection companyId={companyId} />
+        </div>
+      )}
+
+      {companyId && (
         <DossierLayer title="Political Giving & Influence" subtitle="PAC spending, lobbying, institutional links — sourced from FEC & LDA" icon={Landmark} layerNumber={7}>
           <PoliticalGivingCard companyId={companyId} companyName={company.name} companySlug={company.slug} />
         </DossierLayer>
@@ -435,6 +442,12 @@ export default function CompanyDossier() {
         />
       </DossierLayer>
 
+      {companyId && (
+        <div className="mt-4">
+          <Project2025DossierSection companyId={companyId} />
+        </div>
+      )}
+
       <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
         <PatternsSynthesisLayer patterns={[]} companyName={company.name} />
       </DossierLayer>
@@ -464,6 +477,12 @@ export default function CompanyDossier() {
           policyLinks={[]}
         />
       </DossierLayer>
+
+      {companyId && (
+        <div className="mt-4">
+          <Project2025DossierSection companyId={companyId} />
+        </div>
+      )}
 
       <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
         <PatternsSynthesisLayer patterns={[]} companyName={company.name} />

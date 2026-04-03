@@ -29,6 +29,7 @@ import { WatchCompanyButton } from "@/components/WatchCompanyButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { OfferProject2025AffiliationsCard } from "@/components/project2025/OfferProject2025AffiliationsCard";
 
 function StaleWarningBanner({ staleSections, total }: { staleSections: number; total: number }) {
   if (staleSections === 0) return null;
@@ -237,7 +238,7 @@ export default function OfferCheck() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
+      <div className="container mx-auto px-4 py-8 max-w-3xl lg:max-w-5xl">
         <Link to={`/company/${company.slug}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to profile
         </Link>
@@ -355,12 +356,27 @@ export default function OfferCheck() {
           </div>
         )}
 
-        {/* Report Sections */}
-        <OfferCheckReport
-          sections={sections}
-          lockedSections={lockedSections}
-          onUnlock={handleUnlock}
-        />
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_232px] lg:gap-6 lg:items-start">
+          <div className="min-w-0 space-y-5">
+            {companyId && (
+              <div className="lg:hidden">
+                <OfferProject2025AffiliationsCard companyId={companyId} />
+              </div>
+            )}
+
+            {/* Report Sections */}
+            <OfferCheckReport
+              sections={sections}
+              lockedSections={lockedSections}
+              onUnlock={handleUnlock}
+            />
+          </div>
+          {companyId && (
+            <aside className="max-lg:hidden lg:sticky lg:top-24 space-y-4">
+              <OfferProject2025AffiliationsCard companyId={companyId} />
+            </aside>
+          )}
+        </div>
 
         {/* Private Offer Review CTA */}
         {companyId && (

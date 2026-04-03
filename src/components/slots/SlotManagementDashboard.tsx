@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { useTrackedCompanies } from "@/hooks/use-tracked-companies";
+import { useProject2025LinkedCompanyIds } from "@/hooks/use-project2025-linked-companies";
 import { SlotTracker } from "./SlotTracker";
 import { TrackedCompanyCard } from "./TrackedCompanyCard";
 import { Building2, Search } from "lucide-react";
@@ -8,6 +10,11 @@ import { useNavigate } from "react-router-dom";
 export function SlotManagementDashboard() {
   const { trackedCompanies, isLoading, untrackCompany, isPremium } = useTrackedCompanies();
   const navigate = useNavigate();
+  const trackedCompanyIds = useMemo(
+    () => trackedCompanies.map((tc) => tc.company_id).filter(Boolean),
+    [trackedCompanies],
+  );
+  const { data: project2025CompanySet } = useProject2025LinkedCompanyIds(trackedCompanyIds);
 
   if (!isPremium) {
     return (
@@ -49,6 +56,7 @@ export function SlotManagementDashboard() {
               tracked={tc}
               onUntrack={(companyId) => untrackCompany.mutate(companyId)}
               isUntracking={untrackCompany.isPending}
+              hasProject2025Data={project2025CompanySet?.has(tc.company_id) ?? false}
             />
           ))}
         </div>
