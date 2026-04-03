@@ -7615,6 +7615,81 @@ export type Database = {
           },
         ]
       }
+      project2025_company_links: {
+        Row: {
+          company_id: string
+          created_at: string
+          entity_id: string
+          evidence_url: string | null
+          id: string
+          relationship_note: string | null
+          relationship_type: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          entity_id: string
+          evidence_url?: string | null
+          id?: string
+          relationship_note?: string | null
+          relationship_type: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          entity_id?: string
+          evidence_url?: string | null
+          id?: string
+          relationship_note?: string | null
+          relationship_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project2025_company_links_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project2025_company_links_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "project2025_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project2025_entities: {
+        Row: {
+          entity_type: string
+          id: string
+          name: string
+          note: string | null
+          primary_role: string | null
+          source_last_seen_at: string
+          source_url: string
+        }
+        Insert: {
+          entity_type: string
+          id?: string
+          name: string
+          note?: string | null
+          primary_role?: string | null
+          source_last_seen_at?: string
+          source_url: string
+        }
+        Update: {
+          entity_type?: string
+          id?: string
+          name?: string
+          note?: string | null
+          primary_role?: string | null
+          source_last_seen_at?: string
+          source_url?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           ai_transparency_required: boolean | null
