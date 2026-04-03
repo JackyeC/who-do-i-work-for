@@ -1,0 +1,301 @@
+================================================================================
+RLS POLICY SECURITY AUDIT - WHO DO I WORK FOR
+================================================================================
+Date: 2026-03-29
+Status: COMPLETE ANALYSIS
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+Found 20 problematic RLS policies across 12 tables:
+- 10 CRITICAL policies: ANY authenticated user can modify ANY record
+- 4 MODERATE policies: INSERT/UPDATE without ownership tracking
+- 8 LOW severity: Read-only policies (likely intentional)
+
+The REPORT TABLES are the highest priority security issue. All 10 report-related
+tables allow any authenticated user to INSERT, UPDATE, and DELETE all records
+without any ownership verification.
+
+================================================================================
+CRITICAL SECURITY ISSUES (Fix Immediately)
+================================================================================
+
+1. REPORT TABLES - All 10 Tables Allow Unrestricted Full Access
+
+   Tables:
+   - policy_reports
+   - report_sections
+   - report_claims
+   - report_evidence_links
+   - report_entities
+   - report_legislation
+   - report_events
+   - report_company_alignment
+   - report_actions
+   - report_followups
+
+   Problem:
+   Policy: FOR ALL TO authenticated USING (true) WITH CHECK (true)
+
+   This means ANY authenticated user can:
+   - READ all records in all report tables
+   - CREATE new records in all tables
+   - MODIFY any existing record
+   - DELETE any existing record
+
+   No ownership checks. No author verification. No access control.
+
+   Current Columns:
+   - Have author_name, author_slug (text fields, not UUIDs)
+   - Have created_at, updated_at timestamps
+   - NO user_id or created_by UUID columns
+
+   Impact: HIGH
+   - Multi-user system has zero record-level access control
+   - Any authenticated user can sabotage another user's work
+   - Data integrity cannot be enforced
+
+   Fix Required:
+   1. Add user_id UUID DEFAULT auth.uid() to all 10 tables
+   2. Drop "Auth users manage *" policies
+   3. Add "Users can manage own records" policies:
+      FOR ALL TO authenticated
+      USING (auth.uid() = user_id)
+      WITH CHECK (auth.uid() = user_id)
+   4. Add admin override policies
+   5. Backfill existing NULL user_ids (decide on default strategy)
+
+
+================================================================================
+MODERATE SECURITY ISSUES
+================================================================================
+
+2. COMPANY SANCTIONS SCREENING & WIKIDATA
+
+   Tables:
+   - company_sanctions_screening
+   - company_wikidata
+
+   Problem:
+   INSERT: WITH CHECK (true) - any user can insert
+   UPDATE: USING (true) - any user can modify any record
+
+   No tracking of who created/modified records.
+
+   Current Columns:
+   - Have screened_at/fetched_at
+   - Have created_at
+   - NO created_by column
+
+   Impact: MEDIUM
+   - Can't track who updated data
+   - Can't prevent users from modifying others' work
+
+   Fix Required:
+   1. Add created_by UUID NOT NULL DEFAULT auth.uid()
+   2. Add policies restricting INSERT/UPDATE to creator:
+      FOR INSERT: WITH CHECK (auth.uid() = created_by)
+      FOR UPDATE: USING (auth.uid() = created_by) WITH CHECK (...)
+   3. Add admin override policies
+
+
+================================================================================
+LIKELY INTENTIONAL (Review & Document)
+================================================================================
+
+3. READ-ONLY POLICIES FOR PUBLIC/RESEARCH DATA
+
+   Tables:
+   - epstein_persons (4 tables total)
+   - company_court_cases
+   - company_dossiers
+   - scan_runs
+   - browse_ai_monitors
+
+   These are SELECT-only with USING (true):
+   "FOR SELECT TO authenticated USING (true)"
+
+   Assessment: Likely intentional for research/reference data
+   - No INSERT/UPDATE/DELETE, only read
+   - May be public-interest information
+   - Write operations restricted to admins elsewhere
+
+   Recommendation:
+   - Document intent in migration comments
+   - Consider if syntax can be simplified
+   - No data modification allowed, so lower risk
+
+
+================================================================================
+DETAILED TABLE INVENTORY
+================================================================================
+
+REPORT TABLES (Migration: 20260309180817)
+------------------------------------------
+1. policy_reports
+   Columns: id, slug, title, subtitle, executive_summary, full_report_text,
+            author_name, author_slug, publication_date, report_type, status,
+            primary_issue_category, issue_categories_json, confidence_level,
+            verification_status, featured_image_url, hero_quote, created_at,
+            updated_at
+   Missing: user_id (needed for ownership)
+
+2. report_sections
+   Columns: id, report_id, section_order, section_title, section_subtitle,
+            section_summary, full_section_text, issue_category,
+            confidence_level, verification_status, created_at, updated_at
+   Missing: user_id
+
+3. report_claims
+   Columns: id, report_id, section_id, claim_order, claim_title, claim_text,
+            claim_type, issue_category, confidence_level,
+            verification_status, evidence_required, created_at, updated_at
+   Missing: user_id
+
+4. report_evidence_links
+   Columns: id, report_id, section_id, claim_id, source_name, source_type,
+            source_url, source_title, source_description, evidence_excerpt,
+            source_date, verification_status, confidence_score, created_at
+   Missing: user_id
+
+5. report_entities
+   Columns: id, report_id, section_id, claim_id, entity_id,
+            entity_name_snapshot, entity_type, relationship_description,
+            confidence_level, created_at
+   Missing: user_id
+
+6. report_legislation
+   Columns: id, report_id, section_id, bill_name, bill_number,
+            legislative_body, jurisdiction, legislative_session,
+            current_status, description, issue_category, source_url,
+            created_at, updated_at
+   Missing: user_id
+
+7. report_events
+   Columns: id, report_id, section_id, event_title, event_type, event_date,
+            end_date, event_description, source_url, issue_category,
+            confidence_level, created_at
+   Missing: user_id
+
+8. report_company_alignment
+   Columns: id, report_id, entity_id, entity_name_snapshot,
+            alignment_theme, alignment_summary, dirty_receipt_label,
+            evidence_note, issue_category, confidence_level,
+            verification_status, created_at, updated_at
+   Missing: user_id
+
+9. report_actions
+   Columns: id, report_id, action_order, action_title, action_description,
+            action_type, related_entity_id, related_issue_category,
+            priority_level, created_at
+   Missing: user_id
+
+10. report_followups
+    Columns: id, report_id, section_id, prompt_text, status, priority_level,
+             related_issue_category, related_entity_id, created_at, updated_at
+    Missing: user_id
+
+
+EDIT-PERMISSION TABLES (Migration: 20260315181457)
+---------------------------------------------------
+11. company_sanctions_screening
+    Columns: id, company_id, entity_name, match_type, schema_type,
+             sanctions_list, dataset, topics, match_score, properties,
+             source_url, first_seen, last_seen, screened_at, created_at
+    Missing: created_by
+
+12. company_wikidata
+    Columns: id, company_id, entity_type, entity_name, wikidata_id,
+             description, founded_year, headquarters, industry_wikidata,
+             parent_org, subsidiary_count, employee_count_wikidata,
+             revenue_wikidata, stock_exchange, official_website,
+             properties, fetched_at, created_at
+    Missing: created_by
+
+
+================================================================================
+COLUMNS TO ADD & MIGRATION STRATEGY
+================================================================================
+
+Step 1: Add user_id Columns to Report Tables
+--
+ALTER TABLE public.policy_reports ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_sections ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_claims ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_evidence_links ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_entities ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_legislation ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_events ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_company_alignment ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_actions ADD COLUMN user_id UUID DEFAULT auth.uid();
+ALTER TABLE public.report_followups ADD COLUMN user_id UUID DEFAULT auth.uid();
+
+Step 2: Add created_by Columns to Edit Tables
+--
+ALTER TABLE public.company_sanctions_screening ADD COLUMN created_by UUID NOT NULL DEFAULT auth.uid();
+ALTER TABLE public.company_wikidata ADD COLUMN created_by UUID NOT NULL DEFAULT auth.uid();
+
+Step 3: Update RLS Policies for All 12 Tables
+--
+For each report table:
+  1. DROP POLICY "Auth users manage [table]"
+  2. CREATE POLICY "Users manage own records" ... USING (auth.uid() = user_id)
+  3. CREATE POLICY "Admins manage all" ... USING (has_role(auth.uid(), 'admin'))
+
+For each edit-permission table:
+  1. DROP POLICY "Authenticated inserts/updates [table]"
+  2. CREATE POLICY "Users manage own records" ... USING/WITH CHECK (auth.uid() = created_by)
+  3. CREATE POLICY "Admins manage all" ... USING/WITH CHECK (has_role(auth.uid(), 'admin'))
+
+
+================================================================================
+REFERENCE FILES GENERATED
+================================================================================
+
+1. rls_policy_audit.md (11 KB)
+   - Detailed markdown report with all findings
+   - Organized by severity
+   - Includes table summaries and fix recommendations
+
+2. rls_policy_audit.json (13 KB)
+   - Structured data format for programmatic use
+   - Complete policy inventory
+   - Organized by severity levels
+
+3. rls_policy_audit.csv (5.8 KB)
+   - Spreadsheet-friendly format
+   - All 22 problematic policies listed
+   - Easy to import into tracking systems
+
+4. RLS_SECURITY_FINDINGS.txt (this file)
+   - Executive summary
+   - Complete findings
+   - Migration strategy
+
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Review findings with team
+2. Decide on migration approach for NULL user_ids in existing data
+3. Create migration file that:
+   - Adds columns
+   - Backfills existing data
+   - Drops problematic policies
+   - Creates new scoped policies
+   - Adds admin override policies
+4. Test thoroughly in development
+5. Deploy with care (may impact running systems)
+
+
+================================================================================
+NOTES
+================================================================================
+
+- All migrations checked: /sessions/tender-serene-darwin/mnt/who-do-i-work-for/supabase/migrations/
+- Analysis date: 2026-03-29
+- Total migrations analyzed: ~120 files
+- Problematic policies found: 20 across 12 tables
+- Public read-only policies (appears intentional): 8

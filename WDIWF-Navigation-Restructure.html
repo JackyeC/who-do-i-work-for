@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WDIWF Navigation Restructure — From 132 Pages to a Product That Hits</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e0e0e0; line-height: 1.6; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+  h1 { font-size: 2.4rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  h2 { font-size: 1.6rem; font-weight: 700; color: #fff; margin: 48px 0 16px; border-bottom: 2px solid #ff4d6a; padding-bottom: 8px; display: inline-block; }
+  h3 { font-size: 1.1rem; font-weight: 600; color: #ff4d6a; margin: 24px 0 8px; }
+
+  .subtitle { color: #999; font-size: 1.1rem; margin-bottom: 40px; }
+  .date { color: #666; font-size: 0.85rem; margin-bottom: 32px; }
+
+  /* Problem stat */
+  .stat-row { display: flex; gap: 24px; margin: 32px 0; flex-wrap: wrap; }
+  .stat-card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 24px; flex: 1; min-width: 200px; text-align: center; }
+  .stat-card .number { font-size: 2.5rem; font-weight: 800; color: #ff4d6a; }
+  .stat-card .label { color: #999; font-size: 0.85rem; margin-top: 4px; }
+  .stat-card.good { border-color: #2ecc71; }
+  .stat-card.good .number { color: #2ecc71; }
+
+  /* New nav mockup */
+  .nav-mockup { background: #111; border: 1px solid #333; border-radius: 16px; overflow: hidden; margin: 24px 0; }
+  .nav-bar { display: flex; align-items: center; padding: 12px 24px; gap: 32px; border-bottom: 1px solid #222; }
+  .nav-logo { font-weight: 800; font-size: 1.1rem; color: #ff4d6a; white-space: nowrap; }
+  .nav-items { display: flex; gap: 24px; }
+  .nav-item { color: #ccc; font-size: 0.9rem; font-weight: 500; cursor: default; padding: 6px 0; }
+  .nav-item.active { color: #ff4d6a; border-bottom: 2px solid #ff4d6a; }
+  .nav-search { margin-left: auto; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 8px 16px; color: #666; font-size: 0.85rem; min-width: 200px; }
+  .nav-cta { background: #ff4d6a; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+
+  /* Route mapping table */
+  .route-table { width: 100%; border-collapse: collapse; margin: 16px 0 32px; font-size: 0.85rem; }
+  .route-table th { text-align: left; padding: 10px 12px; background: #1a1a1a; color: #999; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; border-bottom: 2px solid #333; }
+  .route-table td { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; vertical-align: top; }
+  .route-table tr:hover { background: #111; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+  .badge-keep { background: #1a3d2a; color: #2ecc71; }
+  .badge-merge { background: #3d3a1a; color: #f1c40f; }
+  .badge-cut { background: #3d1a1a; color: #e74c3c; }
+  .badge-rename { background: #1a2a3d; color: #3498db; }
+  .badge-move { background: #2d1a3d; color: #9b59b6; }
+
+  /* Section cards */
+  .section-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin: 16px 0; }
+  .section-card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px; }
+  .section-card h4 { color: #fff; font-size: 1rem; margin-bottom: 8px; }
+  .section-card p { color: #999; font-size: 0.85rem; }
+  .section-card .pages { margin-top: 12px; }
+  .section-card .page-item { color: #ccc; font-size: 0.8rem; padding: 3px 0; border-bottom: 1px solid #222; }
+  .section-card .page-item:last-child { border-bottom: none; }
+  .section-card .page-item span { color: #666; }
+
+  /* Brand comparison */
+  .brand-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+  .brand-box { background: #1a1a1a; border-radius: 12px; padding: 24px; }
+  .brand-box.before { border: 1px solid #e74c3c; }
+  .brand-box.after { border: 1px solid #2ecc71; }
+  .brand-box h4 { margin-bottom: 12px; }
+  .brand-box .label-tag { display: inline-block; font-size: 0.7rem; padding: 2px 6px; border-radius: 3px; margin-bottom: 8px; font-weight: 600; }
+  .brand-box.before .label-tag { background: #3d1a1a; color: #e74c3c; }
+  .brand-box.after .label-tag { background: #1a3d2a; color: #2ecc71; }
+
+  .callout { background: #1a1a1a; border-left: 4px solid #ff4d6a; padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0; }
+  .callout p { color: #ccc; font-size: 0.9rem; }
+  .callout strong { color: #fff; }
+
+  .viral-hooks { list-style: none; margin: 16px 0; }
+  .viral-hooks li { padding: 8px 0; border-bottom: 1px solid #1a1a1a; color: #ccc; font-size: 0.9rem; }
+  .viral-hooks li::before { content: '🔥 '; }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 1.6rem; }
+    .brand-compare { grid-template-columns: 1fr; }
+    .nav-bar { flex-wrap: wrap; gap: 12px; }
+    .nav-search { min-width: 100%; order: 10; }
+    .stat-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>WDIWF Navigation Restructure</h1>
+<p class="subtitle">From 132 pages and 88 nav items → 5 core tabs and a product that actually makes sense</p>
+<p class="date">March 30, 2026 — Prepared for Jackye Clayton</p>
+
+<!-- ============ THE PROBLEM ============ -->
+<h2>The Problem (By the Numbers)</h2>
+
+<div class="stat-row">
+  <div class="stat-card"><div class="number">132</div><div class="label">Total Routes</div></div>
+  <div class="stat-card"><div class="number">88+</div><div class="label">Navigation Items</div></div>
+  <div class="stat-card"><div class="number">4</div><div class="label">Separate Nav Systems</div></div>
+  <div class="stat-card"><div class="number">14</div><div class="label">Items in "More" Dropdown</div></div>
+</div>
+
+<div class="callout">
+  <p><strong>The core issue:</strong> The current navigation mixes product features, editorial concepts, B2B pages, political tools, and job board functionality at the same level. A first-time visitor can't tell what this product does in 5 seconds. Every great product passes the "one sentence" test — WDIWF currently fails it.</p>
+</div>
+
+<!-- ============ THE NEW NAV ============ -->
+<h2>The New Navigation</h2>
+
+<div class="stat-row">
+  <div class="stat-card good"><div class="number">5</div><div class="label">Primary Nav Items</div></div>
+  <div class="stat-card good"><div class="number">6</div><div class="label">Secondary (More) Items</div></div>
+  <div class="stat-card good"><div class="number">7</div><div class="label">Account Menu Items</div></div>
+  <div class="stat-card good"><div class="number">1</div><div class="label">Nav System (not 4)</div></div>
+</div>
+
+<div class="nav-mockup">
+  <div class="nav-bar">
+    <div class="nav-logo">WDIWF</div>
+    <div class="nav-items">
+      <div class="nav-item active">Companies</div>
+      <div class="nav-item">Compare</div>
+      <div class="nav-item">Offers</div>
+      <div class="nav-item">Watchlist</div>
+      <div class="nav-item">Pricing</div>
+    </div>
+    <div class="nav-search">🔍 Search any employer...</div>
+    <div class="nav-cta">Sign Up Free</div>
+  </div>
+</div>
+
+<h3>What Each Tab Does</h3>
+<div class="section-grid">
+  <div class="section-card">
+    <h4>🏢 Companies</h4>
+    <p>The core action. Search any employer, get the dossier. This is your homepage, your hero, your viral loop.</p>
+    <div class="pages">
+      <div class="page-item">Company search & directory</div>
+      <div class="page-item">Employer dossier (clarity score, pay risk, leadership, hiring patterns)</div>
+      <div class="page-item">Evidence & receipts <span>— folded into dossier as a tab</span></div>
+      <div class="page-item">Risk signals <span>— folded into dossier</span></div>
+      <div class="page-item">Leader profiles <span>— linked from dossier</span></div>
+    </div>
+  </div>
+  <div class="section-card">
+    <h4>⚖️ Compare</h4>
+    <p>Side-by-side company comparison. 2-4 employers, score deltas, risk summaries, "which one is actually better" verdict.</p>
+    <div class="pages">
+      <div class="page-item">Compare companies side-by-side</div>
+      <div class="page-item">Score comparison</div>
+      <div class="page-item">Risk/stability comparison</div>
+      <div class="page-item">Recommendation summary</div>
+    </div>
+  </div>
+  <div class="section-card">
+    <h4>💰 Offers</h4>
+    <p>The decision moment. Enter offer details, get risk analysis, negotiation flags, and a go/no-go signal.</p>
+    <div class="pages">
+      <div class="page-item">Offer risk review</div>
+      <div class="page-item">Compensation context</div>
+      <div class="page-item">Negotiation simulator</div>
+      <div class="page-item">Decision engine</div>
+      <div class="page-item">Saved offer reviews</div>
+    </div>
+  </div>
+  <div class="section-card">
+    <h4>👁️ Watchlist</h4>
+    <p>Your personal radar. Tracked companies, signal alerts, saved reports. Replaces "My Intel" with something people actually understand.</p>
+    <div class="pages">
+      <div class="page-item">Saved companies</div>
+      <div class="page-item">Signal alerts</div>
+      <div class="page-item">Briefings</div>
+      <div class="page-item">Job matches <span>— tracked from companies you watch</span></div>
+    </div>
+  </div>
+</div>
+
+<h3>Secondary Menu ("More")</h3>
+<div class="section-card" style="max-width: 500px;">
+  <div class="pages">
+    <div class="page-item">Methodology <span>— builds trust in your scoring</span></div>
+    <div class="page-item">About <span>— your story, the mission</span></div>
+    <div class="page-item">For Employers <span>— B2B page, separate from job seeker flow</span></div>
+    <div class="page-item">Contact</div>
+    <div class="page-item">Terms / Privacy / Disclaimers</div>
+  </div>
+</div>
+
+<h3>Account Menu (Authenticated Users)</h3>
+<div class="section-card" style="max-width: 500px;">
+  <div class="pages">
+    <div class="page-item">Dashboard <span>— overview of tracked companies, alerts, activity</span></div>
+    <div class="page-item">Saved Reports</div>
+    <div class="page-item">My Offer Reviews</div>
+    <div class="page-item">Resume & Interview Prep <span>— tools, not top nav</span></div>
+    <div class="page-item">Profile & Preferences</div>
+    <div class="page-item">Billing</div>
+    <div class="page-item">Sign Out</div>
+  </div>
+</div>
+
+<!-- ============ FULL ROUTE MAP ============ -->
+<h2>Every Current Route — What Happens to It</h2>
+
+<p style="color: #999; margin-bottom: 16px; font-size: 0.9rem;">This is your complete decision map. Every one of the 132 routes, categorized by action.</p>
+
+<div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+  <span class="badge badge-keep">KEEP — stays as-is or minor rename</span>
+  <span class="badge badge-rename">RENAME — same page, better label</span>
+  <span class="badge badge-merge">MERGE — fold into another page</span>
+  <span class="badge badge-move">MOVE — relocate in nav hierarchy</span>
+  <span class="badge badge-cut">CUT — remove or defer to V2</span>
+</div>
+
+<h3>Core Product Pages (Keep & Rename)</h3>
+<table class="route-table">
+  <tr><th>Current Route</th><th>Current Name</th><th>Action</th><th>New Home</th></tr>
+  <tr><td>/</td><td>Landing Page</td><td><span class="badge badge-rename">RENAME</span></td><td>Homepage → Company search as hero</td></tr>
+  <tr><td>/browse</td><td>Employer Directory</td><td><span class="badge badge-rename">RENAME</span></td><td><strong>Companies</strong> tab</td></tr>
+  <tr><td>/company/:id</td><td>Company Profile</td><td><span class="badge badge-keep">KEEP</span></td><td>Companies → Company Report</td></tr>
+  <tr><td>/dossier/:id</td><td>Company Dossier</td><td><span class="badge badge-merge">MERGE</span></td><td>Merge with Company Profile into one "Company Report" page</td></tr>
+  <tr><td>/search</td><td>Search Results</td><td><span class="badge badge-keep">KEEP</span></td><td>Companies → Search Results</td></tr>
+  <tr><td>/compare</td><td>Compare Companies</td><td><span class="badge badge-rename">RENAME</span></td><td><strong>Compare</strong> tab</td></tr>
+  <tr><td>/check</td><td>Offer Scan</td><td><span class="badge badge-rename">RENAME</span></td><td><strong>Offers</strong> tab</td></tr>
+  <tr><td>/offer-check/:id</td><td>Offer Check</td><td><span class="badge badge-merge">MERGE</span></td><td>Offers → Offer Review</td></tr>
+  <tr><td>/offer-review/:id</td><td>Offer Review</td><td><span class="badge badge-merge">MERGE</span></td><td>Offers → Offer Review (one flow, not three)</td></tr>
+  <tr><td>/pricing</td><td>Pricing</td><td><span class="badge badge-keep">KEEP</span></td><td><strong>Pricing</strong> tab</td></tr>
+  <tr><td>/dashboard</td><td>Dashboard</td><td><span class="badge badge-rename">RENAME</span></td><td>Account → Dashboard</td></tr>
+  <tr><td>/signal-alerts</td><td>Signal Alerts</td><td><span class="badge badge-rename">RENAME</span></td><td><strong>Watchlist</strong> → Alerts</td></tr>
+</table>
+
+<h3>Pages to Merge (Same Value, Fewer Clicks)</h3>
+<table class="route-table">
+  <tr><th>Current Route</th><th>Current Name</th><th>Action</th><th>New Home</th></tr>
+  <tr><td>/receipts</td><td>Receipts Hub</td><td><span class="badge badge-merge">MERGE</span></td><td>Fold into Company Report as "Evidence" tab</td></tr>
+  <tr><td>/receipts/:slug</td><td>Receipt Report</td><td><span class="badge badge-merge">MERGE</span></td><td>Company Report → Evidence section</td></tr>
+  <tr><td>/intelligence</td><td>Intelligence Reports</td><td><span class="badge badge-merge">MERGE</span></td><td>Company Report → Intelligence section</td></tr>
+  <tr><td>/intelligence/:slug</td><td>Intelligence Report</td><td><span class="badge badge-merge">MERGE</span></td><td>Company Report detail</td></tr>
+  <tr><td>/signals</td><td>Signal Feed</td><td><span class="badge badge-merge">MERGE</span></td><td>Watchlist → Signal Feed</td></tr>
+  <tr><td>/career-intelligence</td><td>Career Intelligence</td><td><span class="badge badge-merge">MERGE</span></td><td>Dashboard → Career section</td></tr>
+  <tr><td>/career-map</td><td>Career Map</td><td><span class="badge badge-merge">MERGE</span></td><td>Dashboard → Career section</td></tr>
+  <tr><td>/offer-clarity</td><td>Offer Clarity Wizard</td><td><span class="badge badge-merge">MERGE</span></td><td>Offers flow</td></tr>
+  <tr><td>/strategic-offer-review</td><td>Strategic Offer Review</td><td><span class="badge badge-merge">MERGE</span></td><td>Offers flow</td></tr>
+  <tr><td>/offer-review-direct</td><td>Direct Offer Form</td><td><span class="badge badge-merge">MERGE</span></td><td>Offers flow (one entry point, not four)</td></tr>
+  <tr><td>/compare-offer-checks</td><td>Compare Offer Checks</td><td><span class="badge badge-merge">MERGE</span></td><td>Compare tab → Offer comparison mode</td></tr>
+  <tr><td>/negotiation-simulator</td><td>Negotiation Simulator</td><td><span class="badge badge-merge">MERGE</span></td><td>Offers → Negotiation section</td></tr>
+  <tr><td>/decision-engine</td><td>Decision Engine</td><td><span class="badge badge-merge">MERGE</span></td><td>Offers → Decision section</td></tr>
+  <tr><td>/briefing</td><td>Personalized Briefing</td><td><span class="badge badge-merge">MERGE</span></td><td>Watchlist → Daily Briefing</td></tr>
+  <tr><td>/saved</td><td>Saved Page</td><td><span class="badge badge-merge">MERGE</span></td><td>Watchlist</td></tr>
+  <tr><td>/employer-receipt</td><td>Employer Receipt</td><td><span class="badge badge-merge">MERGE</span></td><td>Company Report</td></tr>
+  <tr><td>/one-pager</td><td>One-Page Summary</td><td><span class="badge badge-merge">MERGE</span></td><td>Company Report → Summary view</td></tr>
+  <tr><td>/board-intelligence</td><td>Board Intelligence</td><td><span class="badge badge-merge">MERGE</span></td><td>Company Report → Leadership tab</td></tr>
+  <tr><td>/leader/:id</td><td>Leader Profile</td><td><span class="badge badge-keep">KEEP</span></td><td>Linked from Company Report</td></tr>
+</table>
+
+<h3>Pages to Move (Useful, But Not Top Nav)</h3>
+<table class="route-table">
+  <tr><th>Current Route</th><th>Current Name</th><th>Action</th><th>New Home</th></tr>
+  <tr><td>/resume</td><td>Resume Optimizer</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Tools</td></tr>
+  <tr><td>/cover-letter</td><td>Cover Letter</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Tools</td></tr>
+  <tr><td>/mock-interview</td><td>Mock Interview</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Tools</td></tr>
+  <tr><td>/interview-kits</td><td>Interview Kits</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Tools</td></tr>
+  <tr><td>/jobs-feed</td><td>Jobs Feed</td><td><span class="badge badge-move">MOVE</span></td><td>Watchlist → Jobs (if keeping job features)</td></tr>
+  <tr><td>/tracker</td><td>Job Tracker</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Tracker</td></tr>
+  <tr><td>/apply-kit</td><td>Apply Kit</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Tools</td></tr>
+  <tr><td>/inbox</td><td>Inbox</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Notifications</td></tr>
+  <tr><td>/about</td><td>About</td><td><span class="badge badge-move">MOVE</span></td><td>More menu</td></tr>
+  <tr><td>/contact</td><td>Contact</td><td><span class="badge badge-move">MOVE</span></td><td>More menu</td></tr>
+  <tr><td>/methodology</td><td>Methodology</td><td><span class="badge badge-move">MOVE</span></td><td>More menu</td></tr>
+  <tr><td>/for-employers</td><td>For Employers</td><td><span class="badge badge-move">MOVE</span></td><td>More menu</td></tr>
+  <tr><td>/terms, /privacy, /disclaimers</td><td>Legal Pages</td><td><span class="badge badge-move">MOVE</span></td><td>Footer only</td></tr>
+  <tr><td>/my-offer-checks</td><td>My Offer Checks</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Saved Offers</td></tr>
+  <tr><td>/my-offer-reviews</td><td>My Offer Reviews</td><td><span class="badge badge-move">MOVE</span></td><td>Account → Saved Offers</td></tr>
+</table>
+
+<h3>Pages to Cut or Defer to V2</h3>
+<table class="route-table">
+  <tr><th>Current Route</th><th>Current Name</th><th>Action</th><th>Reason</th></tr>
+  <tr><td>/job-board</td><td>Job Board Embed</td><td><span class="badge badge-cut">CUT</span></td><td>Competes with your core — you vet employers, not list jobs</td></tr>
+  <tr><td>/jobs</td><td>Job Search</td><td><span class="badge badge-cut">CUT</span></td><td>Same — dilutes the brand story</td></tr>
+  <tr><td>/hire</td><td>Hire</td><td><span class="badge badge-cut">CUT</span></td><td>Confusing in a job-seeker product</td></tr>
+  <tr><td>/follow-the-money</td><td>Campaign Finance</td><td><span class="badge badge-cut">CUT</span></td><td>V2 editorial — doesn't serve the core search→decide flow</td></tr>
+  <tr><td>/hrtech</td><td>HR Tech Intel</td><td><span class="badge badge-cut">CUT</span></td><td>Industry content, not user-facing product</td></tr>
+  <tr><td>/recruiter-brief</td><td>Recruiter Brief</td><td><span class="badge badge-cut">CUT</span></td><td>B2B feature — hide behind For Employers</td></tr>
+  <tr><td>/voter-lookup</td><td>Voter Lookup</td><td><span class="badge badge-cut">CUT</span></td><td>Political tool — different product entirely</td></tr>
+  <tr><td>/who-did-i-vote-for</td><td>Voter History</td><td><span class="badge badge-cut">CUT</span></td><td>Same — save for a political product</td></tr>
+  <tr><td>/representative/:name</td><td>Political Rep Profile</td><td><span class="badge badge-cut">CUT</span></td><td>Different audience and use case</td></tr>
+  <tr><td>/brand-madness</td><td>Brand Madness</td><td><span class="badge badge-cut">CUT</span></td><td>Fun but off-brand for core product</td></tr>
+  <tr><td>/rivalries</td><td>Rivalries</td><td><span class="badge badge-cut">CUT</span></td><td>Entertainment content — V2 editorial</td></tr>
+  <tr><td>/rankings</td><td>Rankings</td><td><span class="badge badge-cut">CUT</span></td><td>Merge into Companies as a filter/sort</td></tr>
+  <tr><td>/work-index</td><td>Work Index</td><td><span class="badge badge-cut">CUT</span></td><td>Redundant with Companies</td></tr>
+  <tr><td>/economy</td><td>Economy Dashboard</td><td><span class="badge badge-cut">CUT</span></td><td>Macro data — doesn't serve individual decision-making</td></tr>
+  <tr><td>/policy, /policy/:id</td><td>Policy Hub</td><td><span class="badge badge-cut">CUT</span></td><td>V2 content layer</td></tr>
+  <tr><td>/policy-intelligence</td><td>Policy Intelligence</td><td><span class="badge badge-cut">CUT</span></td><td>V2 content layer</td></tr>
+  <tr><td>/eeoc-tracker</td><td>EEOC Tracker</td><td><span class="badge badge-cut">CUT</span></td><td>Fold data into Company Report → Legal section</td></tr>
+  <tr><td>/workforce-brief</td><td>Workforce Brief</td><td><span class="badge badge-cut">CUT</span></td><td>Industry content, not user-facing</td></tr>
+  <tr><td>/investigative</td><td>Investigative Explorer</td><td><span class="badge badge-cut">CUT</span></td><td>V2 editorial</td></tr>
+  <tr><td>/corporate-impact</td><td>Corporate Impact Map</td><td><span class="badge badge-cut">CUT</span></td><td>V2 — fold key data into Company Report</td></tr>
+  <tr><td>/intelligence-chain</td><td>Intelligence Chain</td><td><span class="badge badge-cut">CUT</span></td><td>Internal tool, not user-facing</td></tr>
+  <tr><td>/evp-reality-check</td><td>EVP Reality Check</td><td><span class="badge badge-cut">CUT</span></td><td>B2B feature — behind For Employers</td></tr>
+  <tr><td>/recruiting</td><td>Recruiting Intel</td><td><span class="badge badge-cut">CUT</span></td><td>B2B feature</td></tr>
+  <tr><td>/talent</td><td>Talent Dashboard</td><td><span class="badge badge-cut">CUT</span></td><td>B2B feature</td></tr>
+  <tr><td>/relationship-intelligence</td><td>Relationship Intel</td><td><span class="badge badge-cut">CUT</span></td><td>V2 feature</td></tr>
+  <tr><td>/auto-apply</td><td>Auto-Apply</td><td><span class="badge badge-cut">CUT</span></td><td>Different product — you vet employers, not auto-apply</td></tr>
+  <tr><td>/would-you-work-here</td><td>Career Fit Assessment</td><td><span class="badge badge-cut">CUT</span></td><td>Merge concept into Company Report</td></tr>
+  <tr><td>/what-am-i-supporting</td><td>Employment Support Analysis</td><td><span class="badge badge-cut">CUT</span></td><td>Fold into Company Report → Values section</td></tr>
+  <tr><td>/alignment/:slug</td><td>Corporate Alignment</td><td><span class="badge badge-cut">CUT</span></td><td>Fold into Company Report</td></tr>
+  <tr><td>/quiz</td><td>Values Quiz</td><td><span class="badge badge-cut">CUT</span></td><td>Move to onboarding flow only</td></tr>
+  <tr><td>/demo</td><td>Demo Page</td><td><span class="badge badge-cut">CUT</span></td><td>Dev artifact</td></tr>
+  <tr><td>/examples</td><td>Top Searched</td><td><span class="badge badge-merge">MERGE</span></td><td>Companies → Featured section</td></tr>
+  <tr><td>/tools, /site-map</td><td>Tools Directory / Sitemap</td><td><span class="badge badge-cut">CUT</span></td><td>Shouldn't need a directory if nav is clean</td></tr>
+  <tr><td>/work-with-jackye</td><td>Partnership CTA</td><td><span class="badge badge-cut">CUT</span></td><td>Move to About or Contact</td></tr>
+  <tr><td>/ask-jackye</td><td>AI Q&A</td><td><span class="badge badge-cut">CUT</span></td><td>Can live as a chatbot widget, not a page</td></tr>
+  <tr><td>/news-setup</td><td>News Onboarding</td><td><span class="badge badge-merge">MERGE</span></td><td>Onboarding flow</td></tr>
+  <tr><td>/search-your-employer</td><td>Employer Search</td><td><span class="badge badge-cut">CUT</span></td><td>Redundant with Companies search</td></tr>
+  <tr><td>/values-search</td><td>Values Search</td><td><span class="badge badge-cut">CUT</span></td><td>Merge as a filter in Companies</td></tr>
+  <tr><td>/add-company</td><td>Add Company Form</td><td><span class="badge badge-move">MOVE</span></td><td>Accessible from search "not found" state</td></tr>
+</table>
+
+<!-- ============ BEFORE/AFTER ============ -->
+<h2>Before vs. After</h2>
+
+<div class="brand-compare">
+  <div class="brand-box before">
+    <span class="label-tag">NOW</span>
+    <h4 style="color: #e74c3c;">Receipts · My Intel · Signals · Career Map · Pricing · About · For Companies · Contact · Hire · Job Board · Offer Analysis · Compare Companies · Follow the Money · HR Tech Intel · Recruiter Brief · Methodology · All Tools · Join Free</h4>
+    <p style="color: #999; margin-top: 12px;">18 visible items. No clear hierarchy. First-time visitor has no idea what to click first.</p>
+  </div>
+  <div class="brand-box after">
+    <span class="label-tag">AFTER</span>
+    <h4 style="color: #2ecc71;">Companies · Compare · Offers · Watchlist · Pricing</h4>
+    <p style="color: #999; margin-top: 12px;">5 items. Clear workflow: search → compare → evaluate → track → decide. A new user instantly knows what this product does.</p>
+  </div>
+</div>
+
+<!-- ============ NAMING ============ -->
+<h2>Why These Names Work</h2>
+
+<div class="callout">
+  <p><strong>"Receipts"</strong> is clever and on-brand for your voice, but it only makes sense if you already know what the product does. Same problem with "My Intel" and "Signals." New visitors don't have context for metaphors — they need outcomes.</p>
+</div>
+
+<div class="section-grid">
+  <div class="section-card">
+    <h4>Companies (not "Career Map")</h4>
+    <p>Users come to search a company. Call it what it is. "Career Map" sounds like a self-help exercise, not an employer intelligence dossier.</p>
+  </div>
+  <div class="section-card">
+    <h4>Compare (not "Compare Companies")</h4>
+    <p>Shorter. Everyone knows what compare means. The context is already established by the product.</p>
+  </div>
+  <div class="section-card">
+    <h4>Offers (not "Offer Analysis")</h4>
+    <p>Action-oriented. "I have an offer — now what?" This is the decision moment your whole product builds toward.</p>
+  </div>
+  <div class="section-card">
+    <h4>Watchlist (not "My Intel")</h4>
+    <p>"My Intel" sounds like a spy movie. "Watchlist" is instantly understood — it's your tracked companies and alerts.</p>
+  </div>
+</div>
+
+<!-- ============ VIRAL HOOKS ============ -->
+<h2>The Viral Loop</h2>
+
+<p style="color: #999; margin-bottom: 16px;">Your viral moment isn't "career map." It's when someone shares a company score. Build the product around these shareable moments:</p>
+
+<ul class="viral-hooks">
+  <li>"I ran my offer through WDIWF and found 6 red flags before I signed."</li>
+  <li>"This company scored 4.2 out of 10. Here's why."</li>
+  <li>"Check the employer dossier before you quit your job for them."</li>
+  <li>"I compared both companies side by side — one was a 3.1, the other an 8.4."</li>
+  <li>"My job offer looked great until I checked the leadership churn rate."</li>
+</ul>
+
+<div class="callout">
+  <p><strong>Homepage headline recommendation:</strong> "See what the offer hides." Then subhead: "Check pay risk, leadership churn, hiring patterns, and employee signals before you accept." CTA: "Analyze a Company."</p>
+</div>
+
+<!-- ============ NEXT STEPS ============ -->
+<h2>What to Do Next</h2>
+
+<div class="section-grid">
+  <div class="section-card">
+    <h4>Step 1: Simplify the Nav</h4>
+    <p>Collapse 4 navigation systems (TopBar, AppSidebar, MarketingNav, ContextSidebar) into ONE. Five tabs. Done.</p>
+  </div>
+  <div class="section-card">
+    <h4>Step 2: Merge the Offer Pages</h4>
+    <p>You have 7 separate offer-related pages (offer-check, offer-review, offer-review-direct, offer-clarity, strategic-offer-review, negotiation-simulator, decision-engine). Make it ONE flow.</p>
+  </div>
+  <div class="section-card">
+    <h4>Step 3: Unify Company Pages</h4>
+    <p>Company Profile + Dossier + Receipts + Intelligence Report + Board Intelligence + One-Pager = ONE Company Report with tabs.</p>
+  </div>
+  <div class="section-card">
+    <h4>Step 4: Hide, Don't Delete</h4>
+    <p>Keep the routes alive (don't break links) but remove them from navigation. Redirect old URLs to their new homes.</p>
+  </div>
+</div>
+
+<p style="color: #666; margin-top: 48px; padding-top: 24px; border-top: 1px solid #222; font-size: 0.8rem;">Prepared by Claude for Jackye Clayton · WDIWF Navigation Restructure · March 30, 2026</p>
+
+</div>
+</body>
+</html>

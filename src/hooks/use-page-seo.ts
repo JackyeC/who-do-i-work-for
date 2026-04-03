@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 
-const BASE_URL = "https://wdiwf.jackyeclayton.com";
+/** Canonical public site origin (OG, JSON-LD, share links). */
+export const SITE_BASE_URL = "https://wdiwf.jackyeclayton.com";
+const BASE_URL = SITE_BASE_URL;
 const SITE_NAME = "Who Do I Work For?";
 const DEFAULT_DESC = "You deserve to know exactly who you work for. Employer intelligence, career strategy, and values-aligned hiring by Jackye Clayton.";
 const DEFAULT_IMAGE = "https://wdiwf.jackyeclayton.com/og-image.png";

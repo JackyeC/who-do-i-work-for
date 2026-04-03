@@ -1,0 +1,338 @@
+{
+  "audit_date": "2026-03-29",
+  "critical_issues": [
+    {
+      "severity": "CRITICAL",
+      "category": "Authenticated All Operations",
+      "count": 10,
+      "tables": [
+        {
+          "table_name": "policy_reports",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage reports",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can SELECT/INSERT/UPDATE/DELETE all reports"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["author_name", "author_slug", "created_at", "updated_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_sections",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage sections",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any report section"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at", "updated_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_claims",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage claims",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any report claim"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at", "updated_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_evidence_links",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage evidence",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any evidence link"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_entities",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage entities",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any report entity"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_legislation",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage legislation",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any report legislation"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at", "updated_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_events",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage events",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any report event"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_company_alignment",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage alignment",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any alignment record"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at", "updated_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_actions",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage actions",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any action"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "report_followups",
+          "migration_file": "20260309180817_f38f9afd-99a9-4540-86ca-249f1828ccb6.sql",
+          "policies": [
+            {
+              "policy_name": "Auth users manage followups",
+              "operation": "ALL",
+              "role": "authenticated",
+              "using": "true",
+              "with_check": "true",
+              "risk": "Any authenticated user can modify any followup"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["created_at", "updated_at"],
+          "fix_strategy": "Add user_id UUID DEFAULT auth.uid() column"
+        }
+      ]
+    }
+  ],
+  "moderate_issues": [
+    {
+      "severity": "MODERATE",
+      "category": "Authenticated Write Operations Without Ownership",
+      "tables": [
+        {
+          "table_name": "company_sanctions_screening",
+          "migration_file": "20260315181457_491d1fe3-5fe0-43a2-be7d-119b8167b809.sql",
+          "policies": [
+            {
+              "policy_name": "Authenticated inserts sanctions",
+              "operation": "INSERT",
+              "role": "authenticated",
+              "with_check": "true",
+              "risk": "Any authenticated user can insert records without ownership tracking"
+            },
+            {
+              "policy_name": "Authenticated updates sanctions",
+              "operation": "UPDATE",
+              "role": "authenticated",
+              "using": "true",
+              "risk": "Any authenticated user can update any record"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["screened_at", "created_at"],
+          "fix_strategy": "Add created_by UUID NOT NULL DEFAULT auth.uid() column"
+        },
+        {
+          "table_name": "company_wikidata",
+          "migration_file": "20260315181457_491d1fe3-5fe0-43a2-be7d-119b8167b809.sql",
+          "policies": [
+            {
+              "policy_name": "Authenticated inserts wikidata",
+              "operation": "INSERT",
+              "role": "authenticated",
+              "with_check": "true",
+              "risk": "Any authenticated user can insert records without ownership tracking"
+            },
+            {
+              "policy_name": "Authenticated updates wikidata",
+              "operation": "UPDATE",
+              "role": "authenticated",
+              "using": "true",
+              "risk": "Any authenticated user can update any record"
+            }
+          ],
+          "has_user_id": false,
+          "has_created_by": false,
+          "user_tracking_columns": ["fetched_at", "created_at"],
+          "fix_strategy": "Add created_by UUID NOT NULL DEFAULT auth.uid() column"
+        }
+      ]
+    }
+  ],
+  "likely_intentional": [
+    {
+      "severity": "LOW",
+      "category": "Read-Only for Authenticated Users (Likely Public/Reference Data)",
+      "note": "These are read-only policies and may be intentional. However, they should use cleaner syntax.",
+      "tables": [
+        {
+          "table_name": "epstein_persons",
+          "migration_file": "20260313203707_949263a1-ba28-4cbe-9a8d-b21b82c52dba.sql",
+          "policy_name": "Authenticated users can read epstein_persons",
+          "operation": "SELECT",
+          "role": "authenticated",
+          "using": "true",
+          "risk": "Public-interest data, read-only access"
+        },
+        {
+          "table_name": "epstein_documents",
+          "migration_file": "20260313203707_949263a1-ba28-4cbe-9a8d-b21b82c52dba.sql",
+          "policy_name": "Authenticated users can read epstein_documents",
+          "operation": "SELECT",
+          "role": "authenticated",
+          "using": "true",
+          "risk": "Public-interest data, read-only access"
+        },
+        {
+          "table_name": "epstein_flights",
+          "migration_file": "20260313203707_949263a1-ba28-4cbe-9a8d-b21b82c52dba.sql",
+          "policy_name": "Authenticated users can read epstein_flights",
+          "operation": "SELECT",
+          "role": "authenticated",
+          "using": "true",
+          "risk": "Public-interest data, read-only access"
+        },
+        {
+          "table_name": "epstein_cross_references",
+          "migration_file": "20260313203707_949263a1-ba28-4cbe-9a8d-b21b82c52dba.sql",
+          "policy_name": "Authenticated users can read epstein_cross_references",
+          "operation": "SELECT",
+          "role": "authenticated",
+          "using": "true",
+          "risk": "Public-interest data, read-only access"
+        },
+        {
+          "table_name": "company_court_cases",
+          "migration_file": "20260314211131_472a77fb-8b25-4ef4-ba4d-f60d90c5df71.sql",
+          "policy_name": "Public read court cases",
+          "operation": "SELECT",
+          "role": "authenticated",
+          "using": "true",
+          "risk": "Company research data, read-only access"
+        },
+        {
+          "table_name": "company_dossiers",
+          "migration_file": "20260317184558_bff38bac-4bc8-4118-a040-19f0a4e1a522.sql",
+          "policy_name": "Authenticated users can read dossiers",
+          "operation": "SELECT",
+          "role": "authenticated",
+          "using": "true",
+          "risk": "Company summary data, read-only access"
+        },
+        {
+          "table_name": "scan_runs",
+          "migration_file": "20260309125532_89c2c04c-7d3d-407f-9354-e599f68aad4b.sql",
+          "policy_name": "Authenticated users can read scan runs",
+          "operation": "SELECT",
+          "role": "authenticated",
+          "using": "true",
+          "risk": "Monitoring data, read-only access"
+        },
+        {
+          "table_name": "browse_ai_monitors",
+          "migration_file": "20260309125532_89c2c04c-7d3d-407f-9354-e599f68aad4b.sql",
+          "policy_name": "Authenticated users can read monitors",
+          "operation": "SELECT",
+          "role": "authenticated",
+          "using": "true",
+          "risk": "Monitoring configuration, read-only access"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_problematic_policies": 20,
+    "critical_policies": 10,
+    "moderate_policies": 4,
+    "likely_intentional_policies": 8,
+    "tables_requiring_new_columns": 12,
+    "tables_needing_user_id": 10,
+    "tables_needing_created_by": 2
+  }
+}

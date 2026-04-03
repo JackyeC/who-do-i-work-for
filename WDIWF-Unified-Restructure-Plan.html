@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WDIWF Unified Restructure Plan — Perplexity + Codebase Audit Merged</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e0e0e0; line-height: 1.7; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+  h1 { font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 56px 0 16px; border-bottom: 2px solid #ff4d6a; padding-bottom: 8px; display: inline-block; }
+  h3 { font-size: 1.05rem; font-weight: 600; color: #ff4d6a; margin: 28px 0 10px; }
+  h4 { color: #fff; font-size: 1rem; margin-bottom: 6px; }
+  .subtitle { color: #999; font-size: 1.05rem; margin-bottom: 40px; }
+  .date { color: #666; font-size: 0.85rem; margin-bottom: 32px; }
+  .sources { background: #111; border: 1px solid #333; border-radius: 8px; padding: 12px 16px; margin-bottom: 32px; font-size: 0.8rem; color: #888; }
+  .sources strong { color: #ccc; }
+
+  .stat-row { display: flex; gap: 20px; margin: 24px 0; flex-wrap: wrap; }
+  .stat-card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px; flex: 1; min-width: 140px; text-align: center; }
+  .stat-card .number { font-size: 2.2rem; font-weight: 800; color: #ff4d6a; }
+  .stat-card .label { color: #999; font-size: 0.8rem; margin-top: 4px; }
+  .stat-card.good { border-color: #2ecc71; }
+  .stat-card.good .number { color: #2ecc71; }
+
+  .nav-mockup { background: #111; border: 1px solid #333; border-radius: 16px; overflow: hidden; margin: 24px 0; }
+  .nav-bar { display: flex; align-items: center; padding: 12px 24px; gap: 28px; border-bottom: 1px solid #222; flex-wrap: wrap; }
+  .nav-logo { font-weight: 800; font-size: 1.1rem; color: #ff4d6a; white-space: nowrap; }
+  .nav-items { display: flex; gap: 24px; }
+  .nav-item { color: #ccc; font-size: 0.9rem; font-weight: 500; cursor: default; padding: 6px 0; }
+  .nav-item.active { color: #ff4d6a; border-bottom: 2px solid #ff4d6a; }
+  .nav-search { margin-left: auto; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 8px 16px; color: #666; font-size: 0.85rem; min-width: 200px; }
+  .nav-cta { background: #ff4d6a; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+
+  .callout { background: #1a1a1a; border-left: 4px solid #ff4d6a; padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0; }
+  .callout p { color: #ccc; font-size: 0.9rem; }
+  .callout strong { color: #fff; }
+  .callout.green { border-left-color: #2ecc71; }
+  .callout.blue { border-left-color: #3498db; }
+  .callout.gold { border-left-color: #f1c40f; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 16px 0; }
+  .card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px; }
+  .card p { color: #999; font-size: 0.85rem; margin-top: 6px; }
+  .card .pages { margin-top: 12px; }
+  .card .page-item { color: #ccc; font-size: 0.8rem; padding: 4px 0; border-bottom: 1px solid #222; }
+  .card .page-item:last-child { border-bottom: none; }
+  .card .page-item span { color: #666; }
+
+  /* Comparison boxes */
+  .vs-box { border-radius: 12px; padding: 20px; }
+  .vs-box.before { background: #1a1a1a; border: 1px solid #e74c3c; }
+  .vs-box.after { background: #1a1a1a; border: 1px solid #2ecc71; }
+  .vs-label { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 3px; font-weight: 700; margin-bottom: 10px; }
+  .vs-box.before .vs-label { background: #3d1a1a; color: #e74c3c; }
+  .vs-box.after .vs-label { background: #1a3d2a; color: #2ecc71; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 32px; font-size: 0.85rem; }
+  th { text-align: left; padding: 10px 12px; background: #1a1a1a; color: #999; font-weight: 600; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.05em; border-bottom: 2px solid #333; }
+  td { padding: 10px 12px; border-bottom: 1px solid #1a1a1a; vertical-align: top; }
+  tr:hover { background: #111; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+  .b-keep { background: #1a3d2a; color: #2ecc71; }
+  .b-merge { background: #3d3a1a; color: #f1c40f; }
+  .b-cut { background: #3d1a1a; color: #e74c3c; }
+  .b-rename { background: #1a2a3d; color: #3498db; }
+  .b-move { background: #2d1a3d; color: #9b59b6; }
+
+  /* Brand names */
+  .brand-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+  .brand-option { background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 16px; }
+  .brand-option.top-pick { border-color: #ff4d6a; background: #1a1118; }
+  .brand-option h4 { font-size: 1.1rem; margin-bottom: 4px; }
+  .brand-option p { color: #999; font-size: 0.8rem; }
+  .brand-option .tag { font-size: 0.65rem; padding: 2px 6px; border-radius: 3px; background: #ff4d6a22; color: #ff4d6a; font-weight: 600; display: inline-block; margin-bottom: 6px; }
+
+  /* Homepage mockup */
+  .hero-mockup { background: linear-gradient(180deg, #111 0%, #0a0a0a 100%); border: 1px solid #333; border-radius: 16px; padding: 60px 40px; text-align: center; margin: 24px 0; }
+  .hero-mockup .headline { font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
+  .hero-mockup .subhead { color: #999; font-size: 1rem; max-width: 500px; margin: 0 auto 24px; }
+  .hero-mockup .hero-search { background: #1a1a1a; border: 1px solid #444; border-radius: 12px; padding: 14px 20px; color: #666; font-size: 0.95rem; max-width: 480px; margin: 0 auto 16px; display: block; text-align: left; }
+  .hero-mockup .hero-cta { display: inline-block; background: #ff4d6a; color: #fff; padding: 12px 28px; border-radius: 10px; font-weight: 700; font-size: 0.95rem; }
+
+  .viral-hooks { list-style: none; margin: 16px 0; }
+  .viral-hooks li { padding: 10px 0; border-bottom: 1px solid #1a1a1a; color: #ccc; font-size: 0.9rem; }
+  .viral-hooks li::before { content: '🔥 '; }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 1.5rem; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .nav-bar { gap: 12px; }
+    .nav-search { min-width: 100%; order: 10; }
+    .hero-mockup { padding: 40px 20px; }
+    .hero-mockup .headline { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>WDIWF Unified Restructure Plan</h1>
+<p class="subtitle">Perplexity's brand strategy + full codebase audit of 132 routes → one actionable plan</p>
+<p class="date">March 30, 2026 — Prepared for Jackye Clayton</p>
+
+<div class="sources">
+  <strong>Sources merged:</strong> Perplexity AI brand/naming/sitemap analysis (3 rounds of suggestions) + Claude codebase audit of App.tsx (132 routes, 4 navigation systems, 88+ nav items across TopBar, AppSidebar, MarketingNav, and ContextSidebar)
+</div>
+
+<!-- ===================== SECTION 1: THE CONSENSUS ===================== -->
+<h2>Where Perplexity and I Agree (The Plan)</h2>
+
+<p style="color:#ccc; margin-bottom:16px;">Both analyses independently arrived at the same core structure. That's a strong signal this is the right direction.</p>
+
+<div class="callout green">
+  <p><strong>Consensus:</strong> 5 primary nav items. Plain-English labels. One search-to-decision workflow. Kill the metaphors ("Receipts," "My Intel," "Signals") and replace with outcomes people understand on first visit.</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat-card"><div class="number">132</div><div class="label">Current Routes</div></div>
+  <div class="stat-card"><div class="number">88+</div><div class="label">Current Nav Items</div></div>
+  <div class="stat-card"><div class="number">4</div><div class="label">Current Nav Systems</div></div>
+  <div class="stat-card good"><div class="number">5</div><div class="label">New Primary Tabs</div></div>
+  <div class="stat-card good"><div class="number">1</div><div class="label">Nav System Needed</div></div>
+</div>
+
+<!-- ===================== SECTION 2: THE NEW NAV ===================== -->
+<h2>The New Navigation</h2>
+
+<div class="nav-mockup">
+  <div class="nav-bar">
+    <div class="nav-logo">WDIWF</div>
+    <div class="nav-items">
+      <div class="nav-item active">Companies</div>
+      <div class="nav-item">Compare</div>
+      <div class="nav-item">Offers</div>
+      <div class="nav-item">Watchlist</div>
+      <div class="nav-item">Pricing</div>
+    </div>
+    <div class="nav-search">Search any employer...</div>
+    <div class="nav-cta">Sign Up Free</div>
+  </div>
+</div>
+
+<h3>Why Each Label Works</h3>
+<table>
+  <tr><th>New Label</th><th>Replaces</th><th>Why It's Better</th><th>Source</th></tr>
+  <tr><td><strong>Companies</strong></td><td>Career Map, Browse, Receipts, Examples, Signals</td><td>Matches the core action — users come to search a company. No metaphor to decode.</td><td>Both</td></tr>
+  <tr><td><strong>Compare</strong></td><td>Compare Companies</td><td>Shorter. Clear utility. Strong user intent.</td><td>Both</td></tr>
+  <tr><td><strong>Offers</strong></td><td>Offer Analysis, Offer Check, Offer Review, Offer Clarity, Strategic Offer Review, Negotiation Simulator, Decision Engine (7 pages!)</td><td>One word for the entire decision moment. "I have an offer — now what?"</td><td>Both</td></tr>
+  <tr><td><strong>Watchlist</strong></td><td>My Intel, Signal Alerts, Saved, Dashboard tabs</td><td>Instantly understood. "My Intel" sounds like a spy movie. Watchlist is universal.</td><td>Both</td></tr>
+  <tr><td><strong>Pricing</strong></td><td>Pricing</td><td>Standard. Expected. No change needed.</td><td>Both</td></tr>
+</table>
+
+<h3>Secondary Menu (More)</h3>
+<div class="card" style="max-width:500px;">
+  <div class="pages">
+    <div class="page-item">Methodology <span>— builds trust in scoring (Perplexity emphasized this)</span></div>
+    <div class="page-item">About</div>
+    <div class="page-item">For Employers <span>— B2B page, separate from job seeker flow</span></div>
+    <div class="page-item">Contact</div>
+  </div>
+</div>
+
+<h3>Account Menu (Logged In)</h3>
+<div class="card" style="max-width:500px;">
+  <div class="pages">
+    <div class="page-item">Dashboard <span>— overview, tracked companies, alerts</span></div>
+    <div class="page-item">Saved Reports</div>
+    <div class="page-item">My Offer Reviews</div>
+    <div class="page-item">Career Tools <span>— resume, cover letter, mock interview, interview kits</span></div>
+    <div class="page-item">Profile & Preferences</div>
+    <div class="page-item">Billing</div>
+    <div class="page-item">Sign Out</div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 3: PAGE ARCHITECTURE ===================== -->
+<h2>Page Architecture (What Each Tab Contains)</h2>
+
+<p style="color:#ccc; margin-bottom:16px;">This merges Perplexity's content blocks with the actual pages that exist in your codebase. The column on the right shows which current routes get folded in.</p>
+
+<div class="grid-3">
+  <div class="card">
+    <h4>Companies</h4>
+    <p>The core product. Search any employer, get the full report.</p>
+    <div class="pages">
+      <div class="page-item"><strong>Search & Directory</strong> <span>← /browse, /search, /companies, /examples, /values-search, /search-your-employer</span></div>
+      <div class="page-item"><strong>Company Report</strong> <span>← /company/:id + /dossier/:id merged into one page with tabs:</span></div>
+      <div class="page-item">&nbsp;&nbsp;• Overview & Clarity Score</div>
+      <div class="page-item">&nbsp;&nbsp;• Pay Risk & Compensation</div>
+      <div class="page-item">&nbsp;&nbsp;• Leadership & Board <span>← /board-intelligence, /leader/:id</span></div>
+      <div class="page-item">&nbsp;&nbsp;• Hiring Patterns <span>← /recruiting</span></div>
+      <div class="page-item">&nbsp;&nbsp;• Evidence <span>← /receipts/:slug, /intelligence/:slug</span></div>
+      <div class="page-item">&nbsp;&nbsp;• Employee Signals <span>← /signals folded in</span></div>
+      <div class="page-item">&nbsp;&nbsp;• Sources <span>← /methodology linked</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Compare</h4>
+    <p>Side-by-side employer comparison. 2-4 companies, score deltas, verdict.</p>
+    <div class="pages">
+      <div class="page-item"><strong>Company Comparison</strong> <span>← /compare</span></div>
+      <div class="page-item">&nbsp;&nbsp;• Score deltas</div>
+      <div class="page-item">&nbsp;&nbsp;• Risk & stability comparison</div>
+      <div class="page-item">&nbsp;&nbsp;• Compensation comparison</div>
+      <div class="page-item">&nbsp;&nbsp;• Leadership comparison</div>
+      <div class="page-item">&nbsp;&nbsp;• Verdict / recommendation</div>
+      <div class="page-item"><strong>Offer Comparison Mode</strong> <span>← /compare-offer-checks</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Offers</h4>
+    <p>The decision moment. One flow, not seven separate pages.</p>
+    <div class="pages">
+      <div class="page-item"><strong>Enter Offer Details</strong> <span>← /check, /offer-review-direct, /offer-clarity merged</span></div>
+      <div class="page-item"><strong>Risk Review</strong> <span>← /offer-check/:id, /offer-review/:id, /strategic-offer-review merged</span></div>
+      <div class="page-item"><strong>Compensation Context</strong></div>
+      <div class="page-item"><strong>Negotiation Flags</strong> <span>← /negotiation-simulator</span></div>
+      <div class="page-item"><strong>Decision Summary</strong> <span>← /decision-engine</span></div>
+      <div class="page-item"><strong>Go / No-Go Signal</strong></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Watchlist</h4>
+    <p>Your personal radar. Tracked companies, alerts, saved data.</p>
+    <div class="pages">
+      <div class="page-item"><strong>Tracked Companies</strong> <span>← /dashboard?tab=tracked, /saved</span></div>
+      <div class="page-item"><strong>Signal Alerts</strong> <span>← /signal-alerts, /dashboard?tab=alerts</span></div>
+      <div class="page-item"><strong>Daily Briefing</strong> <span>← /briefing</span></div>
+      <div class="page-item"><strong>Job Matches</strong> <span>← /jobs-feed, /dashboard?tab=matches</span></div>
+      <div class="page-item"><strong>Change Notifications</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 4: WHAT GETS CUT ===================== -->
+<h2>What Gets Cut (Both Sources Agree)</h2>
+
+<p style="color:#ccc; margin-bottom:16px;">Perplexity and the codebase audit flagged the same pages as off-brand or off-mission. These fragment the story and make the product feel like a media portal instead of a focused decision tool.</p>
+
+<table>
+  <tr><th>Route</th><th>Current Name</th><th>Why Cut</th></tr>
+  <tr><td>/job-board, /jobs</td><td>Job Board / Job Search</td><td>You vet employers, not list jobs. Dilutes the core story. <em>(Both sources)</em></td></tr>
+  <tr><td>/hire</td><td>Hire</td><td>Confusing in a job-seeker product. Move behind For Employers. <em>(Both)</em></td></tr>
+  <tr><td>/follow-the-money</td><td>Campaign Finance</td><td>V2 editorial content. Doesn't serve search→decide flow. <em>(Both)</em></td></tr>
+  <tr><td>/hrtech</td><td>HR Tech Intel</td><td>Industry content, not user-facing product. <em>(Both)</em></td></tr>
+  <tr><td>/recruiter-brief</td><td>Recruiter Brief</td><td>B2B feature — hide behind For Employers. <em>(Both)</em></td></tr>
+  <tr><td>/voter-lookup, /who-did-i-vote-for, /representative/:name</td><td>Political Tools</td><td>Different product entirely. <em>(Claude audit)</em></td></tr>
+  <tr><td>/brand-madness, /rivalries</td><td>Entertainment</td><td>Fun but off-mission for V1. <em>(Claude audit)</em></td></tr>
+  <tr><td>/rankings, /work-index</td><td>Rankings / Index</td><td>Redundant — merge as sort/filter in Companies. <em>(Claude audit)</em></td></tr>
+  <tr><td>/economy</td><td>Economy Dashboard</td><td>Macro data doesn't serve individual decisions. <em>(Perplexity)</em></td></tr>
+  <tr><td>/policy, /policy-intelligence, /eeoc-tracker</td><td>Policy Hub</td><td>V2 content layer. Fold key data into Company Report. <em>(Both)</em></td></tr>
+  <tr><td>/workforce-brief, /investigative, /corporate-impact</td><td>Editorial Pages</td><td>V2 Insights section — not now. <em>(Both)</em></td></tr>
+  <tr><td>/auto-apply</td><td>Auto-Apply</td><td>Different product. You vet employers, not auto-apply. <em>(Claude audit)</em></td></tr>
+  <tr><td>/intelligence-chain</td><td>Intelligence Chain</td><td>Internal tool, not user-facing. <em>(Claude audit)</em></td></tr>
+  <tr><td>/tools, /site-map</td><td>Tools / Sitemap</td><td>Shouldn't need a directory if nav is clean. <em>(Both)</em></td></tr>
+  <tr><td>/quiz</td><td>Values Quiz</td><td>Move to onboarding only, not standalone page. <em>(Claude audit)</em></td></tr>
+  <tr><td>/ask-jackye, /work-with-jackye</td><td>Jackye Pages</td><td>Chatbot widget + About page, not standalone routes. <em>(Claude audit)</em></td></tr>
+  <tr><td>/demo, /report-confirmation</td><td>Dev Pages</td><td>Dev artifacts. <em>(Claude audit)</em></td></tr>
+</table>
+
+<div class="callout gold">
+  <p><strong>Important: Hide, don't delete.</strong> Keep the routes alive so existing links don't break. Remove them from navigation and set up redirects to their new homes. This is a nav restructure, not a code purge.</p>
+</div>
+
+<!-- ===================== SECTION 5: NAMING & BRAND ===================== -->
+<h2>Naming & Brand Direction</h2>
+
+<p style="color:#ccc; margin-bottom:16px;">Perplexity suggested 4 naming territories and a top 10 list. Here's my take on which directions fit the Bloomberg+Oprah+RHOBH energy you're going for.</p>
+
+<h3>Perplexity's Top 10 (with my notes)</h3>
+
+<div class="brand-grid">
+  <div class="brand-option top-pick">
+    <span class="tag">TOP PICK</span>
+    <h4>BeforeYouSign</h4>
+    <p>Instantly shareable. "Run it through BeforeYouSign" is a complete sentence. Perplexity's #1 rec and I agree — this one has legs.</p>
+  </div>
+  <div class="brand-option top-pick">
+    <span class="tag">TOP PICK</span>
+    <h4>Who Do I Work For</h4>
+    <p>You already own this. It's provocative, memorable, and unique. The question IS the brand. Don't abandon it — just fix the nav.</p>
+  </div>
+  <div class="brand-option">
+    <h4>OfferTruth</h4>
+    <p>Sharp and direct. Works for the offer-evaluation flow. Risk: narrows the brand to just offers.</p>
+  </div>
+  <div class="brand-option">
+    <h4>CompanyClarity</h4>
+    <p>Clear but corporate. Doesn't have the edge that matches your brand energy.</p>
+  </div>
+  <div class="brand-option">
+    <h4>OfferShield</h4>
+    <p>Strong emotional pull — "I'm protecting myself." Good for viral social hooks.</p>
+  </div>
+  <div class="brand-option">
+    <h4>EmployerSignal</h4>
+    <p>Data-forward. Bloomberg energy. But less shareable than the emotional options.</p>
+  </div>
+  <div class="brand-option">
+    <h4>The Dossier</h4>
+    <p>Already in your product language. Investigation energy. Works well with the RHOBH "receipts" vibe.</p>
+  </div>
+  <div class="brand-option">
+    <h4>ClearOffer</h4>
+    <p>Clean but generic. Could be a fintech product.</p>
+  </div>
+  <div class="brand-option">
+    <h4>RedFlag Report</h4>
+    <p>Extremely shareable on social. "I ran the RedFlag Report." Risk: could feel negative-only.</p>
+  </div>
+  <div class="brand-option">
+    <h4>CompanyIntel</h4>
+    <p>Professional but forgettable. Doesn't stand out.</p>
+  </div>
+</div>
+
+<div class="callout">
+  <p><strong>My honest take:</strong> "Who Do I Work For" is already a strong brand name. The problem was never the name — it's the navigation and page structure underneath it. WDIWF is provocative, memorable, and tells the story. You don't need to rename the whole product. You need to clean up what's inside it.</p>
+</div>
+
+<!-- ===================== SECTION 6: HOMEPAGE ===================== -->
+<h2>Homepage Direction</h2>
+
+<p style="color:#ccc; margin-bottom:16px;">Perplexity suggested "See what the offer hides." Here are three options that keep your brand energy:</p>
+
+<h3>Option A: "See what the offer hides." (Perplexity's pick)</h3>
+<div class="hero-mockup">
+  <div class="headline">See what the offer hides.</div>
+  <div class="subhead">Check pay risk, leadership churn, hiring patterns, and employee signals before you accept.</div>
+  <div class="hero-search">Search any employer...</div>
+  <div class="hero-cta">Analyze a Company</div>
+</div>
+
+<h3>Option B: "You vetted the role. We vet the employer." (Current, refined)</h3>
+<div class="hero-mockup">
+  <div class="headline">You vetted the role. We vet the employer.</div>
+  <div class="subhead">Compensation risk. Leadership signals. Hiring patterns. The things they don't put in the job posting.</div>
+  <div class="hero-search">Search any employer...</div>
+  <div class="hero-cta">Get the Report</div>
+</div>
+
+<h3>Option C: "Know before you go." (Shortest, most viral)</h3>
+<div class="hero-mockup">
+  <div class="headline">Know before you go.</div>
+  <div class="subhead">Every company has a story the offer letter won't tell you. Search any employer and see the full picture.</div>
+  <div class="hero-search">Search any employer...</div>
+  <div class="hero-cta">Search a Company</div>
+</div>
+
+<!-- ===================== SECTION 7: VIRAL LOOP ===================== -->
+<h2>The Viral Loop (Both Sources)</h2>
+
+<p style="color:#ccc; margin-bottom:16px;">Both Perplexity and I identified the same thing: the viral moment isn't a page name. It's when someone shares a company score or offer red flag.</p>
+
+<ul class="viral-hooks">
+  <li>"I ran my offer through WDIWF and found 6 red flags before I signed."</li>
+  <li>"This company scored 4.2 out of 10. Here's why."</li>
+  <li>"Check the employer dossier before you quit your job for them."</li>
+  <li>"I compared both companies side by side — one was a 3.1, the other an 8.4."</li>
+  <li>"My job offer looked great until I checked the leadership churn rate."</li>
+</ul>
+
+<div class="callout green">
+  <p><strong>Build for sharing, not browsing.</strong> Every Company Report should have a one-click share card with the clarity score, risk level, and one-line verdict. That card is your marketing engine — not a blog, not a job board, not an HR Tech Intel page.</p>
+</div>
+
+<!-- ===================== SECTION 8: BEFORE/AFTER ===================== -->
+<h2>Before vs. After</h2>
+
+<div class="grid-2">
+  <div class="vs-box before">
+    <span class="vs-label">NOW — 18 visible items</span>
+    <p style="color:#e74c3c; font-weight:600; font-size:0.9rem; line-height:1.8;">Receipts · My Intel · Signals · Career Map · Pricing · About · For Companies · Contact · Hire · Job Board · Offer Analysis · Compare Companies · Follow the Money · HR Tech Intel · Recruiter Brief · Methodology · All Tools · Join Free</p>
+    <p style="color:#999; margin-top:12px; font-size:0.85rem;">First-time visitor: "What does this product do?"</p>
+  </div>
+  <div class="vs-box after">
+    <span class="vs-label">AFTER — 5 items</span>
+    <p style="color:#2ecc71; font-weight:600; font-size:1.1rem; line-height:1.8;">Companies · Compare · Offers · Watchlist · Pricing</p>
+    <p style="color:#999; margin-top:12px; font-size:0.85rem;">First-time visitor: "I search a company, compare options, check my offer, and track what matters. Got it."</p>
+  </div>
+</div>
+
+<!-- ===================== SECTION 9: EXECUTION STEPS ===================== -->
+<h2>Execution Steps</h2>
+
+<div class="grid-3">
+  <div class="card">
+    <h4>Step 1: One Nav System</h4>
+    <p>Kill AppSidebar, ContextSidebar, and MarketingNav. Keep one TopBar with 5 tabs + More + Account. This is a code change in 4 files.</p>
+  </div>
+  <div class="card">
+    <h4>Step 2: Merge Company Pages</h4>
+    <p>Company Profile + Dossier + Receipts + Intelligence + Board Intel + One-Pager = ONE Company Report with tabs. Currently 6+ routes → 1 route with internal tabs.</p>
+  </div>
+  <div class="card">
+    <h4>Step 3: Merge Offer Pages</h4>
+    <p>7 separate offer pages → 1 guided flow. Enter details → Risk review → Negotiation flags → Decision. One route, step-by-step.</p>
+  </div>
+  <div class="card">
+    <h4>Step 4: Remove from Nav, Keep Routes</h4>
+    <p>The 40+ pages being cut stay alive as URLs (don't break links). Remove them from all navigation. Add redirects to new homes.</p>
+  </div>
+  <div class="card">
+    <h4>Step 5: Homepage Rewrite</h4>
+    <p>Company search as the hero. One headline. One CTA. One action. Kill the feature tour — just let people search.</p>
+  </div>
+  <div class="card">
+    <h4>Step 6: Share Cards</h4>
+    <p>Every Company Report generates a shareable card (image + score + verdict). This is your viral engine. Build it into the report page.</p>
+  </div>
+</div>
+
+<!-- ===================== SECTION 10: V2 ROADMAP ===================== -->
+<h2>What Comes Back in V2 (The Insights Layer)</h2>
+
+<p style="color:#ccc; margin-bottom:16px;">Perplexity suggested a future "Insights" section for editorial content. Both sources agree these features have value but shouldn't be in V1 nav:</p>
+
+<div class="card" style="max-width:600px;">
+  <h4>V2: "Insights" Tab (Once Core Is Solid)</h4>
+  <div class="pages">
+    <div class="page-item">Follow the Money <span>— campaign finance tracking</span></div>
+    <div class="page-item">HR Tech Intel <span>— industry analysis</span></div>
+    <div class="page-item">Policy Watch <span>— legislative tracking</span></div>
+    <div class="page-item">Rivalries <span>— company drama content</span></div>
+    <div class="page-item">Rankings <span>— leaderboards</span></div>
+    <div class="page-item">Workforce Briefs <span>— editorial content</span></div>
+  </div>
+  <p style="margin-top:12px;">This is the Bloomberg editorial layer. It drives SEO and social, but it should sit alongside a working, clear V1 product — not compete with it for nav space.</p>
+</div>
+
+<p style="color: #666; margin-top: 56px; padding-top: 24px; border-top: 1px solid #222; font-size: 0.8rem;">Prepared by Claude for Jackye Clayton · Sources: Perplexity AI analysis (3 rounds) + Claude codebase audit (132 routes, 4 nav systems) · March 30, 2026</p>
+
+</div>
+</body>
+</html>
