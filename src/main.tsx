@@ -2,11 +2,23 @@ import { createRoot } from "react-dom/client";
 import { ClerkProvider } from "@clerk/clerk-react";
 import App from "./App.tsx";
 import "./index.css";
+import { initClientSentry } from "@/lib/sentry";
 
-const CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuamFja3llY2xheXRvbi5jb20k";
+initClientSentry();
+
+const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+if (!clerkPublishableKey) {
+  throw new Error(
+    "Missing VITE_CLERK_PUBLISHABLE_KEY. Set it in .env (local) and Vercel Environment Variables (production)."
+  );
+}
 
 createRoot(document.getElementById("root")!).render(
-  <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY} signInFallbackRedirectUrl="/dashboard" signUpFallbackRedirectUrl="/dashboard">
+  <ClerkProvider
+    publishableKey={clerkPublishableKey}
+    signInFallbackRedirectUrl="/dashboard"
+    signUpFallbackRedirectUrl="/dashboard"
+  >
     <App />
   </ClerkProvider>
 );

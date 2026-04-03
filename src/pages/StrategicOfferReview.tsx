@@ -33,6 +33,7 @@ import { CultureSnapshot } from "@/components/strategic-offer/CultureSnapshot";
 import { OfferDecisionSummary } from "@/components/strategic-offer/OfferDecisionSummary";
 import { OfferRealityCheck } from "@/components/strategic-offer/OfferRealityCheck";
 import { OfferRiskSignals, computeRiskLevel, type RiskSignal } from "@/components/strategic-offer/OfferRiskSignals";
+import { OfferProject2025AffiliationsCard } from "@/components/project2025/OfferProject2025AffiliationsCard";
 import { OfferClarityDashboard, type OfferClarityReport } from "@/components/offer-clarity/OfferClarityDashboard";
 import { OfferLetterUpload } from "@/components/offer-review/OfferLetterUpload";
 import { OfferReviewResults } from "@/components/offer-review/OfferReviewResults";
@@ -858,6 +859,12 @@ export default function StrategicOfferReview() {
                   companyId={offer.companyId}
                   companyName={offer.companyName}
                 />
+
+                {offer.companyId && (
+                  <div className="max-w-md">
+                    <OfferProject2025AffiliationsCard companyId={offer.companyId} />
+                  </div>
+                )}
 
                 {/* 6. Compensation Analysis */}
                 <div id="compensation">

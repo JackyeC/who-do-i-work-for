@@ -1,18 +1,19 @@
-import { Archive, ExternalLink, TrendingUp } from "lucide-react";
+import { Archive, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { InsiderScorePill } from "@/components/InsiderScorePill";
 import type { TrackedCompany } from "@/hooks/use-tracked-companies";
+import { Project2025DashboardBadge } from "@/components/project2025/Project2025DashboardBadge";
 
 interface TrackedCompanyCardProps {
   tracked: TrackedCompany;
   onUntrack: (companyId: string) => void;
   isUntracking: boolean;
+  hasProject2025Data?: boolean;
 }
 
-export function TrackedCompanyCard({ tracked, onUntrack, isUntracking }: TrackedCompanyCardProps) {
+export function TrackedCompanyCard({ tracked, onUntrack, isUntracking, hasProject2025Data }: TrackedCompanyCardProps) {
   const navigate = useNavigate();
   const company = tracked.company;
   if (!company) return null;
@@ -32,7 +33,10 @@ export function TrackedCompanyCard({ tracked, onUntrack, isUntracking }: Tracked
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap justify-end">
+        {hasProject2025Data && (
+          <Project2025DashboardBadge companySlug={company.slug} active className="shrink-0" />
+        )}
         <div className="text-center px-3">
           <div className="text-lg font-bold font-mono text-primary">{score}</div>
           <div className="text-micro text-muted-foreground">Influence</div>

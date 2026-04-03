@@ -55,6 +55,7 @@ import { SituationContextBanner } from "@/components/policy-intelligence/Situati
 import { TrustFramingLine } from "@/components/TrustFramingLine";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Project2025DossierSection } from "@/components/project2025/Project2025DossierSection";
 
 /* ─── Lens config ─── */
 const LENS_META = {
@@ -341,6 +342,13 @@ export default function CompanyDossier() {
       {/* EEOC Enforcement Alert */}
       {eeocCases && eeocCases.length > 0 && (
         <EEOCCaseAlert cases={eeocCases} />
+      )}
+
+      {/* Project 2025 — in overview so all visitors see neutral context (not gated behind full dossier) */}
+      {companyId && (
+        <div className="mt-4">
+          <Project2025DossierSection companyId={companyId} />
+        </div>
       )}
     </>
   );

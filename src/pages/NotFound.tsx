@@ -4,13 +4,24 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Home, Search, ArrowLeft } from "lucide-react";
+import { Sentry } from "@/lib/sentry";
 
 const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
+    if (import.meta.env.VITE_SENTRY_DSN) {
+      Sentry.captureMessage("spa_route_not_found", {
+        level: "info",
+        tags: { kind: "not_found" },
+        extra: {
+          pathname: location.pathname,
+          search: location.search,
+        },
+      });
+    }
+  }, [location.pathname, location.search]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
