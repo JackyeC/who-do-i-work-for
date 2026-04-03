@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WDIWF Style Direction — Bloomberg Structure × Oprah Voice × RHOBH Drama</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #0c0c0c; color: #d4d4d4; line-height: 1.65; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+
+  /* ---- Typography ---- */
+  h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 2.8rem; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -0.02em; }
+  h2 { font-size: 1.4rem; font-weight: 700; color: #F5A623; margin: 64px 0 20px; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Inter', sans-serif; }
+  h3 { font-size: 1.05rem; font-weight: 600; color: #fff; margin: 28px 0 10px; }
+  p { color: #a0a0a0; font-size: 0.9rem; }
+  .subtitle { font-family: 'Inter', sans-serif; color: #666; font-size: 1rem; margin-bottom: 48px; font-weight: 400; }
+  .date { color: #444; font-size: 0.8rem; margin-bottom: 40px; font-family: 'JetBrains Mono', monospace; }
+
+  /* ---- Color System ---- */
+  .palette { display: flex; gap: 4px; margin: 20px 0; flex-wrap: wrap; }
+  .swatch { width: 80px; height: 80px; border-radius: 8px; display: flex; align-items: flex-end; padding: 6px; font-size: 0.6rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  .swatch.large { width: 120px; height: 120px; border-radius: 12px; font-size: 0.7rem; }
+  .swatch-label { background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 3px; color: #fff; }
+
+  /* ---- Principle Cards ---- */
+  .principle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin: 24px 0; }
+  .principle { background: #141414; padding: 32px 24px; }
+  .principle .icon { font-size: 1.8rem; margin-bottom: 12px; }
+  .principle h4 { color: #F5A623; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; font-weight: 700; }
+  .principle .title { color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+  .principle p { font-size: 0.85rem; line-height: 1.6; }
+
+  /* ---- Demo Components ---- */
+  .demo-section { background: #111; border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; margin: 24px 0; }
+  .demo-label { background: #1a1a1a; padding: 10px 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #F5A623; font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid #222; }
+  .demo-content { padding: 0; }
+
+  /* ---- Bloomberg Ticker ---- */
+  .ticker-bar { background: #0a0a0a; border-bottom: 1px solid #1a1a1a; padding: 8px 0; overflow: hidden; white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+  .ticker-bar .ticker-content { display: inline-block; animation: tickerScroll 30s linear infinite; }
+  @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .ticker-item { display: inline; padding: 0 24px; }
+  .ticker-item .company { color: #F5A623; font-weight: 600; }
+  .ticker-item .detail { color: #666; }
+  .ticker-item .negative { color: #E55353; }
+  .ticker-item .positive { color: #4ADE80; }
+  .ticker-sep { color: #333; padding: 0 4px; }
+
+  /* ---- Nav Demo ---- */
+  .nav-demo { display: flex; align-items: center; padding: 0 20px; height: 52px; border-bottom: 1px solid #1a1a1a; background: #0e0e0e; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 0.95rem; color: #F5A623; margin-right: 36px; letter-spacing: -0.02em; }
+  .nav-links { display: flex; gap: 0; }
+  .nav-link { color: #666; font-size: 0.78rem; font-weight: 500; padding: 16px 16px; cursor: default; border-bottom: 2px solid transparent; transition: all 0.2s; letter-spacing: 0.02em; }
+  .nav-link.active { color: #F5A623; border-bottom-color: #F5A623; }
+  .nav-link:hover { color: #ccc; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .nav-search-box { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; padding: 7px 14px; color: #555; font-size: 0.78rem; font-family: 'Inter', sans-serif; width: 220px; }
+  .nav-btn { background: #F5A623; color: #0c0c0c; padding: 7px 16px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em; }
+
+  /* ---- Company Report Card ---- */
+  .report-grid { display: grid; grid-template-columns: 280px 1fr; gap: 0; min-height: 480px; }
+  .report-sidebar { background: #0a0a0a; padding: 28px 20px; border-right: 1px solid #1a1a1a; }
+  .report-main { padding: 28px; }
+
+  .company-header { margin-bottom: 24px; }
+  .company-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 800; color: #fff; margin-bottom: 2px; }
+  .company-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #555; }
+
+  .clarity-score { text-align: center; margin: 24px 0; }
+  .clarity-number { font-family: 'JetBrains Mono', monospace; font-size: 3.5rem; font-weight: 700; line-height: 1; }
+  .clarity-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; color: #555; margin-top: 4px; font-weight: 600; }
+  .clarity-bar { height: 4px; background: #1a1a1a; border-radius: 2px; margin-top: 12px; overflow: hidden; }
+  .clarity-fill { height: 100%; border-radius: 2px; }
+
+  .risk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+
+  .sidebar-section { margin-top: 24px; padding-top: 16px; border-top: 1px solid #1a1a1a; }
+  .sidebar-section-title { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: #555; font-weight: 700; margin-bottom: 10px; }
+  .sidebar-stat { display: flex; justify-content: space-between; padding: 4px 0; }
+  .sidebar-stat .label { color: #666; font-size: 0.78rem; }
+  .sidebar-stat .value { color: #ccc; font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+
+  /* Report tabs */
+  .report-tabs { display: flex; gap: 0; border-bottom: 1px solid #1a1a1a; margin-bottom: 24px; }
+  .report-tab { padding: 10px 16px; font-size: 0.75rem; color: #555; font-weight: 500; cursor: default; border-bottom: 2px solid transparent; }
+  .report-tab.active { color: #F5A623; border-bottom-color: #F5A623; }
+
+  /* Oprah voice callout */
+  .voice-callout { background: linear-gradient(135deg, #1a1510 0%, #141210 100%); border: 1px solid #2a2218; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .voice-callout .voice-tag { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: #F5A623; font-weight: 700; margin-bottom: 8px; }
+  .voice-callout .voice-text { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: #e8ddd0; font-style: italic; line-height: 1.5; }
+  .voice-callout .voice-sub { color: #7a6e5e; font-size: 0.8rem; margin-top: 8px; }
+
+  /* RHOBH receipts */
+  .receipt-card { background: #141414; border: 1px solid #1a1a1a; border-radius: 8px; padding: 16px; margin: 8px 0; border-left: 3px solid #E55353; }
+  .receipt-card .receipt-type { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #E55353; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .receipt-card .receipt-title { color: #fff; font-size: 0.9rem; font-weight: 600; margin: 6px 0 4px; }
+  .receipt-card .receipt-detail { color: #777; font-size: 0.8rem; }
+  .receipt-card .receipt-source { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #444; margin-top: 8px; }
+
+  /* Data grid */
+  .data-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin: 16px 0; }
+  .data-cell { background: #141414; padding: 14px; }
+  .data-cell .cell-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #555; font-weight: 600; margin-bottom: 4px; }
+  .data-cell .cell-value { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 600; color: #fff; }
+  .data-cell .cell-change { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; margin-top: 2px; }
+  .data-cell .cell-change.neg { color: #E55353; }
+  .data-cell .cell-change.pos { color: #4ADE80; }
+  .data-cell .cell-change.warn { color: #F5A623; }
+
+  /* Share card */
+  .share-card { background: linear-gradient(145deg, #141414 0%, #0e0e0e 100%); border: 1px solid #2a2a2a; border-radius: 16px; padding: 32px; max-width: 420px; margin: 20px auto; text-align: center; }
+  .share-card .share-logo { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 0.8rem; color: #F5A623; margin-bottom: 16px; letter-spacing: 0.05em; }
+  .share-card .share-company { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #fff; font-weight: 800; }
+  .share-card .share-score { font-family: 'JetBrains Mono', monospace; font-size: 3rem; font-weight: 700; margin: 12px 0 4px; }
+  .share-card .share-verdict { font-size: 0.85rem; color: #999; margin-bottom: 16px; }
+  .share-card .share-cta { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #555; padding-top: 16px; border-top: 1px solid #1a1a1a; }
+
+  /* Homepage hero */
+  .hero-demo { padding: 60px 40px; text-align: center; background: radial-gradient(ellipse at 50% 0%, #1a150e 0%, #0c0c0c 60%); }
+  .hero-headline { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .hero-sub { color: #777; font-size: 1rem; max-width: 480px; margin: 0 auto 28px; line-height: 1.6; }
+  .hero-search-wrap { max-width: 500px; margin: 0 auto 16px; position: relative; }
+  .hero-input { width: 100%; background: #141414; border: 1px solid #2a2a2a; border-radius: 10px; padding: 16px 20px; color: #555; font-size: 0.95rem; font-family: 'Inter', sans-serif; }
+  .hero-search-btn { position: absolute; right: 6px; top: 6px; background: #F5A623; color: #0c0c0c; padding: 10px 20px; border-radius: 7px; font-size: 0.85rem; font-weight: 700; }
+  .hero-tagline { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #444; margin-top: 20px; letter-spacing: 0.05em; }
+
+  /* Comparison grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .compare-box { background: #141414; border: 1px solid #1a1a1a; border-radius: 12px; padding: 24px; }
+  .compare-box h4 { color: #fff; font-size: 0.95rem; margin-bottom: 6px; }
+  .compare-box .tag { font-size: 0.6rem; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; font-weight: 700; display: inline-block; margin-bottom: 10px; letter-spacing: 0.05em; }
+  .tag-now { background: #2a1a1a; color: #E55353; }
+  .tag-new { background: #1a2a1a; color: #4ADE80; }
+  .compare-box p { font-size: 0.85rem; line-height: 1.6; }
+
+  /* Typography specimen */
+  .type-specimen { background: #111; border-radius: 12px; padding: 32px; margin: 16px 0; }
+  .type-row { margin-bottom: 24px; }
+  .type-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #F5A623; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px; font-weight: 600; }
+  .type-sample-display { font-family: 'Playfair Display', serif; font-size: 2rem; color: #fff; font-weight: 800; }
+  .type-sample-body { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #a0a0a0; line-height: 1.7; }
+  .type-sample-data { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #F5A623; }
+
+  /* Callout */
+  .callout { background: #141414; border-left: 3px solid #F5A623; padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0; }
+  .callout strong { color: #F5A623; }
+
+  @media (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    .principle-grid { grid-template-columns: 1fr; }
+    .report-grid { grid-template-columns: 1fr; }
+    .data-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .hero-headline { font-size: 1.6rem; }
+    .nav-demo { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<p class="date">WDIWF / STYLE DIRECTION / MARCH 2026</p>
+<h1>Bloomberg Structure.<br>Oprah Voice.<br>RHOBH Drama.</h1>
+<p class="subtitle">A visual direction for Who Do I Work For — where each influence lives, and what it looks like when they work together.</p>
+
+<!-- ==================== THE FORMULA ==================== -->
+<h2>The Formula</h2>
+
+<div class="principle-grid">
+  <div class="principle">
+    <div class="icon">📊</div>
+    <h4>Bloomberg</h4>
+    <div class="title">Lives in the layout</div>
+    <p>Dark background. Amber accent. Monospace data. Tight grids. Information density that feels authoritative, not cluttered. The structure says: this is serious intelligence, not a blog.</p>
+  </div>
+  <div class="principle">
+    <div class="icon">💛</div>
+    <h4>Oprah</h4>
+    <div class="title">Lives in the words</div>
+    <p>Warm serif headlines. "I see you" energy. Every data point connects back to *your* career, *your* decision, *your* power. The copy says: you deserve to know this.</p>
+  </div>
+  <div class="principle">
+    <div class="icon">🔥</div>
+    <h4>RHOBH</h4>
+    <div class="title">Lives in the content</div>
+    <p>Receipts. Drama. The evidence trail. Red flags that make you gasp. The content says: we have the receipts, and we're not afraid to show them.</p>
+  </div>
+</div>
+
+<!-- ==================== COLOR SYSTEM ==================== -->
+<h2>Color System</h2>
+
+<p style="margin-bottom:16px;">Bloomberg's signature is amber-on-black — not hot pink. The current WDIWF pink (#ff4d6a) reads "consumer social app." The shift to amber immediately adds 10 years of credibility and signals financial intelligence.</p>
+
+<h3>Primary Palette</h3>
+<div class="palette">
+  <div class="swatch large" style="background:#0c0c0c; border:1px solid #222;"><span class="swatch-label">Base #0C0C0C</span></div>
+  <div class="swatch large" style="background:#141414; border:1px solid #222;"><span class="swatch-label">Surface #141414</span></div>
+  <div class="swatch large" style="background:#F5A623;"><span class="swatch-label" style="color:#0c0c0c; background:rgba(0,0,0,0.3);">Amber #F5A623</span></div>
+  <div class="swatch large" style="background:#fff;"><span class="swatch-label" style="color:#000;">White #FFFFFF</span></div>
+</div>
+
+<h3>Semantic Colors</h3>
+<div class="palette">
+  <div class="swatch" style="background:#E55353;"><span class="swatch-label">Risk #E55353</span></div>
+  <div class="swatch" style="background:#4ADE80;"><span class="swatch-label" style="color:#0c0c0c;">Safe #4ADE80</span></div>
+  <div class="swatch" style="background:#F5A623;"><span class="swatch-label" style="color:#0c0c0c;">Caution #F5A623</span></div>
+  <div class="swatch" style="background:#3B82F6;"><span class="swatch-label">Info #3B82F6</span></div>
+</div>
+
+<h3>Text Hierarchy</h3>
+<div class="palette">
+  <div class="swatch" style="background:#ffffff;"><span class="swatch-label" style="color:#000;">Headlines</span></div>
+  <div class="swatch" style="background:#d4d4d4;"><span class="swatch-label" style="color:#000;">Body</span></div>
+  <div class="swatch" style="background:#a0a0a0;"><span class="swatch-label">Secondary</span></div>
+  <div class="swatch" style="background:#666666;"><span class="swatch-label">Muted</span></div>
+  <div class="swatch" style="background:#444444;"><span class="swatch-label">Disabled</span></div>
+</div>
+
+<div class="grid-2">
+  <div class="compare-box">
+    <span class="tag tag-now">CURRENT</span>
+    <h4 style="color:#ff4d6a;">Hot Pink #FF4D6A</h4>
+    <p>Reads as: consumer app, dating app, social media. Undercuts the data-authority positioning. Makes the product feel younger and less serious than the content deserves.</p>
+  </div>
+  <div class="compare-box">
+    <span class="tag tag-new">NEW DIRECTION</span>
+    <h4 style="color:#F5A623;">Bloomberg Amber #F5A623</h4>
+    <p>Reads as: financial terminal, intelligence platform, premium data product. Instantly adds credibility. Still warm (not cold corporate blue), which keeps the Oprah energy alive.</p>
+  </div>
+</div>
+
+<!-- ==================== TYPOGRAPHY ==================== -->
+<h2>Typography</h2>
+
+<p style="margin-bottom:16px;">Three fonts, three jobs. The serif brings editorial warmth (Oprah). The sans-serif handles UI (clean, modern). The monospace handles data (Bloomberg).</p>
+
+<div class="type-specimen">
+  <div class="type-row">
+    <div class="type-label">Display / Headlines — Playfair Display</div>
+    <div class="type-sample-display">Amazon scored 4.2 out of 10.</div>
+    <p style="color:#555; font-size:0.75rem; margin-top:4px;">Warm, editorial, investigative. This is the Oprah + NYT energy. Used for company names, headlines, verdicts.</p>
+  </div>
+  <div class="type-row">
+    <div class="type-label">Body / UI — Inter</div>
+    <div class="type-sample-body">High opportunity, high volatility. You're not joining a steady system — you're joining a company mid-reset. Leadership churn is 3x the industry average, and compensation bands have shifted twice in 18 months.</div>
+    <p style="color:#555; font-size:0.75rem; margin-top:4px;">Clean, readable, professional. Handles all body copy, navigation, and interface text.</p>
+  </div>
+  <div class="type-row" style="margin-bottom:0;">
+    <div class="type-label">Data / Scores / Monospace — JetBrains Mono</div>
+    <div class="type-sample-data">CLARITY SCORE: 4.2/10 &nbsp;|&nbsp; PAY RISK: HIGH &nbsp;|&nbsp; CHURN: 34% &nbsp;|&nbsp; EEOC: 3 FILINGS</div>
+    <p style="color:#555; font-size:0.75rem; margin-top:4px;">Bloomberg terminal energy. Used for all numerical data, scores, labels, and source citations. Makes data feel authoritative.</p>
+  </div>
+</div>
+
+<!-- ==================== LIVE COMPONENTS ==================== -->
+<h2>How It Feels (Live Components)</h2>
+
+<!-- TICKER -->
+<div class="demo-section">
+  <div class="demo-label">Bloomberg Layer — Intelligence Ticker</div>
+  <div class="demo-content">
+    <div class="ticker-bar">
+      <div class="ticker-content">
+        <span class="ticker-item"><span class="company">AMZN</span> <span class="negative">Leadership churn ↑ 34%</span> <span class="detail">— 3 C-suite exits in 6mo</span></span>
+        <span class="ticker-sep">·</span>
+        <span class="ticker-item"><span class="company">GOOG</span> <span class="negative">$50M racial discrimination settlement</span> <span class="detail">— May 2025, AP News</span></span>
+        <span class="ticker-sep">·</span>
+        <span class="ticker-item"><span class="company">META</span> <span class="positive">Clarity Score ↑ 6.8</span> <span class="detail">— hiring stabilized Q1 2026</span></span>
+        <span class="ticker-sep">·</span>
+        <span class="ticker-item"><span class="company">MSFT</span> <span class="negative">Activision integration layoffs</span> <span class="detail">— 1,900 roles affected</span></span>
+        <span class="ticker-sep">·</span>
+        <span class="ticker-item"><span class="company">TSLA</span> <span class="negative">Glassdoor sentiment ↓ 22%</span> <span class="detail">— 6-month trend</span></span>
+        <span class="ticker-sep">·</span>
+        <span class="ticker-item"><span class="company">AMZN</span> <span class="negative">Leadership churn ↑ 34%</span> <span class="detail">— 3 C-suite exits in 6mo</span></span>
+        <span class="ticker-sep">·</span>
+        <span class="ticker-item"><span class="company">GOOG</span> <span class="negative">$50M racial discrimination settlement</span> <span class="detail">— May 2025, AP News</span></span>
+        <span class="ticker-sep">·</span>
+        <span class="ticker-item"><span class="company">META</span> <span class="positive">Clarity Score ↑ 6.8</span> <span class="detail">— hiring stabilized Q1 2026</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="demo-section">
+  <div class="demo-label">Navigation — Clean, 5 Tabs, Bloomberg Grid</div>
+  <div class="demo-content">
+    <div class="nav-demo">
+      <div class="nav-logo">WDIWF</div>
+      <div class="nav-links">
+        <div class="nav-link active">Companies</div>
+        <div class="nav-link">Compare</div>
+        <div class="nav-link">Offers</div>
+        <div class="nav-link">Watchlist</div>
+        <div class="nav-link">Pricing</div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-search-box">Search any employer...</div>
+        <div class="nav-btn">Sign Up Free</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOMEPAGE HERO -->
+<div class="demo-section">
+  <div class="demo-label">Homepage — Oprah Warmth Meets Bloomberg Authority</div>
+  <div class="demo-content">
+    <div class="hero-demo">
+      <div class="hero-headline">See what the offer hides.</div>
+      <div class="hero-sub">Compensation risk. Leadership churn. Hiring patterns. The things they don't put in the job posting.</div>
+      <div class="hero-search-wrap">
+        <div class="hero-input">Search any employer...</div>
+        <div class="hero-search-btn">Analyze</div>
+      </div>
+      <div class="hero-tagline">SOURCES: SEC FILINGS · WARN NOTICES · WORKFORCE DATA · COMPENSATION SIGNALS · EMPLOYEE SENTIMENT</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPANY REPORT -->
+<div class="demo-section">
+  <div class="demo-label">Company Report — All Three Energies Working Together</div>
+  <div class="demo-content">
+    <div class="report-grid">
+      <div class="report-sidebar">
+        <div class="company-header">
+          <div class="company-name">Amazon</div>
+          <div class="company-meta">AMZN · Technology · Washington · 1.5M employees</div>
+        </div>
+
+        <div class="clarity-score">
+          <div class="clarity-label">Employer Clarity Score</div>
+          <div class="clarity-number" style="color: #E55353;">4.2</div>
+          <div class="clarity-bar"><div class="clarity-fill" style="width:42%; background: linear-gradient(90deg, #E55353, #F5A623);"></div></div>
+        </div>
+        <div class="risk-badge" style="background:#2a1515; color:#E55353;">● HIGH RISK</div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Key Metrics</div>
+          <div class="sidebar-stat"><span class="label">Leadership Churn</span><span class="value" style="color:#E55353;">34%</span></div>
+          <div class="sidebar-stat"><span class="label">Pay Transparency</span><span class="value" style="color:#F5A623;">Low</span></div>
+          <div class="sidebar-stat"><span class="label">Hiring Velocity</span><span class="value" style="color:#4ADE80;">+12%</span></div>
+          <div class="sidebar-stat"><span class="label">EEOC Filings</span><span class="value" style="color:#E55353;">3 active</span></div>
+          <div class="sidebar-stat"><span class="label">Glassdoor Trend</span><span class="value" style="color:#E55353;">↓ 18%</span></div>
+          <div class="sidebar-stat"><span class="label">WARN Notices</span><span class="value" style="color:#F5A623;">2 (2025)</span></div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Sources Analyzed</div>
+          <div class="sidebar-stat"><span class="label">SEC Filings</span><span class="value">14</span></div>
+          <div class="sidebar-stat"><span class="label">WARN Notices</span><span class="value">6</span></div>
+          <div class="sidebar-stat"><span class="label">News Articles</span><span class="value">247</span></div>
+          <div class="sidebar-stat"><span class="label">Employee Reviews</span><span class="value">12.4K</span></div>
+        </div>
+      </div>
+
+      <div class="report-main">
+        <div class="report-tabs">
+          <div class="report-tab active">Overview</div>
+          <div class="report-tab">Compensation</div>
+          <div class="report-tab">Leadership</div>
+          <div class="report-tab">Hiring</div>
+          <div class="report-tab">Evidence</div>
+          <div class="report-tab">Sentiment</div>
+        </div>
+
+        <!-- OPRAH VOICE: The verdict -->
+        <div class="voice-callout">
+          <div class="voice-tag">The Verdict</div>
+          <div class="voice-text">High opportunity, high volatility. You're not joining a steady system — you're joining a company mid-reset.</div>
+          <div class="voice-sub">This is a company worth watching, not necessarily worth joining right now. Here's what the data says.</div>
+        </div>
+
+        <!-- BLOOMBERG: Data grid -->
+        <div class="data-grid">
+          <div class="data-cell">
+            <div class="cell-label">Clarity Score</div>
+            <div class="cell-value" style="color:#E55353;">4.2</div>
+            <div class="cell-change neg">↓ 0.8 vs last quarter</div>
+          </div>
+          <div class="data-cell">
+            <div class="cell-label">C-Suite Exits (12mo)</div>
+            <div class="cell-value">3</div>
+            <div class="cell-change neg">↑ vs industry avg 0.8</div>
+          </div>
+          <div class="data-cell">
+            <div class="cell-label">Comp Band Shifts</div>
+            <div class="cell-value">2</div>
+            <div class="cell-change warn">in 18 months</div>
+          </div>
+          <div class="data-cell">
+            <div class="cell-label">Employee Sentiment</div>
+            <div class="cell-value" style="color:#E55353;">3.2</div>
+            <div class="cell-change neg">↓ 18% (6mo trend)</div>
+          </div>
+        </div>
+
+        <!-- RHOBH: The receipts -->
+        <h3 style="margin-top:24px; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.15em; color:#E55353; font-family:'JetBrains Mono',monospace;">Recent Evidence</h3>
+
+        <div class="receipt-card">
+          <div class="receipt-type">EEOC Filing</div>
+          <div class="receipt-title">Gender discrimination complaint filed — warehouse operations</div>
+          <div class="receipt-detail">Filed Q4 2025. Alleges systematic pay disparity across 12 fulfillment centers. Status: under investigation.</div>
+          <div class="receipt-source">SOURCE: EEOC PUBLIC DATABASE · FILED 2025-11-14</div>
+        </div>
+
+        <div class="receipt-card" style="border-left-color:#F5A623;">
+          <div class="receipt-type" style="color:#F5A623;">WARN Notice</div>
+          <div class="receipt-title">740 positions eliminated — AWS restructuring</div>
+          <div class="receipt-detail">Part of broader cloud division reorganization. Affected roles: engineering, program management, technical writing.</div>
+          <div class="receipt-source">SOURCE: WASHINGTON STATE WARN DATABASE · FILED 2025-09-22</div>
+        </div>
+
+        <div class="receipt-card" style="border-left-color:#3B82F6;">
+          <div class="receipt-type" style="color:#3B82F6;">Leadership Change</div>
+          <div class="receipt-title">VP of People Operations departed — 3rd HR leadership exit in 12 months</div>
+          <div class="receipt-detail">Follows departure of CHRO (March 2025) and SVP of Talent (July 2025). No permanent replacement announced.</div>
+          <div class="receipt-source">SOURCE: SEC FORM 8-K · LINKEDIN · BLOOMBERG NEWS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE CARD -->
+<div class="demo-section">
+  <div class="demo-label">Viral Share Card — The Engine That Grows This Thing</div>
+  <div class="demo-content" style="padding:40px; background:#0a0a0a;">
+    <div class="share-card">
+      <div class="share-logo">WHO DO I WORK FOR</div>
+      <div class="share-company">Amazon</div>
+      <div class="share-score" style="color:#E55353;">4.2<span style="color:#444; font-size:1.2rem;">/10</span></div>
+      <div style="display:inline-block; padding:3px 10px; border-radius:4px; background:#2a1515; color:#E55353; font-size:0.7rem; font-weight:700; font-family:'JetBrains Mono',monospace; margin-bottom:12px;">HIGH RISK</div>
+      <div class="share-verdict">"High opportunity, high volatility. You're joining a company mid-reset."</div>
+      <div class="share-cta">whodoimiworkfor.com · see the full report →</div>
+    </div>
+    <p style="text-align:center; color:#555; font-size:0.8rem; margin-top:16px;">This card is what goes viral. Every report generates one. Optimized for Twitter/X, LinkedIn, and iMessage previews.</p>
+  </div>
+</div>
+
+<!-- ==================== THE THREE LAYERS EXPLAINED ==================== -->
+<h2>Where Each Influence Lives</h2>
+
+<div class="principle-grid">
+  <div class="principle">
+    <h4>Bloomberg</h4>
+    <div class="title">Structure & Data</div>
+    <p style="margin-bottom:12px;">Dark background (#0C0C0C). Amber accent (#F5A623). Monospace for all data (JetBrains Mono). Tight data grids. Scrolling ticker. Source citations on everything. Information density. No whitespace waste.</p>
+    <p><strong style="color:#F5A623;">Components:</strong> Ticker bar, data grid cells, sidebar metrics, source citations, score displays, risk badges, tab navigation.</p>
+  </div>
+  <div class="principle">
+    <h4>Oprah</h4>
+    <div class="title">Voice & Warmth</div>
+    <p style="margin-bottom:12px;">Serif headlines (Playfair Display). Warm amber glow, not cold blue. Every verdict speaks to YOU. "You're not joining a steady system." "You deserve to know this." The data has a soul.</p>
+    <p><strong style="color:#F5A623;">Components:</strong> Verdict callouts, company report headlines, homepage headline, onboarding copy, CTA language, share card verdicts.</p>
+  </div>
+  <div class="principle">
+    <h4>RHOBH</h4>
+    <div class="title">Drama & Evidence</div>
+    <p style="margin-bottom:12px;">Red-flagged receipt cards with left border accents. "Evidence" not "data." EEOC filings, WARN notices, leadership exits — presented like investigation results. The drama is in the truth.</p>
+    <p><strong style="color:#F5A623;">Components:</strong> Receipt/evidence cards, red flag alerts, "Recent Evidence" sections, whistleblower-style source formatting, risk scoring language.</p>
+  </div>
+</div>
+
+<!-- ==================== KEY DIFFERENCES ==================== -->
+<h2>What Changes from Today</h2>
+
+<div class="grid-2">
+  <div class="compare-box">
+    <span class="tag tag-now">CURRENT</span>
+    <h4>Hot pink accent color</h4>
+    <p>Reads consumer/social. Undercuts the intelligence positioning.</p>
+  </div>
+  <div class="compare-box">
+    <span class="tag tag-new">NEW</span>
+    <h4>Bloomberg amber</h4>
+    <p>Reads financial intelligence. Still warm (not cold corporate blue). Instant credibility upgrade.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="compare-box">
+    <span class="tag tag-now">CURRENT</span>
+    <h4>Sans-serif everything</h4>
+    <p>Generic SaaS feel. No editorial warmth. Could be any dashboard.</p>
+  </div>
+  <div class="compare-box">
+    <span class="tag tag-new">NEW</span>
+    <h4>Serif headlines + mono data + sans body</h4>
+    <p>Serif adds editorial gravitas (Oprah/NYT). Mono adds data authority (Bloomberg). Sans handles the UI.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="compare-box">
+    <span class="tag tag-now">CURRENT</span>
+    <h4>Data presented flat</h4>
+    <p>Numbers without context or hierarchy. All data looks the same.</p>
+  </div>
+  <div class="compare-box">
+    <span class="tag tag-new">NEW</span>
+    <h4>Data in Bloomberg-style grid cells</h4>
+    <p>Each metric in its own cell with label, value, and directional change. Instantly scannable.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="compare-box">
+    <span class="tag tag-now">CURRENT</span>
+    <h4>Evidence mixed into page content</h4>
+    <p>EEOC filings, WARN notices, and leadership changes are buried in long pages.</p>
+  </div>
+  <div class="compare-box">
+    <span class="tag tag-new">NEW</span>
+    <h4>Evidence as "receipt cards"</h4>
+    <p>Each piece of evidence is a card with a red/amber/blue left border, source citation, and filing date. RHOBH receipts energy — organized like a case file.</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="compare-box">
+    <span class="tag tag-now">CURRENT</span>
+    <h4>Big score, no verdict</h4>
+    <p>4.2/10 is visible but there's no human-readable interpretation.</p>
+  </div>
+  <div class="compare-box">
+    <span class="tag tag-new">NEW</span>
+    <h4>Score + warm, direct verdict</h4>
+    <p>"High opportunity, high volatility. You're not joining a steady system." The number gets a voice. That's Oprah.</p>
+  </div>
+</div>
+
+<!-- ==================== DESIGN TOKENS ==================== -->
+<h2>Design Tokens (For Implementation)</h2>
+
+<div class="callout">
+  <p><strong>For when you're ready to code this.</strong> These are the exact values for every design decision above.</p>
+</div>
+
+<div class="type-specimen" style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:#999; line-height:2;">
+  <span style="color:#555;">/* Colors */</span><br>
+  <span style="color:#F5A623;">--color-base:</span> #0C0C0C;<br>
+  <span style="color:#F5A623;">--color-surface:</span> #141414;<br>
+  <span style="color:#F5A623;">--color-surface-raised:</span> #1A1A1A;<br>
+  <span style="color:#F5A623;">--color-amber:</span> #F5A623;<br>
+  <span style="color:#F5A623;">--color-risk:</span> #E55353;<br>
+  <span style="color:#F5A623;">--color-safe:</span> #4ADE80;<br>
+  <span style="color:#F5A623;">--color-caution:</span> #F5A623;<br>
+  <span style="color:#F5A623;">--color-info:</span> #3B82F6;<br>
+  <span style="color:#F5A623;">--color-border:</span> #1A1A1A;<br>
+  <span style="color:#F5A623;">--color-border-subtle:</span> #222222;<br>
+  <br>
+  <span style="color:#555;">/* Text */</span><br>
+  <span style="color:#F5A623;">--text-primary:</span> #FFFFFF;<br>
+  <span style="color:#F5A623;">--text-body:</span> #D4D4D4;<br>
+  <span style="color:#F5A623;">--text-secondary:</span> #A0A0A0;<br>
+  <span style="color:#F5A623;">--text-muted:</span> #666666;<br>
+  <span style="color:#F5A623;">--text-disabled:</span> #444444;<br>
+  <br>
+  <span style="color:#555;">/* Typography */</span><br>
+  <span style="color:#F5A623;">--font-display:</span> 'Playfair Display', Georgia, serif;<br>
+  <span style="color:#F5A623;">--font-body:</span> 'Inter', -apple-system, sans-serif;<br>
+  <span style="color:#F5A623;">--font-data:</span> 'JetBrains Mono', monospace;<br>
+  <br>
+  <span style="color:#555;">/* Spacing */</span><br>
+  <span style="color:#F5A623;">--radius-sm:</span> 4px;<br>
+  <span style="color:#F5A623;">--radius-md:</span> 8px;<br>
+  <span style="color:#F5A623;">--radius-lg:</span> 12px;<br>
+  <span style="color:#F5A623;">--radius-xl:</span> 16px;<br>
+  <span style="color:#F5A623;">--grid-gap:</span> 2px;  <span style="color:#555;">/* tight Bloomberg grid */</span><br>
+</div>
+
+<p style="color: #444; margin-top: 56px; padding-top: 24px; border-top: 1px solid #1a1a1a; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">WDIWF STYLE DIRECTION · BLOOMBERG × OPRAH × RHOBH · MARCH 2026 · PREPARED FOR JACKYE CLAYTON</p>
+
+</div>
+</body>
+</html>

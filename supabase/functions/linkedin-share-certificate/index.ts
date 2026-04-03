@@ -38,13 +38,33 @@ Deno.serve(async (req: Request) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { persistSession: false },
     });
+    // Decrypt the LinkedIn access token server-side
     const { data: linkedinProfile, error: profileError } = await supabase
-      .from("linkedin_profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+      .rpc("get_linkedin_token", { p_user_id: user.id });
 
-    if (profileError || !linkedinProfile) {
+    // Fallback: if the RPC doesn't exist yet, query directly (service_role bypasses RLS)
+    let profile = linkedinProfile;
+    if (profileError) {
+      logStep("RPC not available, using direct query", { error: profileError.message });
+      const { data: directProfile, error: directError } = await supabase
+        .from("linkedin_profiles")
+        .select("linkedin_id, access_token, encrypted_access_token, expires_at")
+        .eq("user_id", user.id)
+        .single();
+      if (directError || !directProfile) {
+        logStep("LinkedIn not connected for user");
+        return new Response(JSON.stringify({
+          error: "LinkedIn not connected",
+          needsAuth: true,
+        }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      profile = directProfile;
+    }
+
+    if (!profile) {
       logStep("LinkedIn not connected for user");
       return new Response(JSON.stringify({
         error: "LinkedIn not connected",
@@ -56,7 +76,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // Check token expiry
-    if (new Date(linkedinProfile.expires_at) < new Date()) {
+    if (new Date(profile.expires_at) < new Date()) {
       logStep("LinkedIn token expired");
       return new Response(JSON.stringify({
         error: "LinkedIn token expired — please reconnect",
@@ -72,8 +92,9 @@ Deno.serve(async (req: Request) => {
 
     logStep("Preparing LinkedIn post", { certName, playerName });
 
-    const personUrn = `urn:li:person:${linkedinProfile.linkedin_id}`;
-    const accessToken = linkedinProfile.access_token;
+    const personUrn = `urn:li:person:${profile.linkedin_id}`;
+    // Use plaintext token (will be migrated to encrypted in future)
+    const accessToken = profile.access_token;
 
     // Build post text
     const postText = `🏆 I just earned the "${certName}" ${certBadge} certification in PeoplePuzzles™ by @Jackye Clayton!

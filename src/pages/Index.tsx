@@ -1,11 +1,11 @@
 import { useState, lazy, Suspense, forwardRef } from "react";
 import jackyeHeadshotSm from "@/assets/jackye-headshot-sm.webp";
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, ArrowRight, Search, FileSearch, Layers, BarChart3, Briefcase, Building } from "lucide-react";
+import { Shield, ArrowRight, Search, FileSearch, Layers, BarChart3, Briefcase, Building, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 import { Button } from "@/components/ui/button";
-import { usePageSEO } from "@/hooks/use-page-seo";
+import { usePageSEO, SITE_BASE_URL } from "@/hooks/use-page-seo";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketingNav } from "@/components/layout/MarketingNav";
@@ -34,11 +34,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       description: "Career intelligence platform founded by Jackye Clayton. Research any employer using public records — so you never accept an offer blind again.",
       applicationCategory: "BusinessApplication",
       creator: { "@type": "Person", name: "Jackye Clayton" },
-      url: "https://whodoiworkfor.com",
+      url: SITE_BASE_URL,
     },
   });
 
-  const { data: featuredCompanies } = useQuery({
+  const { data: featuredCompanies, isLoading: featuredCompaniesLoading } = useQuery({
     queryKey: ["homepage-featured-companies"],
     queryFn: async () => {
       const { data } = await supabase
@@ -51,7 +51,17 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
     staleTime: 300_000,
   });
 
-  if (!isLoaded || authLoading) return null;
+  if (!isLoaded || authLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-background">
+        <div className="sticky top-0 z-50 h-[57px] border-b border-border/50 bg-background/95 backdrop-blur-sm animate-pulse" />
+        <div className="flex-1 flex flex-col items-center justify-center gap-4 px-6">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
+          <p className="text-sm text-muted-foreground">Loading…</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,6 +110,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 value={heroQuery}
                 onChange={(e) => setHeroQuery(e.target.value)}
                 placeholder="Scan a company..."
+                aria-label="Search for a company by name"
                 className="flex-1 bg-transparent px-3 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none font-sans"
               />
               <button
@@ -139,42 +150,69 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {(featuredCompanies || []).map((co: any) => (
-              <Link key={co.id} to={`/company/${co.slug}`} className="group">
-                <div className="border border-border bg-card p-5 hover:border-primary/30 transition-all h-full">
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex items-start gap-3 min-w-0">
-                      <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center shrink-0">
-                        <Building className="w-4 h-4 text-muted-foreground/70" />
+            {featuredCompaniesLoading ? (
+              <>
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="border border-border bg-card p-5 h-[120px] animate-pulse rounded-none"
+                    aria-hidden
+                  >
+                    <div className="h-4 bg-muted/50 rounded w-3/4 mb-3" />
+                    <div className="h-3 bg-muted/40 rounded w-1/2" />
+                  </div>
+                ))}
+                <p className="col-span-full text-center text-sm text-muted-foreground -mt-2">
+                  Loading featured companies…
+                </p>
+              </>
+            ) : !(featuredCompanies || []).length ? (
+              <div className="col-span-full text-center py-8 border border-dashed border-border rounded-lg bg-muted/20">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Featured companies will appear here once data is synced.
+                </p>
+                <Link to="/browse" className="text-sm font-medium text-primary hover:text-primary/80">
+                  Browse all companies →
+                </Link>
+              </div>
+            ) : (
+              (featuredCompanies || []).map((co: any) => (
+                <Link key={co.id} to={`/company/${co.slug}`} className="group">
+                  <div className="border border-border bg-card p-5 hover:border-primary/30 transition-all h-full">
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="flex items-start gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center shrink-0">
+                          <Building className="w-4 h-4 text-muted-foreground/70" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-sans text-foreground group-hover:text-primary transition-colors truncate font-semibold text-base">
+                            {co.name}
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            {co.industry} · {co.state}
+                          </p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <h3 className="font-sans text-foreground group-hover:text-primary transition-colors truncate font-semibold text-base">
-                          {co.name}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">
-                          {co.industry} · {co.state}
-                        </p>
-                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-all shrink-0 mt-1" />
                     </div>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-all shrink-0 mt-1" />
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span className={`font-mono font-bold px-2 py-0.5 rounded ${
+                        co.employer_clarity_score >= 70 ? "bg-civic-green/10 text-civic-green" :
+                        co.employer_clarity_score >= 40 ? "bg-civic-yellow/10 text-civic-yellow" :
+                        "bg-civic-red/10 text-civic-red"
+                      }`}>
+                        {co.employer_clarity_score}/100
+                      </span>
+                      <span>
+                        {co.total_pac_spending > 0
+                          ? `PAC: $${co.total_pac_spending >= 1000000 ? (co.total_pac_spending / 1000000).toFixed(1) + "M" : co.total_pac_spending >= 1000 ? (co.total_pac_spending / 1000).toFixed(0) + "K" : co.total_pac_spending}`
+                          : "No PAC data"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span className={`font-mono font-bold px-2 py-0.5 rounded ${
-                      co.employer_clarity_score >= 70 ? "bg-civic-green/10 text-civic-green" :
-                      co.employer_clarity_score >= 40 ? "bg-civic-yellow/10 text-civic-yellow" :
-                      "bg-civic-red/10 text-civic-red"
-                    }`}>
-                      {co.employer_clarity_score}/100
-                    </span>
-                    <span>
-                      {co.total_pac_spending > 0
-                        ? `PAC: $${co.total_pac_spending >= 1000000 ? (co.total_pac_spending / 1000000).toFixed(1) + "M" : co.total_pac_spending >= 1000 ? (co.total_pac_spending / 1000).toFixed(0) + "K" : co.total_pac_spending}`
-                        : "No PAC data"}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))
+            )}
           </div>
 
           <div className="text-center mt-8">
