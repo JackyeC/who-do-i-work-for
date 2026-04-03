@@ -102,3 +102,33 @@ git push origin main
 ### 4. User Data Ownership (Medium)
 **Before:** No `created_by` tracking on company_sanctions_screening and company_wikidata.
 **After:** Ownership column added, scoped to creating user.
+
+---
+
+## Encryption key rotation (LinkedIn tokens)
+
+The migration `20260331000001_security_encrypt_linkedin_token.sql` derives the symmetric key from `current_setting('app.settings.service_role_key', true)` (SHA-256 hex). That ties ciphertext to **whatever value that setting holds in the database session that performs encrypt/decrypt**.
+
+### What this means
+
+- **Rotating the Supabase `service_role` JWT** (project API settings) **without** updating how you derive or store the encryption key will **not** automatically re-encrypt existing rows. Edge functions and RPCs that decrypt `encrypted_access_token` must use the **same** derived key as when the data was written, or decryption fails and LinkedIn features break until users reconnect LinkedIn.
+- There is **no automatic key versioning** in the current schema (single `encrypted_access_token` column). Plan rotations explicitly.
+
+### If you need a clean rotation today
+
+Pick one approach:
+
+1. **User-driven (simplest):** Invalidate stored tokens (clear `encrypted_access_token` / force users through LinkedIn OAuth again) after you change the key material. Accept brief disruption for connected accounts.
+2. **Re-encrypt in place (no user action):** In a maintenance window, run a one-off script or SQL `DO` block that:
+   - Reads each row’s token using **old** key material (decrypt).
+   - Writes ciphertext using **new** key material (encrypt).
+   - Requires both secrets to be available only during the migration; then retire the old secret.
+3. **Longer-term hardening:** Move to a **dedicated** secret (e.g. Supabase Vault–backed setting such as `app.settings.linkedin_token_dek`) that is **independent** of the service_role JWT, plus optional `key_version` column for staged rotations. That avoids coupling token encryption to API key rotation.
+
+### Operational checklist before rotating service_role JWT
+
+- [ ] Confirm whether any code path still uses the **plaintext** `access_token` column; migrate callers to encrypted storage first.
+- [ ] Document the current `app.settings.service_role_key` source in your project (who sets it, which role).
+- [ ] Either **re-encrypt** all `encrypted_access_token` values or plan a **forced re-link** for LinkedIn.
+
+If you want a follow-up migration for Vault-backed keys + versioning, add it as a separate PR after this security bundle is stable in production.
