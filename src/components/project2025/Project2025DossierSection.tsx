@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +25,14 @@ export function Project2025DossierSection({ companyId }: Props) {
     queryFn: () => getProject2025LinksForCompany(companyId),
     enabled: !!companyId,
   });
+
+  useEffect(() => {
+    if (typeof window === "undefined" || window.location.hash !== "#project2025") return;
+    const id = window.setTimeout(() => {
+      document.getElementById("project2025")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
+    return () => window.clearTimeout(id);
+  }, [companyId, isLoading, links.length]);
 
   return (
     <Card id="project2025" className="border-border/40 bg-card">

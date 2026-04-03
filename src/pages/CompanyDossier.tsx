@@ -343,6 +343,13 @@ export default function CompanyDossier() {
       {eeocCases && eeocCases.length > 0 && (
         <EEOCCaseAlert cases={eeocCases} />
       )}
+
+      {/* Project 2025 — in overview so all visitors see neutral context (not gated behind full dossier) */}
+      {companyId && (
+        <div className="mt-4">
+          <Project2025DossierSection companyId={companyId} />
+        </div>
+      )}
     </>
   );
 
@@ -391,12 +398,6 @@ export default function CompanyDossier() {
       </DossierLayer>
 
       {companyId && (
-        <div className="mt-4">
-          <Project2025DossierSection companyId={companyId} />
-        </div>
-      )}
-
-      {companyId && (
         <DossierLayer title="Political Giving & Influence" subtitle="PAC spending, lobbying, institutional links — sourced from FEC & LDA" icon={Landmark} layerNumber={7}>
           <PoliticalGivingCard companyId={companyId} companyName={company.name} companySlug={company.slug} />
         </DossierLayer>
@@ -442,12 +443,6 @@ export default function CompanyDossier() {
         />
       </DossierLayer>
 
-      {companyId && (
-        <div className="mt-4">
-          <Project2025DossierSection companyId={companyId} />
-        </div>
-      )}
-
       <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
         <PatternsSynthesisLayer patterns={[]} companyName={company.name} />
       </DossierLayer>
@@ -477,12 +472,6 @@ export default function CompanyDossier() {
           policyLinks={[]}
         />
       </DossierLayer>
-
-      {companyId && (
-        <div className="mt-4">
-          <Project2025DossierSection companyId={companyId} />
-        </div>
-      )}
 
       <DossierLayer title="Patterns & Synthesis" subtitle="Key observations and notable patterns" icon={Sparkles} layerNumber={7}>
         <PatternsSynthesisLayer patterns={[]} companyName={company.name} />

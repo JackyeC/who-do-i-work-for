@@ -18,7 +18,10 @@ export function useProject2025LinkedCompanyIds(companyIds: string[]) {
         .select("company_id")
         .in("company_id", unique);
 
-      if (error) throw error;
+      if (error) {
+        console.warn("useProject2025LinkedCompanyIds", error);
+        return new Set<string>();
+      }
       return new Set((data || []).map((r) => r.company_id as string));
     },
     enabled: companyIds.filter(Boolean).length > 0,
