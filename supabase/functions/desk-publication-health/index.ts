@@ -72,10 +72,25 @@ Deno.serve(async (req: Request) => {
 
   if (error) {
     logInfo("query_error", { message: error.message });
-    return new Response(JSON.stringify({ ok: false, error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        error: error.message,
+        checks: { publications_table: `error: ${error.message}` },
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  const rpcRes = await supabase.rpc("wdiwf_latest_live_desk_publication");
+  const rpcOk = !rpcRes.error;
+  const rpcDetail = rpcRes.error ? `error: ${rpcRes.error.message}` : "ok";
+
+  if (rpcRes.error) {
+    logInfo("rpc_error", { message: rpcRes.error.message });
   }
 
   const runs = (rows ?? []).map((r) => ({
@@ -100,11 +115,20 @@ Deno.serve(async (req: Request) => {
     (r.site_markdown_chars ?? 0) > 0;
 
   const engine_alive = runs.length > 0;
-  logInfo("ok", { limit, returned: runs.length });
+  /** False if operability migration / RPC missing — /newsletter desk hook will fail. */
+  const safe_for_newsletter_desk = rpcOk;
+
+  logInfo("ok", { limit, returned: runs.length, rpc_ok: rpcOk });
 
   return new Response(
     JSON.stringify({
-      ok: true,
+      ok: rpcOk,
+      checked_at: new Date().toISOString(),
+      checks: {
+        publications_table: "ok",
+        rpc_latest_live_desk: rpcDetail,
+      },
+      safe_for_newsletter_desk,
       limit,
       engine_alive,
       /** Newest row that is actually live on the site (same contract as RLS). */

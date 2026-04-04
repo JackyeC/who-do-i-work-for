@@ -74,10 +74,12 @@ Migrations: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`, `s
 - **SQL / app:** `select * from wdiwf_latest_live_desk_publication();` — returns **at most one** row, the newest that matches the same filter as RLS.
 - **Frontend:** `useLatestDeskPublication()` calls that RPC.
 
-### Operator health (“is the engine alive?”)
+### Operator health (“is the engine alive?” / “safe to test?”)
 
 - **Edge:** `GET` or `POST` `.../functions/v1/desk-publication-health?limit=5` with the same `Authorization: Bearer <WDIWF_DESK_PUBLISH_SECRET>`.
-- Returns `runs` (last N summaries, no full markdown), `newest_live` (first run in time order that satisfies the live contract), and `engine_alive`.
+- **`ok: true`** only when **`checks.rpc_latest_live_desk`** is `"ok"` (RPC exists — same path as **`/newsletter`**). If operability migration wasn’t applied, `ok` is **`false`** even when `runs` can be read.
+- Also returns: `checked_at`, `checks.publications_table`, `safe_for_newsletter_desk`, `runs`, `newest_live`, `engine_alive`.
+- **Script:** `./scripts/supabase/health-check.sh` (see **`docs/SUPABASE_DEPLOY.md`**).
 - **Deploy:** `supabase functions deploy desk-publication-health`
 
 ### Publish API response shape
@@ -121,8 +123,7 @@ Migrations: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`, `s
 | `SUPABASE_URL` | Project URL (caller + function) |
 | Frontend | Uses existing anon key — **no** new Vite env for desk read |
 
-**Deploy functions:** `supabase functions deploy publish-desk-publication` and `supabase functions deploy desk-publication-health`  
-**Apply migration:** `supabase db push` or dashboard SQL (project-dependent).
+**Deploy:** use the fixed order and health gate in **`docs/SUPABASE_DEPLOY.md`** (`./scripts/supabase/deploy.sh` or the three CLI commands documented there).
 
 ---
 
