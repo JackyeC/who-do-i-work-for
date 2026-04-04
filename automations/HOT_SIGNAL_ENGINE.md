@@ -147,3 +147,18 @@ Archive inputs to `newsletter/inputs/live/processed/YYYY-MM-DD/` **or** log in `
 ## Publishing
 
 `newsletter/delivery/PUBLISHING.md`
+
+---
+
+## Live website (Supabase) — Phase 1
+
+When **`Generation status: completed`** and **`site-update.md`** is non-empty and publish-worthy:
+
+1. **POST** to Edge Function **`publish-desk-publication`** with body JSON (see **`docs/CONTENT_ENGINE_LIVE_DELIVERY.md`**).
+2. **Header:** `Authorization: Bearer <WDIWF_DESK_PUBLISH_SECRET>` (secret stored in Supabase Edge secrets, not in the repo).
+3. **Fields:** `kind: "bi_hourly"`, `generation_status: "completed"`, `site_markdown` (file contents), optional social fields, `published_to_site: true`, `run_log` with inputs/outputs.
+4. **Do not** call this on skipped runs with `published_to_site: true`. Optional audit row: `generation_status: "skipped"`, `published_to_site: false`.
+
+**Example script:** `scripts/content-engine/publish-desk-publication.example.sh` (requires `jq`, `curl`, env `SUPABASE_URL` + `WDIWF_DESK_PUBLISH_SECRET`).
+
+The **`/newsletter`** page reads the latest public row from **`wdiwf_desk_publications`** (RLS); no manual paste into the app bundle.

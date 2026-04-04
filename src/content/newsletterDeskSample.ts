@@ -1,6 +1,6 @@
 /**
- * Sample desk output — mirrors `newsletter/samples/engine-dry-run/` (fictional).
- * Replace with CMS / content-engine API when wired. SUBSTACK URL via env.
+ * Fallback desk sample — mirrors `newsletter/samples/engine-dry-run/` (fictional).
+ * Live `/newsletter` desk loads from Supabase `wdiwf_desk_publications` when published; this file is UI fallback only. SUBSTACK URL via env.
  */
 export const SUBSTACK_NEWSLETTER_URL =
   (import.meta.env.VITE_SUBSTACK_URL as string | undefined)?.trim() || "";

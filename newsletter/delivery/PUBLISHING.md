@@ -6,7 +6,7 @@ Generated artifacts are **stable files** under `newsletter/outputs/`. This doc l
 
 | Channel | Source file(s) | Typical integration |
 |---------|----------------|---------------------|
-| **Site** | `site-update.md`, Friday `site-version.md` | (1) Manual paste into CMS (2) Git commit + deploy if site reads MD from repo (3) **Webhook** to headless CMS (4) Supabase / Edge job that ingests MD via API |
+| **Site** | `site-update.md`, Friday `site-version.md` | **Primary (Phase 1):** POST `site-update.md` (+ optional social) to Supabase Edge **`publish-desk-publication`** → table **`wdiwf_desk_publications`**; **`/newsletter`** reads latest live row. See **`docs/CONTENT_ENGINE_LIVE_DELIVERY.md`** and **`scripts/content-engine/publish-desk-publication.example.sh`**. Alternatives: CMS webhook, git-based MD deploy. |
 | **Email / newsletter** | Friday `newsletter.md`, `subject-lines.txt`, `preview-text.txt` | **Substack** (API / publishing workflow per Substack docs), **Beehiiv** REST API, **Resend** + React email, **Customer.io**, **Buttondown**, Zapier “upload draft” |
 | **LinkedIn** | `linkedin.txt`, `promo-post.txt` | **Zapier/Make** (scheduled post), **LinkedIn API** (org UGC — needs OAuth), **MCP** if your Cursor stack exposes a poster tool (manual copy fallback) |
 | **Bluesky** | `bluesky.txt` | **AT Protocol** (session app password), Zapier, manual |

@@ -157,3 +157,6 @@ verify_jwt = false
 
 [functions.batch-extract-corporate-claims]
 verify_jwt = false
+
+[functions.publish-desk-publication]
+verify_jwt = false

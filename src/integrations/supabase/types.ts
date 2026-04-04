@@ -10332,6 +10332,63 @@ export type Database = {
         }
         Relationships: []
       }
+      wdiwf_desk_publications: {
+        Row: {
+          created_at: string
+          email_preview_text: string | null
+          email_subject: string | null
+          generation_status: string
+          id: string
+          kind: string
+          newsletter_markdown: string | null
+          published_to_site: boolean
+          run_id: string | null
+          run_log: Json
+          site_markdown: string | null
+          social_bluesky: string | null
+          social_facebook: string | null
+          social_instagram: string | null
+          social_linkedin: string | null
+          social_x: string | null
+        }
+        Insert: {
+          created_at?: string
+          email_preview_text?: string | null
+          email_subject?: string | null
+          generation_status: string
+          id?: string
+          kind: string
+          newsletter_markdown?: string | null
+          published_to_site?: boolean
+          run_id?: string | null
+          run_log?: Json
+          site_markdown?: string | null
+          social_bluesky?: string | null
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_linkedin?: string | null
+          social_x?: string | null
+        }
+        Update: {
+          created_at?: string
+          email_preview_text?: string | null
+          email_subject?: string | null
+          generation_status?: string
+          id?: string
+          kind?: string
+          newsletter_markdown?: string | null
+          published_to_site?: boolean
+          run_id?: string | null
+          run_log?: Json
+          site_markdown?: string | null
+          social_bluesky?: string | null
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_linkedin?: string | null
+          social_x?: string | null
+        }
+        Relationships: []
+      }
       work_news: {
         Row: {
           category: string | null

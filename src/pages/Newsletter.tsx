@@ -317,7 +317,7 @@ export default function Newsletter() {
         </p>
       </section>
 
-      {/* ── Desk: website + Substack + social (sample → content engine) ── */}
+      {/* ── Desk: live Supabase row (bi-hourly) or fallback sample ── */}
       <section className="max-w-3xl mx-auto px-4 pb-10">
         <NewsletterDeskPreview />
       </section>
