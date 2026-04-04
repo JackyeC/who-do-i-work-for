@@ -8,11 +8,14 @@
 
 **[`CONTENT_ENGINE_PRODUCTION_VALIDATION.md`](CONTENT_ENGINE_PRODUCTION_VALIDATION.md)** — **enable this before automation:** inputs, dedup, quality filter, required outputs, voice, skip rules, publish-ready handoff, logging.
 
+**[`SIGNAL_CHECK_FRAMEWORK.md`](SIGNAL_CHECK_FRAMEWORK.md)** — **Signal Check™**: repeatable multi-source map, Cursor-ready prompt, decision impact (merged into charter + prompts).
+
 ## Quick links
 
 | Doc | Role |
 |-----|------|
 | [`WDIWF_CONTENT_ENGINE_AUTOMATION_LAYER.md`](WDIWF_CONTENT_ENGINE_AUTOMATION_LAYER.md) | **Full layer doc (Parts 1–9)** |
+| [`SIGNAL_CHECK_FRAMEWORK.md`](SIGNAL_CHECK_FRAMEWORK.md) | **Signal Check™** editorial + automation spec |
 | [`automations/README.md`](../automations/README.md) | Entry point, scripts, file list |
 | [`automations/CURSOR_DASHBOARD_SETUP.md`](../automations/CURSOR_DASHBOARD_SETUP.md) | Create the two automations in Cursor UI |
 | [`automations/AUTOMATIONS_REGISTRY.md`](../automations/AUTOMATIONS_REGISTRY.md) | Names, schedules, procedure files, outputs |

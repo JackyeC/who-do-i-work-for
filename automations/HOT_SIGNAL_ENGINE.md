@@ -19,9 +19,10 @@
 3. `newsletter/style/jackye-voice.md`  
 4. `newsletter/style/enforcement.md`  
 5. `newsletter/WDIWF_NEWS_CHARTER.md`  
-6. `docs/BUILD_BIBLE.md`  
-7. `docs/visual-references/README.md` + **`anchor-01.png`…`anchor-09.png`** (posters only)  
-8. `docs/VIRAL_POSTER_IMAGE_SPEC.md` (posters / `poster-prompt.md` only)
+6. `docs/SIGNAL_CHECK_FRAMEWORK.md`  
+7. `docs/BUILD_BIBLE.md`  
+8. `docs/visual-references/README.md` + **`anchor-01.png`…`anchor-09.png`** (posters only)  
+9. `docs/VIRAL_POSTER_IMAGE_SPEC.md` (posters / `poster-prompt.md` only)
 
 ---
 
@@ -92,7 +93,7 @@ Cannot meet bar → **skip entire run** (§3).
 
 ## 5. Voice + message enforcement
 
-Apply **jackye-voice**, **enforcement**, **MESSAGE_SYSTEM**. Reject generic / corporate / vague — rewrite or skip.
+Apply **jackye-voice**, **enforcement**, **MESSAGE_SYSTEM**. For any news-style item in **`site-update.md`** (or cross-channel copy), apply **`WDIWF_NEWS_CHARTER.md`** + **`docs/SIGNAL_CHECK_FRAMEWORK.md`**: for flagship stories, use the **§4 Cursor prompt** verbatim for the **Signal Check™** block (no links inside it; **decision impact** line required); cluster same-story coverage in the source map; no invented counts or gaps. Reject generic / corporate / vague — rewrite or skip.
 
 ---
 

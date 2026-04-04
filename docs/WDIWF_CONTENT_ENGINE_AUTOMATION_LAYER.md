@@ -20,6 +20,7 @@ These files **enforce Jackye’s voice and standards at machine speed**. The age
 | `docs/VIRAL_POSTER_IMAGE_SPEC.md` | Poster path; safe prompts; anchor images `anchor-01`…`09` | 🟢 **Required** (when `poster-prompt.md` is in scope) |
 | `docs/BUILD_BIBLE.md` | Product truth — no false feature claims | 🟢 **Required** |
 | `newsletter/WDIWF_NEWS_CHARTER.md` | Sourcing, bias labels, 4-outlet vs DEVELOPING | 🟢 **Required** |
+| `docs/SIGNAL_CHECK_FRAMEWORK.md` | **Signal Check™** block + Cursor prompt §4; decision impact; no links inside block | 🟢 **Required** (news/editorial) |
 | `docs/visual-references/README.md` | Composition only — not ideology | 🟡 **Required for poster / visual prompts** |
 | `newsletter/CHANNEL_PLAYBOOK.md` | CTAs, Friday vs daily, URLs | 🟡 **Friday + routing** |
 | `automations/HOT_SIGNAL_ENGINE.md` | Bi-hourly procedure (`HOT_SIGNAL_ENGINE` / **BI-HOURLY CONTENT ENGINE**) | 🟢 **Automation body** |

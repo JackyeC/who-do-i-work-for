@@ -17,7 +17,7 @@
 
 ## Before you write anything
 
-1. **Read:** `docs/MESSAGE_SYSTEM.md`, `newsletter/style/jackye-voice.md`, `newsletter/style/enforcement.md`, `newsletter/WDIWF_NEWS_CHARTER.md`, `newsletter/CHANNEL_PLAYBOOK.md`, `newsletter/template-friday-briefing-email.md`, `newsletter/template-substack-daily.md` (if needed), `docs/BUILD_BIBLE.md`
+1. **Read:** `docs/MESSAGE_SYSTEM.md`, `newsletter/style/jackye-voice.md`, `newsletter/style/enforcement.md`, `newsletter/WDIWF_NEWS_CHARTER.md`, `docs/SIGNAL_CHECK_FRAMEWORK.md`, `newsletter/CHANNEL_PLAYBOOK.md`, `newsletter/template-friday-briefing-email.md`, `newsletter/template-substack-daily.md` (if needed), `docs/BUILD_BIBLE.md`
 
 2. **Prepare output folder:**
    ```bash

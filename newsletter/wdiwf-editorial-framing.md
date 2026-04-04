@@ -2,7 +2,7 @@
 
 Use this document to keep **voice, structure, and pacing** consistent across issues: **tight, witty, scannable** briefings for people leaders and workers — aligned with **`WDIWF_NEWS_CHARTER.md`**, not any third-party brand.
 
-**Doctrine:** `WDIWF_NEWS_CHARTER.md` (work & labor, sourcing, bias labels, Jackye voice). **Channels:** `CHANNEL_PLAYBOOK.md`.
+**Doctrine:** `WDIWF_NEWS_CHARTER.md` (work & labor, sourcing, bias labels, Jackye voice) and **`../docs/SIGNAL_CHECK_FRAMEWORK.md`** (**Signal Check™** — repeatable coverage map, pattern gaps, incentives, signal strength, People Puzzles take, **decision impact**; no link dump; no third-party aggregation **brand** names in reader copy). **Channels:** `CHANNEL_PLAYBOOK.md`.
 
 **Templates:** `wdiwf-template-daily.md`, `wdiwf-template-weekend.md`, `wdiwf-template-sponsored.md`, plus `template-substack-daily.md`, `template-friday-briefing-email.md`, `template-linkedin-tickle.md`, `template-social-daily-bundle.md`. Prompts: `prompts/wdiwf-master-daily.md`.
 

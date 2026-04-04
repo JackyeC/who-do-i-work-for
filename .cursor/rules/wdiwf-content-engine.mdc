@@ -14,7 +14,7 @@ alwaysApply: false
 - **Production validation:** `docs/CONTENT_ENGINE_PRODUCTION_VALIDATION.md` — dedupe, quality filter, skip > weak output, `RUN_META.md` **Generation status** (`completed` \| `skipped`).
 - **Priority:** MESSAGE > VOICE > DESIGN (`docs/MESSAGE_SYSTEM.md`).
 - **Voice / QA:** `newsletter/style/jackye-voice.md` (mission-anchored, radically inclusive, **mirror** reader, customize with real signals only), `newsletter/style/enforcement.md`.
-- **News / sourcing:** `newsletter/WDIWF_NEWS_CHARTER.md`.
+- **News / sourcing:** `newsletter/WDIWF_NEWS_CHARTER.md` + `docs/SIGNAL_CHECK_FRAMEWORK.md` (**Signal Check™**: §4 prompt, decision impact, no links inside block; no third-party aggregation brand names in reader copy).
 - **Visuals (guides only):** `docs/visual-references/README.md`, `docs/VIRAL_POSTER_IMAGE_SPEC.md`.
 - **Product facts:** `docs/BUILD_BIBLE.md` — do not promise unverified features.
 

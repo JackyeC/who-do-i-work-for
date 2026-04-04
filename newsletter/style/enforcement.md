@@ -10,6 +10,7 @@
 - [ ] **Message:** Truth, why it matters, what people are missing — written in plain language (not yet in Canva / Midjourney).  
 - [ ] **Weak test:** Could this headline apply to any competitor or any week? If yes, rewrite.  
 - [ ] **Facts:** Charter sourcing rules (`WDIWF_NEWS_CHARTER.md`) — verified vs DEVELOPING, no invented stats.  
+- [ ] **Signal Check™** (`docs/SIGNAL_CHECK_FRAMEWORK.md`): same-story clustering; **full block** per §2–§4 for flagship items (leans, shifts, gaps if sourced, incentives if sourced, signal strength, People Puzzles take, closing question, **decision impact**); **no links inside** Signal Check; **real** coverage-mix counts only; skip subsections rather than inventing.  
 - [ ] **Voice skim:** `jackye-voice.md` — no corporate / generic LinkedIn tells.  
 - [ ] **Values & mission:** Tone matches charter (work & labor, receipts, inclusion) — **not** borrowed ideology from visual references.  
 - [ ] **Mirror:** Reader’s **situation and vocabulary of work** reflected; passes “sharp friend” + “not a generic podcast” tests.  

@@ -75,7 +75,8 @@ Before saving outputs:
 
 - Apply **`newsletter/style/jackye-voice.md`**  
 - Apply **`newsletter/style/enforcement.md`**  
-- Apply **`docs/MESSAGE_SYSTEM.md`**
+- Apply **`docs/MESSAGE_SYSTEM.md`**  
+- For news copy: **`newsletter/WDIWF_NEWS_CHARTER.md`** + **`docs/SIGNAL_CHECK_FRAMEWORK.md`** (**Signal Check™**: §4 prompt for flagship items; **decision impact** line; source map outside block; real counts only; no fabricated gaps)
 
 **Reject and rewrite** until pass:
 

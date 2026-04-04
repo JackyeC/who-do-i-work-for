@@ -25,7 +25,7 @@ All distribution should **reinforce one brand graph**: **work & labor news → J
 
 ## Monday–Thursday: daily pipeline
 
-1. **Editorial:** Produce the day’s core story set per `WDIWF_NEWS_CHARTER.md` (4-outlet rule, bias labels, DEVELOPING lane).  
+1. **Editorial:** Produce the day’s core story set per `WDIWF_NEWS_CHARTER.md` and **`docs/SIGNAL_CHECK_FRAMEWORK.md`** (**Signal Check™**: fixed section order, Cursor prompt §4, **decision impact** line; source map outside the block; no invented gaps or counts).  
 2. **Website:** Publish/update the live briefing or news module (source of truth for links and timestamps).  
 3. **Substack:** Ship the **newsletter-only** version (`template-substack-daily.md`) — can omit deep internal-only notes; keep Source map and DEVELOPING labels.  
 4. **Social burst:** Generate from `template-social-daily-bundle.md` — same day as publish; every post points back to **WDIWF** and/or **Jackye** (see CTA rules below).  
