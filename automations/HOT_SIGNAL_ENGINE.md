@@ -161,4 +161,4 @@ When **`Generation status: completed`** and **`site-update.md`** is non-empty an
 
 **Example script:** `scripts/content-engine/publish-desk-publication.example.sh` (requires `jq`, `curl`, env `SUPABASE_URL` + `WDIWF_DESK_PUBLISH_SECRET`).
 
-The **`/newsletter`** page reads the latest public row from **`wdiwf_desk_publications`** (RLS); no manual paste into the app bundle.
+The **`/newsletter`** page reads the latest live row via RPC **`wdiwf_latest_live_desk_publication()`** (same contract as RLS). **Operator health:** `GET` **`desk-publication-health`** (same Bearer secret) — last N runs + `newest_live`. See **`docs/CONTENT_ENGINE_LIVE_DELIVERY.md`**.

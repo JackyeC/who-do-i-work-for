@@ -21,7 +21,7 @@ The **work intelligence feed** below the desk on `/newsletter` was already live:
 **Supabase table + Row Level Security + Edge Function insert** is the production path for this repo:
 
 - The app already uses Supabase for `work_news`, auth, and Edge Functions.
-- **Anonymous site visitors** can read only rows that are explicitly **published** (`published_to_site`, `generation_status`, `kind`, non-null `site_markdown`).
+- **Anonymous site visitors** can read only rows that match the **full live contract** (see §3): `publish_status = success`, `published_to_site = true`, bi-hourly, completed, non-null `site_markdown`.
 - **Automation** (Cursor, CI, local script) pushes content with a **shared secret** — no service role in the browser.
 
 **Not chosen as primary:** git-commit MD into the repo for every run (noisy history, slower deploy loop, no per-run audit row). **Not chosen:** paste into Vercel env or code (manual, error-prone).
@@ -35,26 +35,54 @@ The **work intelligence feed** below the desk on `/newsletter` was already live:
 | `id` | uuid | PK |
 | `created_at` | timestamptz | Default now |
 | `run_id` | text | Optional trace / idempotency label |
-| `kind` | text | `bi_hourly` \| `friday` |
-| `generation_status` | text | `completed` \| `skipped` |
+| `kind` | text | `bi_hourly` \| `friday` (nullable only on **failed** audit rows) |
+| `generation_status` | text | `completed` \| `skipped` (nullable only on **failed** audit rows) |
+| `publish_status` | text | **Final edge outcome:** `success` \| `skipped` \| `failed` (set by Edge, not trusted from client) |
+| `failure_code` | text | Required when `publish_status = failed` (stable machine code) |
+| `failure_message` | text | Operator-readable detail for failures |
 | `site_markdown` | text | **Website body** for desk “Website brief” tab |
 | `newsletter_markdown` | text | Optional full email body for desk or Friday |
 | `email_subject` | text | Optional |
 | `email_preview_text` | text | Optional |
-| `social_linkedin` | text | Optional |
-| `social_bluesky` | text | Optional |
-| `social_x` | text | Optional |
-| `social_instagram` | text | Optional |
-| `social_facebook` | text | Optional |
-| `run_log` | jsonb | Timestamp, inputs used, outputs, skip reason, etc. |
-| `published_to_site` | boolean | **Must be true** for anon-visible bi-hourly live desk |
+| `social_*` | text | Optional channel copy |
+| `run_log` | jsonb | Inputs, outputs, `edge_received_at`, `final_status`, etc. |
+| `published_to_site` | boolean | **Authoritative website gate** (see below) |
 
-**RLS (anon / authenticated):** `SELECT` allowed only when  
-`published_to_site = true` AND `generation_status = 'completed'` AND `kind = 'bi_hourly'` AND `site_markdown IS NOT NULL`.
+### `published_to_site` — contract (not “just metadata”)
+
+- **Meaning:** “This row is intended to appear on the public **/newsletter** desk.”
+- **Enforcement:** A **CHECK** constraint requires that if `published_to_site = true`, then the row must also be `publish_status = 'success'`, `generation_status = 'completed'`, `kind = 'bi_hourly'`, and `site_markdown` non-null.
+- **RLS:** Anonymous and authenticated users may `SELECT` **only** rows that satisfy that same full live contract (including `publish_status = 'success'`).
+- **So:** The flag is both **intent** and **part of the visibility contract**; the database + RLS together guarantee visitors never see drafts, skips, or failures.
+
+### Final status semantics (`publish_status`)
+
+| Value | Meaning | Typical HTTP |
+|--------|---------|----------------|
+| `success` | Payload accepted and stored; may be live (`published_to_site`) or draft (e.g. Friday). | 200 |
+| `skipped` | Engine skipped the run; stored for audit; **never** public. | 200 |
+| `failed` | Validation or DB error after auth; audit row stored when possible; **never** public. | 400 / 500 |
+
+**401 / misconfiguration:** No DB row (no shared secret → do not allow unauthenticated failure spam).
 
 **Writes:** via Edge Function using **service role** (no public insert policy).
 
-Migration: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`.
+Migrations: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`, `supabase/migrations/20260405120000_wdiwf_desk_publications_operability.sql`.
+
+### “What is live right now?”
+
+- **SQL / app:** `select * from wdiwf_latest_live_desk_publication();` — returns **at most one** row, the newest that matches the same filter as RLS.
+- **Frontend:** `useLatestDeskPublication()` calls that RPC.
+
+### Operator health (“is the engine alive?”)
+
+- **Edge:** `GET` or `POST` `.../functions/v1/desk-publication-health?limit=5` with the same `Authorization: Bearer <WDIWF_DESK_PUBLISH_SECRET>`.
+- Returns `runs` (last N summaries, no full markdown), `newest_live` (first run in time order that satisfies the live contract), and `engine_alive`.
+- **Deploy:** `supabase functions deploy desk-publication-health`
+
+### Publish API response shape
+
+`publish-desk-publication` returns JSON including `publish_status` / `final_status`, `ok`, and on success `id`, `created_at`, `run_id`, `kind`, `published_to_site`. On failure after auth, `audit_id` may reference the stored failure row.
 
 ---
 
@@ -62,7 +90,7 @@ Migration: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`.
 
 | File | Change |
 |------|--------|
-| `src/hooks/use-latest-desk-publication.ts` | **New** — React Query fetch latest visible row. |
+| `src/hooks/use-latest-desk-publication.ts` | React Query → RPC `wdiwf_latest_live_desk_publication()` (live contract). |
 | `src/components/newsletter/NewsletterDeskLive.tsx` | **New** — Renders live markdown + email/social tabs. |
 | `src/components/newsletter/NewsletterDeskSample.tsx` | **New** — Extracted sample UI. |
 | `src/components/newsletter/NewsletterDeskPreview.tsx` | **Live + fallback** orchestration. |
@@ -93,7 +121,7 @@ Migration: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`.
 | `SUPABASE_URL` | Project URL (caller + function) |
 | Frontend | Uses existing anon key — **no** new Vite env for desk read |
 
-**Deploy function:** `supabase functions deploy publish-desk-publication`  
+**Deploy functions:** `supabase functions deploy publish-desk-publication` and `supabase functions deploy desk-publication-health`  
 **Apply migration:** `supabase db push` or dashboard SQL (project-dependent).
 
 ---

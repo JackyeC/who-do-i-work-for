@@ -10337,10 +10337,13 @@ export type Database = {
           created_at: string
           email_preview_text: string | null
           email_subject: string | null
-          generation_status: string
+          failure_code: string | null
+          failure_message: string | null
+          generation_status: string | null
           id: string
-          kind: string
+          kind: string | null
           newsletter_markdown: string | null
+          publish_status: string
           published_to_site: boolean
           run_id: string | null
           run_log: Json
@@ -10355,10 +10358,13 @@ export type Database = {
           created_at?: string
           email_preview_text?: string | null
           email_subject?: string | null
-          generation_status: string
+          failure_code?: string | null
+          failure_message?: string | null
+          generation_status?: string | null
           id?: string
-          kind: string
+          kind?: string | null
           newsletter_markdown?: string | null
+          publish_status: string
           published_to_site?: boolean
           run_id?: string | null
           run_log?: Json
@@ -10373,10 +10379,13 @@ export type Database = {
           created_at?: string
           email_preview_text?: string | null
           email_subject?: string | null
-          generation_status?: string
+          failure_code?: string | null
+          failure_message?: string | null
+          generation_status?: string | null
           id?: string
-          kind?: string
+          kind?: string | null
           newsletter_markdown?: string | null
+          publish_status?: string
           published_to_site?: boolean
           run_id?: string | null
           run_log?: Json
@@ -10690,6 +10699,28 @@ export type Database = {
           step: number
           target_name: string
           target_type: string
+        }[]
+      }
+      wdiwf_latest_live_desk_publication: {
+        Args: never
+        Returns: {
+          created_at: string
+          email_preview_text: string | null
+          email_subject: string | null
+          generation_status: string | null
+          id: string
+          kind: string | null
+          newsletter_markdown: string | null
+          publish_status: string | null
+          published_to_site: boolean | null
+          run_id: string | null
+          run_log: Json
+          site_markdown: string | null
+          social_bluesky: string | null
+          social_facebook: string | null
+          social_instagram: string | null
+          social_linkedin: string | null
+          social_x: string | null
         }[]
       }
     }

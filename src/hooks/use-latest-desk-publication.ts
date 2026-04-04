@@ -5,8 +5,10 @@ export type DeskPublicationRow = {
   id: string;
   created_at: string;
   run_id: string | null;
-  kind: string;
-  generation_status: string;
+  kind: string | null;
+  generation_status: string | null;
+  publish_status: string | null;
+  published_to_site: boolean | null;
   site_markdown: string | null;
   newsletter_markdown: string | null;
   email_subject: string | null;
@@ -16,21 +18,22 @@ export type DeskPublicationRow = {
   social_x: string | null;
   social_instagram: string | null;
   social_facebook: string | null;
+  run_log?: unknown;
 };
 
-/** Latest row visible under RLS: bi-hourly, completed, published_to_site, with site_markdown. */
+/**
+ * Latest row that is live on /newsletter — uses RPC `wdiwf_latest_live_desk_publication()`
+ * (same contract as RLS: success + bi_hourly + completed + published_to_site + markdown).
+ */
 export function useLatestDeskPublication() {
   return useQuery({
     queryKey: ["desk-publication-latest"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("wdiwf_desk_publications")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      const { data, error } = await supabase.rpc("wdiwf_latest_live_desk_publication");
       if (error) throw error;
-      return data as DeskPublicationRow | null;
+      const rows = data as DeskPublicationRow[] | null;
+      const row = rows && rows.length > 0 ? rows[0] : null;
+      return row;
     },
     staleTime: 1000 * 60 * 2,
   });

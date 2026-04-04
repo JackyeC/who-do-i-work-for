@@ -160,3 +160,6 @@ verify_jwt = false
 
 [functions.publish-desk-publication]
 verify_jwt = false
+
+[functions.desk-publication-health]
+verify_jwt = false

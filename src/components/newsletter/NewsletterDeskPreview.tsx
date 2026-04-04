@@ -27,7 +27,9 @@ export function NewsletterDeskPreview() {
     data &&
     data.site_markdown &&
     data.site_markdown.trim().length > 0 &&
-    data.generation_status === "completed";
+    data.generation_status === "completed" &&
+    data.publish_status === "success" &&
+    data.published_to_site === true;
 
   if (live) {
     return <NewsletterDeskLive row={data} />;
