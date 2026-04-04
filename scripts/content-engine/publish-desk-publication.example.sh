@@ -4,8 +4,8 @@
 #   supabase secrets set WDIWF_DESK_PUBLISH_SECRET='...'
 #   Deploy: supabase functions deploy publish-desk-publication
 #
-# Env:
-#   SUPABASE_URL          — project URL (e.g. https://xxx.supabase.co)
+# Env (or use repo-root .env.supabase.local — see scripts/supabase/env.supabase.local.example):
+#   SUPABASE_URL              — optional; defaults from supabase/config.toml via _load-supabase-env.sh
 #   WDIWF_DESK_PUBLISH_SECRET — same value as the Edge secret
 # Optional:
 #   SITE_MD FILE          — path to site-update.md (default: newsletter/outputs/live/site-update.md)
@@ -13,10 +13,12 @@
 
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+# shellcheck disable=SC1091
+source "$ROOT/scripts/supabase/_load-supabase-env.sh"
 SITE_FILE="${SITE_MD:-$ROOT/newsletter/outputs/live/site-update.md}"
 RUN_ID="${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)}"
 
-: "${SUPABASE_URL:?Set SUPABASE_URL}"
+: "${SUPABASE_URL:?Set SUPABASE_URL or ensure supabase/config.toml has project_id}"
 : "${WDIWF_DESK_PUBLISH_SECRET:?Set WDIWF_DESK_PUBLISH_SECRET}"
 
 read_file() {

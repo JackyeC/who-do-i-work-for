@@ -1,0 +1,47 @@
+[
+  {
+    "headline": "Oracle begins large global workforce reduction as company shifts spend toward AI infrastructure",
+    "source": "GovTech Insider / industry coverage",
+    "url": "https://insider.govtech.com/california/news/oracle-begins-mass-layoffs-as-it-shifts-resources-toward-ai",
+    "category": "corporate_restructuring",
+    "heat_level": "high",
+    "notes": "Charter: tech labor + AI capex tradeoff; mirror people leaders and affected ICs.",
+    "audience_hint": "people_leaders"
+  },
+  {
+    "headline": "Atlassian to cut ~1,600 roles, redirecting savings toward AI and enterprise sales",
+    "source": "CRN",
+    "url": "https://www.crn.com/news/ai/2026/atlassian-plans-1-600-layoffs-with-savings-shift-to-ai-enterprise-sales",
+    "category": "corporate_restructuring",
+    "heat_level": "high",
+    "notes": "Same wave as Oracle; cluster as pattern story.",
+    "audience_hint": "people_leaders"
+  },
+  {
+    "headline": "NIPSCO locks out ~1,600 United Steelworkers after contract talks stall",
+    "source": "CBS News Chicago",
+    "url": "https://www.cbsnews.com/chicago/news/united-steelworkers-locked-out-nipsco/",
+    "category": "labor",
+    "heat_level": "high",
+    "notes": "Lockout vs strike framing; contractors + overtime disputes.",
+    "audience_hint": "hourly_workers"
+  },
+  {
+    "headline": "Xerox board appoints Louie Pastor CEO as Steve Bandrowczak steps down",
+    "source": "Xerox investor news",
+    "url": "https://investors.xerox.com/news-releases/news-release-details/xerox-board-directors-appoints-louie-pastor-chief-executive",
+    "category": "ceo_change",
+    "heat_level": "medium",
+    "notes": "Leadership continuity + 2026 guidance reaffirmed.",
+    "audience_hint": "people_leaders"
+  },
+  {
+    "headline": "UNFI Pompano Beach warehouse Teamsters unanimously authorize strike",
+    "source": "International Brotherhood of Teamsters",
+    "url": "https://teamster.org/2026/04/unfi-teamsters-unanimously-authorize-strike/",
+    "category": "labor",
+    "heat_level": "medium",
+    "notes": "Authorization vote; compares to national UNFI pattern.",
+    "audience_hint": "hourly_workers"
+  }
+]
