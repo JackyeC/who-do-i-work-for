@@ -15,6 +15,23 @@ Use this **same order every time** you ship database or Edge changes. No improvi
    - `WDIWF_DESK_PUBLISH_SECRET` — shared with your publish automation / health script
    - `SUPABASE_SERVICE_ROLE_KEY` — usually auto-provided to functions; confirm if deploys fail
 
+### Automated setup on your Mac (recommended)
+
+You do **not** need to hunt variables in the dashboard for every deploy if you use a **local env file** (gitignored):
+
+1. From the **repository root**, copy the template:
+   ```bash
+   cp scripts/supabase/env.supabase.local.example .env.supabase.local
+   ```
+2. Edit **`.env.supabase.local`** and set **`WDIWF_DESK_PUBLISH_SECRET`** to a long random string (e.g. `openssl rand -base64 32`).
+3. **Push that value to Supabase Edge** once (or after you rotate the secret):
+   ```bash
+   ./scripts/supabase/push-edge-secrets.sh
+   ```
+4. From then on, **`./scripts/supabase/deploy.sh`** automatically loads `.env.supabase.local`, derives **`SUPABASE_URL`** from **`supabase/config.toml`** if you omit it, and runs the health check with the correct Bearer token.
+
+If the health check still returns **401**, the secret in **`.env.supabase.local`** and the Edge secret are not identical — re-run **`push-edge-secrets.sh`** or paste the same value in the dashboard.
+
 ---
 
 ## When you only change the frontend
@@ -43,13 +60,13 @@ supabase functions deploy desk-publication-health
 
 ## One-command deploy + health (recommended)
 
-From repo root:
+From repo root (with **`.env.supabase.local`** in place — see **Automated setup** above):
 
 ```bash
 ./scripts/supabase/deploy.sh
 ```
 
-This runs `db push`, deploys both desk functions, then **`scripts/supabase/health-check.sh`** (unless `RUN_HEALTH_CHECK=0`).
+This runs `db push`, deploys both desk functions, then **`scripts/supabase/health-check.sh`** (unless `RUN_HEALTH_CHECK=0`). You can run the script from **any directory**; it always `cd`s to the repo root and loads env from **`.env.supabase.local`**.
 
 ---
 

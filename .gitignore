@@ -32,6 +32,9 @@ wdiwf-extension-v4.1.0 2/
 # Supabase CLI local cache (do not commit)
 supabase/.temp/
 
+# Local Supabase deploy / health-check secrets (see scripts/supabase/env.supabase.local.example)
+.env.supabase.local
+
 # Optional: ignore timestamped content-engine runs (uncomment if repo gets noisy)
 # newsletter/outputs/live/run-*
 # newsletter/outputs/friday/run-*

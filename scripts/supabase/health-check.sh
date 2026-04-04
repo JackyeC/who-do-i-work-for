@@ -1,10 +1,24 @@
 #!/usr/bin/env bash
 # Post-deploy gate: Edge health + DB/RPC sanity for the newsletter desk pipeline.
-# Requires: SUPABASE_URL, WDIWF_DESK_PUBLISH_SECRET, curl, jq
+# Requires: curl, jq. Loads SUPABASE_URL + WDIWF_DESK_PUBLISH_SECRET from .env.supabase.local if present
+# (see scripts/supabase/env.supabase.local.example); SUPABASE_URL defaults from supabase/config.toml.
 set -euo pipefail
 
-: "${SUPABASE_URL:?Set SUPABASE_URL (e.g. https://xxx.supabase.co)}"
-: "${WDIWF_DESK_PUBLISH_SECRET:?Set WDIWF_DESK_PUBLISH_SECRET}"
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+# shellcheck disable=SC1091
+source "$ROOT/scripts/supabase/_load-supabase-env.sh"
+
+if [[ -z "${SUPABASE_URL:-}" ]]; then
+  echo "SUPABASE_URL is not set and could not be derived from supabase/config.toml." >&2
+  exit 1
+fi
+
+if [[ -z "${WDIWF_DESK_PUBLISH_SECRET:-}" ]]; then
+  echo "WDIWF_DESK_PUBLISH_SECRET is not set." >&2
+  echo "1) Copy scripts/supabase/env.supabase.local.example to .env.supabase.local in the repo root" >&2
+  echo "2) Put your secret in that file (same value as Supabase Edge — use ./scripts/supabase/push-edge-secrets.sh to sync)" >&2
+  exit 1
+fi
 
 URL="${SUPABASE_URL%/}/functions/v1/desk-publication-health"
 
