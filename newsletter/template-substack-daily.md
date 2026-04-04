@@ -1,6 +1,6 @@
 # Substack — daily edition (newsletter body only)
 
-_Use after the site is updated. Tone can be one notch more “letter from the desk” while keeping the same factual and sourcing standards as the site._
+*Use after the site is updated. Tone can be one notch more “letter from the desk” while keeping the same factual and sourcing standards as the site.*
 
 ---
 
@@ -21,37 +21,41 @@ _Use after the site is updated. Tone can be one notch more “letter from the de
 
 {{LEDES}}
 
-**Source map** _(clustered as coverage of this story — Signal Check™ below has **no** links; use bullets if your ESP mangles tables)_  
+**Source map** *(clustered as coverage of this story — Signal Check™ below has **no** links; use bullets if your ESP mangles tables)*  
+
 - **{{OUTLET_1}}** — {{BIAS_1}} — [Read]({{URL_1}})  
 - **{{OUTLET_2}}** — {{BIAS_2}} — [Read]({{URL_2}})  
 - **{{OUTLET_3}}** — {{BIAS_3}} — [Read]({{URL_3}})  
 - **{{OUTLET_4}}** — {{BIAS_4}} — [Read]({{URL_4}})
 
-**Coverage mix** _(optional — only if real counts from your desk; e.g. Left n · Center n · Right n):_  
+**Coverage mix** *(optional — only if real counts from your desk; e.g. Left n · Center n · Right n):*  
 {{COVERAGE_MIX_OR_OMIT}}
 
 {{DEVELOPING_BADGE_IF_APPLICABLE}}
 
 ### Signal Check™
 
-_See [`../docs/SIGNAL_CHECK_FRAMEWORK.md`](../docs/SIGNAL_CHECK_FRAMEWORK.md) for the Cursor prompt and drift rules._
+*See `[../docs/SIGNAL_CHECK_FRAMEWORK.md](../docs/SIGNAL_CHECK_FRAMEWORK.md)` for the Cursor prompt and drift rules.*
 
 **What happened**  
 {{SIGNAL_CHECK_ONE_FACTUAL_SENTENCE}}
 
 **Where the coverage leans**  
+
 - **Left** → {{LEAN_LEFT_ONE_LINE}}  
 - **Center** → {{LEAN_CENTER_ONE_LINE}}  
-- **Right** → {{LEAN_RIGHT_ONE_LINE}}  
+- **Right** → {{LEAN_RIGHT_ONE_LINE}}
 
 {{SIGNAL_CHECK_BRIDGE_LINE}}
 
 **What changes depending on the source**  
+
 - {{SOURCE_SHIFT_BULLET_1}}  
 - {{SOURCE_SHIFT_BULLET_2}}  
 - {{SOURCE_SHIFT_BULLET_3_OR_OMIT}}
 
-**What’s not being said** _(omit block if unsubstantiated):_  
+**What’s not being said** *(omit block if unsubstantiated):*  
+
 - {{GAP_BULLET_1}}  
 - {{GAP_BULLET_2}}  
 - {{GAP_BULLET_3_OR_OMIT}}
@@ -59,6 +63,7 @@ _See [`../docs/SIGNAL_CHECK_FRAMEWORK.md`](../docs/SIGNAL_CHECK_FRAMEWORK.md) fo
 {{SIGNAL_CHECK_PATTERN_BRIDGES_OPTIONAL}}
 
 **Who shapes what you’re reading**  
+
 - {{INCENTIVE_BULLET_1}}  
 - {{INCENTIVE_BULLET_2}}  
 - {{INCENTIVE_BULLET_3_OR_OMIT}}
@@ -66,6 +71,7 @@ _See [`../docs/SIGNAL_CHECK_FRAMEWORK.md`](../docs/SIGNAL_CHECK_FRAMEWORK.md) fo
 {{SIGNAL_CHECK_INCENTIVE_BRIDGE_OPTIONAL}}
 
 **Signal strength**  
+
 - **High** → {{SIGNAL_HIGH_LINE}}  
 - **Medium** → {{SIGNAL_MEDIUM_LINE}}  
 - **Low** → {{SIGNAL_LOW_LINE}}

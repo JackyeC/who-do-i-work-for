@@ -1,6 +1,6 @@
 # Viral Image Spec — WDIWF: The Poster System
 
-**Prerequisite:** [`MESSAGE_SYSTEM.md`](MESSAGE_SYSTEM.md) — pick layout **after** truth / stakes / gap are clear. Precedence: **MESSAGE > VOICE > DESIGN**.
+**Prerequisite:** `[MESSAGE_SYSTEM.md](MESSAGE_SYSTEM.md)` — pick layout **after** truth / stakes / gap are clear. Precedence: **MESSAGE > VOICE > DESIGN**.
 
 **Addendum to:** Newsletter / social / share pipeline (pairs with `INTERACTIVE_CARD_SYSTEM.md` **System 4 — Share**).
 
@@ -8,9 +8,9 @@
 
 **Source snapshot:** April 2025 (design doc image). **Maintained** copy lives here.
 
-**Brand:** Creative may show **DIWF** + crown; shipped assets should still resolve to **Who Do I Work For** and **Jackye Clayton**, with URLs at **`https://wdiwf.jackyeclayton.com`**.
+**Brand:** Creative may show **DIWF** + crown; shipped assets should still resolve to **Who Do I Work For** and **Jackye Clayton**, with URLs at `**https://wdiwf.jackyeclayton.com`**.
 
-**Style anchors:** Use only **`docs/visual-references/anchor-01.png` … `anchor-09.png`** plus [`visual-references/README.md`](visual-references/README.md). **Do not** name or reverse-engineer original campaigns in public copy.
+**Style anchors:** Use only `**docs/visual-references/anchor-01.png` … `anchor-09.png`** plus `[visual-references/README.md](visual-references/README.md)`. **Do not** name or reverse-engineer original campaigns in public copy.
 
 ---
 
@@ -66,11 +66,11 @@
 
 ## Production checklist (every poster)
 
-- [ ] Reads as **1950s–60s high-end ad** at thumbnail size.  
-- [ ] **One** clear headline (8 words or fewer on-image when possible).  
-- [ ] **WDIWF** or crown mark in safe zone (corner lockup — match brand kit when exists).  
-- [ ] **Alt text** for social + site: describe visual + joke for accessibility.  
-- [ ] Export: **1080×1350** (IG), **1200×630** (OG), **1080×1920** (Stories) as needed from a master.
+- Reads as **1950s–60s high-end ad** at thumbnail size.  
+- **One** clear headline (8 words or fewer on-image when possible).  
+- **WDIWF** or crown mark in safe zone (corner lockup — match brand kit when exists).  
+- **Alt text** for social + site: describe visual + joke for accessibility.  
+- Export: **1080×1350** (IG), **1200×630** (OG), **1080×1920** (Stories) as needed from a master.
 
 ---
 
@@ -90,26 +90,30 @@ Use as a **system** block + **user** story line. Replace `{{WORKPLACE_TRUTH}}` a
 
 ## Part 2 — Reference gallery (getting the pictures right)
 
-Local copies: **`docs/visual-references/anchor-01.png` … `anchor-09.png`**. See [`visual-references/README.md`](visual-references/README.md) for abstract “steal / avoid” — **no** provenance table in public-facing channels.
+Local copies: `**docs/visual-references/anchor-01.png` … `anchor-09.png`**. See `[visual-references/README.md](visual-references/README.md)` for abstract “steal / avoid” — **no** provenance table in public-facing channels.
 
 ### A. Historical print (composition only)
 
 Match **layout, type hierarchy, and confidence** — not harmful claims or third-party brands.
 
-| Pattern | Borrow for WDIWF |
-|--------|-------------------|
-| **Collage + corner vignettes** | Multi-bullet “receipts” carousels; one hero + three corner callouts |
-| **Large interrogative headline** | Daily hook in the same **shape** (e.g. bias literacy) — write **original** words |
-| **Authority + statistic** | Subvert into **source literacy**: “four outlets — here’s who leans where” |
-| **Magazine spread** | Long-form hero: masthead rhythm, two columns, drop cap — **your** story only |
+
+| Pattern                                   | Borrow for WDIWF                                                                              |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Collage + corner vignettes**            | Multi-bullet “receipts” carousels; one hero + three corner callouts                           |
+| **Large interrogative headline**          | Daily hook in the same **shape** (e.g. bias literacy) — write **original** words              |
+| **Authority + statistic**                 | Subvert into **source literacy**: “four outlets — here’s who leans where”                     |
+| **Magazine spread**                       | Long-form hero: masthead rhythm, two columns, drop cap — **your** story only                  |
 | **Domestic / workplace problem–solution** | Satire where the “product” is **wellbeing theater** or **always-on chat** — not harmful goods |
+
 
 ### B. Native satire (north star)
 
-| Anchor IDs | Why they work |
-|-------------|----------------|
-| **07** | Period office + euphemistic copy + **dissonance** between face and object |
-| **09** | Triptych for **spectrum** coverage; hex anchors **#2b547e**, **#9e2a2b**, **#4f5d2f** |
+
+| Anchor IDs | Why they work                                                                         |
+| ---------- | ------------------------------------------------------------------------------------- |
+| **07**     | Period office + euphemistic copy + **dissonance** between face and object             |
+| **09**     | Triptych for **spectrum** coverage; hex anchors **#2b547e**, **#9e2a2b**, **#4f5d2f** |
+
 
 **Logo rule:** If a study image showed real tech marks, **never** reproduce them in generated output — fictional strips only.
 
@@ -119,31 +123,36 @@ Match **layout, type hierarchy, and confidence** — not harmful claims or third
 
 **Modular fields (for Figma or code):**
 
-1. `KICKER` (all caps)  
-2. `EMOJI` (optional)  
-3. `TITLE` (display)  
-4. `SUBTITLE` (outline or contrast)  
-5. `QUOTE` (italic)  
-6. `DISCLAIMER` (small italic)  
-7. `URL` + footer tagline  
+1. `KICKER` (all caps)
+2. `EMOJI` (optional)
+3. `TITLE` (display)
+4. `SUBTITLE` (outline or contrast)
+5. `QUOTE` (italic)
+6. `DISCLAIMER` (small italic)
+7. `URL` + footer tagline
 
 ---
 
 ## Prompt variants (match the reference pattern)
 
 **Variant — Collage poster (safe subject matter)**  
+
 > 1950s American magazine **collage** ad layout: central cheerful illustrated figure in dynamic pose, **three corner** mini-scenes with short rhyme-style captions, bold script headline, primary red/blue/cream palette. **No** tobacco, alcohol, or harmful products. The ad sells a fake office product: `{{PRODUCT}}`. Fine print in period type. Footer: Who Do I Work For · Jackye Clayton.
 
 **Variant — Provocative question**  
+
 > 1930s–40s vertical print ad: **enormous** all-caps question headline at top, flat color field, elegant serif subhead, illustrated figures in period dress, **no** harmful products. Body columns about `{{TOPIC}}` as satirical copy. **No** real brands.
 
 **Variant — Authority subverted (source literacy)**  
+
 > Mid-century **red background** poster: illustrated expert in lab coat holding **clipboard and magnifying glass** (neutral props — not harmful goods). Giant headline: `{{HEADLINE}}` about **news sources and bias**. Small asterisk: “Figures verified by **your own reading**.” Footer satire line. Faux vintage print texture optional.
 
 **Variant — Triptych (three framings)**  
+
 > Three vertical panels side by side, **grainy newsprint**: (1) blue `{{PANEL_A}}` (2) red `{{PANEL_B}}` (3) olive green `{{PANEL_C}}`. Each: italic serif header, mid-century illustration, sans-serif footer banner with one line of copy. Theme: `{{LABOR_OR_POLICY_STORY}}`. **No** logos.
 
 **Variant — Line B tickle (flat digital)**  
+
 > Clean social graphic: rounded header “JACKYE CLAYTON x WDIWF PRESENTS”, contrasting body field, bold display title `{{TITLE}}`, small emoji, white italic quote `{{QUOTE}}`, footer `wdiwf.jackyeclayton.com` and tagline about career intelligence. **Not** vintage; **not** photorealistic.
 
 ---
@@ -162,10 +171,10 @@ Match **layout, type hierarchy, and confidence** — not harmful claims or third
 
 - `docs/INTERACTIVE_CARD_SYSTEM.md` — **Share system** (poster + LinkedIn + X + save + copy link)  
 - `newsletter/CHANNEL_PLAYBOOK.md` — UTMs and CTA routing  
-- `newsletter/WDIWF_NEWS_CHARTER.md` — voice must still be **inclusive**; posters are **satire**, not cruelty  
+- `newsletter/WDIWF_NEWS_CHARTER.md` — voice must still be **inclusive**; posters are **satire**, not cruelty
 
 ---
 
 ## Continuation
 
-Typography grids, exact Figma components, and motion specs can ship as **Part 3**. Style anchors live in **`docs/visual-references/`** (`anchor-NN.png` only).
+Typography grids, exact Figma components, and motion specs can ship as **Part 3**. Style anchors live in `**docs/visual-references/`** (`anchor-NN.png` only).
