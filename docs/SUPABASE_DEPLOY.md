@@ -176,7 +176,7 @@ All CLI commands assume **`cd` into `who-do-i-work-for`** (the folder that conta
 
 ### Policy `already exists` on `storage.objects`
 
-The migration **`supabase/migrations/20260329_security_hardening.sql`** must include **`DROP POLICY IF EXISTS`** immediately before **`CREATE POLICY "authenticated users upload battle images"`**. That fix is in the repo on branch **`cursor/pre-launch-hardening`** — **`git pull`** before pushing again.
+The migration **`supabase/migrations/20260405130000_security_hardening.sql`** must include **`DROP POLICY IF EXISTS`** immediately before **`CREATE POLICY "authenticated users upload battle images"`**. That fix is in the repo on branch **`cursor/pre-launch-hardening`** — **`git pull`** before pushing again.
 
 If the remote DB still has the policy and a migration fails before you can pull: run **one-off SQL against the linked project** (not raw SQL in zsh):
 

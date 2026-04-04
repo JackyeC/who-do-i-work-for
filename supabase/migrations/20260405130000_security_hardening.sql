@@ -18,12 +18,14 @@ CREATE POLICY "authenticated users upload battle images"
 ON storage.objects FOR INSERT TO authenticated
 WITH CHECK (bucket_id = 'battle-images');
 
+DROP POLICY IF EXISTS "authenticated users update battle images" ON storage.objects;
 CREATE POLICY "authenticated users update battle images"
 ON storage.objects FOR UPDATE TO authenticated
 USING (bucket_id = 'battle-images')
 WITH CHECK (bucket_id = 'battle-images');
 
 -- Prevent deletion by non-service-role users
+DROP POLICY IF EXISTS "only service role deletes battle images" ON storage.objects;
 CREATE POLICY "only service role deletes battle images"
 ON storage.objects FOR DELETE TO service_role
 USING (bucket_id = 'battle-images');
@@ -35,6 +37,7 @@ USING (bucket_id = 'battle-images');
 -- to authenticated users only.
 DROP POLICY IF EXISTS "Anyone can read compensation data" ON public.compensation_data;
 DROP POLICY IF EXISTS "Allow read access to compensation_data" ON public.compensation_data;
+DROP POLICY IF EXISTS "authenticated users read compensation data" ON public.compensation_data;
 
 CREATE POLICY "authenticated users read compensation data"
 ON public.compensation_data FOR SELECT TO authenticated

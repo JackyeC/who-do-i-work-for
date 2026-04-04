@@ -31,12 +31,23 @@ CREATE INDEX IF NOT EXISTS idx_receipts_enriched_published_at ON public.receipts
 -- RLS: public read, service-role write
 ALTER TABLE public.receipts_enriched ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Anyone can read receipts_enriched" ON public.receipts_enriched;
 CREATE POLICY "Anyone can read receipts_enriched"
   ON public.receipts_enriched FOR SELECT
   TO anon, authenticated
   USING (true);
 
 -- Schedule jackyefy-news to run every 2 hours at :45 past (15 min after sync-work-news at :30)
+DO $$
+DECLARE
+  _jobid int;
+BEGIN
+  SELECT jobid INTO _jobid FROM cron.job WHERE jobname = 'jackyefy-news-2h' LIMIT 1;
+  IF _jobid IS NOT NULL THEN
+    PERFORM cron.unschedule(_jobid);
+  END IF;
+END $$;
+
 SELECT cron.schedule(
   'jackyefy-news-2h',
   '45 */2 * * *',
