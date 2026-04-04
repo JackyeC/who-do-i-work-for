@@ -4,7 +4,8 @@ import { useEffect } from "react";
 export const SITE_BASE_URL = "https://wdiwf.jackyeclayton.com";
 const BASE_URL = SITE_BASE_URL;
 const SITE_NAME = "Who Do I Work For?";
-const DEFAULT_DESC = "You deserve to know exactly who you work for. Employer intelligence, career strategy, and values-aligned hiring by Jackye Clayton.";
+const DEFAULT_DESC =
+  "Career intelligence by Jackye Clayton—audit a company before it becomes your problem. Evaluate employers with receipts from public records, not vibes.";
 const DEFAULT_IMAGE = "https://wdiwf.jackyeclayton.com/og-image.png";
 
 interface PageSEOProps {

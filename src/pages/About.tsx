@@ -25,7 +25,7 @@ const About = () => {
   usePageSEO({
     title: "About — Who Do I Work For by Jackye Clayton",
     description:
-      "Meet Jackye Clayton — TA architect, HR Tech strategist, and voice behind the Inclusive AF podcast and But First, Coffee. After years inside the hiring machines of major HR tech companies, she built the tool she wished candidates always had.",
+      "WDIWF is career intelligence by Jackye Clayton—audit a company before it becomes your problem. Meet the founder: TA architect, HR Tech strategist, and host of Inclusive AF.",
     path: "/about",
   });
 
@@ -43,8 +43,16 @@ const About = () => {
           >
             After years of building hiring systems for companies, I realized nobody was building the reverse.
           </h1>
+          <p className="text-base text-muted-foreground leading-relaxed max-w-[52ch] mb-4">
+            Who Do I Work For? is a career intelligence platform: public data, signals, and patterns so you can understand how a
+            company actually operates—leadership, influence, offers, stability, and risk—not just how it markets itself.
+          </p>
+          <p className="text-base text-foreground font-medium leading-relaxed max-w-[52ch] mb-4">
+            Audit a company before it becomes your problem.
+          </p>
           <p className="text-base text-muted-foreground leading-relaxed max-w-[52ch]">
-            A system that lets people evaluate companies with the same rigor companies use to evaluate them. That's Who Do I Work For.
+            A system that lets people evaluate companies with the same rigor companies use to evaluate them. That standard is
+            what Jackye Clayton built—and it’s why every road leads back to her work.
           </p>
         </section>
 

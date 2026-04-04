@@ -20,10 +20,26 @@ export function SiteFooter() {
                 <span style={{ color: "#F0C040" }}>?</span>
               </span>
             </Link>
-            <p className="font-sans text-sm text-muted-foreground leading-relaxed max-w-[28ch]">
-              Career intelligence that closes the Integrity Gap. Know before you
-              go.
+            <p className="font-sans text-sm text-muted-foreground leading-relaxed max-w-[32ch]">
+              <strong className="font-semibold text-foreground">Who Do I Work For?</strong>{" "}
+              is career intelligence by{" "}
+              <a
+                href="https://jackyeclayton.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Jackye Clayton
+              </a>
+              —so you evaluate employers with the rigor they use on you. Receipts,
+              not opinions.
             </p>
+            <Link
+              to="/about"
+              className="inline-block mt-3 font-sans text-sm text-primary hover:text-primary/80 font-medium"
+            >
+              Meet Jackye →
+            </Link>
           </div>
 
           {/* Who Do I Work For Links */}
@@ -95,6 +111,14 @@ export function SiteFooter() {
               Connect
             </p>
             <nav className="flex flex-col gap-2">
+              <a
+                href="https://jackyeclayton.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                JackyeClayton.com
+              </a>
               <a
                 href="https://www.linkedin.com/in/jackyeclayton/"
                 target="_blank"

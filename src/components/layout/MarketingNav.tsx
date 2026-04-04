@@ -51,12 +51,20 @@ export function MarketingNav() {
     <>
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 lg:px-16 py-4 w-full">
         <div className="max-w-[1100px] mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center shrink-0">
-            <span style={{ fontFamily: "Inter,sans-serif", fontWeight: 900, letterSpacing: "-0.03em", fontSize: "26px" }}>
-              <span className="text-foreground">W</span>
-              <span style={{ color: "#F0C040" }}>?</span>
-            </span>
-          </Link>
+          <div className="flex flex-col gap-0.5 shrink-0 min-w-0">
+            <Link to="/" className="flex items-center">
+              <span style={{ fontFamily: "Inter,sans-serif", fontWeight: 900, letterSpacing: "-0.03em", fontSize: "26px" }}>
+                <span className="text-foreground">W</span>
+                <span style={{ color: "#F0C040" }}>?</span>
+              </span>
+            </Link>
+            <Link
+              to="/about"
+              className="font-sans text-[10px] sm:text-[11px] text-muted-foreground hover:text-primary transition-colors tracking-wide max-w-[14rem] sm:max-w-none leading-tight"
+            >
+              Career intelligence · Jackye Clayton
+            </Link>
+          </div>
           <nav className="hidden md:flex items-center gap-6">
             {PRIMARY_LINKS.map((link) => (
               <Link
