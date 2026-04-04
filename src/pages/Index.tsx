@@ -26,14 +26,20 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
 
   usePageSEO({
     title: "Who Do I Work For — Career Intelligence by Jackye Clayton",
-    description: "Career intelligence built on public records. Research any employer — SEC filings, OSHA violations, political giving, compensation data. Know before you sign.",
+    description:
+      "Audit a company before it becomes your problem. Career intelligence by Jackye Clayton—evaluate employers with receipts from public records, not vibes. Know before you say yes.",
     path: "/",
     jsonLd: {
       "@type": "WebApplication",
       name: "Who Do I Work For",
-      description: "Career intelligence platform founded by Jackye Clayton. Research any employer using public records — so you never accept an offer blind again.",
+      description:
+        "Career intelligence platform by Jackye Clayton. Companies evaluate candidates; WDIWF lets you evaluate companies—with rigor—using public data, signals, and patterns. Receipts, not opinions.",
       applicationCategory: "BusinessApplication",
-      creator: { "@type": "Person", name: "Jackye Clayton" },
+      creator: {
+        "@type": "Person",
+        name: "Jackye Clayton",
+        url: "https://jackyeclayton.com",
+      },
       url: SITE_BASE_URL,
     },
   });
@@ -90,10 +96,18 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           </h1>
 
           <p
-            className="text-muted-foreground max-w-[56ch] mx-auto leading-relaxed"
-            style={{ fontSize: "clamp(1rem, 1.5vw, 1.15rem)", marginTop: "20px", opacity: 0, animation: "heroFadeIn 0.6s ease 0.7s forwards" }}
+            className="text-foreground max-w-[52ch] mx-auto leading-snug font-semibold"
+            style={{ fontSize: "clamp(1.05rem, 1.6vw, 1.2rem)", marginTop: "20px", opacity: 0, animation: "heroFadeIn 0.6s ease 0.65s forwards" }}
           >
-            Career intelligence built on public records. Search any employer. See the receipts.
+            Audit a company before it becomes your problem.
+          </p>
+          <p
+            className="text-muted-foreground max-w-[56ch] mx-auto leading-relaxed"
+            style={{ fontSize: "clamp(0.95rem, 1.4vw, 1.05rem)", marginTop: "14px", opacity: 0, animation: "heroFadeIn 0.6s ease 0.75s forwards" }}
+          >
+            <span className="text-foreground/90">Career intelligence by Jackye Clayton.</span> Companies evaluate you—this
+            lets you evaluate them with the same rigor, using public data and real signals—so you see how a company actually
+            operates, not how it markets itself.
           </p>
 
           {/* Search bar */}
@@ -138,6 +152,43 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       <Suspense fallback={<div className="h-[36px] bg-background border-b border-border/10" />}>
         <LiveIntelligenceTicker />
       </Suspense>
+
+      {/* ── WHAT WE PROMISE ── */}
+      <section className="px-6 lg:px-16 py-16 lg:py-20 bg-card border-b border-border">
+        <div className="max-w-[1100px] mx-auto">
+          <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-3 text-center">
+            What WDIWF promises
+          </p>
+          <h2 className="font-sans text-foreground leading-[1.1] mb-10 text-center" style={{ fontSize: "clamp(1.35rem, 2.8vw, 2rem)", fontWeight: 800 }}>
+            Career intelligence for people who refuse to find out the hard way.
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {[
+              {
+                title: "Don’t find out the hard way.",
+                body: "No more accepting offers on vibes—or learning the truth after you’re already inside.",
+              },
+              {
+                title: "See the company behind the job.",
+                body: "Money flows, influence networks, workforce signals, and hiring patterns—not the brand deck or the recruiter pitch.",
+              },
+              {
+                title: "Know before you say yes.",
+                body: "Who holds power? What are they incentivized to do? What happens to people like you once they’re in? Decide with clarity—not hope.",
+              },
+              {
+                title: "Receipts, not opinions.",
+                body: "Public records, observable signals, and patterns—not anonymous reviews, not spin.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-xl border border-border bg-background p-6">
+                <h3 className="font-sans font-bold text-foreground text-base mb-2">{item.title}</h3>
+                <p className="font-sans text-sm text-muted-foreground leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── SECTION 3: FEATURED COMPANY CARDS ── */}
       <section className="px-6 lg:px-16 py-16 lg:py-20 bg-background">
@@ -230,10 +281,15 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             What We Do
           </p>
           <h2 className="font-sans text-foreground leading-[1.1] mb-6 text-center" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)", fontWeight: 800 }}>
-            Every company runs a background check on you. This is yours on them.
+            A system that lets you evaluate companies with the rigor companies use to evaluate you.
           </h2>
           <p className="font-sans text-sm text-muted-foreground leading-relaxed max-w-[600px] mx-auto text-center mb-14">
-            We aggregate public data — PAC filings, OSHA citations, lobbying disclosures, WARN Act notices, SEC filings — and turn it into a forensic employer profile. So you can see the receipts before you sign.
+            We pull together PAC filings, OSHA citations, lobbying disclosures, WARN notices, SEC filings, and more—so you can
+            understand leadership, influence, offers, stability, and long-term risk. Built by{" "}
+            <Link to="/about" className="text-primary font-medium hover:underline">
+              Jackye Clayton
+            </Link>
+            .
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
@@ -329,8 +385,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
         <p className="font-sans text-foreground tracking-tight" style={{ fontSize: "clamp(1.3rem, 3vw, 2rem)", fontWeight: 800, letterSpacing: "-0.5px" }}>
           Stop applying. Start aligning.
         </p>
-        <p className="text-sm text-muted-foreground mt-3 max-w-[36ch] mx-auto leading-relaxed">
-          What the data shows — no opinions, no rankings, just patterns.
+        <p className="text-sm text-muted-foreground mt-3 max-w-[42ch] mx-auto leading-relaxed">
+          Understand the company behind the job offer—then decide with receipts, not hope.
         </p>
       </section>
 
@@ -415,7 +471,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
           <section className="bg-card border-y border-border px-6 lg:px-16 py-20 lg:py-24">
             <div className="max-w-[1100px] mx-auto">
               <p className="font-mono text-xs tracking-[0.15em] uppercase text-primary mb-6">
-                Built by someone who helped build the machine — and knows what it misses.
+                All roads lead here — built by Jackye Clayton, who helped build the machine and knows what it misses.
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 items-start">
                 <img
@@ -472,7 +528,11 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
             Stop applying. Start aligning.
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-[48ch] mx-auto mb-8">
-            You don't need more applications. You need better decisions.
+            You don’t need more applications—you need to know what you’re walking into. Start with{" "}
+            <Link to="/about" className="text-primary font-medium hover:underline">
+              Jackye’s standard
+            </Link>
+            : audit before you commit.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button

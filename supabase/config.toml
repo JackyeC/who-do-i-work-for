@@ -1,4 +1,4 @@
-project_id = "tdetybqdxadmowjivtjy"
+project_id = "aeulesuqxcnaonlxcjcm"
 
 [functions.browse-ai-webhook]
 verify_jwt = false
@@ -150,4 +150,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.linkedin-share-certificate]
+verify_jwt = false
+
+[functions.backfill-company-websites]
+verify_jwt = false
+
+[functions.batch-extract-corporate-claims]
 verify_jwt = false

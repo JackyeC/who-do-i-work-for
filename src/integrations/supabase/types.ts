@@ -3864,6 +3864,50 @@ export type Database = {
           },
         ]
       }
+      company_website_suggestions: {
+        Row: {
+          company_id: string
+          confidence: string
+          created_at: string
+          id: string
+          source_note: string | null
+          status: string
+          suggested_careers_url: string | null
+          suggested_url: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          confidence: string
+          created_at?: string
+          id?: string
+          source_note?: string | null
+          status?: string
+          suggested_careers_url?: string | null
+          suggested_url: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          confidence?: string
+          created_at?: string
+          id?: string
+          source_note?: string | null
+          status?: string
+          suggested_careers_url?: string | null
+          suggested_url?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_website_suggestions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_warn_notices: {
         Row: {
           company_id: string
