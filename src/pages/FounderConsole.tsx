@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSEO } from "@/hooks/use-page-seo";
+import { LaunchHealthPanel } from "@/components/admin/LaunchHealthPanel";
 import { PendingReviewsDashboard } from "@/components/admin/PendingReviewsDashboard";
 import { CompensationHealthPanel } from "@/components/admin/CompensationHealthPanel";
 import { FounderNotesPanel } from "@/components/admin/FounderNotesPanel";
@@ -183,6 +184,10 @@ export default function FounderConsole() {
               </Button>
             )}
           </div>
+        </div>
+
+        <div className="mb-10">
+          <LaunchHealthPanel />
         </div>
 
         {/* Top Metrics */}

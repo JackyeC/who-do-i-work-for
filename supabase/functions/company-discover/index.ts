@@ -203,7 +203,16 @@ ${searchContent ? `Search results:\n${searchContent}` : 'Use your knowledge.'}`,
     };
 
     if (identityData.official_name) updateFields.name = identityData.official_name;
-    if (identityData.website) updateFields.description = identityData.description || null;
+    if (identityData.website) {
+      try {
+        const w = String(identityData.website).trim();
+        const u = new URL(w.startsWith("http") ? w : `https://${w}`);
+        if (["http:", "https:"].includes(u.protocol)) {
+          u.hash = "";
+          updateFields.website_url = u.toString().replace(/\/$/, "");
+        }
+      } catch { /* ignore bad URL */ }
+    }
     if (identityData.careers_url) updateFields.careers_url = identityData.careers_url;
     if (identityData.headquarters_state) updateFields.state = identityData.headquarters_state;
     if (identityData.industry && identityData.industry !== 'Unknown') updateFields.industry = identityData.industry;
