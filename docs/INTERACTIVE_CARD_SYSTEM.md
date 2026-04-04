@@ -21,7 +21,7 @@ Story cards are **not** optional engagement layers — the **four systems below 
 | # | System | What it does |
 |---|--------|----------------|
 | 1 | **Reddit-style upvote** | Up/down vote on every card; **live percentage**; **persisted per user**. Signals what workers actually care about (editorial + product analytics). |
-| 2 | **Sources with explanation** | More than a link: **tier dot**, source name, **plain-English why it matters**, **bias** of the outlet, direct link. Aligns with `WDIWF_NEWS_CHARTER.md` and Ground News–style literacy. |
+| 2 | **Sources with explanation** | More than a link: **tier dot**, source name, **plain-English why it matters**, **bias** of the outlet, direct link. Aligns with `WDIWF_NEWS_CHARTER.md` and **Signal Check™** / multi-source literacy (`docs/SIGNAL_CHECK_FRAMEWORK.md`). |
 | 3 | **This or that debate** | **Image-based** binary poll on a world-of-work question; **live percentages** with **animated bars**; two illustrated options. |
 | 4 | **Share system** | Every path ships **poster image** + story + **attribution to Jackye** + link back to WDIWF. Platforms: **LinkedIn**, **X**, **save poster**, **copy link**. |
 
