@@ -23,3 +23,9 @@ else
 fi
 
 echo "==> Supabase deploy ritual complete."
+echo ""
+echo "=== Required before user testing (manual) ==="
+echo "1) Health: passed above (or re-run: ./scripts/supabase/health-check.sh)."
+echo "2) Publish: trigger a real publish if newest_live is null/stale — see docs/SUPABASE_DEPLOY.md"
+echo "3) Site: open production /newsletter — must show Live desk matching latest publication."
+echo "   If not: FAILURE — log: delivery layer not working (see docs/SUPABASE_DEPLOY.md)"

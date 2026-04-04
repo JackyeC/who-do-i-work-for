@@ -161,12 +161,15 @@ Treat social as the same pipeline: **files + optional webhooks**; promote to API
 
 ## 8. Operator checklist (go-live)
 
-1. Run migration on production Supabase.
-2. `supabase secrets set WDIWF_DESK_PUBLISH_SECRET='...'` (strong random string).
-3. Deploy `publish-desk-publication`.
-4. Test POST with `scripts/content-engine/publish-desk-publication.example.sh`.
-5. Open `/newsletter` — desk should show **Live** card with your markdown.
-6. Add POST step to bi-hourly automation **only** when generation completes with strong `site-update.md`.
+Full Supabase order and scripts: **`docs/SUPABASE_DEPLOY.md`**.
+
+**Before testers — mandatory gate (all must pass):**
+
+1. **Health** — `./scripts/supabase/deploy.sh` (or `health-check.sh`) exits clean; JSON **`ok: true`**.
+2. **Real publish** — POST a live row (e.g. `scripts/content-engine/publish-desk-publication.example.sh`) or confirm **`newest_live`** in health is the row you intend to show.
+3. **Manual `/newsletter`** — production URL shows **Live** desk matching that publication. If not, while 1–2 passed: **failure** — log **`delivery layer not working`** (exact template in **`docs/SUPABASE_DEPLOY.md`** § *Final verification*).
+
+**Ongoing:** add POST to bi-hourly automation **only** when generation completes with strong `site-update.md`.
 
 ---
 
