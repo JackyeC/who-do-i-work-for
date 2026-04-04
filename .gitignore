@@ -31,3 +31,7 @@ wdiwf-extension-v4.1.0 2/
 
 # Supabase CLI local cache (do not commit)
 supabase/.temp/
+
+# Optional: ignore timestamped content-engine runs (uncomment if repo gets noisy)
+# newsletter/outputs/live/run-*
+# newsletter/outputs/friday/run-*

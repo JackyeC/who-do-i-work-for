@@ -1,0 +1,12 @@
+[
+  {
+    "headline": "Example: Agency issues proposed rule on overtime classification",
+    "source": "Federal Register",
+    "url": "https://example.gov/press/example",
+    "category": "regulation",
+    "heat_level": "high",
+    "notes": "Charter: need 4-outlet corroboration for verified treatment. Mirror: people leaders + hourly workers.",
+    "geo_hint": "optional — metro, state, or region",
+    "audience_hint": "optional — e.g. job_seekers, people_leaders"
+  }
+]

@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "content:prepare": "bash scripts/content-engine/prepare-run.sh bi-hourly",
+    "content:prepare:friday": "bash scripts/content-engine/prepare-run.sh friday",
+    "content:archive": "bash scripts/content-engine/archive-runs.sh"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.3",
