@@ -1,9 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { corsHeaders } from "../_shared/cors.ts";
+import { requireUser } from "../_shared/auth.ts";
+import { enforceDailyQuota, recordUsage } from "../_shared/quota.ts";
 
 const TOOLS: Record<string, { name: string; description: string; parameters: any }> = {
   suggest_roles: {
@@ -268,67 +266,15 @@ Never be presumptuous. Don't assume they can get you a job. Be genuinely curious
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  // Auth gate: require valid user JWT
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-  const authClient = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_ANON_KEY")!,
-    { global: { headers: { Authorization: authHeader } } }
-  );
-  const { data: { user }, error: authError } = await authClient.auth.getUser();
-  if (authError || !user) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
+  const authGate = await requireUser(req, corsHeaders);
+  if (!authGate.ok) return authGate.response;
+  const { user } = authGate;
+
+  const quotaGate = await enforceDailyQuota(user, "career-discovery", 20, corsHeaders);
+  if (!quotaGate.ok) return quotaGate.response;
+  const serviceClient = quotaGate.service;
 
   try {
-    // Auth gate: verify the caller is a real logged-in user
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Missing authorization" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-    const userClient = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-    const { data: { user }, error: authError } = await userClient.auth.getUser();
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Usage quota check
-    const serviceClient = (await import("https://esm.sh/@supabase/supabase-js@2")).createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { count } = await serviceClient
-      .from("user_usage")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("function_name", "career-discovery")
-      .gte("used_at", since);
-    const DAILY_LIMIT = 20;
-    if ((count ?? 0) >= DAILY_LIMIT) {
-      return new Response(JSON.stringify({ error: "Daily usage limit reached. You can run up to " + DAILY_LIMIT + " career discovery analyses per day." }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     const { type, profile } = await req.json();
     
     if (!type || !TOOLS[type]) {
@@ -416,8 +362,7 @@ Target Role: ${profile.targetRole || "AI should suggest roles"}
 
     const result = JSON.parse(toolCall.function.arguments);
 
-    // Log usage
-    await serviceClient.from("user_usage").insert({ user_id: user.id, function_name: "career-discovery" });
+    await recordUsage(serviceClient, user.id, "career-discovery");
 
     return new Response(JSON.stringify({ success: true, data: result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

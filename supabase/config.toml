@@ -130,6 +130,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.skill-gap-gigs]
+verify_jwt = false
 
 [functions.fec-pac-recipients]
 verify_jwt = false
@@ -162,4 +163,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.desk-publication-health]
+verify_jwt = false
+
+[functions.semantic-search]
+verify_jwt = false
+
+[functions.delete-user-account]
 verify_jwt = false

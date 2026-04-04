@@ -1,0 +1,22 @@
+name: Secret scanning (gitleaks)
+
+on:
+  pull_request:
+  push:
+    branches: [main, master, develop, "cursor/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    name: Gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,17 +1,34 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { corsHeaders } from "../_shared/cors.ts";
+import { requireUser } from "../_shared/auth.ts";
+import { enforceDailyQuota, recordUsage } from "../_shared/quota.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const FUNCTION_NAME = "semantic-search";
+const DAILY_LIMIT = 60;
 
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  const authGate = await requireUser(req, corsHeaders);
+  if (!authGate.ok) return authGate.response;
+  const { user } = authGate;
+
+  const quotaGate = await enforceDailyQuota(user, FUNCTION_NAME, DAILY_LIMIT, corsHeaders);
+  if (!quotaGate.ok) return quotaGate.response;
+  const usageClient = quotaGate.service;
 
   try {
     const { query } = await req.json();
     if (!query || typeof query !== "string") {
       return new Response(JSON.stringify({ error: "query is required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const trimmed = query.trim();
+    if (trimmed.length > 500) {
+      return new Response(JSON.stringify({ error: "query too long" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -44,7 +61,7 @@ Rules:
 Response format:
 {"expandedTerms": ["term1", "term2", ...], "relatedTitles": ["title1", "title2", ...]}`,
           },
-          { role: "user", content: query },
+          { role: "user", content: trimmed },
         ],
         tools: [
           {
@@ -96,7 +113,9 @@ Response format:
 
     const data = await response.json();
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-    
+
+    await recordUsage(usageClient, user.id, FUNCTION_NAME);
+
     if (toolCall?.function?.arguments) {
       const parsed = JSON.parse(toolCall.function.arguments);
       return new Response(JSON.stringify(parsed), {
@@ -104,11 +123,10 @@ Response format:
       });
     }
 
-    // Fallback: return original query as-is
-    return new Response(JSON.stringify({ expandedTerms: [query], relatedTitles: [] }), {
+    return new Response(JSON.stringify({ expandedTerms: [trimmed], relatedTitles: [] }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("semantic-search error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
       status: 500,

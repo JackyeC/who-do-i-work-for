@@ -76,6 +76,10 @@ export default function Jobs() {
 
   // Semantic search expansion
   const handleSemanticSearch = useCallback(async (query: string) => {
+    if (!user) {
+      setSemanticTerms([]);
+      return;
+    }
     if (!query.trim() || query.length < 3) {
       setSemanticTerms([]);
       return;
@@ -94,7 +98,7 @@ export default function Jobs() {
     } finally {
       setSemanticLoading(false);
     }
-  }, []);
+  }, [user]);
 
   // Debounced semantic search trigger
   useEffect(() => {

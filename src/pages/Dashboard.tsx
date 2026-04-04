@@ -21,6 +21,7 @@ import { OutreachIntelligence } from "@/components/career/OutreachIntelligence";
 import { RelationshipDashboard } from "@/components/career/RelationshipDashboard";
 import { FirstLoginOnboarding } from "@/components/FirstLoginOnboarding";
 import { DataWipeButton } from "@/components/career/DataWipeButton";
+import { AccountDeletionButton } from "@/components/career/AccountDeletionButton";
 import { PostPurchaseUpsell } from "@/components/PostPurchaseUpsell";
 import { supabase } from "@/integrations/supabase/client";
 import { OfferClarityWizard } from "@/components/offer-clarity/OfferClarityWizard";
@@ -145,6 +146,7 @@ export default function Dashboard() {
           <div className="space-y-6">
             <UserProfileForm />
             <DataWipeButton />
+            <AccountDeletionButton />
           </div>
         );
       case "jobs":

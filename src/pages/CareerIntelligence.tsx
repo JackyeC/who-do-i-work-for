@@ -9,6 +9,7 @@ import { DreamJobAlerts } from "@/components/career/DreamJobAlerts";
 import { MyDocuments } from "@/components/career/MyDocuments";
 import { ResumeTailor } from "@/components/career/ResumeTailor";
 import { DataWipeButton } from "@/components/career/DataWipeButton";
+import { AccountDeletionButton } from "@/components/career/AccountDeletionButton";
 import { CareerChecklist } from "@/components/career/CareerChecklist";
 import { SkillGapBridge } from "@/components/career/SkillGapBridge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -165,8 +166,9 @@ export default function CareerIntelligence() {
         </Tabs>
 
         {/* Data Wipe - always visible at bottom */}
-        <div className="max-w-4xl mx-auto mt-8">
+        <div className="max-w-4xl mx-auto mt-8 space-y-4">
           <DataWipeButton />
+          <AccountDeletionButton />
         </div>
       </main>
       <Footer />

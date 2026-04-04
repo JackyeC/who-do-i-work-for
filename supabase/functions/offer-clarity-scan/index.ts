@@ -1,52 +1,22 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { corsHeaders } from "../_shared/cors.ts";
+import { requireUser } from "../_shared/auth.ts";
+import { enforceDailyQuota, recordUsage } from "../_shared/quota.ts";
 
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  const authGate = await requireUser(req, corsHeaders);
+  if (!authGate.ok) return authGate.response;
+  const { user } = authGate;
+
+  const quotaGate = await enforceDailyQuota(user, "offer-clarity-scan", 10, corsHeaders);
+  if (!quotaGate.ok) return quotaGate.response;
+  const serviceQuotaClient = quotaGate.service;
+
   try {
-    // Auth gate: verify the caller is a real logged-in user
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Missing authorization" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-
-    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: { user }, error: authError } = await userClient.auth.getUser();
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Usage quota check
-    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const serviceQuotaClient = createClient(supabaseUrl, serviceKey);
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { count } = await serviceQuotaClient
-      .from("user_usage")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("function_name", "offer-clarity-scan")
-      .gte("used_at", since);
-    const DAILY_LIMIT = 10;
-    if ((count ?? 0) >= DAILY_LIMIT) {
-      return new Response(JSON.stringify({ error: "Daily usage limit reached. You can run up to " + DAILY_LIMIT + " offer scans per day." }), {
-        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
@@ -227,8 +197,7 @@ Use the tool to return your analysis.`;
 
     const report = JSON.parse(toolCall.function.arguments);
 
-    // Log usage
-    await serviceQuotaClient.from("user_usage").insert({ user_id: user.id, function_name: "offer-clarity-scan" });
+    await recordUsage(serviceQuotaClient, user.id, "offer-clarity-scan");
 
     return new Response(JSON.stringify({ success: true, report }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

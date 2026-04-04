@@ -1,87 +1,55 @@
-/**
- * Shared authentication helpers for edge functions.
- *
- * Usage:
- *   import { requireAuth, requireServiceRole } from '../_shared/auth.ts';
- *
- *   // For user-authenticated endpoints:
- *   const { user, supabase } = await requireAuth(req);
- *
- *   // For admin/backend-only endpoints:
- *   const { supabase } = await requireServiceRole(req);
- */
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+export type AuthedUser = { id: string; email?: string | null };
 
-export class AuthError extends Error {
-  status: number;
-  constructor(message: string, status = 401) {
-    super(message);
-    this.status = status;
-    this.name = 'AuthError';
-  }
-}
+export type RequireUserResult =
+  | { ok: true; user: AuthedUser; authHeader: string }
+  | { ok: false; response: Response };
 
 /**
- * Require a valid user JWT. Returns the authenticated user and a
- * Supabase client scoped to their permissions.
+ * Validates Authorization: Bearer <user JWT> and returns the Supabase user.
+ * Use on functions with verify_jwt = false so all auth logic stays explicit.
  */
-export async function requireAuth(req: Request) {
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
-    throw new AuthError('Missing or invalid Authorization header');
+export async function requireUser(
+  req: Request,
+  corsHeaders: Record<string, string>,
+): Promise<RequireUserResult> {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return {
+      ok: false,
+      response: new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }),
+    };
   }
 
-  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-  const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return {
+      ok: false,
+      response: new Response(JSON.stringify({ error: "Server misconfiguration" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }),
+    };
+  }
 
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  const client = createClient(supabaseUrl, supabaseAnonKey, {
     global: { headers: { Authorization: authHeader } },
   });
-
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const { data: { user }, error } = await client.auth.getUser();
   if (error || !user) {
-    throw new AuthError('Invalid or expired token');
+    return {
+      ok: false,
+      response: new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }),
+    };
   }
 
-  return { user, supabase };
-}
-
-/**
- * Require the service_role key. Use for backend-only / cron / admin endpoints.
- */
-export async function requireServiceRole(req: Request) {
-  const authHeader = req.headers.get('Authorization');
-  const token = authHeader?.replace('Bearer ', '') || '';
-
-  if (token !== Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')) {
-    throw new AuthError('Unauthorized: service role required', 403);
-  }
-
-  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
-
-  return { supabase };
-}
-
-/**
- * Standard CORS headers for edge functions.
- */
-export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-};
-
-/**
- * Create a JSON error response.
- */
-export function authErrorResponse(error: AuthError | Error) {
-  const status = error instanceof AuthError ? error.status : 500;
-  return new Response(
-    JSON.stringify({ error: error.message }),
-    { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-  );
+  return { ok: true, user, authHeader };
 }
