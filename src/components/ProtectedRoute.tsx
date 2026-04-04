@@ -17,7 +17,13 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isDossierRoute = /^\/dossier(?:\/|$)/.test(location.pathname);
 
-  if (!isLoaded) return null;
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" aria-label="Loading" />
+      </div>
+    );
+  }
   if (isDossierRoute) return <>{children}</>;
 
   if (isFallback) {

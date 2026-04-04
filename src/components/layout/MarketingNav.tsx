@@ -30,7 +30,22 @@ export function MarketingNav() {
   const { user, loading: authLoading } = useAuth();
   const { isLoaded } = useClerkWithFallback();
 
-  if (!isLoaded || authLoading) return null;
+  if (!isLoaded || authLoading) {
+    return (
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50 px-6 lg:px-16 py-4 w-full" aria-busy="true">
+        <div className="max-w-[1100px] mx-auto flex items-center justify-between gap-4">
+          <div className="h-8 w-20 rounded bg-muted/50 animate-pulse" aria-hidden />
+          <div className="hidden md:flex items-center gap-6 flex-1 justify-end">
+            <div className="h-4 w-14 rounded bg-muted/40 animate-pulse" />
+            <div className="h-4 w-16 rounded bg-muted/40 animate-pulse" />
+            <div className="h-4 w-12 rounded bg-muted/40 animate-pulse" />
+            <div className="h-9 w-28 rounded-full bg-muted/40 animate-pulse" />
+          </div>
+          <div className="md:hidden h-9 w-9 rounded bg-muted/40 animate-pulse shrink-0" />
+        </div>
+      </header>
+    );
+  }
 
   return (
     <>
