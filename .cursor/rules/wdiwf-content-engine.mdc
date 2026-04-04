@@ -1,0 +1,23 @@
+---
+description: WDIWF editorial content engine — use when editing inputs, outputs, automations, or delivery
+globs:
+  - newsletter/inputs/**/*
+  - newsletter/outputs/**/*
+  - newsletter/delivery/**/*
+  - automations/**/*
+  - scripts/content-engine/**/*
+alwaysApply: false
+---
+
+# Content engine context
+
+- **Production validation:** `docs/CONTENT_ENGINE_PRODUCTION_VALIDATION.md` — dedupe, quality filter, skip > weak output, `RUN_META.md` **Generation status** (`completed` \| `skipped`).
+- **Priority:** MESSAGE > VOICE > DESIGN (`docs/MESSAGE_SYSTEM.md`).
+- **Voice / QA:** `newsletter/style/jackye-voice.md` (mission-anchored, radically inclusive, **mirror** reader, customize with real signals only), `newsletter/style/enforcement.md`.
+- **News / sourcing:** `newsletter/WDIWF_NEWS_CHARTER.md` + `docs/SIGNAL_CHECK_FRAMEWORK.md` (**Signal Check™**: §4 prompt, decision impact, no links inside block; no third-party aggregation brand names in reader copy).
+- **Visuals (guides only):** `docs/visual-references/README.md`, `docs/VIRAL_POSTER_IMAGE_SPEC.md`.
+- **Product facts:** `docs/BUILD_BIBLE.md` — do not promise unverified features.
+
+Bi-hourly (**`HOT_SIGNAL_ENGINE`**) and Friday (**`FRIDAY_NEWSLETTER`**) procedures live in `automations/HOT_SIGNAL_ENGINE.md` and `automations/FRIDAY_NEWSLETTER.md` (see `automations/AUTOMATIONS_REGISTRY.md`). Outputs go under `newsletter/outputs/live/run-*` and `newsletter/outputs/friday/run-*`. **Do not enable** Cursor automations until `docs/CONTENT_ENGINE_PRODUCTION_VALIDATION.md` passes.
+
+If inputs are missing or publishing credentials are absent, write **blockers** — do not fabricate content.

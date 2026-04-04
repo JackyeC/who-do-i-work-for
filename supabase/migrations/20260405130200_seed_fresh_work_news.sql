@@ -75,6 +75,4 @@ VALUES
 
   ('One-third of companies with ESG/DEI goals have "re-labeled" programs while maintaining spirit of initiatives',
    'SVDX', 'https://www.svdx.org/blog/2026/3/26/security-dei-and-tariffs-executive-compensation-insights-from-late-2025-and-early-2026-proxy-filers',
-   'dei', ARRAY['Diversity & Inclusion', 'Transparency'], true, 0.35, 'Critical', now() - interval '3 hours')
-
-ON CONFLICT (headline) DO NOTHING;
+   'dei', ARRAY['Diversity & Inclusion', 'Transparency'], true, 0.35, 'Critical', now() - interval '3 hours');

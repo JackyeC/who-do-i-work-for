@@ -15,8 +15,9 @@ import {
 import {
   Mail, ArrowRight, Check, ExternalLink, Newspaper,
   AlertTriangle, Flame, ChevronRight, Radio,
-  Eye, MessageSquare, TrendingUp,
+  Eye, TrendingUp,
 } from "lucide-react";
+import { NewsletterDeskPreview } from "@/components/newsletter/NewsletterDeskPreview";
 
 /* ── Category config ── */
 const CATEGORY_CONFIG: Record<string, { label: string; color: string }> = {
@@ -184,15 +185,15 @@ export default function Newsletter() {
   const { data: articles = [], isLoading } = useWorkNews(60);
 
   usePageSEO({
-    title: "The Receipts — Live Work Intelligence Feed | Who Do I Work For?",
+    title: "Newsletter & Daily Desk | Signal Check™, Substack, Social | Who Do I Work For",
     description:
-      "Live employer intelligence: layoffs, DEI rollbacks, AI workplace moves, pay equity, and WARN filings — with Jackye's Take on every story.",
+      "Daily desk: website brief with Signal Check™, email (Substack) shape, and social posts — plus the live work intelligence feed with Jackye's Take.",
     path: "/newsletter",
     jsonLd: {
       "@type": "WebPage",
-      name: "The Receipts — Live Intelligence Feed",
+      name: "Newsletter & Daily Desk — Who Do I Work For",
       description:
-        "Real-time employer intelligence feed by Who Do I Work For? Sourced from public records, GDELT, and investigative research.",
+        "WDIWF daily desk format (Signal Check), Substack and social distribution, and live employer intelligence feed.",
       url: "https://wdiwf.jackyeclayton.com/newsletter",
       author: { "@type": "Person", name: "Jackye Clayton" },
     },
@@ -265,8 +266,10 @@ export default function Newsletter() {
           The Daily Grind
         </h1>
         <p className="text-base text-muted-foreground mb-6 max-w-lg mx-auto leading-relaxed">
-          Every story about work that matters — with Jackye's Take on what it
-          actually means for you. No algorithm. No filter. Just receipts.
+          Daily desk on this page: <strong className="text-foreground">website brief</strong>,{" "}
+          <strong className="text-foreground">email (Substack)</strong>, and{" "}
+          <strong className="text-foreground">social</strong> — same shape the content engine ships. Below that: the
+          live feed with Jackye&apos;s Take.
         </p>
 
         {/* ── Subscribe bar ── */}
@@ -275,7 +278,7 @@ export default function Newsletter() {
             <Check className="w-5 h-5" /> You're in. First drop lands Monday.
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+          <form id="newsletter-subscribe" onSubmit={handleSubmit} className="max-w-md mx-auto">
             <div ref={containerRef} />
             <div className="flex items-center bg-card border-2 border-primary/20 focus-within:border-primary/50 transition-colors rounded-xl overflow-hidden">
               <Mail className="w-4 h-4 text-muted-foreground ml-4 shrink-0" />
@@ -312,6 +315,11 @@ export default function Newsletter() {
         <p className="text-xs text-muted-foreground/60 mt-3">
           Free forever. One email per week. No spam.
         </p>
+      </section>
+
+      {/* ── Desk: live Supabase row (bi-hourly) or fallback sample ── */}
+      <section className="max-w-3xl mx-auto px-4 pb-10">
+        <NewsletterDeskPreview />
       </section>
 
       {/* ── Filter bar ── */}
