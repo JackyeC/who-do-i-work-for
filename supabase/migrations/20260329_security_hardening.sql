@@ -13,6 +13,7 @@ DROP POLICY IF EXISTS "Allow update to battle-images" ON storage.objects;
 
 -- Keep public READ (battle images are displayed on compare pages)
 -- But restrict WRITE to authenticated users only
+DROP POLICY IF EXISTS "authenticated users upload battle images" ON storage.objects;
 CREATE POLICY "authenticated users upload battle images"
 ON storage.objects FOR INSERT TO authenticated
 WITH CHECK (bucket_id = 'battle-images');
