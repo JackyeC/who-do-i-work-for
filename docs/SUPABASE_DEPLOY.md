@@ -243,6 +243,22 @@ Your **linked project’s migration history** and **local `supabase/migrations/`
 
 When history is aligned, prefer **`supabase db push`** (and **`--include-all`** only when the CLI prompts for it).
 
+### Health check passes but **`/newsletter` shows “Fallback”** (desk not updated)
+
+The desk loads in the browser with **`VITE_SUPABASE_URL`** and **`VITE_SUPABASE_PUBLISHABLE_KEY`** (see `src/integrations/supabase/client.ts`). **`desk-publication-health`** and **`publish-desk-publication`** use whatever project your **CLI is linked to** (`supabase/config.toml` → **`project_id`**).
+
+If those **differ**, you will see **`ok: true`** and **`newest_live`** in the health JSON while production **`/newsletter`** still shows **Fallback** — the site is calling a **different** Supabase project than the one you published to.
+
+**Fix**
+
+1. Open **`supabase/config.toml`** and note **`project_id`** (e.g. `aeulesuqxcnaonlxcjcm`).
+2. In the [Supabase dashboard](https://supabase.com/dashboard) for **that** project → **Project Settings → API**, copy **Project URL** and **anon public** key.
+3. Set **`VITE_SUPABASE_URL`**, **`VITE_SUPABASE_PUBLISHABLE_KEY`**, and **`VITE_SUPABASE_PROJECT_ID`** to match **that** project in:
+   - **Vercel** → your production (and preview) environment variables, then **redeploy**.
+   - Local **`.env`** (or `.env.local`) for `npm run dev` / `vite build`.
+
+4. Hard-refresh **`/newsletter`** (or incognito). The RPC **`wdiwf_latest_live_desk_publication`** must exist on the same project (migrations pushed).
+
 ---
 
 ## Related docs
