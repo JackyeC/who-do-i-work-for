@@ -28,4 +28,4 @@ if ! echo "$HTTP_BODY" | jq -e '.ok == true' >/dev/null 2>&1; then
 fi
 
 echo "health-check: OK (safe_for_newsletter_desk=$(echo "$HTTP_BODY" | jq -r '.safe_for_newsletter_desk // false'))"
-echo "health-check: Step 1 done. Before testers you still need: real publish if needed + manual production /newsletter verify (docs/SUPABASE_DEPLOY.md)."
+echo "health-check: Step 1 done. Before testers: steps 2–3 (publish + /newsletter technical verify), then step 4 UX sanity (docs/SUPABASE_DEPLOY.md)."

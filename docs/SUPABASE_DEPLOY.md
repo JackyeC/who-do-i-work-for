@@ -37,7 +37,7 @@ supabase functions deploy desk-publication-health
 
 - Do **not** skip `db push` because “it’s only functions” — migrations and RPCs must exist before the app and health check rely on them.
 - Do **not** reorder: migrations first, then functions that depend on the schema.
-- After deploy, run the **health check** (below). That is **step 1 only** of the **final verification gate** — see § *Final verification (required before user testing)*.
+- After deploy, run the **health check** (below). That is **step 1 only** of the **final verification gate** (steps 1–4) — see § *Final verification (required before user testing)*.
 
 ---
 
@@ -90,7 +90,7 @@ Inspect `checks`, `safe_for_newsletter_desk`, `newest_live`, and `runs`.
 
 ## Final verification (required before user testing)
 
-**`deploy.sh` succeeding is not enough.** The following three steps are the **release gate** for anyone who will use the product.
+**`deploy.sh` succeeding is not enough.** Steps **1–3** are the **technical release gate**. Step **4** is a **required human pass** before testers; **UX-only** findings there are **product signal**, not a ship blocker.
 
 Execute **in order** after `./scripts/supabase/deploy.sh` (or the equivalent three CLI commands + `health-check.sh`).
 
@@ -127,6 +127,28 @@ delivery layer not working — newsletter UI did not reflect latest desk publica
 ```
 
 Do **not** invite testers until steps **1–3** all pass.
+
+### Step 4 — UX sanity check (required before testers)
+
+After steps **1–3** pass, open **`/newsletter` again as a first-time user** (incognito or fresh eyes — no prior context).
+
+**Confirm:**
+
+- The content reads **clearly live** (not static / demo / placeholder).
+- The **message is understandable without insider context** (headlines, desk, feed make sense on their own).
+- There is **no obvious confusion or broken flow** (dead ends, misleading labels, “Fallback” when you expect Live, etc.).
+
+**If it is technically correct but confusing:**
+
+- **Log as a UX issue** (ops log, Linear, or `RUN_META.md` / run notes). Example:
+
+  ```text
+  UX issue — /newsletter: <what confused you>. Technically live (steps 1–3 passed). Does not block tester invite; note for product follow-up.
+  ```
+
+- **Do not block testing** on UX-only findings — but **do note them** so they are not lost.
+
+This is **not** a system failure; it is **product signal**. It is separate from **`delivery layer not working`** (step 3), which **does** block.
 
 ### Full stack reminder
 

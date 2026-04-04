@@ -163,11 +163,12 @@ Treat social as the same pipeline: **files + optional webhooks**; promote to API
 
 Full Supabase order and scripts: **`docs/SUPABASE_DEPLOY.md`**.
 
-**Before testers — mandatory gate (all must pass):**
+**Before testers — verification (see `docs/SUPABASE_DEPLOY.md` § *Final verification*):**
 
 1. **Health** — `./scripts/supabase/deploy.sh` (or `health-check.sh`) exits clean; JSON **`ok: true`**.
 2. **Real publish** — POST a live row (e.g. `scripts/content-engine/publish-desk-publication.example.sh`) or confirm **`newest_live`** in health is the row you intend to show.
-3. **Manual `/newsletter`** — production URL shows **Live** desk matching that publication. If not, while 1–2 passed: **failure** — log **`delivery layer not working`** (exact template in **`docs/SUPABASE_DEPLOY.md`** § *Final verification*).
+3. **Technical `/newsletter`** — production URL shows **Live** desk matching that publication. If not while 1–2 passed: **failure** — log **`delivery layer not working`** (template in **`docs/SUPABASE_DEPLOY.md`**).
+4. **UX sanity** — revisit **`/newsletter` as a first-time user**; confirm live-not-demo, understandable without context, no obvious confusion. If only UX problems: log **`UX issue`** — **does not block** testers; still **product signal**.
 
 **Ongoing:** add POST to bi-hourly automation **only** when generation completes with strong `site-update.md`.
 
