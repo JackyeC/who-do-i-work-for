@@ -203,6 +203,31 @@ supabase db query --linked "DROP POLICY IF EXISTS \"authenticated users upload b
 
 Then run **`supabase db push`** (or **`supabase db push --include-all`** if the CLI tells you to).
 
+### Desk health: `publish_status` missing / `wdiwf_desk_publications` not in schema cache
+
+The desk pipeline uses **two** migrations in order:
+
+1. **`20260404210000_wdiwf_desk_publications.sql`** — creates **`wdiwf_desk_publications`**
+2. **`20260405120000_wdiwf_desk_publications_operability.sql`** — adds **`publish_status`**, **`failure_*`**, **`wdiwf_latest_live_desk_publication()`**, and updates RLS
+
+If you applied **(1)** manually (or partially) but **not (2)**, **`db push`** can still say **“Remote database is up to date”** while the health function fails on missing columns.
+
+**Fix** (from repo root) — apply operability SQL with **`-f`** (required: do **not** use `supabase db query --linked "$(cat …)"` — lines starting with **`--`** are treated as CLI flags and you get **`unknown flag: --`**):
+
+```bash
+./scripts/supabase/apply-desk-operability.sh
+```
+
+Equivalent:
+
+```bash
+supabase db query --linked -f supabase/migrations/20260405120000_wdiwf_desk_publications_operability.sql
+```
+
+Then re-run **`./scripts/supabase/health-check.sh`** or **`./scripts/supabase/deploy.sh`**.
+
+If this script errors on **duplicate constraint**, the operability migration already ran partly — use the SQL Editor to finish or ask for help with the exact Postgres error.
+
 ### Commands that do **not** exist (ignore old advice)
 
 - **`supabase db execute`** — not a real subcommand; use **`supabase db query`** (see **`supabase db query --help`**).
