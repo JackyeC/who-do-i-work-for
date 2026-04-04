@@ -168,6 +168,41 @@ Do **not** auto-push migrations on every PR until you’re comfortable with prev
 
 ---
 
+## Troubleshooting (migration drift & “policy already exists”)
+
+### Work from the repo root
+
+All CLI commands assume **`cd` into `who-do-i-work-for`** (the folder that contains `supabase/` and `scripts/`). Paths like `supabase/migrations/...` are wrong from `~`.
+
+### Policy `already exists` on `storage.objects`
+
+The migration **`supabase/migrations/20260329_security_hardening.sql`** must include **`DROP POLICY IF EXISTS`** immediately before **`CREATE POLICY "authenticated users upload battle images"`**. That fix is in the repo on branch **`cursor/pre-launch-hardening`** — **`git pull`** before pushing again.
+
+If the remote DB still has the policy and a migration fails before you can pull: run **one-off SQL against the linked project** (not raw SQL in zsh):
+
+```bash
+supabase db query --linked "DROP POLICY IF EXISTS \"authenticated users upload battle images\" ON storage.objects;"
+```
+
+Then run **`supabase db push`** (or **`supabase db push --include-all`** if the CLI tells you to).
+
+### Commands that do **not** exist (ignore old advice)
+
+- **`supabase db execute`** — not a real subcommand; use **`supabase db query`** (see **`supabase db query --help`**).
+- **Typing `DROP POLICY ...` directly in the shell** — zsh will treat it as a command; use **`supabase db query --linked "..."`** or the SQL Editor in the dashboard.
+
+### “Remote migration versions not found in local migrations directory”
+
+Your **linked project’s migration history** and **local `supabase/migrations/`** are out of sync. Do **not** stack random **`migration repair`** commands from a chatbot.
+
+1. **`git pull`** so local files match your team’s branch.
+2. **`supabase migration list`** — compare local vs remote.
+3. Follow **only** the repair / pull guidance **printed by your CLI** for your exact versions, or use the [Supabase migration docs](https://supabase.com/docs/guides/cli/managing-environments#migration-history-conflicts).
+
+When history is aligned, prefer **`supabase db push`** (and **`--include-all`** only when the CLI prompts for it).
+
+---
+
 ## Related docs
 
 - Desk schema and contracts: `docs/CONTENT_ENGINE_LIVE_DELIVERY.md`
