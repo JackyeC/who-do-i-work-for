@@ -22,6 +22,10 @@ run-20260404T1400Z/
 
 See **`docs/CONTENT_ENGINE_PRODUCTION_VALIDATION.md`**.
 
+## Dry-run preview (static)
+
+Fictional **completed-run** excerpts (Signal Check™ + social shape): **`newsletter/samples/engine-dry-run/`**. Empty-input script behavior is documented there too.
+
 ## Git
 
 High churn: optionally add to `.gitignore`:
