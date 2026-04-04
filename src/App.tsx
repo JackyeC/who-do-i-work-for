@@ -297,6 +297,7 @@ const App = () => (
                   <Route path="/welcome" element={<Welcome />} />
                   <Route path="/tools" element={<Tools />} />
                   <Route path="/report-confirmation" element={<ReportConfirmation />} />
+                  <Route path="/embed/jobs" element={<JobBoardEmbed />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

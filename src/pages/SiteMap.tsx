@@ -4,7 +4,8 @@ import { usePageSEO } from "@/hooks/use-page-seo";
 import {
   Search, Building2, FileCheck, MessageSquare, Briefcase, LayoutDashboard,
   Route, Users, Bell, Scale, DollarSign, Landmark, Shield, Globe, Map,
-  ClipboardCheck, Zap, Network, BookOpen, FileText, Lock, Eye, Receipt
+  ClipboardCheck, Zap, Network, BookOpen, FileText, Lock, Eye, Receipt,
+  LayoutTemplate,
 } from "lucide-react";
 
 interface SiteLink {
@@ -46,6 +47,7 @@ const sections: SiteSection[] = [
       { label: "Employer Receipt", path: "/employer-receipt", icon: Receipt, premium: "candidate", description: "See what your labor really funds" },
       { label: "Employer Promise vs. Reality", path: "/employer-promise-check", icon: Shield, premium: "professional", description: "Does the employer brand match reality?" },
       { label: "What Am I Supporting?", path: "/what-am-i-supporting", icon: Globe, description: "Trace your paycheck to political influence" },
+      { label: "Job board (embed)", path: "/embed/jobs", icon: LayoutTemplate, description: "Minimal page for partners — Cavuno job widget iframe" },
     ],
   },
   {

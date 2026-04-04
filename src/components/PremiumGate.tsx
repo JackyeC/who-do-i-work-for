@@ -2,6 +2,7 @@ import { Lock, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { usePremium, STRIPE_TIERS } from "@/hooks/use-premium";
+import { tierMeetsMinimum } from "@/lib/access-policy";
 import { useNavigate } from "react-router-dom";
 
 interface PremiumGateProps {
@@ -19,8 +20,7 @@ export function PremiumGate({ feature, description, requiredTier = "candidate", 
   const navigate = useNavigate();
   
 
-  const tierRank = { free: 0, candidate: 1, professional: 2 };
-  const hasAccess = tierRank[tier] >= tierRank[requiredTier];
+  const hasAccess = tierMeetsMinimum(tier, requiredTier);
 
   if (hasAccess) return <>{children}</>;
 
