@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePersona } from "@/hooks/use-persona";
 import { PersonaQuizBanner } from "@/components/PersonaQuizBanner";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { NarrativeFeed } from "@/components/dashboard/NarrativeFeed";
@@ -55,6 +55,19 @@ const TAB_TITLES: Record<string, string> = {
   "search-inbox": "Inbox",
   "search-saved": "Saved",
 };
+
+/** Subtle path to Workplace DNA when values profile hides the main quiz banner. */
+function ReaderLensFootnote() {
+  const { hasTakenQuiz, personaName } = usePersona();
+  return (
+    <p className="mt-10 pt-6 border-t border-border/40 text-center text-xs text-muted-foreground">
+      <span className="mr-1">Reader lens:</span>
+      <Link to="/quiz" className="text-primary hover:underline font-medium">
+        {hasTakenQuiz && personaName ? `“${personaName}” — adjust` : "Set or adjust (~60 sec)"}
+      </Link>
+    </p>
+  );
+}
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -112,7 +125,12 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (tab) {
       case "overview":
-        return <NarrativeFeed onNavigate={setTab} />;
+        return (
+          <>
+            <NarrativeFeed onNavigate={setTab} />
+            {hasValuesProfile === true && <ReaderLensFootnote />}
+          </>
+        );
       case "tracked":
         return <SlotManagementDashboard />;
       case "matches":
