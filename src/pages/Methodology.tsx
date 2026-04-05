@@ -333,6 +333,69 @@ export default function Methodology() {
               </div>
             </section>
 
+            {/* ───── Employers, vendors & hiring AI audits ───── */}
+            <section>
+              <h2 className="text-title text-foreground mb-5">Employers, vendors &amp; hiring AI audits</h2>
+              <div className="space-y-4 text-body text-muted-foreground leading-relaxed">
+                <p>
+                  Media bias labels on WDIWF describe <strong className="text-foreground">journalism and commentary</strong>.
+                  A different problem is <strong className="text-foreground">algorithmic bias in hiring</strong>: resume parsers,
+                  rankers, games-based assessments, and video tools. Regulators (for example NYC Local Law 144 on automated
+                  employment decision tools) push <strong className="text-foreground">bias audits and public disclosure</strong>.
+                  Trade articles often round up <strong className="text-foreground">open fairness libraries</strong> (for example{" "}
+                  <a
+                    href="https://aif360.res.ibm.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    IBM AI Fairness 360
+                  </a>
+                  ,{" "}
+                  <a href="https://fairlearn.org/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    Fairlearn
+                  </a>
+                  ,{" "}
+                  <a
+                    href="https://dssg.github.io/aequitas/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Aequitas
+                  </a>
+                  ) that need <strong className="text-foreground">model scores, outcomes, and lawfully collected group fields</strong>{" "}
+                  — heavy privacy and employment-law design, not a drop-in button.
+                </p>
+                <p>
+                  <strong className="text-foreground">Vendor-published audits</strong> (common in psychometric / assessment
+                  vendors) and <strong className="text-foreground">independent algorithmic audits</strong> (consultancies such as
+                  ORCAA) answer different questions: the first is “did the vendor pass its own or a contracted bar?”; the
+                  second is “what does a third party see across process, data, and proxies?”
+                </p>
+                <p>
+                  <strong className="text-foreground">What WDIWF does today:</strong> company intelligence flows (including{" "}
+                  <strong className="text-foreground">AI accountability</strong> and <strong className="text-foreground">CivicLens</strong>{" "}
+                  scans) look for <strong className="text-foreground">public receipts</strong> — AEDT notices, bias audit language,
+                  vendor names on careers pages, and related disclosures — so candidates and teams know{" "}
+                  <strong className="text-foreground">what to ask for</strong>. We do <strong className="text-foreground">not</strong>{" "}
+                  run Fairlearn or Aequitas on employers’ private applicant data; fixing or certifying their models remains the
+                  employer’s and vendor’s job under their counsel and regulators.
+                </p>
+              </div>
+              <Card className="mt-5 border-primary/20 bg-primary/[0.03]">
+                <CardContent className="p-5">
+                  <p className="text-caption text-muted-foreground leading-relaxed">
+                    Sample Signal Check™ + source map for a recruiter-trade listicle on this topic lives in{" "}
+                    <span className="font-mono text-xs text-foreground">
+                      newsletter/samples/recruiters-lineup-hiring-bias-audits-signal-check.md
+                    </span>{" "}
+                    for desk and newsletter reuse.
+                  </p>
+                </CardContent>
+              </Card>
+            </section>
+
             {/* ───── Refresh Cadence ───── */}
             <section>
               <h2 className="text-title text-foreground mb-5">Refresh Cadence</h2>

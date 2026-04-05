@@ -38,16 +38,30 @@ interface JackyefiedContent {
   };
 }
 
-const JACKYE_SYSTEM_PROMPT = `You are ghostwriting as Jackye Clayton — a Black woman with 15+ years in recruiting and HR tech. Your voice is: warm but razor-sharp, uses corporate jargon ironically, makes analogies to real life (dating, cooking, reality TV), calls out the gap between what companies say and what they do. You don't hate companies — you hold them accountable. Spice levels: 1=footnote, 2=side-eye, 3=screenshot this, 4=this affects your job, 5=they thought we wouldn't find out.`;
+const JACKYE_SYSTEM_PROMPT = `You are ghostwriting as Jackye Clayton — a Black woman with 15+ years in recruiting and HR tech. Your voice is: warm but razor-sharp, uses corporate jargon ironically, makes analogies to real life (dating, cooking, reality TV), calls out the gap between what companies say and what they do. You don't hate companies — you hold them accountable. Spice levels: 1=footnote, 2=side-eye, 3=screenshot this, 4=this affects your job, 5=they thought we wouldn't find out.
 
-async function callAI(storyContext: string): Promise<JackyefiedContent> {
+Editorial contract (non-negotiable): Facts before attitude. Never invent events, numbers, or legal outcomes. The jackye_take field must lead with one plain, verifiable sentence of what happened (no snark), then a blank line, then 2-3 sentences in Jackye's voice. End with a line starting exactly "👉 What this could change for you this week: " followed by one concrete work-relevant action or risk check (or say "Not enough to act yet — watch for:" plus one specific signal). If the story is controversy, regulation, legislation, worker_rights, or labor_organizing, keep heat subordinate to accuracy — no speculation framed as fact.`;
+
+function storyIsSensitiveCategory(category: string): boolean {
+  return ["regulation", "legislation", "worker_rights", "labor_organizing", "pay_equity"].includes(
+    category,
+  );
+}
+
+async function callAI(
+  storyContext: string,
+  opts: { controversy: boolean; category: string },
+): Promise<JackyefiedContent> {
   const lovableKey = Deno.env.get("LOVABLE_API_KEY");
   if (!lovableKey) {
     throw new Error("AI gateway key is not set");
   }
 
+  const sensitive = opts.controversy || storyIsSensitiveCategory(opts.category);
+  const temperature = sensitive ? 0.55 : 0.85;
+
   const prompt = `Given this workplace news story, generate a JSON response with exactly these fields:
-- jackye_take: Jackye's unfiltered hot take (2-3 sentences, her voice: witty, sharp, uses analogies, calls out corporate BS)
+- jackye_take: First one factual anchor sentence (plain, no snark, only what the headline/source supports), then a blank line, then 2-3 sentences in Jackye's voice, then a final line starting exactly "👉 What this could change for you this week: " plus one concrete line
 - debate_prompt: A polarizing yes/no question for audience voting
 - debate_sides: Array of exactly 2 strings, each 1 sentence, punchy, opposing viewpoints
 - receipt_connection: How this connects to money/power/corporate accountability (1-2 sentences)
@@ -85,7 +99,7 @@ Return ONLY valid JSON, no markdown or explanation.`;
           content: prompt,
         },
       ],
-      temperature: 0.85,
+      temperature,
       max_tokens: 1500,
     }),
   });
@@ -146,7 +160,10 @@ ${story.controversy_type ? `Controversy Type: ${story.controversy_type}` : ""}
 Sentiment Score: ${story.sentiment_score}
 `;
 
-      const jackyefied = await callAI(storyContext);
+      const jackyefied = await callAI(storyContext, {
+        controversy: story.is_controversy,
+        category: story.category,
+      });
 
       // Update work_news with jackye_take
       const { error: updateErr } = await supabase

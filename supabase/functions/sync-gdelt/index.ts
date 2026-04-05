@@ -65,12 +65,18 @@ Deno.serve(async (req: Request) => {
       const tone = a.tone ? parseFloat(String(a.tone).split(",")[0]) : 0;
       const title = a.title || "Untitled";
       const isControversy = controversyPatterns.test(title);
+      const articleUrl =
+        (typeof a.url === "string" && a.url.startsWith("http") ? a.url : null) ||
+        (typeof a.canonicalurl === "string" && a.canonicalurl.startsWith("http") ? a.canonicalurl : null) ||
+        (typeof a.shareurl === "string" && a.shareurl.startsWith("http") ? a.shareurl : null) ||
+        (typeof a.documentidentifier === "string" && a.documentidentifier.startsWith("http") ? a.documentidentifier : null) ||
+        null;
 
       return {
         company_id: companyId,
         headline: title.slice(0, 500),
         source_name: a.domain || a.sourcecountry || null,
-        source_url: a.url || null,
+        source_url: articleUrl,
         published_at: a.seendate ? new Date(
           a.seendate.slice(0, 4) + "-" + a.seendate.slice(4, 6) + "-" + a.seendate.slice(6, 8)
         ).toISOString() : null,
@@ -79,7 +85,7 @@ Deno.serve(async (req: Request) => {
         themes: a.themes ? String(a.themes).split(";").slice(0, 10) : [],
         is_controversy: isControversy,
         controversy_type: isControversy ? detectControversyType(title) : null,
-        gdelt_doc_id: a.url ? String(a.url).slice(-80) : null,
+        gdelt_doc_id: articleUrl ? String(articleUrl).slice(-80) : null,
       };
     });
 

@@ -10495,6 +10495,7 @@ export type Database = {
           category: string | null
           controversy_type: string | null
           created_at: string | null
+          developing_label: string | null
           gdelt_url_hash: string | null
           headline: string
           id: string
@@ -10503,6 +10504,8 @@ export type Database = {
           jackye_take_approved: boolean | null
           published_at: string | null
           sentiment_score: number | null
+          source_bias_override: string | null
+          source_map_json: Json | null
           source_name: string | null
           source_url: string | null
           themes: string[] | null
@@ -10513,6 +10516,7 @@ export type Database = {
           category?: string | null
           controversy_type?: string | null
           created_at?: string | null
+          developing_label?: string | null
           gdelt_url_hash?: string | null
           headline: string
           id?: string
@@ -10521,6 +10525,8 @@ export type Database = {
           jackye_take_approved?: boolean | null
           published_at?: string | null
           sentiment_score?: number | null
+          source_bias_override?: string | null
+          source_map_json?: Json | null
           source_name?: string | null
           source_url?: string | null
           themes?: string[] | null
@@ -10531,6 +10537,7 @@ export type Database = {
           category?: string | null
           controversy_type?: string | null
           created_at?: string | null
+          developing_label?: string | null
           gdelt_url_hash?: string | null
           headline?: string
           id?: string
@@ -10539,6 +10546,8 @@ export type Database = {
           jackye_take_approved?: boolean | null
           published_at?: string | null
           sentiment_score?: number | null
+          source_bias_override?: string | null
+          source_map_json?: Json | null
           source_name?: string | null
           source_url?: string | null
           themes?: string[] | null

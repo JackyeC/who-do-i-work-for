@@ -33,6 +33,13 @@ All distribution should **reinforce one brand graph**: **work & labor news → J
 
 ---
 
+## Work intelligence wire (`work_news`) — transparency & takes
+
+- **Orientation:** Each row can show a WDIWF desk bias/factuality label from the site map (`source-bias-map`), plus optional Supabase fields: `source_bias_override` (per-story correction), `source_map_json` (mini multi-outlet map), `developing_label` (DEVELOPING / source count per charter).
+- **Automated takes (`jackyefy-news`):** The edge function now requires a factual anchor, Jackye-voice body, and a **decision impact** line in the take string. **`jackye_take_approved` is the human gate:** keep `false` until an editor has read the take for voice and factual fit. The `/newsletter` UI shows **Pending desk review** on unapproved takes; deduping prefers **approved** takes when the same story appears twice.
+
+---
+
 ## Friday: email (hyper-personalized)
 
 **Audience:** Logged-in users (or full list segment with dashboard data).
