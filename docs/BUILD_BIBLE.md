@@ -2,7 +2,7 @@
 
 **Motto:** One document. Every builder. Ship it.
 
-**Creative / editorial operating model:** Message before design; **MESSAGE > VOICE > DESIGN**. Start with [`MESSAGE_SYSTEM.md`](MESSAGE_SYSTEM.md), then [`../newsletter/style/jackye-voice.md`](../newsletter/style/jackye-voice.md) and [`../newsletter/style/enforcement.md`](../newsletter/style/enforcement.md). Visual work: [`VIRAL_POSTER_IMAGE_SPEC.md`](VIRAL_POSTER_IMAGE_SPEC.md) + [`visual-references/README.md`](visual-references/README.md).
+**Creative / editorial operating model:** Message before design; **MESSAGE > VOICE > DESIGN**. Start with [`MESSAGE_SYSTEM.md`](MESSAGE_SYSTEM.md), then [`../newsletter/style/jackye-voice.md`](../newsletter/style/jackye-voice.md) and [`../newsletter/style/enforcement.md`](../newsletter/style/enforcement.md). **Before ship:** run user-facing copy through the pass/fail gate in [`JACKYE_VOICE_QA.md`](JACKYE_VOICE_QA.md). Visual work: [`VIRAL_POSTER_IMAGE_SPEC.md`](VIRAL_POSTER_IMAGE_SPEC.md) + [`visual-references/README.md`](visual-references/README.md).
 
 **Automated content engine:** [`WDIWF_CONTENT_ENGINE_AUTOMATION_LAYER.md`](WDIWF_CONTENT_ENGINE_AUTOMATION_LAYER.md) · [`CONTENT_ENGINE.md`](CONTENT_ENGINE.md) · [`../automations/README.md`](../automations/README.md)
 
@@ -59,6 +59,7 @@ Use this when automating copy or builder handoffs so you do not promise features
 
 Newsletter, charter, and channel cadence live next to this doc conceptually:
 
+- **[Jackye Voice QA (pass/fail)](JACKYE_VOICE_QA.md)** — ship gate for UI copy, Cursor/Lovable output, newsletter, dashboard; use before merge/publish  
 - `newsletter/WDIWF_NEWS_CHARTER.md` — sourcing, bias labels, Jackye routing  
 - `newsletter/CHANNEL_PLAYBOOK.md` — daily site, Substack, social, Friday email  
 - `newsletter/prompts/wdiwf-master-daily.md` — LLM desk prompt
