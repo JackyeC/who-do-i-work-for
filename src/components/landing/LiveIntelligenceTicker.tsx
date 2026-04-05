@@ -61,8 +61,8 @@ export function LiveIntelligenceTicker() {
       }
       return out;
     },
-    staleTime: 120_000,
-    refetchInterval: 300_000,
+    staleTime: 90_000,
+    refetchInterval: 180_000,
   });
 
   const tickerItems: TickerNewsItem[] =

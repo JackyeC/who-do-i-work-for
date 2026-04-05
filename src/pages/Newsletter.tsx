@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { useWorkNews, WorkNewsArticle } from "@/hooks/use-work-news";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,7 +16,7 @@ import {
 import {
   Mail, ArrowRight, Check, ExternalLink, Newspaper,
   AlertTriangle, Flame, ChevronRight, Radio,
-  Eye, TrendingUp,
+  Eye, TrendingUp, RefreshCw,
 } from "lucide-react";
 import { NewsletterDeskPreview } from "@/components/newsletter/NewsletterDeskPreview";
 
@@ -177,23 +178,40 @@ const FILTER_OPTIONS = [
 
 /* ── Main page ── */
 export default function Newsletter() {
+  const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [filter, setFilter] = useState("all");
+  const [feedRefreshing, setFeedRefreshing] = useState(false);
   const { containerRef, getToken, resetToken } = useTurnstile();
-  const { data: articles = [], isLoading } = useWorkNews(60);
+  const { data: articles = [], isLoading, isFetching } = useWorkNews(60, {
+    staleTime: 45_000,
+    refetchInterval: 90_000,
+  });
+
+  const refreshFeed = async () => {
+    setFeedRefreshing(true);
+    try {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["work-news"] }),
+        queryClient.invalidateQueries({ queryKey: ["desk-publication-latest"] }),
+      ]);
+    } finally {
+      setFeedRefreshing(false);
+    }
+  };
 
   usePageSEO({
     title: "Newsletter & Daily Desk | Signal Check™, Substack, Social | Who Do I Work For",
     description:
-      "Daily desk: website brief with Signal Check™, email (Substack) shape, and social posts — plus the live work intelligence feed with Jackye's Take.",
+      "Jackye Clayton's lens on the world of work: Signal Check™ desk, weekly email, and a live intelligence feed with Jackye's Take on the stories that shape employers and workers.",
     path: "/newsletter",
     jsonLd: {
       "@type": "WebPage",
       name: "Newsletter & Daily Desk — Who Do I Work For",
       description:
-        "WDIWF daily desk format (Signal Check), Substack and social distribution, and live employer intelligence feed.",
+        "Jackye Clayton's editorial lens on the world of work: Signal Check desk, email, social, and live intelligence with Jackye's Take.",
       url: "https://wdiwf.jackyeclayton.com/newsletter",
       author: { "@type": "Person", name: "Jackye Clayton" },
     },
@@ -266,10 +284,11 @@ export default function Newsletter() {
           The Daily Grind
         </h1>
         <p className="text-base text-muted-foreground mb-6 max-w-lg mx-auto leading-relaxed">
-          Daily desk on this page: <strong className="text-foreground">website brief</strong>,{" "}
-          <strong className="text-foreground">email (Substack)</strong>, and{" "}
-          <strong className="text-foreground">social</strong> — same shape the content engine ships. Below that: the
-          live feed with Jackye&apos;s Take.
+          <strong className="text-foreground">Your source for the world of work</strong> — Signal Check™ on the
+          headlines that move employers, workers, and policy. On this page: the{" "}
+          <strong className="text-foreground">daily desk</strong> (site + email + social shape), then a{" "}
+          <strong className="text-foreground">live wire</strong> refreshed from our database, with{" "}
+          <strong className="text-foreground">Jackye&apos;s Take</strong> where we&apos;ve added editorial lens.
         </p>
 
         {/* ── Subscribe bar ── */}
@@ -338,8 +357,22 @@ export default function Newsletter() {
               {opt.label}
             </button>
           ))}
-          <div className="ml-auto text-xs text-muted-foreground/50 font-mono whitespace-nowrap">
-            {filtered.length} stories
+          <div className="ml-auto flex items-center gap-2 shrink-0">
+            <span className="text-xs text-muted-foreground/50 font-mono whitespace-nowrap">
+              {filtered.length} stories
+              {isFetching && !isLoading ? " · updating…" : ""}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2 text-xs text-muted-foreground"
+              disabled={feedRefreshing || isLoading}
+              onClick={() => void refreshFeed()}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 mr-1 ${feedRefreshing ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
           </div>
         </div>
       </section>
@@ -436,7 +469,7 @@ export default function Newsletter() {
       {/* ── Bottom CTA ── */}
       <section className="text-center py-10 px-4 border-t border-border/30">
         <p className="text-muted-foreground text-sm mb-3">
-          The tea, served daily. No algorithms. No ads. Just receipts.
+          Receipts-first intelligence on the world of work — with a human editor in the loop.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button

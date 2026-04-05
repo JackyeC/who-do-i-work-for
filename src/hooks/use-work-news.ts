@@ -70,7 +70,17 @@ export function dedupeWorkNewsArticles(articles: WorkNewsArticle[]): WorkNewsArt
   return Array.from(map.values()).sort((x, y) => publishedMs(y.published_at) - publishedMs(x.published_at));
 }
 
-export function useWorkNews(limit = 50) {
+export type UseWorkNewsOptions = {
+  /** Default 2 min — newsletter / intel surfaces should feel current */
+  staleTime?: number;
+  /** Poll Supabase while the page is open (e.g. 3 min for /newsletter) */
+  refetchInterval?: number | false;
+};
+
+export function useWorkNews(limit = 50, options?: UseWorkNewsOptions) {
+  const staleTime = options?.staleTime !== undefined ? options.staleTime : 1000 * 60 * 2;
+  const refetchInterval =
+    options?.refetchInterval !== undefined ? options.refetchInterval : 1000 * 60 * 3;
   return useQuery({
     queryKey: ["work-news", limit],
     queryFn: async () => {
@@ -84,7 +94,9 @@ export function useWorkNews(limit = 50) {
       const rows = (data as WorkNewsArticle[]) ?? [];
       return dedupeWorkNewsArticles(rows).slice(0, limit);
     },
-    staleTime: 1000 * 60 * 15, // 15 min
+    staleTime,
+    refetchInterval,
+    refetchOnWindowFocus: true,
   });
 }
 
