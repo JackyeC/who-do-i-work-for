@@ -105,6 +105,7 @@ const SampleDossier = lazy(() => import("./pages/SampleDossier"));
 const Welcome = lazy(() => import("./pages/Welcome"));
 const Quiz = lazy(() => import("./pages/Quiz"));
 const EarlyAccess = lazy(() => import("./pages/EarlyAccess"));
+const ResetRoom = lazy(() => import("./pages/ResetRoom"));
 const AdminTicker = lazy(() => import("./pages/AdminTicker"));
 const About = lazy(() => import("./pages/About"));
 const ChromeExtension = lazy(() => import("./pages/ChromeExtension"));
@@ -209,6 +210,8 @@ const App = () => (
                   <Route path="/dossier/:id" element={<CompanyDossier />} />
                   <Route path="/dossier/guide/:slug" element={<DossierCoachingGuide />} />
                   <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/reset-room" element={<ResetRoom />} />
+                  <Route path="/briefing-room" element={<Navigate to="/reset-room" replace />} />
                   <Route path="/search" element={<SearchResults />} />
                   <Route path="/browse" element={<Browse />} />
                   <Route path="/methodology" element={<Methodology />} />

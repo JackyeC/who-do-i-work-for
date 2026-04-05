@@ -15,6 +15,7 @@ const PRIMARY_LINKS = [
 ];
 
 const TOOLS_LINKS = [
+  { label: "The Reset Room", to: "/reset-room" },
   { label: "For Companies", to: "/for-employers" },
   { label: "Methodology", to: "/methodology" },
   { label: "Recruiter Brief", to: "/recruiter-brief" },

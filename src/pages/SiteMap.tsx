@@ -6,6 +6,7 @@ import {
   Route, Users, Bell, Scale, DollarSign, Landmark, Shield, Globe, Map,
   ClipboardCheck, Zap, Network, BookOpen, FileText, Lock, Eye, Receipt,
   LayoutTemplate,
+  Mic,
 } from "lucide-react";
 
 interface SiteLink {
@@ -60,6 +61,7 @@ const sections: SiteSection[] = [
       { label: "Job Dashboard", path: "/job-dashboard", icon: LayoutDashboard, auth: true, description: "Track applications and matched jobs" },
       { label: "Relationship Intelligence", path: "/relationship-intelligence", icon: Users, auth: true, description: "Manage your professional network" },
       { label: "Check the Receipts", path: "/ask-jackye", icon: MessageSquare, description: "AI career coach powered by Jackye Clayton" },
+      { label: "The Reset Room", path: "/reset-room", icon: Mic, description: "Job search and candidate search support — monthly live Briefing Room session" },
     ],
   },
   {

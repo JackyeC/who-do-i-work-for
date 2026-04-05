@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, Shield } from "lucide-react";
+import { BRIEFING_ROOM_SIGNUP_AT_KEY } from "@/config/briefingRoom";
 
 type WaitlistRole = "candidate" | "recruiter" | "employer";
 
@@ -29,6 +30,7 @@ export default function Hire() {
   const markSignedUp = () => {
     try {
       localStorage.setItem("wdiwf_signed_up", "true");
+      localStorage.setItem(BRIEFING_ROOM_SIGNUP_AT_KEY, new Date().toISOString());
     } catch (storageError) {
       console.warn("Could not persist signup state:", storageError);
     }

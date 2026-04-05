@@ -6,6 +6,8 @@ interface SubscriptionStatus {
   subscribed: boolean;
   product_id: string | null;
   subscription_end: string | null;
+  /** Active Stripe subscription includes The Reset Room / Briefing Room session price */
+  founding_supporter?: boolean;
 }
 
 interface AuthContextType {

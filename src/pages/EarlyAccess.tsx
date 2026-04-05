@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { useTurnstile } from "@/hooks/useTurnstile";
 import { verifyTurnstileToken } from "@/lib/verifyTurnstile";
+import { BRIEFING_ROOM_SIGNUP_AT_KEY } from "@/config/briefingRoom";
 
 const PARTICLE_LABELS = ["FEC", "SEC", "NLRB", "OSHA", "$", "§", "27", "WARN", "DOJ"];
 
@@ -52,6 +53,7 @@ export default function EarlyAccess() {
     }
 
     localStorage.setItem("wdiwf_signed_up", "true");
+    localStorage.setItem(BRIEFING_ROOM_SIGNUP_AT_KEY, new Date().toISOString());
     localStorage.setItem("wdiwf_signup_email", email.trim().toLowerCase());
     setSubmitted(true);
     setLoading(false);

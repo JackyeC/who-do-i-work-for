@@ -60,6 +60,7 @@ Deno.serve(async (req: Request) => {
         subscribed: true,
         product_id: "prod_U8Ynpf4FKYEV3Q", // Professional tier for full feature access
         subscription_end: null,
+        founding_supporter: false,
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -71,7 +72,7 @@ Deno.serve(async (req: Request) => {
 
     if (customers.data.length === 0) {
       logStep("No Stripe customer found");
-      return new Response(JSON.stringify({ subscribed: false }), {
+      return new Response(JSON.stringify({ subscribed: false, founding_supporter: false }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
@@ -81,24 +82,39 @@ Deno.serve(async (req: Request) => {
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
       status: "active",
-      limit: 1,
+      limit: 20,
     });
 
+    const briefingRoomPriceId = Deno.env.get("STRIPE_BRIEFING_ROOM_PRICE_ID")?.trim() || "";
     const hasActiveSub = subscriptions.data.length > 0;
     let productId = null;
     let subscriptionEnd = null;
+    let founding_supporter = false;
 
     if (hasActiveSub) {
       const subscription = subscriptions.data[0];
       subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
       productId = subscription.items.data[0].price.product;
       logStep("Active subscription found", { productId, subscriptionEnd });
+
+      if (briefingRoomPriceId) {
+        for (const sub of subscriptions.data) {
+          for (const item of sub.items.data) {
+            if (item.price?.id === briefingRoomPriceId) {
+              founding_supporter = true;
+              break;
+            }
+          }
+          if (founding_supporter) break;
+        }
+      }
     }
 
     return new Response(JSON.stringify({
       subscribed: hasActiveSub,
       product_id: productId,
       subscription_end: subscriptionEnd,
+      founding_supporter,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

@@ -26,6 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { OfferClarityWizard } from "@/components/offer-clarity/OfferClarityWizard";
 import { PremiumGate } from "@/components/PremiumGate";
 import { Helmet } from "react-helmet-async";
+import { Badge } from "@/components/ui/badge";
 import { JobsFeedSection } from "@/components/dashboard/JobsFeedSection";
 import { TrackerSection } from "@/components/dashboard/TrackerSection";
 import { ApplyKitSection } from "@/components/dashboard/ApplyKitSection";
@@ -69,7 +70,7 @@ function ReaderLensFootnote() {
 }
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
+  const { user, loading, subscriptionStatus } = useAuth();
   const { hasTakenQuiz } = usePersona();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "overview";
@@ -212,10 +213,19 @@ export default function Dashboard() {
         />
       )}
 
-      <div className="flex items-center gap-3 border-b border-border/30 px-6 h-12">
-        <h1 className="text-sm font-semibold text-foreground truncate">
+      <div className="flex items-center gap-3 border-b border-border/30 px-6 h-12 flex-wrap">
+        <h1 className="text-sm font-semibold text-foreground truncate min-w-0">
           {TAB_TITLES[tab] || "My Intelligence"}
         </h1>
+        {subscriptionStatus?.founding_supporter && (
+          <Badge
+            variant="outline"
+            title="The Reset Room — active subscription (live sessions as The Briefing Room; Founding Supporters rate when applicable)."
+            className="shrink-0 text-[10px] font-semibold uppercase tracking-wide border-primary/40 text-primary bg-primary/10"
+          >
+            Reset Room
+          </Badge>
+        )}
       </div>
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
         {!hasTakenQuiz && tab === "overview" && hasValuesProfile === false && <PersonaQuizBanner />}

@@ -4,10 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 import { Button } from "@/components/ui/button";
-import { Shield, Check, Loader2, FileSearch, Zap } from "lucide-react";
+import { Shield, Check, Loader2, FileSearch, Zap, Mic } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { STRIPE_TIERS } from "@/hooks/use-premium";
+import {
+  getBriefingRoomFoundingMonthName,
+  getBriefingRoomFoundingYear,
+  getBriefingRoomStripePriceId,
+} from "@/config/briefingRoom";
+import { RESET_ROOM } from "@/config/resetRoom";
+import { useBriefingRoomAudienceGate } from "@/hooks/use-briefing-room-audience";
 
 const TIERS = [
   {
@@ -92,16 +100,20 @@ const TIERS = [
 ];
 
 export default function Pricing() {
+  const foundingMonthLabel = getBriefingRoomFoundingMonthName();
+  const foundingYear = getBriefingRoomFoundingYear();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isLoaded } = useClerkWithFallback();
+  const { showBriefingRoom: showBriefingRoomOffer, ready: briefingAudienceReady } =
+    useBriefingRoomAudienceGate();
   const [isAnnual, setIsAnnual] = useState(false);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
   usePageSEO({
     title: "Pricing — Who Do I Work For?",
     description:
-      "Three plans for every stage of your career intelligence journey. Free, The Signal ($49/mo), The Match ($149/mo). Plus The Closer ($199 one-time).",
+      `Plans from free to The Match, Auto-Apply add-on, and The Closer ($199 one-time). The Reset Room (${RESET_ROOM.liveSessionName} live sessions, $15/mo) Founding Supporters rate applies in ${foundingMonthLabel} ${foundingYear}.`,
     path: "/pricing",
     jsonLd: {
       "@type": "WebPage",
@@ -277,6 +289,181 @@ export default function Pricing() {
                 </div>
               );
             })}
+          </div>
+        </section>
+
+        {/* The Reset Room — same Stripe price as legacy "Briefing Room"; founding month gate in briefingRoom config + create-checkout */}
+        {briefingAudienceReady && showBriefingRoomOffer && (
+        <section className="px-6 lg:px-16 pb-16">
+          <div className="max-w-[800px] mx-auto">
+            <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/[0.06] via-card to-card p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <Mic className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-bold text-foreground">{RESET_ROOM.title}</h3>
+                  <span className="text-xs font-semibold leading-tight text-center max-w-[9.5rem] bg-primary/15 text-primary px-2.5 py-1 rounded-lg border border-primary/25">
+                    Founding Supporters
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mb-2">
+                  {RESET_ROOM.tagline}{" "}
+                  <Link to="/reset-room" className="text-primary hover:underline font-medium">
+                    Learn more →
+                  </Link>
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                  Monthly live call as <strong className="text-foreground">{RESET_ROOM.liveSessionName}</strong> — job
+                  search and candidate search support in one room: public records, hiring AI, and Q&amp;A without the
+                  spin. Replay or recap after each session. This special {foundingMonthLabel} {foundingYear} rate is for
+                  Founding Supporters only.
+                </p>
+                <ul className="text-sm text-foreground space-y-1.5">
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span>Founding Supporter badge in the product for everyone who subscribes during this window</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span>Monthly group video call + recording / recap</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span>For recruiters, HR, and job seekers — same room, straight talk</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span>Cancel anytime — stacks with free or paid dossier plans</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="text-center sm:text-right shrink-0 flex flex-col items-center sm:items-end gap-2">
+                <div className="flex items-baseline gap-1 justify-center sm:justify-end">
+                  <span className="text-3xl font-bold text-foreground">$15</span>
+                  <span className="text-muted-foreground text-sm">/mo</span>
+                </div>
+                <Button
+                  variant="default"
+                  className="w-full sm:w-auto"
+                  disabled={loadingTier === "briefing-room"}
+                  onClick={async () => {
+                    if (!user) {
+                      toast("Sign in to subscribe");
+                      navigate("/login");
+                      return;
+                    }
+                    const priceId = getBriefingRoomStripePriceId();
+                    if (!priceId) {
+                      toast.error(`${RESET_ROOM.title} checkout is finishing setup — try again soon or email hello@jackyeclayton.com.`);
+                      return;
+                    }
+                    setLoadingTier("briefing-room");
+                    try {
+                      const { data, error } = await supabase.functions.invoke("create-checkout", {
+                        body: { priceId },
+                      });
+                      if (error) throw error;
+                      if (data && typeof data === "object" && "error" in data && data.error && !("url" in data && data.url)) {
+                        toast.error(String(data.error));
+                        return;
+                      }
+                      if (data?.url) window.location.href = data.url;
+                      else toast.error("Could not start checkout. Please try again.");
+                    } catch (e: any) {
+                      toast.error(e.message || "Checkout failed");
+                    } finally {
+                      setLoadingTier(null);
+                    }
+                  }}
+                >
+                  {loadingTier === "briefing-room" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    `Join ${RESET_ROOM.title}`
+                  )}
+                </Button>
+                {!getBriefingRoomStripePriceId() && (
+                  <p className="text-[11px] text-muted-foreground max-w-[220px] sm:text-right">
+                    Checkout goes live once Stripe is connected — you can still reach us via{" "}
+                    <a href="/contact" className="text-primary hover:underline">
+                      Contact
+                    </a>
+                    .
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+        )}
+
+        {/* Auto-Apply add-on — stacks with The Signal */}
+        <section className="px-6 lg:px-16 pb-16">
+          <div className="max-w-[800px] mx-auto">
+            <div className="rounded-xl border border-border bg-card p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Zap className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-bold text-foreground">Apply When It Counts™</h3>
+                  <span className="text-[10px] font-mono uppercase tracking-wider bg-muted text-muted-foreground px-2 py-0.5 rounded-full border border-border">
+                    Add-on
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                  AI-drafted application payloads and queue for values-aligned roles. Works alongside{" "}
+                  <strong className="text-foreground">The Signal</strong> — subscribe here even if you are not on The Match yet.
+                </p>
+                <ul className="text-sm text-foreground space-y-1.5">
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span>Auto-apply queue + generate tailored cover-letter style payloads</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <span>Application tracking when you mark jobs applied</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="text-center sm:text-right shrink-0 flex flex-col items-center sm:items-end gap-2">
+                <div className="flex items-baseline gap-1 justify-center sm:justify-end">
+                  <span className="text-3xl font-bold text-foreground">
+                    {STRIPE_TIERS.auto_apply.price.replace("/mo", "")}
+                  </span>
+                  <span className="text-muted-foreground text-sm">/mo</span>
+                </div>
+                <Button
+                  variant="secondary"
+                  className="w-full sm:w-auto"
+                  disabled={loadingTier === "auto-apply-addon"}
+                  onClick={async () => {
+                    if (!user) {
+                      toast("Sign in to subscribe");
+                      navigate("/login");
+                      return;
+                    }
+                    const priceId = STRIPE_TIERS.auto_apply.price_id;
+                    setLoadingTier("auto-apply-addon");
+                    try {
+                      const { data, error } = await supabase.functions.invoke("create-checkout", {
+                        body: { priceId },
+                      });
+                      if (error) throw error;
+                      if (data?.url) window.location.href = data.url;
+                      else toast.error("Could not start checkout. Please try again.");
+                    } catch (e: any) {
+                      toast.error(e.message || "Checkout failed");
+                    } finally {
+                      setLoadingTier(null);
+                    }
+                  }}
+                >
+                  {loadingTier === "auto-apply-addon" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Add Auto-Apply"
+                  )}
+                </Button>
+              </div>
+            </div>
           </div>
         </section>
 

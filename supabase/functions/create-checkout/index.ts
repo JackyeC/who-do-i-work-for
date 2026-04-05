@@ -24,6 +24,7 @@ const SUBSCRIPTION_PRICES = new Set([
   "price_1TF2WU89MyCOs8yvodXAgyVX", // The Brief $99/mo
   "price_1TF2WU89MyCOs8yvS5zZrwjy", // The Brief annual $950/yr
   "price_1TEEw589MyCOs8yvQI8FpHJx", // The Executive $999/yr
+  "price_1T9Tvd7Qj0W6UtN9EbbU1EOn", // Auto-Apply add-on (~$9/mo)
 ]);
 
 serve(async (req: Request) => {
@@ -51,13 +52,86 @@ serve(async (req: Request) => {
         status: 400,
       });
     }
+    const briefingRoomPrice = Deno.env.get("STRIPE_BRIEFING_ROOM_PRICE_ID")?.trim() || "";
     const allowed =
-      ONE_TIME_PRICES.has(priceId) || SUBSCRIPTION_PRICES.has(priceId);
+      ONE_TIME_PRICES.has(priceId) ||
+      SUBSCRIPTION_PRICES.has(priceId) ||
+      (briefingRoomPrice.length > 0 && priceId === briefingRoomPrice);
     if (!allowed) {
       return new Response(JSON.stringify({ error: "Invalid price ID" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
+    }
+
+    function foundingYearMonth(): { y: number; m: number } {
+      const y = parseInt(Deno.env.get("BRIEFING_ROOM_FOUNDING_YEAR") || "", 10);
+      const m = parseInt(Deno.env.get("BRIEFING_ROOM_FOUNDING_MONTH") || "4", 10);
+      const year = Number.isFinite(y) && y >= 2020 && y <= 2100 ? y : new Date().getUTCFullYear();
+      const month = Number.isFinite(m) && m >= 1 && m <= 12 ? m : 4;
+      return { y: year, m: month };
+    }
+
+    function isoInFoundingMonth(iso: string | undefined, y: number, m: number): boolean {
+      if (!iso) return false;
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return false;
+      return d.getUTCFullYear() === y && d.getUTCMonth() + 1 === m;
+    }
+
+    const isBriefingRoom = briefingRoomPrice.length > 0 && priceId === briefingRoomPrice;
+    if (isBriefingRoom) {
+      const limitToLaunchAudience =
+        Deno.env.get("BRIEFING_ROOM_JOINERS_ONLY")?.trim().toLowerCase() !== "false";
+      if (limitToLaunchAudience) {
+        const { y, m } = foundingYearMonth();
+        const authInFounding = isoInFoundingMonth(user.created_at, y, m);
+
+        let earlyAccessInFounding = false;
+        if (!authInFounding) {
+          const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+          const supabaseUrl = Deno.env.get("SUPABASE_URL");
+          if (serviceKey && supabaseUrl) {
+            const admin = createClient(supabaseUrl, serviceKey);
+            const email = user.email.trim().toLowerCase();
+            const start = new Date(Date.UTC(y, m - 1, 1));
+            const end = m === 12 ? new Date(Date.UTC(y + 1, 0, 1)) : new Date(Date.UTC(y, m, 1));
+            const { data: ea } = await admin
+              .from("early_access_signups")
+              .select("id")
+              .eq("email", email)
+              .gte("created_at", start.toISOString())
+              .lt("created_at", end.toISOString())
+              .maybeSingle();
+            earlyAccessInFounding = !!ea;
+          }
+        }
+
+        if (!authInFounding && !earlyAccessInFounding) {
+          const monthNames = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          const label = monthNames[m - 1] ?? "April";
+          return new Response(
+            JSON.stringify({
+              error:
+                `The Reset Room (Founding Supporters) rate is only for people who joined in ${label} ${y}. Questions? hello@jackyeclayton.com`,
+            }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 },
+          );
+        }
+      }
     }
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");

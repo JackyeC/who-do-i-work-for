@@ -3,7 +3,7 @@ import { Download, Linkedin, Twitter, Link2, Check } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import html2canvas from "html2canvas";
 import logoSquare from "@/assets/wdiwf-logo-square.png";
-import logoNav from "@/assets/wdiwf-logo-nav-light.png";
+import { FOUNDING_MEMBER_BADGE_LAUNCH_FOOTER } from "@/config/foundingMemberBadge";
 
 interface FoundingMemberBadgeProps {
   memberName?: string;
@@ -36,13 +36,14 @@ export function FoundingMemberBadge({
   const displayDate = joinedDate
     ? new Date(joinedDate).toLocaleDateString("en-US", {
         month: "long",
+        day: "numeric",
         year: "numeric",
       })
     : "Pre-Launch 2026";
 
   // Pre-load logo images so html2canvas captures them correctly
   useEffect(() => {
-    const imgs = [logoSquare, logoNav];
+    const imgs = [logoSquare];
     let loaded = 0;
     imgs.forEach((src) => {
       const img = new Image();
@@ -92,7 +93,7 @@ export function FoundingMemberBadge({
     }
   };
 
-  const shareText = `I'm Founding Member ${displayNumber} of Who Do I Work For? — the career intelligence platform that tells you what employers won't. Launching April 6. Get in early → ${BASE_URL}`;
+  const shareText = `I'm Founding Member ${displayNumber} of Who Do I Work For? — workers deserve the truth about who they work for. Public-record career intelligence. ${BASE_URL}`;
 
   const handleShareLinkedIn = () => {
     const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(BASE_URL)}`;
@@ -103,7 +104,7 @@ export function FoundingMemberBadge({
   };
 
   const handleShareTwitter = () => {
-    const text = `I'm Founding Member ${displayNumber} of @WhoDoIWorkFor — career intelligence that tells you what employers won't. April 6 launch. ${BASE_URL}`;
+    const text = `I'm Founding Member ${displayNumber} of @WhoDoIWorkFor — transparency about who you work for. ${BASE_URL}`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank", "width=600,height=500");
   };
@@ -156,12 +157,20 @@ export function FoundingMemberBadge({
                 marginBottom: 32,
               }}
             >
-              <img
-                src={logoNav}
-                alt="Who Do I Work For?"
-                crossOrigin="anonymous"
-                style={{ height: 28, display: "block" }}
-              />
+              <div
+                style={{
+                  fontFamily: "'DM Sans', system-ui, sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  color: BRAND.fg,
+                  letterSpacing: "-0.02em",
+                  lineHeight: 1.2,
+                }}
+              >
+                Who Do I{" "}
+                <span style={{ fontWeight: 800 }}>WORK FOR</span>
+                <span style={{ color: BRAND.goldBright }}>?</span>
+              </div>
               <span
                 style={{
                   fontFamily: "'DM Mono', monospace",
@@ -265,10 +274,10 @@ export function FoundingMemberBadge({
             >
               I believe workers deserve the truth about who they work for.
               <br />
-              I'm here before the launch because transparency can't wait.
+              I&apos;m here before the launch because transparency can&apos;t wait.
             </p>
 
-            {/* Footer: launch date + URL */}
+            {/* Footer: launch + URL (matches shareable founding card) */}
             <div
               style={{
                 display: "flex",
@@ -285,7 +294,7 @@ export function FoundingMemberBadge({
                   textTransform: "uppercase",
                 }}
               >
-                Launch: April 6, 2026
+                {FOUNDING_MEMBER_BADGE_LAUNCH_FOOTER}
               </span>
               <span
                 style={{

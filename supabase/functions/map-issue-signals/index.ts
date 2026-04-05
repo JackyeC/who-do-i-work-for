@@ -175,11 +175,22 @@ interface IssueSignal {
   transaction_date: string | null;
 }
 
+/** Must use word boundaries — e.g. substring "ice" matches "ALICE" in FEC donor names (false immigration signal). */
+const KEYWORD_USE_WORD_BOUNDARY = new Set<string>(['ice']);
+
+function keywordMatchesInText(lower: string, kw: string): boolean {
+  if (KEYWORD_USE_WORD_BOUNDARY.has(kw)) {
+    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${escaped}\\b`, 'i').test(lower);
+  }
+  return lower.includes(kw);
+}
+
 function matchIssues(text: string): { category: string; matchedKeywords: string[] }[] {
   const lower = text.toLowerCase();
   const matches: { category: string; matchedKeywords: string[] }[] = [];
   for (const [category, keywords] of Object.entries(ISSUE_KEYWORDS)) {
-    const matched = keywords.filter(kw => lower.includes(kw));
+    const matched = keywords.filter((kw) => keywordMatchesInText(lower, kw));
     if (matched.length > 0) matches.push({ category, matchedKeywords: matched });
   }
   return matches;
