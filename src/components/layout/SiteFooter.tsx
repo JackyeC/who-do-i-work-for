@@ -56,70 +56,55 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {/* Who Do I Work For Links */}
+          {/* Product & pages — every label maps to a real route in App.tsx */}
           <div>
             <p className="font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground/50 mb-3">
-              Who Do I Work For
+              Platform
             </p>
             <nav className="flex flex-col gap-2">
-              <Link
-                to="/"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link to="/" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Home
               </Link>
-              <Link
-                to="/receipts"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Receipts
-              </Link>
-              <Link
-                to="/browse"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Companies
-              </Link>
-              <Link
-                to="/about"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                About
-              </Link>
-              <Link
-                to="/#product-key"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link to="/#product-key" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 How it works
               </Link>
-              <Link
-                to="/for-employers"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                For Companies
+              <Link to="/browse" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Companies
               </Link>
-              <Link
-                to="/pricing"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link to="/receipts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Receipts
+              </Link>
+              <Link to="/signal-alerts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Work signal
+              </Link>
+              <Link to="/dashboard?tab=values" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Values profile
+              </Link>
+              <Link to="/strategic-offer-review" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Offer review
+              </Link>
+              <Link to="/auto-apply" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Auto-Apply
+              </Link>
+              <Link to="/jobs" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Job board
+              </Link>
+              <Link to="/pricing" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Pricing
               </Link>
-              <Link
-                to="/contact"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link to="/for-employers" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                For companies
+              </Link>
+              <Link to="/about" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                About
+              </Link>
+              <Link to="/contact" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Contact
               </Link>
-              <Link
-                to="/submit-tip"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Submit a Tip
+              <Link to="/submit-tip" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Submit a tip
               </Link>
-              <Link
-                to="/newsletter"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link to="/newsletter" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Newsletter
               </Link>
             </nav>

@@ -16,6 +16,7 @@ const PRIMARY_LINKS = [
 
 const TOOLS_LINKS = [
   { label: "For Companies", to: "/for-employers" },
+  { label: "Methodology", to: "/methodology" },
   { label: "Recruiter Brief", to: "/recruiter-brief" },
   { label: "Mock Interview", to: "/mock-interview" },
   { label: "Career Map", to: "/career-intelligence" },
