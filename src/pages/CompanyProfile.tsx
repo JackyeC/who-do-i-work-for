@@ -26,6 +26,7 @@ import { RealityGapBlock } from "@/components/company/RealityGapBlock";
 import { PerceptionGapModule } from "@/components/company/PerceptionGapModule";
 import { DecisionCheckpointBeforeSign } from "@/components/company/DecisionCheckpointBeforeSign";
 import { InnovationSignals } from "@/components/company/InnovationSignals";
+import { NewsIntelligenceCard } from "@/components/NewsIntelligenceCard";
 import { RecruiterIntegrityCard, RecruiterIntegrityCardSkeleton } from "@/components/company/RecruiterIntegrityCard";
 import { useCompanyIntegrity } from "@/hooks/use-company-integrity";
 import { LeadershipInfluenceSection } from "@/components/company/LeadershipInfluenceSection";
@@ -546,6 +547,13 @@ export default function CompanyProfile() {
              ═══════════════════════════════════════════════════════ */}
           {dbCompanyId && (
             <InnovationSignals companyId={dbCompanyId} companyName={name} />
+          )}
+
+          {/* ═══════════════════════════════════════════════════════
+              2.65 NEWS COVERAGE (GDELT, per company)
+             ═══════════════════════════════════════════════════════ */}
+          {dbCompanyId && (
+            <NewsIntelligenceCard companyId={dbCompanyId} companyName={name} />
           )}
 
           {/* ═══════════════════════════════════════════════════════
