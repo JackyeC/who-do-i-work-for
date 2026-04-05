@@ -9,8 +9,18 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { token } = await req.json();
-    if (!token || typeof token !== "string") {
+    const body = await req.json().catch(() => ({}));
+    // Frontend uses { token }. HTML forms / other clients may send cf-turnstile-response.
+    const token =
+      typeof body?.token === "string" && body.token.trim()
+        ? body.token.trim()
+        : typeof body?.["cf-turnstile-response"] === "string" && body["cf-turnstile-response"].trim()
+          ? body["cf-turnstile-response"].trim()
+          : typeof body?.cfTurnstileResponse === "string" && body.cfTurnstileResponse.trim()
+            ? body.cfTurnstileResponse.trim()
+            : "";
+
+    if (!token) {
       return new Response(JSON.stringify({ success: false, error: "Missing token" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -38,12 +48,18 @@ Deno.serve(async (req: Request) => {
 
     clearTimeout(timeout);
 
-    const result = await res.json();
+    const result = (await res.json()) as { success?: boolean; "error-codes"?: string[] };
 
-    return new Response(JSON.stringify({ success: result.success === true }), {
-      status: result.success ? 200 : 403,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        success: result.success === true,
+        ...(result.success ? {} : { errorCodes: result["error-codes"] ?? [] }),
+      }),
+      {
+        status: result.success ? 200 : 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   } catch (err: any) {
     console.error("Turnstile verification error:", err);
     return new Response(JSON.stringify({ success: false, error: "Verification failed" }), {

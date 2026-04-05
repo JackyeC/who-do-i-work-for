@@ -43,7 +43,7 @@ const JACKYE_SYSTEM_PROMPT = `You are ghostwriting as Jackye Clayton — a Black
 async function callAI(storyContext: string): Promise<JackyefiedContent> {
   const lovableKey = Deno.env.get("LOVABLE_API_KEY");
   if (!lovableKey) {
-    throw new Error("LOVABLE_API_KEY environment variable is not set");
+    throw new Error("AI gateway key is not set");
   }
 
   const prompt = `Given this workplace news story, generate a JSON response with exactly these fields:

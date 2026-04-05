@@ -53,7 +53,7 @@ export function EVPIntelligence() {
     try {
       // Step 1: Find or discover company
       setLoadingStep("Looking up company...");
-      let { data: companies } = await supabase
+      const { data: companies } = await supabase
         .from("companies")
         .select("id, name, description, industry, state, employer_clarity_score, total_pac_spending, lobbying_spend, government_contracts, employee_count, revenue, effective_tax_rate, careers_url, website_url")
         .ilike("name", `%${q}%`)

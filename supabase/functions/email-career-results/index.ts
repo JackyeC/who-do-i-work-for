@@ -153,7 +153,7 @@ Deno.serve(async (req: Request) => {
 </div>
 </body></html>`;
 
-    // Use Lovable AI to send — we store results for now and notify user
+    // Send via AI gateway — we store results for now and notify user
     // Since no email domain is configured, we'll save the report and let user know
     const serviceClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
@@ -177,7 +177,7 @@ Deno.serve(async (req: Request) => {
       console.log('Email queue not available, trying direct send:', queueErr);
     }
 
-    // Fallback: try direct send via Lovable email API
+    // Fallback: transactional email API
     try {
       const emailResp = await fetch('https://email.lovable.dev/v1/send', {
         method: 'POST',

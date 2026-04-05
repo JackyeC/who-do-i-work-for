@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { isMarketingLaunch } from "@/config/marketingLaunch";
 
 export function SiteFooter() {
   return (
@@ -34,72 +35,85 @@ export function SiteFooter() {
               —so you evaluate employers with the rigor they use on you. Receipts,
               not opinions.
             </p>
-            <Link
-              to="/about"
-              className="inline-block mt-3 font-sans text-sm text-primary hover:text-primary/80 font-medium"
-            >
-              Meet Jackye →
-            </Link>
-          </div>
-
-          {/* Who Do I Work For Links */}
-          <div>
-            <p className="font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground/50 mb-3">
-              Who Do I Work For
-            </p>
-            <nav className="flex flex-col gap-2">
-              <Link
-                to="/"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Home
-              </Link>
-              <Link
-                to="/receipts"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Receipts
-              </Link>
-              <Link
-                to="/browse"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Companies
-              </Link>
+            <div className="flex flex-col gap-1.5 mt-3">
               <Link
                 to="/about"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="font-sans text-sm text-primary hover:text-primary/80 font-medium"
               >
-                About
+                Meet Jackye →
               </Link>
               <Link
-                to="/for-employers"
+                to="/#product-key"
                 className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                For Companies
+                How it works &amp; product key →
               </Link>
               <Link
-                to="/pricing"
+                to="/about#product-key-about"
                 className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
+                Same guide on About →
+              </Link>
+            </div>
+          </div>
+
+          {/* Product & pages — every label maps to a real route in App.tsx */}
+          <div>
+            <p className="font-mono text-xs tracking-[0.15em] uppercase text-muted-foreground/50 mb-3">
+              Platform
+            </p>
+            <nav className="flex flex-col gap-2">
+              <Link to="/" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Home
+              </Link>
+              <Link to="/#product-key" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                How it works
+              </Link>
+              <Link to="/browse" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Companies
+              </Link>
+              <Link to="/receipts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Receipts
+              </Link>
+              {!isMarketingLaunch && (
+                <>
+                  <Link to="/signal-alerts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Work signal
+                  </Link>
+                  <Link to="/dashboard?tab=values" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Values profile
+                  </Link>
+                </>
+              )}
+              <Link to="/strategic-offer-review" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Offer review
+              </Link>
+              {!isMarketingLaunch && (
+                <>
+                  <Link to="/auto-apply" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Auto-Apply
+                  </Link>
+                  <Link to="/jobs" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Job board
+                  </Link>
+                </>
+              )}
+              <Link to="/pricing" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Pricing
               </Link>
-              <Link
-                to="/contact"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link to="/for-employers" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                For companies
+              </Link>
+              <Link to="/about" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                About
+              </Link>
+              <Link to="/contact" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Contact
               </Link>
-              <Link
-                to="/submit-tip"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Submit a Tip
+              <Link to="/submit-tip" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Submit a tip
               </Link>
-              <Link
-                to="/newsletter"
-                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link to="/newsletter" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Newsletter
               </Link>
             </nav>

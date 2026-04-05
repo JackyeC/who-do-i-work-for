@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { useWorkNews, WorkNewsArticle } from "@/hooks/use-work-news";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,9 +16,10 @@ import {
 import {
   Mail, ArrowRight, Check, ExternalLink, Newspaper,
   AlertTriangle, Flame, ChevronRight, Radio,
-  Eye, TrendingUp,
+  Eye, TrendingUp, RefreshCw,
 } from "lucide-react";
 import { NewsletterDeskPreview } from "@/components/newsletter/NewsletterDeskPreview";
+import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
 
 /* ── Category config ── */
 const CATEGORY_CONFIG: Record<string, { label: string; color: string }> = {
@@ -177,12 +179,29 @@ const FILTER_OPTIONS = [
 
 /* ── Main page ── */
 export default function Newsletter() {
+  const queryClient = useQueryClient();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [filter, setFilter] = useState("all");
+  const [feedRefreshing, setFeedRefreshing] = useState(false);
   const { containerRef, getToken, resetToken } = useTurnstile();
-  const { data: articles = [], isLoading } = useWorkNews(60);
+  const { data: articles = [], isLoading, isFetching } = useWorkNews(60, {
+    staleTime: 45_000,
+    refetchInterval: 90_000,
+  });
+
+  const refreshFeed = async () => {
+    setFeedRefreshing(true);
+    try {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["work-news"] }),
+        queryClient.invalidateQueries({ queryKey: ["desk-publication-latest"] }),
+      ]);
+    } finally {
+      setFeedRefreshing(false);
+    }
+  };
 
   usePageSEO({
     title: "Newsletter & Daily Desk | Signal Check™, Substack, Social | Who Do I Work For",
@@ -256,10 +275,10 @@ export default function Newsletter() {
     <div className="min-h-screen bg-background">
       {/* ── Hero ── */}
       <section className="text-center py-12 lg:py-16 px-4 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-destructive/10 border border-destructive/20 mb-5">
-          <Radio className="w-3.5 h-3.5 text-destructive animate-pulse" />
-          <span className="text-xs font-mono tracking-wider text-destructive uppercase">
-            Live Intelligence Feed
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 mb-5">
+          <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
+          <span className="text-xs font-mono tracking-wider text-primary uppercase">
+            Live desk & wire
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -315,15 +334,29 @@ export default function Newsletter() {
         <p className="text-xs text-muted-foreground/60 mt-3">
           Free forever. One email per week. No spam.
         </p>
+
+        <FoundingMemberRecognition className="mt-8 max-w-md mx-auto" />
       </section>
 
-      {/* ── Desk: live Supabase row (bi-hourly) or fallback sample ── */}
+      {/* ── Desk: latest published site edition or preview sample ── */}
       <section className="max-w-3xl mx-auto px-4 pb-10">
+        <div className="mb-4 text-center sm:text-left">
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">Today&apos;s Signal Check™ desk</h2>
+          <p className="text-xs text-muted-foreground mt-1 font-mono">
+            Website brief · same shape as email & social · updates when a new edition goes live
+          </p>
+        </div>
         <NewsletterDeskPreview />
       </section>
 
       {/* ── Filter bar ── */}
       <section className="max-w-5xl mx-auto px-4 pb-4">
+        <div className="mb-3">
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">Work intelligence wire</h2>
+          <p className="text-xs text-muted-foreground mt-1 font-mono">
+            Rolling ingest — use Refresh for the latest pull
+          </p>
+        </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           {FILTER_OPTIONS.map((opt) => (
             <button
@@ -338,8 +371,22 @@ export default function Newsletter() {
               {opt.label}
             </button>
           ))}
-          <div className="ml-auto text-xs text-muted-foreground/50 font-mono whitespace-nowrap">
-            {filtered.length} stories
+          <div className="ml-auto flex items-center gap-2 shrink-0">
+            <span className="text-xs text-muted-foreground/50 font-mono whitespace-nowrap">
+              {filtered.length} stories
+              {isFetching && !isLoading ? " · updating…" : ""}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2 text-xs text-muted-foreground"
+              disabled={feedRefreshing || isLoading}
+              onClick={() => void refreshFeed()}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 mr-1 ${feedRefreshing ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
           </div>
         </div>
       </section>
@@ -436,7 +483,7 @@ export default function Newsletter() {
       {/* ── Bottom CTA ── */}
       <section className="text-center py-10 px-4 border-t border-border/30">
         <p className="text-muted-foreground text-sm mb-3">
-          The tea, served daily. No algorithms. No ads. Just receipts.
+          Receipts-first intelligence — pipeline live, editor in the loop, Signal Check™ on what matters for work.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button

@@ -94,7 +94,7 @@ serve(async (req: Request) => {
     const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const lovableKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableKey) throw new Error("LOVABLE_API_KEY not configured");
+    if (!lovableKey) throw new Error("AI gateway key is not configured");
 
     const userClient = createClient(supabaseUrl, supabaseKey, {
       global: { headers: { Authorization: authHeader } },

@@ -21,11 +21,20 @@ export type DeskPublicationRow = {
   run_log?: unknown;
 };
 
+export type UseLatestDeskPublicationOptions = {
+  staleTime?: number;
+  refetchInterval?: number | false;
+};
+
 /**
  * Latest row that is live on /newsletter — uses RPC `wdiwf_latest_live_desk_publication()`
  * (same contract as RLS: success + bi_hourly + completed + published_to_site + markdown).
  */
-export function useLatestDeskPublication() {
+export function useLatestDeskPublication(options?: UseLatestDeskPublicationOptions) {
+  const staleTime = options?.staleTime !== undefined ? options.staleTime : 1000 * 60 * 2;
+  const refetchInterval =
+    options?.refetchInterval !== undefined ? options.refetchInterval : 1000 * 60 * 2;
+
   return useQuery({
     queryKey: ["desk-publication-latest"],
     queryFn: async () => {
@@ -35,6 +44,8 @@ export function useLatestDeskPublication() {
       const row = rows && rows.length > 0 ? rows[0] : null;
       return row;
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime,
+    refetchInterval,
+    refetchOnWindowFocus: true,
   });
 }

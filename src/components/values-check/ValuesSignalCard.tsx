@@ -39,7 +39,9 @@ export function ValuesSignalCard({ signal, getConfidenceBadge, getVerificationBa
       if (ej && typeof ej === "object" && "recipients" in ej && Array.isArray((ej as any).recipients)) {
         return (ej as any).recipients;
       }
-    } catch {}
+    } catch {
+      /* evidence_json parse */
+    }
     return [];
   })();
 

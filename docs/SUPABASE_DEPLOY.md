@@ -14,6 +14,7 @@ Use this **same order every time** you ship database or Edge changes. No improvi
 4. **Edge secrets** (dashboard **Project Settings → Edge Functions → Secrets** or CLI), at minimum:
    - `WDIWF_DESK_PUBLISH_SECRET` — shared with your publish automation / health script
    - `SUPABASE_SERVICE_ROLE_KEY` — usually auto-provided to functions; confirm if deploys fail
+   - **LinkedIn login / sharing** (see § *LinkedIn OAuth — deploy & verify*): `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, and `PUBLIC_SITE_URL` (e.g. `https://wdiwf.jackyeclayton.com`)
 
 ### Automated setup on your Mac (recommended)
 
@@ -173,6 +174,54 @@ This is **not** a system failure; it is **product signal**. It is separate from 
 
 ---
 
+## LinkedIn OAuth — deploy & verify
+
+`/login` → **Continue with LinkedIn** uses Edge Functions **`linkedin-auth`** (redirect to LinkedIn) and **`linkedin-callback`** (token exchange, user create/match, magic link). They import shared code from `supabase/functions/_shared/linkedin.ts`.
+
+### Secrets (production project)
+
+| Secret | Purpose |
+|--------|---------|
+| `LINKEDIN_CLIENT_ID` | LinkedIn app client ID |
+| `LINKEDIN_CLIENT_SECRET` | LinkedIn app secret |
+| `PUBLIC_SITE_URL` | Site origin for redirects (no trailing slash), e.g. `https://wdiwf.jackyeclayton.com` |
+
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are available to functions by default.
+
+### LinkedIn Developer Portal
+
+Under your app’s **Auth** settings, add **Authorized redirect URL** (exact match):
+
+`https://<project-ref>.supabase.co/functions/v1/linkedin-callback`
+
+Use the same `<project-ref>` as in your Supabase project URL.
+
+### Supabase Auth redirect URLs
+
+Dashboard **Authentication → URL Configuration**: allow redirects used by the magic-link step, e.g.:
+
+- `https://wdiwf.jackyeclayton.com/**` or explicit paths like `https://wdiwf.jackyeclayton.com/dashboard`
+
+### Deploy after changing `_shared/linkedin.ts` or either function
+
+From repo root (linked to the correct project):
+
+```bash
+supabase functions deploy linkedin-auth
+supabase functions deploy linkedin-callback
+```
+
+Also redeploy **`linkedin-share-certificate`** if it shares `_shared/linkedin.ts` and you want a single bundle in sync (optional but consistent).
+
+### Smoke test (human)
+
+1. Open production **`/login`** → **Continue with LinkedIn**.
+2. Complete LinkedIn consent. You should land signed in (e.g. dashboard).
+3. If you bounce to the homepage with **`?linkedin_error=`**, decode the query value — it is the error message from the callback (config, token exchange, missing email from LinkedIn, etc.).
+4. Supabase **Edge Functions → Logs** for `linkedin-callback` if the UI is unclear.
+
+---
+
 ## Optional later: CI (keep it boring)
 
 When you want automation, the smallest step is **one workflow** that runs on `workflow_dispatch` only:
@@ -242,6 +291,22 @@ Your **linked project’s migration history** and **local `supabase/migrations/`
 3. Follow **only** the repair / pull guidance **printed by your CLI** for your exact versions, or use the [Supabase migration docs](https://supabase.com/docs/guides/cli/managing-environments#migration-history-conflicts).
 
 When history is aligned, prefer **`supabase db push`** (and **`--include-all`** only when the CLI prompts for it).
+
+### Health check passes but **`/newsletter` shows “Fallback”** (desk not updated)
+
+The desk loads in the browser with **`VITE_SUPABASE_URL`** and **`VITE_SUPABASE_PUBLISHABLE_KEY`** (see `src/integrations/supabase/client.ts`). **`desk-publication-health`** and **`publish-desk-publication`** use whatever project your **CLI is linked to** (`supabase/config.toml` → **`project_id`**).
+
+If those **differ**, you will see **`ok: true`** and **`newest_live`** in the health JSON while production **`/newsletter`** still shows **Fallback** — the site is calling a **different** Supabase project than the one you published to.
+
+**Fix**
+
+1. Open **`supabase/config.toml`** and note **`project_id`** (e.g. `aeulesuqxcnaonlxcjcm`).
+2. In the [Supabase dashboard](https://supabase.com/dashboard) for **that** project → **Project Settings → API**, copy **Project URL** and **anon public** key.
+3. Set **`VITE_SUPABASE_URL`**, **`VITE_SUPABASE_PUBLISHABLE_KEY`**, and **`VITE_SUPABASE_PROJECT_ID`** to match **that** project in:
+   - **Vercel** → your production (and preview) environment variables, then **redeploy**.
+   - Local **`.env`** (or `.env.local`) for `npm run dev` / `vite build`.
+
+4. Hard-refresh **`/newsletter`** (or incognito). The RPC **`wdiwf_latest_live_desk_publication`** must exist on the same project (migrations pushed).
 
 ---
 

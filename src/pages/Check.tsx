@@ -33,6 +33,7 @@ import {
 } from "@/lib/policyScoreEngine";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { useScanTracker } from "@/hooks/use-scan-tracker";
 
 const SCAN_STEPS = [
   "Finding careers page…",
@@ -314,6 +315,8 @@ export default function Check() {
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
   const [selectedCompanyName, setSelectedCompanyName] = useState("");
   const [selectedCompanySlug, setSelectedCompanySlug] = useState("");
+
+  useScanTracker(selectedCompanyId ?? undefined, selectedCompanyName || undefined);
 
   // Live search
   const { data: searchResults } = useQuery({

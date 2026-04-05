@@ -132,3 +132,50 @@ Pick one approach:
 - [ ] Either **re-encrypt** all `encrypted_access_token` values or plan a **forced re-link** for LinkedIn.
 
 If you want a follow-up migration for Vault-backed keys + versioning, add it as a separate PR after this security bundle is stable in production.
+
+---
+
+## Pre-launch hardening checklist (April 2026)
+
+### Cursor and IDE
+
+- **Privacy Mode:** In Cursor, set **Settings → Privacy → Privacy Mode** to **ON** on every machine that touches proprietary logic or production credentials. This is an account/editor setting, not stored in git.
+- **Rule audit:** Review [`.cursor/rules/`](.cursor/rules/) when rules change. Do not accept rules that ask the model to print env vars, disable linters, or add hidden network endpoints.
+- **Dependencies:** When accepting AI-suggested packages, confirm the exact npm name (typosquatting) and publisher before installing.
+
+### CI: secret scanning
+
+- **GitHub Actions:** [`.github/workflows/gitleaks.yml`](.github/workflows/gitleaks.yml) runs [Gitleaks](https://github.com/gitleaks/gitleaks) on push and pull requests.
+- **Optional pre-commit:** [`.pre-commit-config.yaml`](.pre-commit-config.yaml) — run `pip install pre-commit && pre-commit install` locally if you want scans on staged files before commit.
+
+### Edge Functions: shared auth and quotas
+
+- Shared modules live under [`supabase/functions/_shared/`](supabase/functions/_shared/) (`cors`, `requireUser`, `enforceDailyQuota`, `recordUsage`, `serviceClient`).
+- **`verify_jwt = false` inventory:** See [`docs/EDGE_FUNCTION_JWT_AUDIT.md`](docs/EDGE_FUNCTION_JWT_AUDIT.md). When adding functions, either keep platform JWT on or document and implement explicit gates.
+
+### CDN / WAF (high priority for production)
+
+- Place a **WAF-capable reverse proxy** (e.g. **Cloudflare**) in front of **Vercel** (SPA) and, if you expose them on custom hostnames, **Supabase Edge Function** URLs.
+- Enable **bot fight / managed rules**, **rate limits** (especially for auth and AI invoke paths), and optional **geo** or **challenge** rules for scrapers.
+- Confirm **Vercel** plan features if you rely on Vercel-native WAF instead of Cloudflare.
+
+### Immutable audit logs (medium priority)
+
+- Export **Supabase** and **worker** logs to **object storage with immutability** (e.g. **S3 Object Lock** in COMPLIANCE mode, or **GCS** bucket retention lock).
+- Restrict `s3:DeleteObject` / equivalent to a **break-glass** role only so attackers cannot wipe evidence.
+
+### Data residency
+
+- In **Supabase Dashboard**, confirm the **project region** (US preferred for Texas-based operations).
+- List sub-processors (Stripe, Sentry, AI gateways) in privacy disclosures and DPAs.
+
+### Clerk: passkeys and step-up (dashboard)
+
+- In **Clerk Dashboard**: enable **passkeys / WebAuthn** for supported sign-in methods.
+- Configure **multi-factor** and **step-up** for **admin / owner** sessions where Clerk provides risk-based prompts (align with [`ARCHITECTURE_RECOMMENDATION.md`](ARCHITECTURE_RECOMMENDATION.md) for eventually **one primary IdP** with Supabase).
+
+### Texas / TDPSA alignment (product)
+
+- **Delete:** In-app **Delete my account** (Dashboard → My Profile and Career Intelligence) calls `delete-user-account` after typed confirmation; **Wipe My Career Data** removes documents and career tables without removing the auth user.
+- **Correct:** Profile edits in-app; company/public data via **Request a Correction**; personal/AI-output issues use issue type **My account / profile / AI career output**.
+- Privacy copy: [`src/pages/PrivacyPolicy.tsx`](src/pages/PrivacyPolicy.tsx).

@@ -1,8 +1,7 @@
 /**
- * Shared search utility with Firecrawl → Gemini AI fallback.
- * When Firecrawl credits are exhausted (402), falls back to using
- * the Lovable AI Gateway (Gemini) to research the topic directly.
- * This is FREE and doesn't require any external API credits.
+ * Shared search utility with Firecrawl → AI fallback.
+ * When Firecrawl credits are exhausted (402), falls back to an OpenAI-compatible
+ * gateway (e.g. Gemini-backed) to research the topic directly.
  */
 
 export interface SearchResult {
@@ -25,7 +24,7 @@ export interface SearchResponse {
 export async function resilientSearch(
   queries: string[],
   firecrawlKey: string | undefined,
-  lovableKey: string,
+  gatewayApiKey: string,
   opts?: { batchSize?: number; maxResultsPerQuery?: number }
 ): Promise<SearchResponse> {
   const batchSize = opts?.batchSize ?? 3;
@@ -45,7 +44,7 @@ export async function resilientSearch(
   }
 
   // Fallback: Use Gemini to research directly
-  const geminiResults = await geminiResearch(queries, lovableKey);
+  const geminiResults = await geminiResearch(queries, gatewayApiKey);
   return { results: geminiResults, creditExhausted: false, source: 'gemini_fallback' };
 }
 
@@ -102,16 +101,16 @@ async function firecrawlBatchSearch(
 }
 
 /**
- * Use Gemini to research queries directly — free via Lovable AI Gateway.
+ * Use Gemini to research queries directly via OpenAI-compatible gateway.
  * Groups all queries into a single prompt for efficiency.
  */
-async function geminiResearch(queries: string[], lovableKey: string): Promise<SearchResult[]> {
+async function geminiResearch(queries: string[], gatewayApiKey: string): Promise<SearchResult[]> {
   const queryList = queries.map((q, i) => `${i + 1}. ${q}`).join('\n');
 
   const resp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${lovableKey}`,
+      'Authorization': `Bearer ${gatewayApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

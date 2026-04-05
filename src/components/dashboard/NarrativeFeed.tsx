@@ -19,11 +19,13 @@ import { motion } from "framer-motion";
 import {
   Search, ArrowRight, ExternalLink, AlertTriangle, Shield,
   FileText, BookOpen, TrendingDown, Eye, Building2,
-  Briefcase, Zap, ChevronRight, Flame, Target,
+  Briefcase, Zap, ChevronRight, Flame, Target, Mic,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useProject2025LinkedCompanyIds } from "@/hooks/use-project2025-linked-companies";
 import { Project2025DashboardBadge } from "@/components/project2025/Project2025DashboardBadge";
+import { DashboardHeartbeat } from "@/components/dashboard/DashboardHeartbeat";
+import { RecentCompanyWork } from "@/components/dashboard/RecentCompanyWork";
 
 interface NarrativeFeedProps {
   onNavigate: (tab: string) => void;
@@ -115,6 +117,23 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
   const dateStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
   const firstName = briefing?.firstName || "there";
 
+  const trackedCompanies = useMemo(() => {
+    if (!briefing?.tracked?.length) return [];
+    return briefing.tracked.map((t: any) => ({
+      id: t.company?.id as string | undefined,
+      name: t.company?.name,
+      slug: t.company?.slug,
+      industry: t.company?.industry,
+      score: t.company?.civic_footprint_score ?? 0,
+    }));
+  }, [briefing?.tracked]);
+
+  const trackedCompanyIds = useMemo(
+    () => trackedCompanies.map((t) => t.id).filter(Boolean) as string[],
+    [trackedCompanies],
+  );
+  const { data: project2025CompanySet } = useProject2025LinkedCompanyIds(trackedCompanyIds);
+
   if (isLoading) {
     return (
       <div className="space-y-5 max-w-[900px] mx-auto">
@@ -124,22 +143,6 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
       </div>
     );
   }
-
-  const trackedCompanies = briefing?.tracked?.length
-    ? briefing.tracked.map((t: any) => ({
-        id: t.company?.id as string | undefined,
-        name: t.company?.name,
-        slug: t.company?.slug,
-        industry: t.company?.industry,
-        score: t.company?.civic_footprint_score ?? 0,
-      }))
-    : [];
-
-  const trackedCompanyIds = useMemo(
-    () => trackedCompanies.map((t) => t.id).filter(Boolean) as string[],
-    [trackedCompanies],
-  );
-  const { data: project2025CompanySet } = useProject2025LinkedCompanyIds(trackedCompanyIds);
 
   const alerts = briefing?.alerts || [];
 
@@ -172,6 +175,15 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
         </div>
       </motion.div>
 
+      <motion.div {...anim(0.02)} className="border-b border-border/30 pb-6">
+        <DashboardHeartbeat onNavigate={onNavigate} />
+      </motion.div>
+
+      {user && (
+        <motion.div {...anim(0.025)}>
+          <RecentCompanyWork onNavigate={onNavigate} />
+        </motion.div>
+      )}
 
       {/* ═══════════════════════════════════════════════════════
           ACT 1: YOUR EMPLOYER RIGHT NOW
@@ -388,6 +400,21 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Pull the dossier on any company before you walk in. OSHA violations, pay equity, leadership changes — the questions they don't expect you to ask.
+            </p>
+          </Card>
+
+          {/* Action card: AI mock interview (dashboard tab) */}
+          <Card className="group cursor-pointer hover:border-primary/30 transition-all" onClick={() => onNavigate("mock-interview")}>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+                <Mic className="w-4 h-4 text-primary" />
+              </span>
+              <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                AI mock interview
+              </h4>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Practice answers with structured feedback — build confidence before you’re in front of a hiring panel.
             </p>
           </Card>
 

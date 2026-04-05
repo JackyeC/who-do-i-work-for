@@ -124,7 +124,7 @@ export function AskJackyeWidget() {
                 )
               );
             }
-          } catch {}
+          } catch { /* malformed SSE chunk */ }
         }
       }
     } catch (e: any) {

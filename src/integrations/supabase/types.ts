@@ -968,6 +968,36 @@ export type Database = {
           },
         ]
       }
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          email_sent: boolean
+          id: string
+          message: string
+          name: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          email_sent?: boolean
+          id?: string
+          message: string
+          name: string
+          subject: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          email_sent?: boolean
+          id?: string
+          message?: string
+          name?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       career_paths: {
         Row: {
           average_salary: string | null
@@ -1128,6 +1158,39 @@ export type Database = {
           reason?: string | null
           status?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_recognition_badges: {
+        Row: {
+          badge_key: string
+          created_at: string
+          id: string
+          member_number: number | null
+          sort_order: number
+          subtitle: string | null
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          badge_key: string
+          created_at?: string
+          id?: string
+          member_number?: number | null
+          sort_order?: number
+          subtitle?: string | null
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          badge_key?: string
+          created_at?: string
+          id?: string
+          member_number?: number | null
+          sort_order?: number
+          subtitle?: string | null
+          title?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -9926,6 +9989,35 @@ export type Database = {
           },
         ]
       }
+      user_recent_company_views: {
+        Row: {
+          company_id: string
+          id: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          company_id: string
+          id?: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          company_id?: string
+          id?: string
+          user_id?: string
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_recent_company_views_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_usage: {
         Row: {
           function_name: string
@@ -10658,6 +10750,11 @@ export type Database = {
         }[]
       }
       get_early_access_count: { Args: never; Returns: number }
+      get_founding_member_badge_info: { Args: never; Returns: Json }
+      is_briefing_room_founding_audience: {
+        Args: { p_month: number; p_year: number }
+        Returns: boolean
+      }
       get_personalized_news: {
         Args: { p_category?: string; p_limit?: number; p_user_id: string }
         Returns: {

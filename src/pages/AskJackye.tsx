@@ -76,11 +76,11 @@ const SCAN_PHASES = [
 
 const OPENING_MESSAGE: Msg = {
   role: "assistant",
-  content: `Welcome — I'm your career intelligence advisor.
+  content: `Welcome. This is Ask Jackye.
 
-I analyze **company filings**, **political spending**, **workforce signals**, and **leadership data** to give you the full picture before you make a decision.
+I work from receipts: filings, money trails, workforce signals, how leadership actually shows up in data. Not vibes.
 
-Select a category below, or ask me anything about a company, an offer, or your next career move.`,
+Pick a thread below, or tell me what you're trying to decide about a company or an offer.`,
 };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ask-jackye`;
@@ -92,16 +92,19 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: 'What is the Intelligence Advisor system?',
-    answer: "The Intelligence Advisor is a specialized AI engine built on the People Puzzles proprietary talent framework. Unlike generic chatbots, this system is designed to think like a veteran Head of Talent. It doesn't just 'chat' — it cross-references SEC filings, EEO-1 data, labor market benchmarks, and social signals to provide an objective intelligence briefing.",
+    question: "What is Ask Jackye?",
+    answer:
+      "It's my lane in the product: career intelligence grounded in how hiring and employers actually behave. It pulls from public records and the signals we surface on the platform, not generic career advice.",
   },
   {
-    question: 'What methodology powers the intelligence engine?',
-    answer: "The intelligence engine is built on 15+ years of Talent Acquisition expertise across global tech firms. The methodology includes Signal Weighting (weighting data points most commonly associated with workplace transparency), Normalization (standardizing messy corporate reporting into clear insights), and Risk Detection (spotting 'red flag' patterns that standard algorithms miss).",
+    question: "What's it built on?",
+    answer:
+      "Years running TA and people strategy at real companies, plus a stack that weights filings, workforce data, and transparency gaps. The point is receipts you can use before you sign.",
   },
   {
-    question: "How is the intelligence generated?",
-    answer: "The system cross-references public filings, federal databases, and open records to surface workforce transparency signals — not opinions.",
+    question: "Is this just opinions?",
+    answer:
+      "No. When we cite something, it's tied to public data or what's in your dossier. If we don't have it, we say so.",
   },
 ];
 
@@ -389,6 +392,9 @@ export default function AskJackyePage() {
                 style={{ width: `${((scanPhase + 1) / SCAN_PHASES.length) * 100}%` }}
               />
             </div>
+            <p className="text-[11px] text-civic-green/75 mt-2 leading-relaxed max-w-2xl">
+              These steps run against <span className="text-civic-green font-medium">this conversation</span> (your question and the category you picked)—so you always know what the scan is evaluating.
+            </p>
           </div>
         </div>
       )}

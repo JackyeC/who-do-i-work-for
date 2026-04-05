@@ -1,4 +1,6 @@
+import { useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { toast } from "sonner";
 import {
   Sidebar,
   SidebarContent,
@@ -12,8 +14,9 @@ import {
   SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCivicImpact } from "@/hooks/use-civic-impact";
+import { CIVIC_MILESTONES, milestoneToastMessage, weeklyEngagementSubcopy } from "@/lib/engagement-insights";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -31,13 +34,8 @@ import logoNav from "@/assets/wdiwf-logo-nav-light.png";
 /*  Nav structure                                                      */
 /* ------------------------------------------------------------------ */
 
-const NAV_GROUPS = [
-  {
-    label: "Home",
-    items: [
-      { id: "home", label: "Home", icon: Home, path: "/" },
-    ],
-  },
+/** Everything below the Home / Command center group. */
+const NAV_GROUPS_TAIL = [
   {
     label: "Explore",
     items: [
@@ -61,7 +59,7 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: "Intelligence",
+    label: "Research",
     items: [
       { id: "receipts", label: "Evidence Receipts", icon: FileText, path: "/intelligence" },
       { id: "policy-signals", label: "Policy Signals", icon: BarChart3, path: "/intelligence?type=policy_alert" },
@@ -86,10 +84,9 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: "Intelligence",
+    label: "My dashboard",
     auth: true,
     items: [
-      { id: "dashboard", label: "Overview", icon: LayoutDashboard, path: "/dashboard" },
       { id: "tracked", label: "Tracked Companies", icon: Building2, path: "/dashboard?tab=tracked" },
       { id: "matched-jobs", label: "Matched Jobs", icon: Briefcase, path: "/dashboard?tab=matches" },
       { id: "auto-apply", label: "Auto-Apply", icon: Zap, path: "/dashboard?tab=auto-apply" },
@@ -115,12 +112,52 @@ function isPathActive(itemPath: string, locationPathname: string, locationSearch
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
+const CIVIC_MILESTONE_TOAST_KEY = "wdiwf_civic_milestones_toast";
+
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { user, signOut } = useAuth();
   const location = useLocation();
-  
+  const { data: civic, isLoading: civicLoading } = useCivicImpact();
+
+  const navGroups = useMemo(() => {
+    const homeGroup = {
+      label: "Home",
+      items: user
+        ? [
+            { id: "command-center", label: "Command center", icon: LayoutDashboard, path: "/dashboard" },
+            { id: "site-home", label: "Site home", icon: Home, path: "/" },
+          ]
+        : [{ id: "home", label: "Home", icon: Home, path: "/" }],
+    };
+    return [homeGroup, ...NAV_GROUPS_TAIL];
+  }, [user]);
+
+  const weeklyTip = useMemo(
+    () => (user ? weeklyEngagementSubcopy(user.id) : ""),
+    [user]
+  );
+
+  useEffect(() => {
+    if (!user || civic === undefined) return;
+    const n = civic.signalsUncovered;
+    let shown: number[] = [];
+    try {
+      const raw = localStorage.getItem(CIVIC_MILESTONE_TOAST_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      shown = Array.isArray(parsed) ? parsed.filter((x: unknown) => typeof x === "number") : [];
+    } catch {
+      shown = [];
+    }
+    const eligible = CIVIC_MILESTONES.filter((m) => n >= m && !shown.includes(m));
+    if (eligible.length === 0) return;
+    const m = eligible[eligible.length - 1]!;
+    const msg = milestoneToastMessage(m);
+    if (msg) toast.success(msg);
+    const next = [...new Set([...shown, ...eligible])].sort((a, b) => a - b);
+    localStorage.setItem(CIVIC_MILESTONE_TOAST_KEY, JSON.stringify(next));
+  }, [user, civic]);
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border/40">
@@ -137,7 +174,7 @@ export function AppSidebar() {
 
       {/* ── Nav groups ── */}
       <SidebarContent className="px-2">
-        {NAV_GROUPS.map((group) => {
+        {navGroups.map((group) => {
           // Hide auth-required groups for logged-out users
           if ((group as any).auth && !user) return null;
           const groupHasActive = group.items.some((item) =>
@@ -199,8 +236,20 @@ export function AppSidebar() {
               </span>
             </div>
             <p className="text-lg font-bold text-foreground font-display leading-none">
-              0 <span className="text-xs font-normal text-muted-foreground">signals uncovered</span>
+              {civicLoading ? "—" : civic?.signalsUncovered ?? 0}{" "}
+              <span className="text-xs font-normal text-muted-foreground">signals uncovered</span>
             </p>
+            {(civic?.employersTracked ?? 0) > 0 && (
+              <p className="text-[11px] text-muted-foreground mt-2">
+                {civic!.employersTracked} employer
+                {civic!.employersTracked === 1 ? "" : "s"} on your watchlist
+              </p>
+            )}
+            {weeklyTip && (
+              <p className="text-[11px] text-muted-foreground/90 mt-2 leading-snug border-t border-civic-gold/10 pt-2">
+                {weeklyTip}
+              </p>
+            )}
           </div>
         )}
 

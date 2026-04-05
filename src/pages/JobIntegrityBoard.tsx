@@ -70,7 +70,7 @@ export default function JobIntegrityBoard() {
   const { data: jobs, isLoading } = useQuery({
     queryKey: ["job-integrity-board"],
     queryFn: async () => {
-      let query = supabase
+      const query = supabase
         .from("company_jobs")
         .select("id, title, location, work_mode, url, created_at, posted_at, company_id, is_featured, admin_approved, salary_range, seniority_level, department, description, employment_type, source_platform, companies(name, slug, logo_url, vetted_status, jackye_insight, description, employer_clarity_score)")
         .eq("is_active", true)

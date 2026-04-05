@@ -11,7 +11,7 @@ serve(async (req: Request) => {
 
   try {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    if (!LOVABLE_API_KEY) throw new Error("AI gateway key is not configured");
 
     const {
       companyName, roleTitle, baseSalary, bonus, equity, signOnBonus,

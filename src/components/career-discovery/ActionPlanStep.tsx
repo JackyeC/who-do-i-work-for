@@ -56,13 +56,14 @@ function getActionLink(type: string, text: string): { url: string; label: string
       return { url: `https://www.google.com/search?q=${q}+online+course`, label: "Search courses" };
     case "skill":
       return { url: `https://www.google.com/search?q=learn+${q}+tutorial`, label: "Learn more" };
-    case "company":
+    case "company": {
       // Extract company name — take first quoted or capitalized phrase
       const companyMatch = text.match(/(?:at |about |research |explore )([A-Z][a-zA-Z& ]+)/);
       if (companyMatch) {
         return { url: `/search?q=${encodeURIComponent(companyMatch[1].trim())}`, label: "View profile" };
       }
       return null;
+    }
     default:
       return null;
   }

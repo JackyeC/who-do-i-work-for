@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePersona } from "@/hooks/use-persona";
 import { PersonaQuizBanner } from "@/components/PersonaQuizBanner";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { NarrativeFeed } from "@/components/dashboard/NarrativeFeed";
 import { AlignedJobsList } from "@/components/jobs/AlignedJobsList";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";
@@ -21,17 +20,20 @@ import { OutreachIntelligence } from "@/components/career/OutreachIntelligence";
 import { RelationshipDashboard } from "@/components/career/RelationshipDashboard";
 import { FirstLoginOnboarding } from "@/components/FirstLoginOnboarding";
 import { DataWipeButton } from "@/components/career/DataWipeButton";
+import { AccountDeletionButton } from "@/components/career/AccountDeletionButton";
 import { PostPurchaseUpsell } from "@/components/PostPurchaseUpsell";
 import { supabase } from "@/integrations/supabase/client";
 import { OfferClarityWizard } from "@/components/offer-clarity/OfferClarityWizard";
 import { PremiumGate } from "@/components/PremiumGate";
 import { Helmet } from "react-helmet-async";
+import { Badge } from "@/components/ui/badge";
 import { JobsFeedSection } from "@/components/dashboard/JobsFeedSection";
 import { TrackerSection } from "@/components/dashboard/TrackerSection";
 import { ApplyKitSection } from "@/components/dashboard/ApplyKitSection";
 import { MockInterviewSection } from "@/components/dashboard/MockInterviewSection";
 import { InboxSection } from "@/components/dashboard/InboxSection";
 import { SavedSection } from "@/components/dashboard/SavedSection";
+import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
 
 const TAB_TITLES: Record<string, string> = {
   overview: "My Intelligence",
@@ -55,8 +57,21 @@ const TAB_TITLES: Record<string, string> = {
   "search-saved": "Saved",
 };
 
+/** Subtle path to Workplace DNA when values profile hides the main quiz banner. */
+function ReaderLensFootnote() {
+  const { hasTakenQuiz, personaName } = usePersona();
+  return (
+    <p className="mt-10 pt-6 border-t border-border/40 text-center text-xs text-muted-foreground">
+      <span className="mr-1">Reader lens:</span>
+      <Link to="/quiz" className="text-primary hover:underline font-medium">
+        {hasTakenQuiz && personaName ? `“${personaName}” — adjust` : "Set or adjust (~60 sec)"}
+      </Link>
+    </p>
+  );
+}
+
 export default function Dashboard() {
-  const { user, loading } = useAuth();
+  const { user, loading, subscriptionStatus } = useAuth();
   const { hasTakenQuiz } = usePersona();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "overview";
@@ -79,6 +94,21 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
+  /** Values profile = substantive personalization; Workplace DNA quiz only sets copy/lens in localStorage. */
+  const { data: hasValuesProfile } = useQuery({
+    queryKey: ["values-profile-exists", user?.id],
+    queryFn: async () => {
+      const { data } = await (supabase as any)
+        .from("user_values_profile")
+        .select("id")
+        .eq("user_id", user!.id)
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!user,
+    staleTime: 60_000,
+  });
+
   const creditPurchase = searchParams.get("credit_purchase");
   const [showUpsell, setShowUpsell] = useState(creditPurchase === "success");
 
@@ -96,7 +126,12 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (tab) {
       case "overview":
-        return <NarrativeFeed onNavigate={setTab} />;
+        return (
+          <>
+            <NarrativeFeed onNavigate={setTab} />
+            {hasValuesProfile === true && <ReaderLensFootnote />}
+          </>
+        );
       case "tracked":
         return <SlotManagementDashboard />;
       case "matches":
@@ -145,6 +180,7 @@ export default function Dashboard() {
           <div className="space-y-6">
             <UserProfileForm />
             <DataWipeButton />
+            <AccountDeletionButton />
           </div>
         );
       case "jobs":
@@ -178,13 +214,25 @@ export default function Dashboard() {
         />
       )}
 
-      <div className="flex items-center gap-3 border-b border-border/30 px-6 h-12">
-        <h1 className="text-sm font-semibold text-foreground truncate">
+      <div className="flex items-center gap-3 border-b border-border/30 px-6 h-12 flex-wrap">
+        <h1 className="text-sm font-semibold text-foreground truncate min-w-0">
           {TAB_TITLES[tab] || "My Intelligence"}
         </h1>
+        {subscriptionStatus?.founding_supporter && (
+          <Badge
+            variant="outline"
+            title="The Reset Room — active subscription (live sessions as The Briefing Room; Founding Supporters rate when applicable)."
+            className="shrink-0 text-[10px] font-semibold uppercase tracking-wide border-primary/40 text-primary bg-primary/10"
+          >
+            Reset Room
+          </Badge>
+        )}
       </div>
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
-        {!hasTakenQuiz && tab === "overview" && <PersonaQuizBanner />}
+        <div className="max-w-[900px] mx-auto w-full">
+          <FoundingMemberRecognition />
+        </div>
+        {!hasTakenQuiz && tab === "overview" && hasValuesProfile === false && <PersonaQuizBanner />}
         {showUpsell && <PostPurchaseUpsell onDismiss={dismissUpsell} />}
         {renderContent()}
       </div>

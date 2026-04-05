@@ -15,7 +15,7 @@ const PrivacyPolicy = () => {
     <main className="flex-1 max-w-3xl mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold text-foreground mb-8">Privacy Policy</h1>
       <div className="prose prose-sm text-muted-foreground space-y-6">
-        <p className="text-sm text-muted-foreground">Last updated: March 12, 2026</p>
+        <p className="text-sm text-muted-foreground">Last updated: April 4, 2026</p>
 
         <section>
           <h2 className="text-lg font-semibold text-foreground mt-8 mb-3">1. Information We Collect</h2>
@@ -57,8 +57,25 @@ const PrivacyPolicy = () => {
         </section>
 
         <section>
-          <h2 className="text-lg font-semibold text-foreground mt-8 mb-3">7. Your Rights</h2>
-          <p>You have the right to access, correct, or delete your personal data. You can delete uploaded documents, career contacts, and saved reports through the platform. To delete your account entirely, contact us through the platform.</p>
+          <h2 className="text-lg font-semibold text-foreground mt-8 mb-3">7. Your Rights (including Texas consumers)</h2>
+          <p>
+            If you reside in Texas, you may have rights under the Texas Data Privacy and Security Act (TDPSA), including the right to confirm whether we process your
+            personal data, the right to access, correct, and delete certain personal data, and the right to opt out of certain processing where applicable.
+          </p>
+          <p className="mt-3">
+            <strong>Correct your data:</strong> Update your profile and preferences in the app (for example, Dashboard → My Profile). For inaccuracies in company or
+            public-records-derived information shown on the site, use{" "}
+            <a href="/request-correction" className="text-primary underline underline-offset-2">
+              Request a Correction
+            </a>
+            . For AI-generated career suggestions that do not reflect you, use the same form and choose the issue type related to personal or account data.
+          </p>
+          <p className="mt-3">
+            <strong>Delete your data:</strong> You can remove uploaded career documents, offer materials, and related app data from Dashboard → My Profile or Career
+            Intelligence (see “Wipe My Career Data”). To delete your entire account and Supabase-backed login identity, use “Delete my account” on those same pages
+            after confirming the phrase shown. That action is permanent. If you have an active paid subscription, cancel it through billing (Pricing) before deleting
+            your account when possible.
+          </p>
         </section>
 
         <section>
@@ -73,7 +90,13 @@ const PrivacyPolicy = () => {
 
         <section>
           <h2 className="text-lg font-semibold text-foreground mt-8 mb-3">10. Contact</h2>
-          <p>For privacy-related questions or requests, please use the Request Correction form or contact us through the platform.</p>
+          <p>
+            For privacy-related questions, corrections to company or public-profile data, or requests about AI-displayed information, use{" "}
+            <a href="/request-correction" className="text-primary underline underline-offset-2">
+              Request a Correction
+            </a>
+            . For account deletion, use the in-app “Delete my account” flow on Dashboard → My Profile or Career Intelligence.
+          </p>
         </section>
       </div>
     </main>

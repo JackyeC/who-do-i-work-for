@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import jackyeHeadshotSm from "@/assets/jackye-headshot-sm.webp";
+import { ProductKeySection } from "@/components/marketing/ProductKeySection";
 
 const CREDENTIAL_BADGES: { label: string; url: string | null }[] = [
   { label: "LinkedIn Learning Instructor", url: "https://www.linkedin.com/learning/human-resources-writing-an-effective-job-description" },
@@ -22,6 +24,16 @@ const CREDENTIAL_BADGES: { label: string; url: string | null }[] = [
 ];
 
 const About = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash !== "#product-key-about") return;
+    const id = window.setTimeout(() => {
+      document.getElementById("product-key-about")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => clearTimeout(id);
+  }, [location.hash]);
+
   usePageSEO({
     title: "About — Who Do I Work For by Jackye Clayton",
     description:
@@ -119,6 +131,8 @@ const About = () => {
             </div>
           </div>
         </section>
+
+        <ProductKeySection sectionId="product-key-about" className="bg-background border-y border-border" />
 
         {/* ── CTA ── */}
         <section className="max-w-[1100px] mx-auto px-6 lg:px-16 py-20 text-center">

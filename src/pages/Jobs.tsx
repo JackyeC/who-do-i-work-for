@@ -23,6 +23,7 @@ import { UserProfileForm } from "@/components/jobs/UserProfileForm";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";
 import { JobAlertPreferences } from "@/components/jobs/JobAlertPreferences";
 import { AskJackyeWidget } from "@/components/jobs/AskJackyeWidget";
+import { MarketingLaunchProductHold } from "@/components/MarketingLaunchProductHold";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -76,6 +77,10 @@ export default function Jobs() {
 
   // Semantic search expansion
   const handleSemanticSearch = useCallback(async (query: string) => {
+    if (!user) {
+      setSemanticTerms([]);
+      return;
+    }
     if (!query.trim() || query.length < 3) {
       setSemanticTerms([]);
       return;
@@ -94,7 +99,7 @@ export default function Jobs() {
     } finally {
       setSemanticLoading(false);
     }
-  }, []);
+  }, [user]);
 
   // Debounced semantic search trigger
   useEffect(() => {
@@ -318,7 +323,7 @@ export default function Jobs() {
       if (error) throw error;
       if (result?.payload) {
         setGeneratedPayload({ ...result.payload, jobTitle: job.title, jobId: job.id });
-        try { await navigator.clipboard.writeText(result.payload.matchingStatement); } catch {}
+        try { await navigator.clipboard.writeText(result.payload.matchingStatement); } catch { /* clipboard denied */ }
         toast.success("Cover letter generated & copied!");
         // Track application
         await supabase.from("applications_tracker").upsert({
@@ -354,6 +359,10 @@ export default function Jobs() {
   };
 
   return (
+    <MarketingLaunchProductHold
+      title="Job board — early access"
+      description="We’re finishing the values-vetted listings experience. Sign in with an approved account to preview the board, or join the list to get access when it opens."
+    >
     <div className="flex flex-col flex-1">
       <div className="flex flex-1">
 
@@ -410,11 +419,14 @@ export default function Jobs() {
                           <span className="text-sm font-semibold text-foreground">
                             Cover letter ready for {generatedPayload.jobTitle}
                           </span>
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="secondary" className="text-xs" title="Estimated fit between your saved profile and this job listing; review before sending.">
                             <Shield className="w-3 h-3 mr-0.5" />
                             {generatedPayload.alignmentScore}% match
                           </Badge>
                         </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Generated for <span className="text-foreground font-medium">{generatedPayload.jobTitle}</span> at this listing—cover letter reflects your profile and this role, not other jobs.
+                        </p>
                         {generatedPayload.targetedIntro && (
                           <p className="text-sm font-medium text-foreground/90 mb-2 italic">"{generatedPayload.targetedIntro}"</p>
                         )}
@@ -477,13 +489,18 @@ export default function Jobs() {
                     </span>
                   )}
                   {semanticTerms.length > 0 && !semanticLoading && (
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      <span className="text-xs text-muted-foreground">AI expanded:</span>
-                      {semanticTerms.slice(0, 5).map((term) => (
-                        <Badge key={term} variant="outline" className="text-xs py-0 px-1.5 bg-primary/5">
-                          {term}
-                        </Badge>
-                      ))}
+                    <div className="mt-1.5 space-y-1">
+                      <p className="text-[11px] text-muted-foreground leading-snug">
+                        Suggestions below expand <span className="text-foreground/90 font-medium">your search box text</span> only—they narrow keyword matching, not a separate “AI verdict” on employers.
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        <span className="text-xs text-muted-foreground">Related terms:</span>
+                        {semanticTerms.slice(0, 5).map((term) => (
+                          <Badge key={term} variant="outline" className="text-xs py-0 px-1.5 bg-primary/5">
+                            {term}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -743,5 +760,6 @@ export default function Jobs() {
       <AskJackyeWidget />
       <Footer />
     </div>
+    </MarketingLaunchProductHold>
   );
 }

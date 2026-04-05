@@ -13,7 +13,7 @@ serve(async (req: Request) => {
     const { jobTitle, companyName, hasSalary, civicScore, mismatches } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    if (!LOVABLE_API_KEY) throw new Error("AI gateway key is not configured");
 
     const systemPrompt = `You are a career intelligence advisor. Generate 2-3 specific, strategic interview questions a candidate should ask based on the company signals provided. Questions should be professional, non-confrontational, and designed to surface real information about company culture, stability, and fairness. Do not include generic questions.`;
 

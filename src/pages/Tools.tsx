@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   FileSearch, Map, GitCompare, Landmark, Briefcase, Radio, UserCheck, ArrowRight, Dna, Shield,
 } from "lucide-react";
+import { isMarketingLaunch } from "@/config/marketingLaunch";
 
 const TOOLS = [
   {
@@ -68,12 +69,16 @@ const TOOLS = [
   },
 ];
 
+const MARKETING_HIDDEN_PATHS = new Set(["/career-intelligence", "/signal-alerts", "/jobs"]);
+
 export default function Tools() {
   usePageSEO({
     title: "All Tools — Who Do I Work For?",
     description: "Explore every tool on the Who Do I Work For platform: Receipts, Career Map, Compare, Follow the Money, Recruiter Brief, Signal Alerts, and Job Board.",
     path: "/tools",
   });
+
+  const tools = isMarketingLaunch ? TOOLS.filter((t) => !MARKETING_HIDDEN_PATHS.has(t.path)) : TOOLS;
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,7 +91,7 @@ export default function Tools() {
       </section>
 
       <div className="max-w-4xl mx-auto px-4 pb-16 grid gap-4 sm:grid-cols-2">
-        {TOOLS.map((tool) => (
+        {tools.map((tool) => (
           <Link key={tool.path} to={tool.path} className="group">
             <Card className="bg-card border border-border hover:border-primary/50 transition-colors h-full">
               <CardContent className="p-5 flex flex-col gap-3 h-full">

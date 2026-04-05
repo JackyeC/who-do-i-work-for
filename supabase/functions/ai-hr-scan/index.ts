@@ -121,7 +121,7 @@ Deno.serve(async (req: Request) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     if (!lovableKey) {
-      console.error('SCAN_LOG:', JSON.stringify({ ...scanLog, steps: { config: 'MISSING_LOVABLE_KEY' } }));
+      console.error('SCAN_LOG:', JSON.stringify({ ...scanLog, steps: { config: 'MISSING_AI_GATEWAY_KEY' } }));
       return new Response(JSON.stringify({ success: false, error: 'AI gateway not configured', scanStatus: 'failed' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });

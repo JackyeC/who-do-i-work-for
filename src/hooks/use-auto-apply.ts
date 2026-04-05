@@ -25,6 +25,7 @@ export interface ApplyQueueItem {
   application_url: string | null;
   processed_at: string | null;
   created_at: string;
+  companies?: { slug: string; name: string } | null;
 }
 
 export function useAutoApplySettings() {
@@ -85,7 +86,7 @@ export function useApplyQueue() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("apply_queue")
-        .select("*")
+        .select("*, companies:company_id (slug, name)")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -134,7 +135,15 @@ export function useApplyQueue() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["apply-queue"] });
       queryClient.invalidateQueries({ queryKey: ["applications-tracker"] });
-      toast({ title: `Processed ${data?.processed || 0} applications` });
+      const n = data?.processed ?? 0;
+      const reason = typeof data?.reason === "string" ? data.reason : null;
+      toast({
+        title: n > 0 ? `Generated ${n} application draft${n === 1 ? "" : "s"}` : "Queue not processed",
+        description:
+          n > 0
+            ? "Open each row to copy your statement and apply on the employer site."
+            : reason || "Check auto-apply is on, daily limit, and queued jobs meet your minimum match.",
+      });
     },
     onError: (e: any) => {
       toast({ title: "Queue processing failed", description: e.message, variant: "destructive" });

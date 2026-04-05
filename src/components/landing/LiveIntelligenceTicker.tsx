@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { workNewsDedupeKey } from "@/hooks/use-work-news";
 import { Radio } from "lucide-react";
 import {
   getSourceProfile,
@@ -45,13 +46,23 @@ export function LiveIntelligenceTicker() {
           "id, headline, source_name, source_url, category, is_controversy, published_at, jackye_take"
         )
         .order("published_at", { ascending: false })
-        .limit(20);
+        .limit(40);
 
       if (error) throw error;
-      return (data as TickerNewsItem[]) || [];
+      const rows = (data as TickerNewsItem[]) || [];
+      const seen = new Set<string>();
+      const out: TickerNewsItem[] = [];
+      for (const row of rows) {
+        const k = workNewsDedupeKey(row);
+        if (seen.has(k)) continue;
+        seen.add(k);
+        out.push(row);
+        if (out.length >= 20) break;
+      }
+      return out;
     },
-    staleTime: 120_000,
-    refetchInterval: 300_000,
+    staleTime: 90_000,
+    refetchInterval: 180_000,
   });
 
   const tickerItems: TickerNewsItem[] =

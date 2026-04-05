@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import type { DeskPublicationRow } from "@/hooks/use-latest-desk-publication";
 import { SUBSTACK_NEWSLETTER_URL } from "@/content/newsletterDeskSample";
+import { newsletterMarkdownComponents } from "@/components/newsletter/newsletterMarkdownComponents";
 
 function formatDeskTime(iso: string) {
   try {
@@ -71,6 +72,7 @@ const mdProse = cn(
   "[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2",
   "[&_blockquote]:border-l-2 [&_blockquote]:border-primary/50 [&_blockquote]:pl-4 [&_blockquote]:my-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground",
   "[&_code]:text-sm [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded",
+  "[&_img]:max-w-full",
 );
 
 export function NewsletterDeskLive({ row }: { row: DeskPublicationRow }) {
@@ -127,7 +129,9 @@ export function NewsletterDeskLive({ row }: { row: DeskPublicationRow }) {
 
           <TabsContent value="website" className="px-5 pb-6 pt-4 focus-visible:outline-none">
             <div className={mdProse}>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{row.site_markdown ?? ""}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={newsletterMarkdownComponents}>
+                {row.site_markdown ?? ""}
+              </ReactMarkdown>
             </div>
           </TabsContent>
 
@@ -156,7 +160,9 @@ export function NewsletterDeskLive({ row }: { row: DeskPublicationRow }) {
                 )}
                 {row.newsletter_markdown ? (
                   <div className={mdProse}>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{row.newsletter_markdown}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={newsletterMarkdownComponents}>
+                      {row.newsletter_markdown}
+                    </ReactMarkdown>
                   </div>
                 ) : null}
                 <div className="flex flex-wrap gap-2 items-center pt-2">

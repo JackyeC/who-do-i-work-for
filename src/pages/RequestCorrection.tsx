@@ -29,6 +29,7 @@ const issueTypes = [
   { value: "outdated", label: "Outdated Information" },
   { value: "attribution", label: "Incorrect Source Attribution" },
   { value: "context", label: "Missing Context" },
+  { value: "personal_account_data", label: "My account / profile / AI career output" },
   { value: "other", label: "Other" },
 ];
 
@@ -128,7 +129,7 @@ export default function RequestCorrection() {
           Request a Correction
         </h1>
         <p className="text-muted-foreground mb-8">
-          Who Do I Work For? uses publicly available data to compile company transparency profiles. If you believe any information is inaccurate, outdated, or missing important context, please submit a correction request below.
+          Who Do I Work For? uses publicly available data to compile company transparency profiles. If you believe any information is inaccurate, outdated, or missing important context, please submit a correction request below. If you need to correct or challenge <strong>your account, profile, or AI-generated career suggestions</strong> tied to your login, choose <strong>My account / profile / AI career output</strong> as the issue type and describe what should change.
         </p>
 
         <Card className="mb-8 border-primary/20 bg-primary/5">

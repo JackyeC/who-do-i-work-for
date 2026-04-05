@@ -1,5 +1,6 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Info, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLatestDeskPublication } from "@/hooks/use-latest-desk-publication";
 import { NewsletterDeskLive } from "@/components/newsletter/NewsletterDeskLive";
@@ -10,7 +11,10 @@ import { NewsletterDeskSample } from "@/components/newsletter/NewsletterDeskSamp
  * Falls back to static sample with an explicit badge when none exists or query fails.
  */
 export function NewsletterDeskPreview() {
-  const { data, isLoading, isError } = useLatestDeskPublication();
+  const { data, isLoading, isError, refetch, isFetching } = useLatestDeskPublication({
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
 
   if (isLoading) {
     return (
@@ -32,21 +36,66 @@ export function NewsletterDeskPreview() {
     data.published_to_site === true;
 
   if (live) {
-    return <NewsletterDeskLive row={data} />;
+    return (
+      <div className="space-y-2">
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-8 text-xs text-muted-foreground"
+            disabled={isFetching}
+            onClick={() => refetch()}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isFetching ? "animate-spin" : ""}`} />
+            Refresh desk
+          </Button>
+        </div>
+        <NewsletterDeskLive row={data} />
+      </div>
+    );
   }
+
+  const bannerClass = isError
+    ? "border-amber-500/30 bg-amber-500/10 text-amber-950 dark:text-amber-100"
+    : "border-primary/20 bg-primary/5 text-foreground";
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-950 dark:text-amber-100">
-        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-        <span>
-          <Badge variant="outline" className="mr-2 border-amber-600/40 text-[10px] uppercase">
-            Fallback
-          </Badge>
-          {isError
-            ? "Could not load live desk from the database. Showing sample layout until the connection is fixed."
-            : "No live desk row is published yet. Showing sample format. After the content engine posts a completed run to Supabase, this block updates automatically."}
-        </span>
+      <div
+        className={`flex flex-wrap items-center gap-2 justify-between rounded-lg border px-3 py-2 text-xs ${bannerClass}`}
+      >
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
+          {isError ? (
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+          ) : (
+            <Info className="w-3.5 h-3.5 shrink-0 text-primary" />
+          )}
+          <span>
+            <Badge
+              variant="outline"
+              className={`mr-2 text-[10px] uppercase ${
+                isError ? "border-amber-600/40" : "border-primary/30 text-primary"
+              }`}
+            >
+              {isError ? "Connection" : "Preview"}
+            </Badge>
+            {isError
+              ? "Could not load the desk from the database. Showing sample layout until the connection is fixed."
+              : "Pipeline is live — when the next desk edition is published to the site, it appears here automatically. Below is the layout reference until then."}
+          </span>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className={`h-8 shrink-0 ${isError ? "border-amber-600/40 text-amber-950 dark:text-amber-100" : "border-primary/25"}`}
+          disabled={isFetching}
+          onClick={() => refetch()}
+        >
+          <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isFetching ? "animate-spin" : ""}`} />
+          Check again
+        </Button>
       </div>
       <NewsletterDeskSample />
     </div>

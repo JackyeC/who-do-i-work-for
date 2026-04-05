@@ -259,6 +259,24 @@ export function SignalsThisWeek() {
         </Button>
       </div>
 
+      {/* Persistent onboarding: what AI is evaluating (avoids “floating” summaries) */}
+      <div className="bg-card border-x border-border/50 px-4 py-2.5 border-b border-border/30">
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <span className="font-medium text-foreground/90">How to read this feed:</span> Each card and timeline row is <strong>one employer detection</strong> (category dot, headline, company name, and source link go together).
+          {translated ? (
+            <>
+              {" "}
+              <strong>Plain English</strong> replaced the technical headline on <em>that same row only</em>—not a different company or signal. Stale vs fresh notes apply to the scan date on that row.
+            </>
+          ) : (
+            <>
+              {" "}
+              Tap <strong>Plain English</strong> to translate and date-check the <strong>first 20 signals in list order</strong> (top stories first, then the timeline)—each AI line pairs with the matching card or row.
+            </>
+          )}
+        </p>
+      </div>
+
       {/* ═══ TOP STORIES — hero cards ═══ */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-x border-border/50 bg-card">
         {topStories.map((signal, idx) => {

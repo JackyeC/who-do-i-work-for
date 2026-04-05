@@ -1,6 +1,6 @@
-import { useState, lazy, Suspense, forwardRef } from "react";
+import { useState, lazy, Suspense, forwardRef, useEffect } from "react";
 import jackyeHeadshotSm from "@/assets/jackye-headshot-sm.webp";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Shield, ArrowRight, Search, FileSearch, Layers, BarChart3, Briefcase, Building, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MarketingNav } from "@/components/layout/MarketingNav";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { ProductKeySection } from "@/components/marketing/ProductKeySection";
 
 const LiveIntelligenceTicker = lazy(() => import("@/components/landing/LiveIntelligenceTicker").then(m => ({ default: m.LiveIntelligenceTicker })));
 const EmailCapture = lazy(() => import("@/components/landing/EmailCapture").then(m => ({ default: m.EmailCapture })));
@@ -20,7 +21,16 @@ const FEATURED_SLUGS = ["meta", "google", "amazon", "boeing", "accenture", "att"
 
 const Index = forwardRef<HTMLDivElement>((_, ref) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (location.hash !== "#product-key") return;
+    const id = window.setTimeout(() => {
+      document.getElementById("product-key")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => clearTimeout(id);
+  }, [location.hash]);
   const { isLoaded } = useClerkWithFallback();
   const [heroQuery, setHeroQuery] = useState("");
 
@@ -152,6 +162,8 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
       <Suspense fallback={<div className="h-[36px] bg-background border-b border-border/10" />}>
         <LiveIntelligenceTicker />
       </Suspense>
+
+      <ProductKeySection />
 
       {/* ── WHAT WE PROMISE ── */}
       <section className="px-6 lg:px-16 py-16 lg:py-20 bg-card border-b border-border">

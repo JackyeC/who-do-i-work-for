@@ -177,6 +177,8 @@ const SIGNAL_LABEL_MAP: Record<string, string> = {
 // ═══════════════════════════════════════════════════════
 
 const NON_LATIN_RE = /[\u0400-\u04FF\u0600-\u06FF\u3000-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF]/;
+// Control chars intentionally stripped from untrusted signal text
+// eslint-disable-next-line no-control-regex -- strip NUL..BS, SO..US (see cleanEncodingArtifacts)
 const GARBAGE_RE = /[\x00-\x08\x0E-\x1F\uFFFD\uFEFF]|â€|Ã|Â|ï¼/;
 
 function stripNonLatinTokens(text: string): string {

@@ -6,14 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePersona } from "@/hooks/use-persona";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   Heart, Shield, DollarSign, Bot, Building2, Landmark,
   Scale, Monitor, Sparkles, Users, FileText, Save, Info,
-  ChevronDown, ChevronRight, Database,
+  ChevronDown, ChevronRight, Database, Glasses,
 } from "lucide-react";
 import { VALUES_LENSES, VALUES_GROUPS } from "@/lib/valuesLenses";
 
@@ -48,6 +50,7 @@ const ALL_SLIDER_KEYS = [
 export function MyValuesProfile() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { personaName, hasTakenQuiz } = usePersona();
   const [weights, setWeights] = useState<Record<string, number>>({});
   const [sizePreference, setSizePreference] = useState("no_preference");
   const [stagePreference, setStagePreference] = useState("no_preference");
@@ -106,6 +109,12 @@ export function MyValuesProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-values-profile"] });
       queryClient.invalidateQueries({ queryKey: ["user-alignment-values"] });
+      if (user?.id) {
+        // Instant UI sync (overview footnote, persona banner, values nudge) — no wait for refetch
+        queryClient.setQueryData(["values-profile-exists", user.id], true);
+        queryClient.invalidateQueries({ queryKey: ["values-profile-exists", user.id] });
+        queryClient.invalidateQueries({ queryKey: ["onboarding-progress", user.id] });
+      }
       toast.success("Values profile saved!");
     },
     onError: () => toast.error("Failed to save values profile"),
@@ -207,6 +216,27 @@ export function MyValuesProfile() {
             Every value is tied to verifiable public data sources — no opinions, just receipts.
           </p>
         </div>
+      </div>
+
+      {/* Workplace DNA / reader lens — localStorage; optional complement to values weights */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg border border-border/60 bg-muted/20">
+        <div className="flex items-start gap-2.5 min-w-0">
+          <Glasses className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+          <div className="min-w-0 space-y-0.5">
+            <p className="text-sm font-medium text-foreground">Reader lens</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {hasTakenQuiz && personaName
+                ? `Dossiers are phrased for “${personaName}.” This is separate from the weights below — it only changes tone and emphasis.`
+                : "Optional short quiz: how dossiers and CTAs are phrased (job seeker, exec, journalist, etc.). Does not replace your values weights."}
+            </p>
+          </div>
+        </div>
+        <Link
+          to="/quiz"
+          className="text-sm font-medium text-primary hover:underline shrink-0 sm:ml-4"
+        >
+          {hasTakenQuiz ? "Change reader lens" : "Set reader lens (~60 sec)"}
+        </Link>
       </div>
 
       {/* Grouped Values Lenses */}

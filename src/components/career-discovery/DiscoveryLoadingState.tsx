@@ -32,8 +32,9 @@ export function DiscoveryLoadingState({ loading, error, onRetry, lines = 6, chil
             ))}
           </CardContent>
         </Card>
-        <p className="text-xs text-muted-foreground text-center animate-pulse">
-          AI is analyzing your profile and generating personalized results…
+        <p className="text-xs text-muted-foreground text-center animate-pulse max-w-md mx-auto leading-relaxed">
+          AI is reading <strong className="text-foreground/80">your saved career profile</strong> (roles, skills, and preferences you entered) to generate suggestions for{" "}
+          <strong className="text-foreground/80">this step only</strong>—not for other companies or people.
         </p>
       </div>
     );
