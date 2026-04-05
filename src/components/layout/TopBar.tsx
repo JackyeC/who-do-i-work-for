@@ -12,6 +12,7 @@ import logoNav from "@/assets/wdiwf-logo-nav-light.png";
 import { usePersona } from "@/hooks/use-persona";
 import { SignupModal } from "@/components/SignupModal";
 import { IntelligenceTicker } from "@/components/layout/IntelligenceTicker";
+import { isMarketingLaunch } from "@/config/marketingLaunch";
 
 /* ── MAIN_SECTIONS — kept for ContextSidebar compatibility ── */
 export const MAIN_SECTIONS = [
@@ -135,6 +136,8 @@ export function TopBar() {
 
   if (location.pathname === "/") return null;
 
+  const tightenAnonymousNav = isMarketingLaunch && !user;
+
   /* Primary nav items (desktop) */
   const PRIMARY_NAV = [
     { id: "receipts", label: "Receipts", icon: FileSearch, path: "/receipts", matchPaths: ["/receipts"] },
@@ -142,7 +145,10 @@ export function TopBar() {
     { id: "signals", label: "Signals", icon: Radio, path: "/signal-alerts", matchPaths: ["/signal-alerts"] },
     { id: "career-map", label: "Career Map", icon: Compass, path: "/career-intelligence", matchPaths: ["/career-intelligence", "/career-map"], auth: true },
     { id: "pricing", label: "Pricing", icon: CreditCard, path: "/pricing", matchPaths: ["/pricing"] },
-  ];
+  ].filter((item) => {
+    if (!tightenAnonymousNav) return true;
+    return item.id !== "signals" && item.id !== "career-map";
+  });
 
   /* Secondary nav items (More dropdown) */
   const SECONDARY_NAV = [
@@ -160,7 +166,10 @@ export function TopBar() {
     { label: "Pricing", path: "/pricing" },
     { label: "All Tools →", path: "/tools" },
     { label: "Join Free", path: "/join" },
-  ];
+  ].filter((s) => {
+    if (!tightenAnonymousNav) return true;
+    return s.path !== "/job-board";
+  });
 
   const isMoreActive = SECONDARY_NAV.some(s => location.pathname.startsWith(s.path.split("?")[0]));
 
@@ -346,24 +355,28 @@ export function TopBar() {
           >
             My Intel
           </button>
-          <Link to="/signal-alerts" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
-            Signals
-          </Link>
+          {!tightenAnonymousNav && (
+            <>
+              <Link to="/signal-alerts" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
+                Signals
+              </Link>
+              {user ? (
+                <Link to="/career-intelligence" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
+                  Career Map
+                </Link>
+              ) : (
+                <button
+                  onClick={() => { setMobileMenuOpen(false); setSignupModalOpen(true); }}
+                  className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground"
+                >
+                  Career Map <Lock className="w-3 h-3 inline opacity-50 ml-1" />
+                </button>
+              )}
+            </>
+          )}
           <Link to="/pricing" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
             Pricing
           </Link>
-          {user ? (
-            <Link to="/career-intelligence" className="block px-3 py-3 font-sans text-nav text-muted-foreground hover:text-foreground transition-colors">
-              Career Map
-            </Link>
-          ) : (
-            <button
-              onClick={() => { setMobileMenuOpen(false); setSignupModalOpen(true); }}
-              className="block w-full text-left px-3 py-3 font-sans text-nav text-muted-foreground"
-            >
-              Career Map <Lock className="w-3 h-3 inline opacity-50 ml-1" />
-            </button>
-          )}
 
           {/* Divider */}
           <div className="border-t border-border/50 my-1" />

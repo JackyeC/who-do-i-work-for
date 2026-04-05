@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useClerkWithFallback } from "@/hooks/use-clerk-fallback";
 import { Button } from "@/components/ui/button";
+import { isMarketingLaunch } from "@/config/marketingLaunch";
 
 const PRIMARY_LINKS = [
   { label: "How it works", to: "/#product-key" },
@@ -14,7 +15,7 @@ const PRIMARY_LINKS = [
   { label: "About", to: "/about" },
 ];
 
-const TOOLS_LINKS = [
+const TOOLS_LINKS_BASE = [
   { label: "The Reset Room", to: "/reset-room" },
   { label: "For Companies", to: "/for-employers" },
   { label: "Methodology", to: "/methodology" },
@@ -23,7 +24,11 @@ const TOOLS_LINKS = [
   { label: "Career Map", to: "/career-intelligence" },
   { label: "Job Board", to: "/jobs" },
   { label: "All Tools", to: "/tools" },
-];
+] as const;
+
+const TOOLS_LINKS_MARKETING = TOOLS_LINKS_BASE.filter(
+  (l) => !["Mock Interview", "Career Map", "Job Board"].includes(l.label)
+);
 
 export function MarketingNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,6 +37,7 @@ export function MarketingNav() {
   const location = useLocation();
   const { user, loading: authLoading } = useAuth();
   const { isLoaded } = useClerkWithFallback();
+  const toolsLinks = isMarketingLaunch ? TOOLS_LINKS_MARKETING : [...TOOLS_LINKS_BASE];
 
   if (!isLoaded || authLoading) {
     return (
@@ -93,7 +99,7 @@ export function MarketingNav() {
               </button>
               {toolsOpen && (
                 <div className="absolute top-full right-0 mt-2 w-48 bg-card border border-border rounded-lg shadow-lg py-2 z-50">
-                  {TOOLS_LINKS.map((link) => (
+                  {toolsLinks.map((link) => (
                     <Link
                       key={link.to}
                       to={link.to}
@@ -148,7 +154,7 @@ export function MarketingNav() {
               );
             })}
             <p className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted-foreground/50 mt-2 mb-1">Tools</p>
-            {TOOLS_LINKS.map((link) => (
+            {toolsLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}

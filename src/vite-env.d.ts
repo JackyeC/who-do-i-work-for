@@ -13,6 +13,11 @@ interface ImportMetaEnv {
   readonly VITE_BRIEFING_ROOM_FOUNDING_YEAR?: string;
   /** Founding campaign month 1–12. Default 4 (April). Match Supabase BRIEFING_ROOM_FOUNDING_MONTH. */
   readonly VITE_BRIEFING_ROOM_FOUNDING_MONTH?: string;
+  /**
+   * When `"true"`, anonymous visitors get a tighter public surface (footer, tools menu, /jobs hold).
+   * Signed-in users keep full TopBar links for demos. Build-time flag — set on the host for sales launch.
+   */
+  readonly VITE_PUBLIC_MARKETING_LAUNCH?: string;
 }
 
 interface ImportMeta {

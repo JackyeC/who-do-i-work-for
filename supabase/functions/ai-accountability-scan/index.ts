@@ -86,7 +86,7 @@ Deno.serve(async (req: Request) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     if (!lovableKey) {
-      return new Response(JSON.stringify({ success: false, error: 'LOVABLE_API_KEY not configured' }), {
+      return new Response(JSON.stringify({ success: false, error: 'AI gateway key is not configured' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }

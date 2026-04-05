@@ -23,6 +23,7 @@ import { UserProfileForm } from "@/components/jobs/UserProfileForm";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";
 import { JobAlertPreferences } from "@/components/jobs/JobAlertPreferences";
 import { AskJackyeWidget } from "@/components/jobs/AskJackyeWidget";
+import { MarketingLaunchProductHold } from "@/components/MarketingLaunchProductHold";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -358,6 +359,10 @@ export default function Jobs() {
   };
 
   return (
+    <MarketingLaunchProductHold
+      title="Job board — early access"
+      description="We’re finishing the values-vetted listings experience. Sign in with an approved account to preview the board, or join the list to get access when it opens."
+    >
     <div className="flex flex-col flex-1">
       <div className="flex flex-1">
 
@@ -755,5 +760,6 @@ export default function Jobs() {
       <AskJackyeWidget />
       <Footer />
     </div>
+    </MarketingLaunchProductHold>
   );
 }

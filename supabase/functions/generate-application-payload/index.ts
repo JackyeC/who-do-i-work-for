@@ -16,7 +16,7 @@ Deno.serve(async (req: Request) => {
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
     if (!LOVABLE_API_KEY) {
-      return new Response(JSON.stringify({ error: 'LOVABLE_API_KEY is not configured' }), {
+      return new Response(JSON.stringify({ error: 'AI gateway key is not configured' }), {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }

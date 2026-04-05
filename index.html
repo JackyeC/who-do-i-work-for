@@ -274,9 +274,10 @@
     </script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 
-    <!-- Remove Lovable platform badge -->
+    <!-- Suppress fixed-corner dev/preview overlays if injected by any host -->
     <style>
-      #lovable-badge, [data-lovable-badge],
+      #lovable-badge,
+      [data-lovable-badge],
       a[href*="lovable.dev"][style*="fixed"],
       body > a[href*="lovable"],
       body > div:last-child > a[href*="lovable"] {

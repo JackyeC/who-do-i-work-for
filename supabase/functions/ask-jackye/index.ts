@@ -203,7 +203,7 @@ serve(async (req: Request) => {
 
     const { messages, companyContext, companyId } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    if (!LOVABLE_API_KEY) throw new Error("AI gateway key is not configured");
 
     // --- Enrich with company data if companyId provided ---
     const systemMessages: any[] = [{ role: "system", content: SYSTEM_PROMPT }];

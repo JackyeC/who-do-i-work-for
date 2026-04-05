@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { isMarketingLaunch } from "@/config/marketingLaunch";
 
 export function SiteFooter() {
   return (
@@ -74,21 +75,29 @@ export function SiteFooter() {
               <Link to="/receipts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Receipts
               </Link>
-              <Link to="/signal-alerts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Work signal
-              </Link>
-              <Link to="/dashboard?tab=values" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Values profile
-              </Link>
+              {!isMarketingLaunch && (
+                <>
+                  <Link to="/signal-alerts" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Work signal
+                  </Link>
+                  <Link to="/dashboard?tab=values" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Values profile
+                  </Link>
+                </>
+              )}
               <Link to="/strategic-offer-review" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Offer review
               </Link>
-              <Link to="/auto-apply" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Auto-Apply
-              </Link>
-              <Link to="/jobs" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Job board
-              </Link>
+              {!isMarketingLaunch && (
+                <>
+                  <Link to="/auto-apply" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Auto-Apply
+                  </Link>
+                  <Link to="/jobs" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    Job board
+                  </Link>
+                </>
+              )}
               <Link to="/pricing" className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Pricing
               </Link>
