@@ -1,9 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { isToday, isYesterday, differenceInCalendarDays, startOfDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePageSEO } from "@/hooks/use-page-seo";
-import { useWorkNews, WorkNewsArticle } from "@/hooks/use-work-news";
+import { useWorkNews, WorkNewsArticle, publishedMs } from "@/hooks/use-work-news";
+import {
+  useReceiptsPostersByWorkNewsIds,
+  type PosterData,
+} from "@/hooks/use-receipts-posters-by-work-news-ids";
+import { SharePasticheCard } from "@/components/newsletter/SharePasticheCard";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -54,6 +67,34 @@ function timeAgo(dateStr: string | null) {
   return `${days}d ago`;
 }
 
+function formatEditionTime(iso: string | null) {
+  if (!iso) return "—";
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
+function wireDateBucketLabel(iso: string | null): string {
+  if (!iso) return "Earlier";
+  const d = new Date(iso);
+  if (!Number.isFinite(d.getTime())) return "Earlier";
+  if (isToday(d)) return "Today";
+  if (isYesterday(d)) return "Yesterday";
+  const days = differenceInCalendarDays(startOfDay(new Date()), startOfDay(d));
+  if (days >= 0 && days < 7) return "This week";
+  return "Earlier";
+}
+
+const TAKES_PER_PAGE = 12;
+const WIRE_PER_PAGE = 15;
+
+type SortMode = "newest" | "drama" | "spiciest";
+
 /* ── Spice meter based on controversy + sentiment ── */
 function spiceLevel(article: WorkNewsArticle): number {
   let score = 1;
@@ -64,24 +105,34 @@ function spiceLevel(article: WorkNewsArticle): number {
 }
 
 function SpiceMeter({ level }: { level: number }) {
+  const tip = `Coverage intensity from ingest signals (controversy, tone) — ${level}/5, not a mood score`;
   return (
-    <span
-      className="inline-flex items-center gap-1"
-      title={`Coverage intensity from ingest signals (controversy, tone) — ${level}/5, not a mood score`}
-      aria-label={`Coverage intensity ${level} of 5`}
-    >
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span
-          key={i}
-          className={`h-1 w-3 rounded-full ${i < level ? "bg-primary/80" : "bg-muted-foreground/20"}`}
-        />
-      ))}
+    <span className="inline-flex flex-col gap-0.5" title={tip}>
+      <span className="inline-flex items-center gap-px" aria-label={`Coverage intensity ${level} of 5`}>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span
+            key={i}
+            className={`text-[11px] leading-none select-none ${i < level ? "opacity-100" : "opacity-20 grayscale"}`}
+            aria-hidden
+          >
+            🌶️
+          </span>
+        ))}
+      </span>
+      <span className="inline-flex gap-px" aria-hidden>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span
+            key={i}
+            className={`h-0.5 w-2.5 rounded-full ${i < level ? "bg-primary/75" : "bg-muted-foreground/15"}`}
+          />
+        ))}
+      </span>
     </span>
   );
 }
 
 /* ── Single story card ── */
-function StoryCard({ article }: { article: WorkNewsArticle }) {
+function StoryCard({ article, poster }: { article: WorkNewsArticle; poster?: PosterData | null }) {
   const cat = getCategoryConfig(article.category);
   const spice = spiceLevel(article);
   const sourceMapEntries = parseWorkNewsSourceMap(article.source_map_json);
@@ -145,6 +196,11 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
             <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
               {article.jackye_take}
             </p>
+            {poster && (
+              <div className="mt-4 pt-4 border-t border-primary/15">
+                <SharePasticheCard headline={article.headline} sourceUrl={article.source_url} poster={poster} />
+              </div>
+            )}
           </div>
         )}
 
@@ -203,6 +259,7 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
 /* ── Filter bar ── */
 const FILTER_OPTIONS = [
   { value: "all", label: "All" },
+  { value: "developing", label: "Developing" },
   { value: "layoffs", label: "Layoffs" },
   { value: "dei", label: "DEI" },
   { value: "ai_workplace", label: "AI" },
@@ -218,6 +275,9 @@ export default function Newsletter() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [filter, setFilter] = useState("all");
+  const [sortMode, setSortMode] = useState<SortMode>("newest");
+  const [takePageCount, setTakePageCount] = useState(1);
+  const [wirePageCount, setWirePageCount] = useState(1);
   const [feedRefreshing, setFeedRefreshing] = useState(false);
   const [howLabelsOpen, setHowLabelsOpen] = useState(false);
   const { containerRef, getToken, resetToken } = useTurnstile();
@@ -235,12 +295,18 @@ export default function Newsletter() {
     return () => window.removeEventListener("hashchange", syncHash);
   }, []);
 
+  useEffect(() => {
+    setTakePageCount(1);
+    setWirePageCount(1);
+  }, [filter, sortMode]);
+
   const refreshFeed = async () => {
     setFeedRefreshing(true);
     try {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["work-news"] }),
         queryClient.invalidateQueries({ queryKey: ["desk-publication-latest"] }),
+        queryClient.invalidateQueries({ queryKey: ["receipts-enriched-posters"] }),
       ]);
     } finally {
       setFeedRefreshing(false);
@@ -303,17 +369,72 @@ export default function Newsletter() {
     resetToken();
   };
 
-  /* ── Filter logic ── */
-  const filtered =
-    filter === "all"
-      ? articles
-      : filter === "controversy"
-        ? articles.filter((a) => a.is_controversy)
-        : articles.filter((a) => a.category === filter);
+  /* ── Filter + sort (client-side on fetched list) ── */
+  const filtered = useMemo(() => {
+    let list = articles;
+    if (filter === "developing") list = list.filter((a) => a.developing_label?.trim());
+    else if (filter === "controversy") list = list.filter((a) => a.is_controversy);
+    else if (filter !== "all") list = list.filter((a) => a.category === filter);
+    return list;
+  }, [articles, filter]);
 
-  /* ── Separate: stories with takes, stories without ── */
-  const withTakes = filtered.filter((a) => a.jackye_take);
-  const withoutTakes = filtered.filter((a) => !a.jackye_take);
+  const sorted = useMemo(() => {
+    const copy = [...filtered];
+    if (sortMode === "drama") {
+      copy.sort((a, b) => {
+        if (a.is_controversy !== b.is_controversy) return a.is_controversy ? -1 : 1;
+        const sa = a.sentiment_score ?? 0;
+        const sb = b.sentiment_score ?? 0;
+        if (sa !== sb) return sa - sb;
+        return publishedMs(b.published_at) - publishedMs(a.published_at);
+      });
+    } else if (sortMode === "spiciest") {
+      copy.sort((a, b) => {
+        const d = spiceLevel(b) - spiceLevel(a);
+        if (d !== 0) return d;
+        return publishedMs(b.published_at) - publishedMs(a.published_at);
+      });
+    } else {
+      copy.sort((a, b) => publishedMs(b.published_at) - publishedMs(a.published_at));
+    }
+    return copy;
+  }, [filtered, sortMode]);
+
+  const withTakes = useMemo(() => sorted.filter((a) => a.jackye_take), [sorted]);
+  const withoutTakes = useMemo(() => sorted.filter((a) => !a.jackye_take), [sorted]);
+
+  const visibleTakes = useMemo(
+    () => withTakes.slice(0, takePageCount * TAKES_PER_PAGE),
+    [withTakes, takePageCount],
+  );
+  const visibleWire = useMemo(
+    () => withoutTakes.slice(0, wirePageCount * WIRE_PER_PAGE),
+    [withoutTakes, wirePageCount],
+  );
+
+  const takePosterIds = useMemo(() => visibleTakes.map((a) => a.id), [visibleTakes]);
+  const { data: posterByNewsId } = useReceiptsPostersByWorkNewsIds(takePosterIds);
+
+  const latestEditionIso = sorted[0]?.published_at ?? null;
+  const takesExhausted = visibleTakes.length >= withTakes.length;
+  const wireExhausted = visibleWire.length >= withoutTakes.length;
+
+  const wireRows = useMemo(() => {
+    if (sortMode !== "newest") {
+      return visibleWire.map((article) => ({ type: "card" as const, article }));
+    }
+    const out: Array<{ type: "head"; label: string } | { type: "card"; article: WorkNewsArticle }> = [];
+    let last = "";
+    for (const article of visibleWire) {
+      const label = wireDateBucketLabel(article.published_at);
+      if (label !== last) {
+        out.push({ type: "head", label });
+        last = label;
+      }
+      out.push({ type: "card", article });
+    }
+    return out;
+  }, [visibleWire, sortMode]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -335,7 +456,10 @@ export default function Newsletter() {
                   Receipts · desk · wire
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-bold text-foreground tracking-tight mb-4">
+              <p className="text-[10px] font-mono tracking-[0.22em] text-muted-foreground uppercase mb-3">
+                Vol. I · Work & labor
+              </p>
+              <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-bold text-foreground tracking-tight mb-4 font-serif">
                 The Daily Grind
               </h1>
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0 mb-6">
@@ -445,17 +569,24 @@ export default function Newsletter() {
 
       {/* ── Desk ── */}
       <section id="newsletter-desk" className="max-w-6xl mx-auto px-4 py-12 scroll-mt-24">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-foreground tracking-tight">
+        <p className="text-center text-sm text-muted-foreground border-y border-border/35 py-3 mb-8 max-w-[65ch] mx-auto leading-relaxed font-serif">
+          <span className="text-foreground font-medium not-italic">Editor&apos;s note</span> — We show sources and
+          labels so you can decide. This desk is human-curated, not a bot.{" "}
+          <span className="not-italic font-mono text-[10px] tracking-wide text-muted-foreground/90">— The desk</span>
+        </p>
+        <div className="mb-6 max-w-[65ch]">
+          <h2 className="text-2xl font-bold text-foreground tracking-tight font-serif">
             Today&apos;s Signal Check™ desk
           </h2>
-          <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             Flagship brief with sources and coverage map — same layout we ship to email and social. Updates when a new
             edition is published.
           </p>
         </div>
         <div className="rounded-2xl border border-border/50 bg-card/40 p-3 sm:p-5 shadow-sm">
-          <NewsletterDeskPreview />
+          <div className="max-w-[65ch] mx-auto">
+            <NewsletterDeskPreview />
+          </div>
         </div>
       </section>
 
@@ -463,15 +594,19 @@ export default function Newsletter() {
       <section id="newsletter-wire" className="max-w-6xl mx-auto px-4 pb-6 scroll-mt-24">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-foreground tracking-tight">Live wire</h2>
+            <h2 className="text-2xl font-bold text-foreground tracking-tight font-serif">Live wire</h2>
             <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
               Rolling ingest of work and labor headlines. Each card shows the outlet and a desk orientation label. Full
               multi-source maps live on the desk above.
             </p>
+            <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-muted-foreground mt-3">
+              The Wire · {sorted.length} stor{sorted.length === 1 ? "y" : "ies"} · Edition{" "}
+              {formatEditionTime(latestEditionIso)}
+            </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <span className="text-xs font-mono text-muted-foreground tabular-nums">
-              {filtered.length} stor{filtered.length === 1 ? "y" : "ies"}
+              {sorted.length} in view
               {isFetching && !isLoading ? " · sync…" : ""}
             </span>
             <Button
@@ -510,6 +645,20 @@ export default function Newsletter() {
           </Collapsible>
         </div>
 
+        <div className="mb-5 max-w-xs">
+          <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2">Sort wire</p>
+          <Select value={sortMode} onValueChange={(v) => setSortMode(v as SortMode)}>
+            <SelectTrigger className="h-9 rounded-xl" aria-label="Sort wire stories">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="drama">Drama first</SelectItem>
+              <SelectItem value="spiciest">Spiciest</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2">Filter</p>
         <div className="flex flex-wrap items-center gap-2">
           {FILTER_OPTIONS.map((opt) => (
@@ -536,7 +685,7 @@ export default function Newsletter() {
             <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
             <p className="text-sm text-muted-foreground font-mono">Loading intelligence...</p>
           </div>
-        ) : filtered.length === 0 ? (
+        ) : sorted.length === 0 ? (
           <div className="text-center py-16">
             <Newspaper className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
             <p className="text-sm text-muted-foreground">No stories in this category yet.</p>
@@ -552,18 +701,36 @@ export default function Newsletter() {
                       <Flame className="w-4 h-4" />
                     </span>
                     <div>
-                      <h2 className="text-lg font-bold text-foreground tracking-tight">With Jackye&apos;s read</h2>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {withTakes.length} stor{withTakes.length === 1 ? "y" : "ies"} · facts first, then labeled analysis
+                      <h2 className="text-lg font-bold text-foreground tracking-tight font-serif">
+                        With Jackye&apos;s read
+                      </h2>
+                      <p className="text-xs text-muted-foreground mt-0.5 font-mono">
+                        Showing {visibleTakes.length} of {withTakes.length} · facts first, then labeled analysis
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-5">
-                  {withTakes.map((article) => (
-                    <StoryCard key={article.id} article={article} />
+                <div className="grid md:grid-cols-2 xl:grid-cols-2 gap-5">
+                  {visibleTakes.map((article) => (
+                    <StoryCard
+                      key={article.id}
+                      article={article}
+                      poster={posterByNewsId?.get(article.id)}
+                    />
                   ))}
                 </div>
+                {!takesExhausted && (
+                  <div className="flex justify-center mt-8">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="rounded-xl"
+                      onClick={() => setTakePageCount((c) => c + 1)}
+                    >
+                      Load more takes
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -575,12 +742,24 @@ export default function Newsletter() {
                     <TrendingUp className="w-4 h-4" />
                   </span>
                   <div>
-                    <h2 className="text-lg font-bold text-foreground tracking-tight">Headlines only</h2>
-                    <p className="text-xs text-muted-foreground mt-0.5">Wire items without a desk take yet</p>
+                    <h2 className="text-lg font-bold text-foreground tracking-tight font-serif">Headlines only</h2>
+                    <p className="text-xs text-muted-foreground mt-0.5 font-mono">
+                      Showing {visibleWire.length} of {withoutTakes.length} · wire index
+                    </p>
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {withoutTakes.map((article) => {
+                  {wireRows.map((row, idx) => {
+                    if (row.type === "head") {
+                      return (
+                        <div key={`wire-head-${row.label}-${idx}`} className="col-span-full pt-1 first:pt-0">
+                          <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground border-b border-border/35 pb-1.5">
+                            {row.label}
+                          </h3>
+                        </div>
+                      );
+                    }
+                    const article = row.article;
                     const cat = getCategoryConfig(article.category);
                     const wireMap = parseWorkNewsSourceMap(article.source_map_json);
                     const primaryUrl = article.source_url || "#";
@@ -645,7 +824,25 @@ export default function Newsletter() {
                     );
                   })}
                 </div>
+                {!wireExhausted && (
+                  <div className="flex justify-center mt-8">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="rounded-xl"
+                      onClick={() => setWirePageCount((c) => c + 1)}
+                    >
+                      Load more headlines
+                    </Button>
+                  </div>
+                )}
               </div>
+            )}
+
+            {sorted.length > 0 && takesExhausted && wireExhausted && (
+              <p className="text-center text-xs text-muted-foreground font-mono mt-14 border-t border-border/30 pt-8">
+                You&apos;re caught up — refresh for new pulls.
+              </p>
             )}
           </>
         )}
