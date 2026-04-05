@@ -519,6 +519,7 @@ export default function CompanyProfile() {
               careersUrl={(dbCompany as any)?.careers_url || company?.careersUrl}
               lastReviewed={dbCompany?.last_reviewed}
               updatedAt={dbCompany?.updated_at}
+              onLobbyingDetailClick={() => setLobbyingDrawerOpen(true)}
             />
           </ReportTeaserGate>
 

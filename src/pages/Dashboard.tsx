@@ -34,6 +34,8 @@ import { MockInterviewSection } from "@/components/dashboard/MockInterviewSectio
 import { InboxSection } from "@/components/dashboard/InboxSection";
 import { SavedSection } from "@/components/dashboard/SavedSection";
 import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
+import { EvidenceReceiptsStrip } from "@/components/dashboard/EvidenceReceiptsStrip";
+import { WatchlistSignalsPulse } from "@/components/dashboard/WatchlistSignalsPulse";
 
 const TAB_TITLES: Record<string, string> = {
   overview: "My Intelligence",
@@ -128,6 +130,8 @@ export default function Dashboard() {
       case "overview":
         return (
           <>
+            <WatchlistSignalsPulse onNavigate={setTab} />
+            <EvidenceReceiptsStrip />
             <NarrativeFeed onNavigate={setTab} />
             {hasValuesProfile === true && <ReaderLensFootnote />}
           </>
