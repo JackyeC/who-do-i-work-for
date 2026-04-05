@@ -117,6 +117,23 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
   const dateStr = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
   const firstName = briefing?.firstName || "there";
 
+  const trackedCompanies = useMemo(() => {
+    if (!briefing?.tracked?.length) return [];
+    return briefing.tracked.map((t: any) => ({
+      id: t.company?.id as string | undefined,
+      name: t.company?.name,
+      slug: t.company?.slug,
+      industry: t.company?.industry,
+      score: t.company?.civic_footprint_score ?? 0,
+    }));
+  }, [briefing?.tracked]);
+
+  const trackedCompanyIds = useMemo(
+    () => trackedCompanies.map((t) => t.id).filter(Boolean) as string[],
+    [trackedCompanies],
+  );
+  const { data: project2025CompanySet } = useProject2025LinkedCompanyIds(trackedCompanyIds);
+
   if (isLoading) {
     return (
       <div className="space-y-5 max-w-[900px] mx-auto">
@@ -126,22 +143,6 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
       </div>
     );
   }
-
-  const trackedCompanies = briefing?.tracked?.length
-    ? briefing.tracked.map((t: any) => ({
-        id: t.company?.id as string | undefined,
-        name: t.company?.name,
-        slug: t.company?.slug,
-        industry: t.company?.industry,
-        score: t.company?.civic_footprint_score ?? 0,
-      }))
-    : [];
-
-  const trackedCompanyIds = useMemo(
-    () => trackedCompanies.map((t) => t.id).filter(Boolean) as string[],
-    [trackedCompanies],
-  );
-  const { data: project2025CompanySet } = useProject2025LinkedCompanyIds(trackedCompanyIds);
 
   const alerts = briefing?.alerts || [];
 

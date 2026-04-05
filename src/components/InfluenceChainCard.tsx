@@ -559,7 +559,7 @@ export function InfluenceChainCard({ companyId, companyName, onExecutiveClick, o
     const url = window.location.href;
     const text = `Follow the influence: ${companyName} — ${allSteps.length} connections traced from public records`;
     if (navigator.share) {
-      try { await navigator.share({ title: text, url }); } catch {}
+      try { await navigator.share({ title: text, url }); } catch { /* user cancelled share */ }
     } else {
       await navigator.clipboard.writeText(`${text}\n${url}`);
       toast("Link copied!", { description: "Share this influence summary with anyone." });

@@ -140,7 +140,7 @@ export function DecisionCheckpointBeforeSign(props: DecisionCheckpointProps) {
 
   const handleNotesChange = (value: string) => {
     setNotes(value);
-    try { localStorage.setItem(storageKey, value); } catch {}
+    try { localStorage.setItem(storageKey, value); } catch { /* private mode / quota */ }
   };
 
   const aligned = useMemo(() => generateAligned(signals, profile), [signals, profile]);

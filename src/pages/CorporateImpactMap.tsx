@@ -140,7 +140,7 @@ export default function CorporateImpactMap() {
         for (const cat of IMPACT_CATEGORIES) {
           let count = 0;
           let topSignals: any[] = [];
-          let sources = new Set<string>();
+          const sources = new Set<string>();
 
           if (cat.key === "labor_rights") {
             const labor = (issueSignals || []).filter((s: any) => s.issue_category === "labor");

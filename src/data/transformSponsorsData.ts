@@ -1128,7 +1128,7 @@ export const HR_TECH_COMPANIES: HRTechCompany[] = [
   { name: "Your Money Line", category: "Financial Wellness", years: ["2025", "2026"], tier: "" },
   { name: "American Airlines", category: "Workplace & Office", years: ["2026"], tier: "" },
   { name: "Envoy", category: "Workplace & Office", years: ["2025"], tier: "" },
-  { name: "Farmer\'s Fridge", category: "Workplace & Office", years: ["2025"], tier: "" },
+  { name: "Farmer's Fridge", category: "Workplace & Office", years: ["2025"], tier: "" },
   { name: "Foyer", category: "Workplace & Office", years: ["2026"], tier: "" },
   { name: "Gable", category: "Workplace & Office", years: ["2025", "2026"], tier: "" },
   { name: "Goody", category: "Workplace & Office", years: ["2025", "2026"], tier: "" },

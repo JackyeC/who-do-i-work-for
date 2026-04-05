@@ -214,7 +214,9 @@ export function LobbyingDetailDrawer({ open, onOpenChange, companyId, companyNam
                                   </a>
                                 );
                               }
-                            } catch {}
+                            } catch {
+                              /* invalid source_citation JSON */
+                            }
                             return null;
                           })()}
                         </div>

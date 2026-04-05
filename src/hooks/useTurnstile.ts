@@ -72,7 +72,7 @@ export function useTurnstile() {
         pending("");
       }
       if (widgetIdRef.current && window.turnstile) {
-        try { window.turnstile.remove(widgetIdRef.current); } catch {}
+        try { window.turnstile.remove(widgetIdRef.current); } catch { /* widget already gone */ }
         widgetIdRef.current = null;
       }
     };

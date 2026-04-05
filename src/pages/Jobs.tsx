@@ -322,7 +322,7 @@ export default function Jobs() {
       if (error) throw error;
       if (result?.payload) {
         setGeneratedPayload({ ...result.payload, jobTitle: job.title, jobId: job.id });
-        try { await navigator.clipboard.writeText(result.payload.matchingStatement); } catch {}
+        try { await navigator.clipboard.writeText(result.payload.matchingStatement); } catch { /* clipboard denied */ }
         toast.success("Cover letter generated & copied!");
         // Track application
         await supabase.from("applications_tracker").upsert({

@@ -77,7 +77,7 @@ export function HiringTransparencyCard({ companyName, dbCompanyId }: HiringTrans
   // Derive audit & safety status
   const detectedVendors = new Set<string>();
   let auditFound = false;
-  let psychRisks: any[] = [];
+  const psychRisks: any[] = [];
   let transparencyWarning = false;
 
   allSignals.forEach((s) => {

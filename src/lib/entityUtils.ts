@@ -134,7 +134,7 @@ export function summarizeDescription(
       : "SEC filing confirms corporate identity";
   }
   // Expand acronyms in all descriptions
-  let result = description.length > 200
+  const result = description.length > 200
     ? description.substring(0, 180) + "…"
     : description;
   return expandAcronymsInText(result);

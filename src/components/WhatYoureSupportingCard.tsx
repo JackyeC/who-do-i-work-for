@@ -109,7 +109,7 @@ export function WhatYoureSupportingCard({
             onClick={async () => {
               const url = window.location.href;
               if (navigator.share) {
-                try { await navigator.share({ title: `${companyName} — What You're Supporting`, url }); } catch {}
+                try { await navigator.share({ title: `${companyName} — What You're Supporting`, url }); } catch { /* cancelled */ }
               } else {
                 await navigator.clipboard.writeText(url);
               }

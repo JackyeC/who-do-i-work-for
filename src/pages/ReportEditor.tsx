@@ -258,7 +258,7 @@ export default function ReportEditor() {
             <div><label className="text-xs font-medium mb-1 block">Author</label><Input value={report.author_name} onChange={(e) => setReport({ ...report, author_name: e.target.value })} /></div>
             <div><label className="text-xs font-medium mb-1 block">Hero Quote</label><Input value={report.hero_quote || ""} onChange={(e) => setReport({ ...report, hero_quote: e.target.value })} /></div>
             <div><label className="text-xs font-medium mb-1 block">Executive Summary</label><Textarea value={report.executive_summary || ""} onChange={(e) => setReport({ ...report, executive_summary: e.target.value })} rows={5} /></div>
-            <div><label className="text-xs font-medium mb-1 block">Issue Categories (JSON array)</label><Input value={JSON.stringify(report.issue_categories_json || [])} onChange={(e) => { try { setReport({ ...report, issue_categories_json: JSON.parse(e.target.value) }); } catch {} }} /></div>
+            <div><label className="text-xs font-medium mb-1 block">Issue Categories (JSON array)</label><Input value={JSON.stringify(report.issue_categories_json || [])} onChange={(e) => { try { setReport({ ...report, issue_categories_json: JSON.parse(e.target.value) }); } catch { /* invalid JSON while typing */ } }} /></div>
           </div>
         )}
 
