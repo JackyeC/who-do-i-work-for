@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePageSEO } from "@/hooks/use-page-seo";
@@ -12,8 +13,9 @@ import { verifyTurnstileToken } from "@/lib/verifyTurnstile";
 import {
   Mail, ArrowRight, Check, ExternalLink, Newspaper,
   AlertTriangle, Flame, ChevronRight, Radio,
-  Eye, TrendingUp, RefreshCw,
+  Eye, TrendingUp, RefreshCw, ChevronDown, Sparkles, Rss,
 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { NewsletterDeskPreview } from "@/components/newsletter/NewsletterDeskPreview";
 import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
 import { SourceOrientationChip } from "@/components/newsletter/SourceOrientationChip";
@@ -64,13 +66,15 @@ function spiceLevel(article: WorkNewsArticle): number {
 function SpiceMeter({ level }: { level: number }) {
   return (
     <span
-      className="flex items-center gap-0.5"
+      className="inline-flex items-center gap-1"
       title={`Coverage intensity from ingest signals (controversy, tone) — ${level}/5, not a mood score`}
+      aria-label={`Coverage intensity ${level} of 5`}
     >
       {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={i < level ? "opacity-100" : "opacity-20"}>
-          🌶️
-        </span>
+        <span
+          key={i}
+          className={`h-1 w-3 rounded-full ${i < level ? "bg-primary/80" : "bg-muted-foreground/20"}`}
+        />
       ))}
     </span>
   );
@@ -83,10 +87,10 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
   const sourceMapEntries = parseWorkNewsSourceMap(article.source_map_json);
 
   return (
-    <Card className="bg-card border border-border/40 hover:border-primary/30 transition-all group">
+    <Card className="bg-card border border-border/50 shadow-sm hover:shadow-md hover:border-primary/25 transition-all duration-200 rounded-2xl overflow-hidden group">
       <CardContent className="p-0">
         {/* Header bar */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-2">
+        <div className="flex items-center justify-between px-5 pt-5 pb-2">
           <div className="flex items-center gap-2 flex-wrap">
             <Badge
               variant="outline"
@@ -123,11 +127,11 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
 
         {/* The Take — ALWAYS OPEN */}
         {article.jackye_take && (
-          <div className="mx-4 mb-3 rounded-xl bg-primary/5 border border-primary/20 p-4">
+          <div className="mx-4 mb-3 rounded-xl bg-primary/[0.06] border border-primary/15 border-l-4 border-l-primary pl-4 pr-4 py-4">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <Eye className="w-3.5 h-3.5 text-primary" />
+              <Eye className="w-3.5 h-3.5 text-primary shrink-0" />
               <span className="text-xs font-bold text-primary tracking-wide uppercase">
-                Jackye's Take
+                Jackye&apos;s take
               </span>
               {!article.jackye_take_approved && (
                 <Badge
@@ -138,7 +142,7 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-foreground/90 leading-relaxed">
+            <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
               {article.jackye_take}
             </p>
           </div>
@@ -159,7 +163,7 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
         )}
 
         {/* Footer: source + orientation + spice + link */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-5 py-3 border-t border-border/20 bg-muted/20">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-5 py-4 border-t border-border/30 bg-muted/30">
           <div className="flex flex-col gap-1.5 min-w-0">
             {article.source_name && (
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -215,11 +219,21 @@ export default function Newsletter() {
   const [errorMsg, setErrorMsg] = useState("");
   const [filter, setFilter] = useState("all");
   const [feedRefreshing, setFeedRefreshing] = useState(false);
+  const [howLabelsOpen, setHowLabelsOpen] = useState(false);
   const { containerRef, getToken, resetToken } = useTurnstile();
   const { data: articles = [], isLoading, isFetching } = useWorkNews(60, {
     staleTime: 45_000,
     refetchInterval: 90_000,
   });
+
+  useEffect(() => {
+    const syncHash = () => {
+      if (window.location.hash === "#source-orientation") setHowLabelsOpen(true);
+    };
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, []);
 
   const refreshFeed = async () => {
     setFeedRefreshing(true);
@@ -303,145 +317,220 @@ export default function Newsletter() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ── Hero ── */}
-      <section className="text-center py-12 lg:py-16 px-4 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 mb-5">
-          <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
-          <span className="text-xs font-mono tracking-wider text-primary uppercase">
-            Receipts · desk · wire
-          </span>
-        </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-          The Daily Grind
-        </h1>
-        <p className="text-base text-muted-foreground mb-6 max-w-lg mx-auto leading-relaxed">
-          Built for <strong className="text-foreground">every kind of worker</strong> — hourly, salary, gig, public
-          sector, job hunting, leading teams.{" "}
-          <strong className="text-foreground">Facts and receipts first</strong> (sources, links, how outlets lean). When
-          you see Jackye&apos;s read, it&apos;s labeled analysis grounded in what people in this community actually
-          value — not vibes, not a bot, not faceless wire copy.
-        </p>
-
-        {/* ── Subscribe bar ── */}
-        {status === "success" ? (
-          <div className="flex items-center justify-center gap-2.5 text-primary font-semibold text-base py-3">
-            <Check className="w-5 h-5" /> You're in. First drop lands Monday.
-          </div>
-        ) : (
-          <form id="newsletter-subscribe" onSubmit={handleSubmit} className="max-w-md mx-auto">
-            <div ref={containerRef} />
-            <div className="flex items-center bg-card border-2 border-primary/20 focus-within:border-primary/50 transition-colors rounded-xl overflow-hidden">
-              <Mail className="w-4 h-4 text-muted-foreground ml-4 shrink-0" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setStatus("idle");
-                }}
-                placeholder="you@company.com"
-                className="flex-1 bg-transparent px-3 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
-                disabled={status === "loading"}
-              />
-              <button
-                type="submit"
-                disabled={status === "loading"}
-                className="mr-2 px-4 py-2 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:brightness-110 transition-all flex items-center gap-1.5 disabled:opacity-50 shrink-0"
-              >
-                {status === "loading" ? (
-                  "..."
-                ) : (
-                  <>
-                    Subscribe <ArrowRight className="w-3.5 h-3.5" />
-                  </>
-                )}
-              </button>
-            </div>
-            {status === "error" && (
-              <p className="text-destructive text-xs mt-2 font-mono">{errorMsg}</p>
-            )}
-          </form>
-        )}
-        <p className="text-xs text-muted-foreground/60 mt-3">
-          Free forever. One email per week. No spam. You&apos;re joining a desk that shows its work.
-        </p>
-
-        <FoundingMemberRecognition className="mt-8 max-w-md mx-auto" />
-      </section>
-
-      {/* ── Desk: latest published site edition or preview sample ── */}
-      <section className="max-w-3xl mx-auto px-4 pb-10">
-        <div className="mb-4 text-center sm:text-left">
-          <h2 className="text-lg font-semibold text-foreground tracking-tight">Today&apos;s Signal Check™ desk</h2>
-          <p className="text-xs text-muted-foreground mt-1 font-mono">
-            Flagship brief with sources and coverage map · same shape as email & social · updates when a new edition
-            goes live
-          </p>
-        </div>
-        <NewsletterDeskPreview />
-      </section>
-
-      {/* ── Filter bar ── */}
-      <section className="max-w-5xl mx-auto px-4 pb-4">
-        <div className="mb-3">
-          <h2 className="text-lg font-semibold text-foreground tracking-tight">Work intelligence wire</h2>
-          <p className="text-xs text-muted-foreground mt-1 font-mono">
-            Rolling ingest — use Refresh for the latest pull. Every card shows{" "}
-            <strong className="text-foreground font-medium">receipts-level context</strong>: who published it and how
-            that outlet tends to lean. Multi-outlet source maps and full Signal Check™ sit on Today&apos;s desk above and
-            in email — that&apos;s where we show who said what, side by side.
-          </p>
-        </div>
-
+      {/* ── Hero + subscribe ── */}
+      <section
+        id="newsletter-top"
+        className="relative border-b border-border/40 overflow-hidden"
+      >
         <div
-          id="source-orientation"
-          className="mb-4 rounded-lg border border-border/40 bg-muted/20 px-3 py-2.5 scroll-mt-24"
-        >
-          <p className="text-[11px] font-mono text-muted-foreground leading-relaxed">
-            <span className="text-foreground font-semibold">Radical transparency, radically inclusive.</span> We label
-            how outlets tend to frame work and labor so you can read with your eyes open — same information whether
-            you&apos;re HR, a union member, a job seeker, or the C-suite. That&apos;s{" "}
-            <span className="text-foreground">orientation and receipts</span>, not a pile-on of any reporter.
-            Factuality is a general reliability tier for the outlet. Unknown means we haven&apos;t mapped it yet; the
-            desk can override a row when we need a correction.
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,hsl(var(--primary)/0.12),transparent)]"
+          aria-hidden
+        />
+        <div className="relative max-w-6xl mx-auto px-4 pt-10 pb-12 lg:pt-14 lg:pb-16">
+          <div className="grid gap-10 lg:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:items-start">
+            <div className="text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-5">
+                <Radio className="w-3.5 h-3.5 text-primary animate-pulse shrink-0" />
+                <span className="text-xs font-mono tracking-wider text-primary uppercase">
+                  Receipts · desk · wire
+                </span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-bold text-foreground tracking-tight mb-4">
+                The Daily Grind
+              </h1>
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0 mb-6">
+                Work and labor intelligence for{" "}
+                <span className="text-foreground font-medium">every kind of worker</span>. Sources and outlet orientation
+                on the wire; Signal Check™ on the desk; Jackye&apos;s read when it&apos;s labeled — never faceless wire
+                copy.
+              </p>
+              <ul className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-3 sm:gap-5 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2 justify-center lg:justify-start">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Rss className="w-3.5 h-3.5" />
+                  </span>
+                  <span>Linked sources on every story</span>
+                </li>
+                <li className="flex items-center gap-2 justify-center lg:justify-start">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Sparkles className="w-3.5 h-3.5" />
+                  </span>
+                  <span>Desk + email + social, same shape</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="max-w-md mx-auto w-full lg:max-w-none lg:mx-0">
+              <Card className="rounded-2xl border-border/50 shadow-lg shadow-black/5">
+                <CardContent className="p-5 sm:p-6">
+                  <p className="text-xs font-mono uppercase tracking-wider text-primary mb-1">Join the list</p>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Free. One email a week. The desk shows its work.
+                  </p>
+                  {status === "success" ? (
+                    <div className="flex items-center gap-2.5 text-primary font-semibold text-sm py-2">
+                      <Check className="w-5 h-5 shrink-0" />
+                      <span>You&apos;re in. First drop lands Monday.</span>
+                    </div>
+                  ) : (
+                    <form id="newsletter-subscribe" onSubmit={handleSubmit} className="space-y-3">
+                      <div ref={containerRef} />
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                        <div className="flex flex-1 items-center gap-2 rounded-xl border-2 border-border/60 bg-background px-3 py-1 focus-within:border-primary/50 transition-colors">
+                          <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                              setStatus("idle");
+                            }}
+                            placeholder="you@company.com"
+                            className="flex-1 min-w-0 bg-transparent py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
+                            disabled={status === "loading"}
+                            autoComplete="email"
+                          />
+                        </div>
+                        <Button
+                          type="submit"
+                          disabled={status === "loading"}
+                          className="rounded-xl font-semibold shrink-0 sm:px-6"
+                        >
+                          {status === "loading" ? (
+                            "…"
+                          ) : (
+                            <>
+                              Subscribe <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                      {status === "error" && (
+                        <p className="text-destructive text-xs font-mono">{errorMsg}</p>
+                      )}
+                    </form>
+                  )}
+                  <FoundingMemberRecognition className="mt-6 pt-5 border-t border-border/40" />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Jump nav ── */}
+      <nav
+        className="sticky top-[4.5rem] z-40 border-b border-border/40 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/80"
+        aria-label="Newsletter sections"
+      >
+        <div className="max-w-6xl mx-auto px-4 py-2.5 flex items-center gap-1 overflow-x-auto scrollbar-none">
+          {(
+            [
+              ["#newsletter-desk", "Today's desk"],
+              ["#newsletter-wire", "Live wire"],
+              ["#source-orientation", "How labels work"],
+              ["#newsletter-subscribe", "Subscribe"],
+            ] as const
+          ).map(([href, label]) => (
+            <a
+              key={href}
+              href={href}
+              className="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      {/* ── Desk ── */}
+      <section id="newsletter-desk" className="max-w-6xl mx-auto px-4 py-12 scroll-mt-24">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-foreground tracking-tight">
+            Today&apos;s Signal Check™ desk
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
+            Flagship brief with sources and coverage map — same layout we ship to email and social. Updates when a new
+            edition is published.
           </p>
         </div>
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <div className="rounded-2xl border border-border/50 bg-card/40 p-3 sm:p-5 shadow-sm">
+          <NewsletterDeskPreview />
+        </div>
+      </section>
+
+      {/* ── Wire toolbar + feed ── */}
+      <section id="newsletter-wire" className="max-w-6xl mx-auto px-4 pb-6 scroll-mt-24">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-foreground tracking-tight">Live wire</h2>
+            <p className="text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
+              Rolling ingest of work and labor headlines. Each card shows the outlet and a desk orientation label. Full
+              multi-source maps live on the desk above.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="text-xs font-mono text-muted-foreground tabular-nums">
+              {filtered.length} stor{filtered.length === 1 ? "y" : "ies"}
+              {isFetching && !isLoading ? " · sync…" : ""}
+            </span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-9 rounded-xl"
+              disabled={feedRefreshing || isLoading}
+              onClick={() => void refreshFeed()}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 mr-2 ${feedRefreshing ? "animate-spin" : ""}`} />
+              Refresh feed
+            </Button>
+          </div>
+        </div>
+
+        <div id="source-orientation" className="scroll-mt-28 mb-6">
+          <Collapsible open={howLabelsOpen} onOpenChange={setHowLabelsOpen}>
+            <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 rounded-xl border border-border/50 bg-muted/20 px-4 py-3 text-left text-sm font-medium text-foreground hover:bg-muted/35 transition-colors">
+              <span>How outlet labels work</span>
+              <ChevronDown
+                className={cn(
+                  "w-4 h-4 shrink-0 text-muted-foreground transition-transform duration-200",
+                  howLabelsOpen && "rotate-180",
+                )}
+              />
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="mt-2 rounded-xl border border-border/40 bg-muted/15 px-4 py-3 text-sm text-muted-foreground leading-relaxed">
+                <strong className="text-foreground">Radical transparency, radically inclusive.</strong> We show how
+                outlets tend to frame work and labor — same label whether you&apos;re HR, union, job hunting, or
+                leadership. That is orientation and receipts, not a verdict on a reporter. Factuality is a general tier
+                for the outlet; Unknown means not mapped yet. The desk can override a row when needed.
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+
+        <p className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2">Filter</p>
+        <div className="flex flex-wrap items-center gap-2">
           {FILTER_OPTIONS.map((opt) => (
             <button
               key={opt.value}
+              type="button"
               onClick={() => setFilter(opt.value)}
-              className={`px-3 py-1.5 rounded-full text-xs font-mono tracking-wider border transition-all whitespace-nowrap ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-mono tracking-wide border transition-all ${
                 filter === opt.value
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-card text-muted-foreground border-border/40 hover:border-primary/40"
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                  : "bg-card text-muted-foreground border-border/50 hover:border-primary/35"
               }`}
             >
               {opt.label}
             </button>
           ))}
-          <div className="ml-auto flex items-center gap-2 shrink-0">
-            <span className="text-xs text-muted-foreground/50 font-mono whitespace-nowrap">
-              {filtered.length} stories
-              {isFetching && !isLoading ? " · updating…" : ""}
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2 text-xs text-muted-foreground"
-              disabled={feedRefreshing || isLoading}
-              onClick={() => void refreshFeed()}
-            >
-              <RefreshCw className={`w-3.5 h-3.5 mr-1 ${feedRefreshing ? "animate-spin" : ""}`} />
-              Refresh
-            </Button>
-          </div>
         </div>
       </section>
 
       {/* ── Feed ── */}
-      <section className="max-w-5xl mx-auto px-4 pb-16">
+      <section className="max-w-6xl mx-auto px-4 pb-20">
         {isLoading ? (
           <div className="flex flex-col items-center gap-3 py-20">
             <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
@@ -456,17 +545,21 @@ export default function Newsletter() {
           <>
             {/* Stories with Jackye's Take — shown first as featured */}
             {withTakes.length > 0 && (
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <Flame className="w-4 h-4 text-primary" />
-                  <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-primary">
-                    Jackye's Takes
-                  </h2>
-                  <span className="text-[10px] text-muted-foreground/60 font-mono ml-1 max-w-[14rem] sm:max-w-none leading-tight text-left">
-                    {withTakes.length} with read · facts first, then Jackye — tied to what you care about at work
-                  </span>
+              <div className="mb-12">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                      <Flame className="w-4 h-4" />
+                    </span>
+                    <div>
+                      <h2 className="text-lg font-bold text-foreground tracking-tight">With Jackye&apos;s read</h2>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {withTakes.length} stor{withTakes.length === 1 ? "y" : "ies"} · facts first, then labeled analysis
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-5">
                   {withTakes.map((article) => (
                     <StoryCard key={article.id} article={article} />
                   ))}
@@ -477,13 +570,16 @@ export default function Newsletter() {
             {/* All other stories — summary teasers */}
             {withoutTakes.length > 0 && (
               <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                  <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-muted-foreground">
-                    The Wire
-                  </h2>
+                <div className="flex items-center gap-2 mb-6">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted border border-border/50 text-muted-foreground">
+                    <TrendingUp className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h2 className="text-lg font-bold text-foreground tracking-tight">Headlines only</h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">Wire items without a desk take yet</p>
+                  </div>
                 </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {withoutTakes.map((article) => {
                     const cat = getCategoryConfig(article.category);
                     const wireMap = parseWorkNewsSourceMap(article.source_map_json);
@@ -491,7 +587,7 @@ export default function Newsletter() {
                     return (
                       <div
                         key={article.id}
-                        className="rounded-xl border border-border/30 bg-card p-4 hover:border-primary/30 transition-all h-full flex flex-col"
+                        className="rounded-2xl border border-border/50 bg-card p-4 shadow-sm hover:shadow-md hover:border-primary/25 transition-all duration-200 h-full flex flex-col"
                       >
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
                           <Badge
@@ -556,26 +652,29 @@ export default function Newsletter() {
       </section>
 
       {/* ── Bottom CTA ── */}
-      <section className="text-center py-10 px-4 border-t border-border/30">
-        <p className="text-muted-foreground text-sm mb-3 max-w-xl mx-auto leading-relaxed">
-          <strong className="text-foreground font-medium">Receipts, not vibes.</strong> Inclusive by design — if it
-          affects how you earn a living, it belongs here. Opinions show up only after the facts, labeled, and aimed at
-          what this community values: clarity, dignity at work, and knowing who benefits from the story you&apos;re
-          being sold.
-        </p>
-        <div className="flex items-center justify-center gap-4">
-          <Button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            variant="outline"
-            size="sm"
-          >
-            <Mail className="w-4 h-4 mr-2" /> Subscribe
-          </Button>
-          <Link to="/receipts">
-            <Button variant="ghost" size="sm">
-              All Receipts <ChevronRight className="w-4 h-4 ml-1" />
+      <section className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="rounded-2xl border border-border/50 bg-muted/20 px-6 py-10 sm:px-10 text-center">
+          <p className="text-muted-foreground text-sm mb-6 max-w-xl mx-auto leading-relaxed">
+            <strong className="text-foreground font-medium">Receipts, not vibes.</strong> Inclusive by design — if it
+            affects how you earn a living, it belongs here. Opinions show up only after the facts, labeled, and aimed
+            at what this community values: clarity, dignity at work, and knowing who benefits from the story you&apos;re
+            being sold.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Button
+              onClick={() => document.getElementById("newsletter-subscribe")?.scrollIntoView({ behavior: "smooth" })}
+              variant="default"
+              size="sm"
+              className="rounded-xl"
+            >
+              <Mail className="w-4 h-4 mr-2" /> Subscribe
             </Button>
-          </Link>
+            <Link to="/receipts">
+              <Button variant="outline" size="sm" className="rounded-xl">
+                All receipts <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
