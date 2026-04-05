@@ -2,6 +2,8 @@ import { useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { SignalsThisWeek } from "@/components/intelligence/SignalsThisWeek";
+import { LobbyingSignalExplainer } from "@/components/lobbying/LobbyingSignalExplainer";
+import { isLobbyingIssueSignal, LOBBYING_FACTS_ONLY_NOTE } from "@/lib/lobbyingSignalExplainer";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -9,20 +11,20 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, PieChart, Pie,
 } from "recharts";
 import {
   FileText, Search, Calendar, ArrowRight, Sparkles,
   Filter, Shield, Loader2, ExternalLink, DollarSign, Landmark, Building2,
-  TrendingUp, AlertTriangle, Hash, Users
+  TrendingUp, AlertTriangle, Hash, Users, ChevronDown
 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const ISSUE_OPTIONS = [
   "gun_policy", "reproductive_rights", "labor_rights", "climate",
   "civil_rights", "lgbtq_rights", "voting_rights", "immigration",
-  "education", "healthcare", "consumer_protection",
+  "education", "healthcare", "consumer_protection", "lobbying",
 ];
 
 const ISSUE_COLORS: Record<string, string> = {
@@ -42,6 +44,8 @@ const ISSUE_COLORS: Record<string, string> = {
 const SOURCE_LABELS: Record<string, { label: string; icon: typeof FileText }> = {
   campaign_finance: { label: "FEC Filing", icon: DollarSign },
   fec_direct: { label: "FEC Filing", icon: DollarSign },
+  OpenSecrets: { label: "OpenSecrets", icon: FileText },
+  opensecrets: { label: "OpenSecrets", icon: FileText },
   congress_legislation: { label: "Congress.gov", icon: Landmark },
   lobbying_disclosure: { label: "Senate LDA", icon: FileText },
   government_contract: { label: "USASpending", icon: Building2 },
@@ -332,9 +336,12 @@ export default function IntelligenceReports() {
                     </Select>
                   </div>
 
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2 mb-4">
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2 mb-2">
                     <Shield className="w-4 h-4" /> Recent Signals ({filteredSignals.length})
                   </h2>
+                  <p className="text-xs text-muted-foreground leading-relaxed max-w-3xl mb-4 border-l-2 border-border pl-3">
+                    {LOBBYING_FACTS_ONLY_NOTE} Rows quote or summarize public databases and filings. We do not rate employers or infer wrongdoing—read the linked sources.
+                  </p>
 
                   {filteredSignals.length === 0 ? (
                     <div className="text-center py-10">
@@ -346,6 +353,7 @@ export default function IntelligenceReports() {
                       {filteredSignals.map((s: any) => {
                         const sourceInfo = SOURCE_LABELS[s.source_dataset] || { label: s.source_dataset, icon: FileText };
                         const SourceIcon = sourceInfo.icon;
+                        const isLobbying = isLobbyingIssueSignal(s.issue_category, s.signal_type);
                         return (
                           <Card key={s.id} className="hover:border-primary/20 transition-colors">
                             <CardContent className="p-4">
@@ -374,9 +382,9 @@ export default function IntelligenceReports() {
                                   </p>
                                   <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                                     {s.amount && (
-                                      <span className="flex items-center gap-1">
+                                      <span className="flex items-center gap-1 font-mono">
                                         <DollarSign className="w-3 h-3" />
-                                        ${Number(s.amount).toLocaleString()}
+                                        {formatCurrency(Number(s.amount))}
                                       </span>
                                     )}
                                     {s.source_url && /^https?:\/\//.test(s.source_url) && (
@@ -392,6 +400,23 @@ export default function IntelligenceReports() {
                                       </span>
                                     )}
                                   </div>
+                                  {isLobbying && s.description && (
+                                    <Collapsible className="mt-3 border border-border/60 rounded-lg bg-muted/20">
+                                      <CollapsibleTrigger className="group flex items-center justify-between w-full px-3 py-2 text-left text-xs font-semibold text-foreground hover:bg-muted/40 rounded-t-lg">
+                                        <span>Filing context (facts only—expand)</span>
+                                        <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+                                      </CollapsibleTrigger>
+                                      <CollapsibleContent className="px-3 pb-3 pt-0 border-t border-border/40">
+                                        <LobbyingSignalExplainer
+                                          description={s.description}
+                                          companyName={s.entity_name_snapshot}
+                                          sourceUrl={s.source_url}
+                                          variant="full"
+                                          className="pt-3"
+                                        />
+                                      </CollapsibleContent>
+                                    </Collapsible>
+                                  )}
                                 </div>
                               </div>
                             </CardContent>
