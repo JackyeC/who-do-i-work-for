@@ -4,7 +4,6 @@ import { usePersona } from "@/hooks/use-persona";
 import { PersonaQuizBanner } from "@/components/PersonaQuizBanner";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
 import { NarrativeFeed } from "@/components/dashboard/NarrativeFeed";
 import { AlignedJobsList } from "@/components/jobs/AlignedJobsList";
 import { PreferenceCenter } from "@/components/jobs/PreferenceCenter";

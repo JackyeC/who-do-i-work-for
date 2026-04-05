@@ -34,13 +34,8 @@ import logoNav from "@/assets/wdiwf-logo-nav-light.png";
 /*  Nav structure                                                      */
 /* ------------------------------------------------------------------ */
 
-const NAV_GROUPS = [
-  {
-    label: "Home",
-    items: [
-      { id: "home", label: "Home", icon: Home, path: "/" },
-    ],
-  },
+/** Everything below the Home / Command center group. */
+const NAV_GROUPS_TAIL = [
   {
     label: "Explore",
     items: [
@@ -64,7 +59,7 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: "Intelligence",
+    label: "Research",
     items: [
       { id: "receipts", label: "Evidence Receipts", icon: FileText, path: "/intelligence" },
       { id: "policy-signals", label: "Policy Signals", icon: BarChart3, path: "/intelligence?type=policy_alert" },
@@ -89,10 +84,9 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: "Intelligence",
+    label: "My dashboard",
     auth: true,
     items: [
-      { id: "dashboard", label: "Overview", icon: LayoutDashboard, path: "/dashboard" },
       { id: "tracked", label: "Tracked Companies", icon: Building2, path: "/dashboard?tab=tracked" },
       { id: "matched-jobs", label: "Matched Jobs", icon: Briefcase, path: "/dashboard?tab=matches" },
       { id: "auto-apply", label: "Auto-Apply", icon: Zap, path: "/dashboard?tab=auto-apply" },
@@ -126,6 +120,19 @@ export function AppSidebar() {
   const { user, signOut } = useAuth();
   const location = useLocation();
   const { data: civic, isLoading: civicLoading } = useCivicImpact();
+
+  const navGroups = useMemo(() => {
+    const homeGroup = {
+      label: "Home",
+      items: user
+        ? [
+            { id: "command-center", label: "Command center", icon: LayoutDashboard, path: "/dashboard" },
+            { id: "site-home", label: "Site home", icon: Home, path: "/" },
+          ]
+        : [{ id: "home", label: "Home", icon: Home, path: "/" }],
+    };
+    return [homeGroup, ...NAV_GROUPS_TAIL];
+  }, [user]);
 
   const weeklyTip = useMemo(
     () => (user ? weeklyEngagementSubcopy(user.id) : ""),
@@ -167,7 +174,7 @@ export function AppSidebar() {
 
       {/* ── Nav groups ── */}
       <SidebarContent className="px-2">
-        {NAV_GROUPS.map((group) => {
+        {navGroups.map((group) => {
           // Hide auth-required groups for logged-out users
           if ((group as any).auth && !user) return null;
           const groupHasActive = group.items.some((item) =>
