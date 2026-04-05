@@ -13,13 +13,6 @@ Deno.serve(async (req: Request) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-
-    if (!LOVABLE_API_KEY) {
-      return new Response(JSON.stringify({ error: 'LOVABLE_API_KEY not configured' }), {
-        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
 
     const supabase = createClient(supabaseUrl, serviceKey);
 
@@ -71,12 +64,13 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // Get queued items up to remaining limit
+    // Queued items that meet the user's minimum match (others stay queued until threshold is lowered)
     const { data: queueItems } = await supabase
       .from('apply_queue')
       .select('*')
       .eq('user_id', userId)
       .eq('status', 'queued')
+      .gte('alignment_score', settings.min_alignment_threshold)
       .order('alignment_score', { ascending: false })
       .limit(remaining);
 
@@ -135,8 +129,8 @@ Deno.serve(async (req: Request) => {
             alignment_score: item.alignment_score,
             matched_signals: item.matched_signals,
             application_link: item.application_url,
-            status: 'Submitted',
-            applied_at: new Date().toISOString(),
+            status: 'Draft',
+            applied_at: null,
           });
 
           processed++;

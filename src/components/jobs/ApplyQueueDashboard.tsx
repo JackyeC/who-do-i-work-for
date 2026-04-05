@@ -18,7 +18,7 @@ import { motion } from "framer-motion";
 const STATUS_CONFIG: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   queued: { label: "Queued", icon: Clock, color: "text-muted-foreground bg-muted border-border" },
   processing: { label: "Processing", icon: Loader2, color: "text-civic-yellow bg-civic-yellow/5 border-civic-yellow/20/10 dark:border-civic-yellow/20" },
-  completed: { label: "Completed", icon: CheckCircle2, color: "text-civic-green bg-civic-green/5 border-civic-green/20/10 dark:border-civic-green/20" },
+  completed: { label: "Ready", icon: CheckCircle2, color: "text-civic-green bg-civic-green/5 border-civic-green/20/10 dark:border-civic-green/20" },
   failed: { label: "Failed", icon: AlertCircle, color: "text-destructive bg-destructive/5 border-destructive/30" },
 };
 
@@ -65,7 +65,7 @@ function QueueItemCard({
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <Link
-                  to={`/company/${item.company_name?.toLowerCase().replace(/\s+/g, "-")}`}
+                  to={`/company/${item.companies?.slug || item.company_name?.toLowerCase().replace(/\s+/g, "-")}`}
                   className="text-primary hover:underline font-medium"
                 >
                   {item.company_name}
@@ -192,7 +192,7 @@ export function ApplyQueueDashboard() {
           </span>
           <span className="flex items-center gap-1">
             <CheckCircle2 className="w-3.5 h-3.5 text-civic-green" />
-            <strong className="text-foreground">{completedCount}</strong> done
+            <strong className="text-foreground">{completedCount}</strong> ready
           </span>
           {failedCount > 0 && (
             <span className="flex items-center gap-1">
@@ -227,7 +227,7 @@ export function ApplyQueueDashboard() {
           <TabsList className="h-7 p-0.5">
             <TabsTrigger value="all" className="text-xs px-2.5 h-6">All ({queue.length})</TabsTrigger>
             <TabsTrigger value="queued" className="text-xs px-2.5 h-6">Queued ({queuedCount})</TabsTrigger>
-            <TabsTrigger value="completed" className="text-xs px-2.5 h-6">Done ({completedCount})</TabsTrigger>
+            <TabsTrigger value="completed" className="text-xs px-2.5 h-6">Ready ({completedCount})</TabsTrigger>
             {failedCount > 0 && (
               <TabsTrigger value="failed" className="text-xs px-2.5 h-6">Failed ({failedCount})</TabsTrigger>
             )}
@@ -244,7 +244,7 @@ export function ApplyQueueDashboard() {
             </div>
             <h3 className="text-sm font-semibold text-foreground mb-1">Queue is empty</h3>
             <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed mb-4">
-              Browse your matched jobs and click <strong>Quick Apply</strong> to add jobs here. AI will generate tailored cover letters for each.
+              From <strong>Dashboard → Matches</strong>, add aligned jobs to this queue, then <strong>Process</strong> to generate application payloads (cover letter / talking points). You apply on the employer site when ready.
             </p>
             <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs">
               <Link to="/dashboard?tab=matches">
