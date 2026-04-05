@@ -36,6 +36,8 @@ import { InfluencePolicyLayer } from "@/components/dossier/InfluencePolicyLayer"
 import { PoliticalGivingCard } from "@/components/giving/PoliticalGivingCard";
 import { ExecutiveGivingSection } from "@/components/giving/ExecutiveGivingCard";
 import { InstitutionalDNACard } from "@/components/dossier/InstitutionalDNACard";
+import { BoardInterlocksSnippet } from "@/components/company/BoardInterlocksSnippet";
+import { DocumentedPublicRecordsSection } from "@/components/company/DocumentedPublicRecordsSection";
 import { InsiderScoreBreakdown } from "@/components/dossier/InsiderScoreBreakdown";
 import { PatternsSynthesisLayer } from "@/components/dossier/PatternsSynthesisLayer";
 import { TalentContextLayer } from "@/components/dossier/TalentContextLayer";
@@ -390,6 +392,12 @@ export default function CompanyDossier() {
         {companyId && (
           <div className="mt-6">
             <InstitutionalDNACard companyId={companyId} companyName={company.name} />
+          </div>
+        )}
+        {companyId && (
+          <div className="mt-6 space-y-4">
+            <BoardInterlocksSnippet companyId={companyId} companyName={company.name} companySlug={company.slug} />
+            <DocumentedPublicRecordsSection companyId={companyId} companyName={company.name} />
           </div>
         )}
         {companyId && (

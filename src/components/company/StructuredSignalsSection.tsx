@@ -1,12 +1,13 @@
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { EmptyStateExplainer } from "@/components/company/EmptyStateExplainer";
 import { OffTheRecordSignals } from "@/components/company/OffTheRecordSignals";
 import { ExpandableSignalItem } from "@/components/company/ExpandableSignalItem";
-import { cn } from "@/lib/utils";
+import { LobbyingSignalExplainer } from "@/components/lobbying/LobbyingSignalExplainer";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { getUiStatement } from "@/lib/signalPersonalization";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ChevronDown, Megaphone } from "lucide-react";
 import { safeSignalSummary, mapToCategory, TAXONOMY_MAP } from "@/utils/signalTextSanitizer";
 
 interface Signal {
@@ -79,6 +80,8 @@ interface StructuredSignalsProps {
   careersUrl?: string;
   lastReviewed?: string;
   updatedAt?: string;
+  /** Opens full LDA / state lobbying drawer from company profile */
+  onLobbyingDetailClick?: () => void;
   scanContext?: {
     atsDetected?: string;
     pageClassification?: string;
@@ -129,6 +132,32 @@ function getStaleWarning(canonicalSignals: any[] | null): { isStale: boolean; da
   return daysSince > 30 ? { isStale: true, daysSince } : null;
 }
 
+function useLobbyingIssueSignals(companyId: string) {
+  return useQuery({
+    queryKey: ["lobbying-issue-signals", companyId],
+    queryFn: async () => {
+      if (!companyId) return [];
+      const { data } = await (supabase as any)
+        .from("issue_signals")
+        .select("id, description, amount, source_url, confidence_score, signal_type, transaction_date")
+        .eq("entity_id", companyId)
+        .eq("issue_category", "lobbying")
+        .order("amount", { ascending: false });
+      return (data || []) as Array<{
+        id: string;
+        description: string | null;
+        amount: number | null;
+        source_url: string | null;
+        confidence_score: string;
+        signal_type: string;
+        transaction_date: string | null;
+      }>;
+    },
+    enabled: !!companyId,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 function useCanonicalSignals(companyId: string) {
   return useQuery({
     queryKey: ['canonical-signals', companyId],
@@ -165,6 +194,7 @@ function buildSignalFromCanonical(canonical: any, deepLinks?: { label: string; t
 export function StructuredSignalsSection(props: StructuredSignalsProps) {
   const recency = getRecency(props.lastReviewed, props.updatedAt);
   const { data: canonicalSignals } = useCanonicalSignals(props.companyId);
+  const { data: lobbyingIssueRows = [] } = useLobbyingIssueSignals(props.companyId);
   const slug = props.companySlug;
 
   // Group canonical signals by category — keep all signals, not just the last one
@@ -399,6 +429,51 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
         </div>
 
         <SignalCategory title="Leadership & Influence" signals={leadershipSignals} />
+
+        {lobbyingIssueRows.length > 0 && (
+          <div className="py-4 border-b border-border/30 last:border-b-0">
+            <div className="flex items-center gap-2 mb-2">
+              <Megaphone className="w-4 h-4 text-primary" />
+              <p className="text-sm font-semibold text-foreground">Lobbying — what disclosures show</p>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              Issue-level rows from public lobbying summaries. Expand each for topics, how to read LDA data, and worker context.
+            </p>
+            <div className="space-y-2">
+              {lobbyingIssueRows.map((row) => {
+                if (!row.description) return null;
+                return (
+                  <Collapsible key={row.id} className="border border-border/50 rounded-lg bg-muted/20">
+                    <CollapsibleTrigger className="group flex items-center justify-between w-full px-3 py-2.5 text-left hover:bg-muted/40 rounded-lg">
+                      <span className="text-sm text-foreground pr-2 line-clamp-2">{row.description}</span>
+                      <ChevronDown className="w-4 h-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="px-3 pb-3 border-t border-border/30">
+                      {row.amount != null && row.amount > 0 && (
+                        <p className="text-xs font-mono font-semibold text-foreground pt-2 mb-2">
+                          {formatMoney(row.amount)} <span className="text-muted-foreground font-sans font-normal">reported spend (where cited)</span>
+                        </p>
+                      )}
+                      <LobbyingSignalExplainer
+                        description={row.description}
+                        companyName={props.companyName}
+                        sourceUrl={row.source_url}
+                        variant="full"
+                        className="pt-1"
+                      />
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
+            </div>
+            {props.onLobbyingDetailClick && (
+              <Button type="button" variant="outline" size="sm" className="mt-3 w-full sm:w-auto" onClick={props.onLobbyingDetailClick}>
+                Open full lobbying detail (issues, states, linkages)
+              </Button>
+            )}
+          </div>
+        )}
+
         <SignalCategory title="Innovation & Growth" signals={innovationSignals} />
         <SignalCategory title="Employee Experience" signals={sentimentSignals} emptyType="sentiment" companyName={props.companyName} />
       </div>

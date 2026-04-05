@@ -2,6 +2,8 @@ import { useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { SignalsThisWeek } from "@/components/intelligence/SignalsThisWeek";
+import { LobbyingSignalExplainer } from "@/components/lobbying/LobbyingSignalExplainer";
+import { isLobbyingIssueSignal } from "@/lib/lobbyingSignalExplainer";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -16,8 +18,9 @@ import {
 import {
   FileText, Search, Calendar, ArrowRight, Sparkles,
   Filter, Shield, Loader2, ExternalLink, DollarSign, Landmark, Building2,
-  TrendingUp, AlertTriangle, Hash, Users
+  TrendingUp, AlertTriangle, Hash, Users, ChevronDown
 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const ISSUE_OPTIONS = [
   "gun_policy", "reproductive_rights", "labor_rights", "climate",
@@ -42,6 +45,8 @@ const ISSUE_COLORS: Record<string, string> = {
 const SOURCE_LABELS: Record<string, { label: string; icon: typeof FileText }> = {
   campaign_finance: { label: "FEC Filing", icon: DollarSign },
   fec_direct: { label: "FEC Filing", icon: DollarSign },
+  OpenSecrets: { label: "OpenSecrets", icon: DollarSign },
+  opensecrets: { label: "OpenSecrets", icon: DollarSign },
   congress_legislation: { label: "Congress.gov", icon: Landmark },
   lobbying_disclosure: { label: "Senate LDA", icon: FileText },
   government_contract: { label: "USASpending", icon: Building2 },
@@ -346,6 +351,7 @@ export default function IntelligenceReports() {
                       {filteredSignals.map((s: any) => {
                         const sourceInfo = SOURCE_LABELS[s.source_dataset] || { label: s.source_dataset, icon: FileText };
                         const SourceIcon = sourceInfo.icon;
+                        const isLobbying = isLobbyingIssueSignal(s.issue_category, s.signal_type);
                         return (
                           <Card key={s.id} className="hover:border-primary/20 transition-colors">
                             <CardContent className="p-4">
@@ -374,9 +380,9 @@ export default function IntelligenceReports() {
                                   </p>
                                   <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                                     {s.amount && (
-                                      <span className="flex items-center gap-1">
+                                      <span className="flex items-center gap-1 font-mono">
                                         <DollarSign className="w-3 h-3" />
-                                        ${Number(s.amount).toLocaleString()}
+                                        {formatCurrency(Number(s.amount))}
                                       </span>
                                     )}
                                     {s.source_url && /^https?:\/\//.test(s.source_url) && (
@@ -392,6 +398,23 @@ export default function IntelligenceReports() {
                                       </span>
                                     )}
                                   </div>
+                                  {isLobbying && s.description && (
+                                    <Collapsible className="mt-3 border border-border/60 rounded-lg bg-muted/20">
+                                      <CollapsibleTrigger className="group flex items-center justify-between w-full px-3 py-2 text-left text-xs font-semibold text-foreground hover:bg-muted/40 rounded-t-lg">
+                                        <span>What they lobbied on &amp; why it matters</span>
+                                        <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+                                      </CollapsibleTrigger>
+                                      <CollapsibleContent className="px-3 pb-3 pt-0 border-t border-border/40">
+                                        <LobbyingSignalExplainer
+                                          description={s.description}
+                                          companyName={s.entity_name_snapshot}
+                                          sourceUrl={s.source_url}
+                                          variant="full"
+                                          className="pt-3"
+                                        />
+                                      </CollapsibleContent>
+                                    </Collapsible>
+                                  )}
                                 </div>
                               </div>
                             </CardContent>

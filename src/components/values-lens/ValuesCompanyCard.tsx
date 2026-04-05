@@ -10,6 +10,8 @@ import { ValuesEvidenceCard } from "./ValuesEvidenceCard";
 import { InsiderScorePill } from "@/components/InsiderScorePill";
 import { usePersona } from "@/hooks/use-persona";
 import { SIGNAL_DIRECTION_CONFIG, CONFIDENCE_CONFIG } from "@/lib/valuesLenses";
+import { LobbyingSignalExplainer } from "@/components/lobbying/LobbyingSignalExplainer";
+import { isLobbyingIssueSignal } from "@/lib/lobbyingSignalExplainer";
 
 interface Signal {
   id: string;
@@ -23,6 +25,8 @@ interface Signal {
   value_category?: string;
   evidence_text?: string;
   evidence_url?: string;
+  issue_category?: string;
+  amount_value?: number | null;
 }
 
 interface Evidence {
@@ -122,49 +126,68 @@ export function ValuesCompanyCard({ company, signals, evidence, lensLabel, hasCo
               const dirConfig = SIGNAL_DIRECTION_CONFIG[signal.signal_direction || "informational_signal"];
               const confKey = signal.confidence_level || signal.confidence || "medium";
               const confConfig = CONFIDENCE_CONFIG[confKey] || CONFIDENCE_CONFIG.medium;
+              const isLobbying = isLobbyingIssueSignal(signal.issue_category, signal.signal_type);
+              const desc = signal.signal_label || "";
 
               return (
-                <div key={signal.id} className="flex items-start gap-2 text-sm">
-                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${dirConfig?.color || "text-muted-foreground"} bg-current`} />
-                  <div className="flex-1 min-w-0">
-                    {signal.evidence_url ? (
-                      <a
-                        href={signal.evidence_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-foreground font-medium hover:text-primary hover:underline transition-colors cursor-pointer"
-                      >
-                        {safeSignalLabel(signal.signal_label || signal.signal_summary || signal.signal_type?.replace(/_/g, " "), "Signal Detected")}
-                      </a>
-                    ) : (
-                      <span className="text-foreground font-medium">
-                        {safeSignalLabel(signal.signal_label || signal.signal_summary || signal.signal_type?.replace(/_/g, " "), "Signal Detected")}
-                      </span>
-                    )}
-                    {signal.signal_summary && signal.signal_label && (
-                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{signal.signal_summary}</p>
-                    )}
-                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                      {dirConfig && (
-                        <Badge variant="outline" className={`text-xs px-1.5 py-0 ${dirConfig.color}`}>
-                          {dirConfig.plainLabel}
-                        </Badge>
-                      )}
-                      <Badge variant="outline" className={`text-xs px-1.5 py-0 ${confConfig.color}`}>
-                        {confConfig.plainLabel}
-                      </Badge>
-                      {signal.evidence_url && (
+                <div key={signal.id} className="space-y-2">
+                  <div className="flex items-start gap-2 text-sm">
+                    <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${dirConfig?.color || "text-muted-foreground"} bg-current`} />
+                    <div className="flex-1 min-w-0">
+                      {signal.evidence_url ? (
                         <a
                           href={signal.evidence_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-0.5 text-xs text-primary hover:underline font-semibold"
+                          className="text-foreground font-medium hover:text-primary hover:underline transition-colors cursor-pointer"
                         >
-                          <ExternalLink className="w-2.5 h-2.5" /> View source
+                          {safeSignalLabel(signal.signal_label || signal.signal_summary || signal.signal_type?.replace(/_/g, " "), "Signal Detected")}
                         </a>
+                      ) : (
+                        <span className="text-foreground font-medium">
+                          {safeSignalLabel(signal.signal_label || signal.signal_summary || signal.signal_type?.replace(/_/g, " "), "Signal Detected")}
+                        </span>
                       )}
+                      {signal.signal_summary && signal.signal_label && (
+                        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{signal.signal_summary}</p>
+                      )}
+                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                        {dirConfig && (
+                          <Badge variant="outline" className={`text-xs px-1.5 py-0 ${dirConfig.color}`}>
+                            {dirConfig.plainLabel}
+                          </Badge>
+                        )}
+                        <Badge variant="outline" className={`text-xs px-1.5 py-0 ${confConfig.color}`}>
+                          {confConfig.plainLabel}
+                        </Badge>
+                        {signal.amount_value != null && signal.amount_value > 0 && (
+                          <span className="text-xs font-mono font-semibold text-foreground">
+                            ${Number(signal.amount_value).toLocaleString()}
+                          </span>
+                        )}
+                        {signal.evidence_url && (
+                          <a
+                            href={signal.evidence_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-0.5 text-xs text-primary hover:underline font-semibold"
+                          >
+                            <ExternalLink className="w-2.5 h-2.5" /> View source
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  {isLobbying && desc && (
+                    <div className="pl-3.5 border-l-2 border-primary/25 ml-0.5">
+                      <LobbyingSignalExplainer
+                        description={desc}
+                        companyName={company.name}
+                        sourceUrl={signal.evidence_url}
+                        variant="full"
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}
