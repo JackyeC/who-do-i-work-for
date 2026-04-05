@@ -1,6 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type WorkNewsSourceMapEntry = {
+  name: string;
+  url: string | null;
+  bias: string;
+};
+
+/** Parse `work_news.source_map_json` from Supabase (jsonb). */
+export function parseWorkNewsSourceMap(raw: unknown): WorkNewsSourceMapEntry[] {
+  if (!Array.isArray(raw)) return [];
+  const out: WorkNewsSourceMapEntry[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const o = item as Record<string, unknown>;
+    const name = typeof o.name === "string" ? o.name.trim() : "";
+    const bias = typeof o.bias === "string" ? o.bias.trim() : "";
+    if (!name || !bias) continue;
+    const url = typeof o.url === "string" && o.url.trim() ? o.url.trim() : null;
+    out.push({ name, url, bias });
+  }
+  return out;
+}
+
 export interface WorkNewsArticle {
   id: string;
   headline: string;
@@ -16,6 +38,9 @@ export interface WorkNewsArticle {
   jackye_take: string | null;
   jackye_take_approved: boolean;
   created_at: string;
+  source_bias_override: string | null;
+  source_map_json: unknown | null;
+  developing_label: string | null;
 }
 
 function normalizeHeadline(headline: string): string {
@@ -42,6 +67,12 @@ function hasTake(a: WorkNewsArticle): boolean {
   return !!(a.jackye_take && a.jackye_take.trim());
 }
 
+/** Prefer approved takes over drafts when deduping duplicate ingestions. */
+function takeScore(a: WorkNewsArticle): number {
+  if (!hasTake(a)) return 0;
+  return a.jackye_take_approved ? 2 : 1;
+}
+
 function publishedMs(iso: string | null): number {
   if (!iso) return 0;
   const t = new Date(iso).getTime();
@@ -49,6 +80,9 @@ function publishedMs(iso: string | null): number {
 }
 
 function mergeWorkNewsPair(a: WorkNewsArticle, b: WorkNewsArticle): WorkNewsArticle {
+  const sa = takeScore(a);
+  const sb = takeScore(b);
+  if (sa !== sb) return sa > sb ? a : b;
   const aTake = hasTake(a);
   const bTake = hasTake(b);
   if (aTake && !bTake) return a;

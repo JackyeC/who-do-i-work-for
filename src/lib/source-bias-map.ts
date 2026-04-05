@@ -188,6 +188,38 @@ const SOURCE_BIAS_DB: Record<string, SourceProfile> = {
   "the indian express": { bias: "Center", factuality: "High" },
   "japan today": { bias: "Center", factuality: "High" },
   "businessline": { bias: "Center", factuality: "High" },
+
+  // -- HR / work trade & B2B (WDIWF desk — revisit as provisional per charter) --
+  "shrm": { bias: "Lean Right", factuality: "High" },
+  "shrm online": { bias: "Lean Right", factuality: "High" },
+  "society for human resource management": { bias: "Lean Right", factuality: "High" },
+  "hr dive": { bias: "Center", factuality: "High" },
+  "hr executive": { bias: "Lean Right", factuality: "High" },
+  "human resource executive": { bias: "Lean Right", factuality: "High" },
+  "hrexecutive": { bias: "Lean Right", factuality: "High" },
+  "employee benefit news": { bias: "Lean Right", factuality: "High" },
+  "ebn": { bias: "Lean Right", factuality: "High" },
+  "benefitspro": { bias: "Lean Right", factuality: "Mixed" },
+  "reworked": { bias: "Center", factuality: "High" },
+  "reworked.co": { bias: "Center", factuality: "High" },
+  "tlnt": { bias: "Center", factuality: "Mixed" },
+  "talent culture": { bias: "Center", factuality: "Mixed" },
+  "workforce": { bias: "Center", factuality: "High" },
+  "workforce magazine": { bias: "Center", factuality: "High" },
+  "people matters": { bias: "Center", factuality: "Mixed" },
+  "people management": { bias: "Center", factuality: "High" },
+  "chief learning officer": { bias: "Lean Right", factuality: "High" },
+  "training magazine": { bias: "Center", factuality: "High" },
+  "ere.net": { bias: "Center", factuality: "Mixed" },
+  "recruiting daily": { bias: "Center", factuality: "Mixed" },
+  "unleash": { bias: "Center", factuality: "Mixed" },
+  "hr grapevine": { bias: "Center", factuality: "Mixed" },
+  "people hr": { bias: "Center", factuality: "Mixed" },
+  "people management magazine": { bias: "Center", factuality: "High" },
+  "lattice": { bias: "Lean Right", factuality: "Mixed" },
+  "gusto": { bias: "Lean Right", factuality: "Mixed" },
+  "rippling": { bias: "Lean Right", factuality: "Mixed" },
+  "deel": { bias: "Lean Right", factuality: "Mixed" },
 };
 
 /**
@@ -201,12 +233,39 @@ export function getSourceProfile(sourceName: string | null): SourceProfile {
   // Exact match
   if (SOURCE_BIAS_DB[key]) return SOURCE_BIAS_DB[key];
 
-  // Partial match (e.g. "CBS News" matches "cbs news")
-  for (const [dbKey, profile] of Object.entries(SOURCE_BIAS_DB)) {
-    if (key.includes(dbKey) || dbKey.includes(key)) return profile;
+  // Prefer longer keys first so "hr dive" wins over "hr"
+  const entries = Object.entries(SOURCE_BIAS_DB).sort((a, b) => b[0].length - a[0].length);
+  for (const [dbKey, profile] of entries) {
+    if (key.includes(dbKey)) return profile;
+    if (key.length >= 4 && dbKey.includes(key)) return profile;
   }
 
   return { bias: "Unknown", factuality: "Unknown" };
+}
+
+const CHARTER_BIAS_VALUES: BiasRating[] = [
+  "Left",
+  "Lean Left",
+  "Center",
+  "Lean Right",
+  "Right",
+  "Unknown",
+];
+
+/**
+ * Apply a per-story override from the desk (`work_news.source_bias_override`).
+ * Values are case-insensitive and must match charter labels.
+ */
+export function resolveSourceProfile(
+  sourceName: string | null,
+  biasOverride: string | null | undefined,
+): SourceProfile {
+  const base = getSourceProfile(sourceName);
+  if (biasOverride == null || String(biasOverride).trim() === "") return base;
+  const t = String(biasOverride).trim().toLowerCase();
+  const match = CHARTER_BIAS_VALUES.find((b) => b.toLowerCase() === t);
+  if (match) return { ...base, bias: match };
+  return base;
 }
 
 /**

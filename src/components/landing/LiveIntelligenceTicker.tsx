@@ -2,12 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { workNewsDedupeKey } from "@/hooks/use-work-news";
 import { Radio } from "lucide-react";
-import {
-  getSourceProfile,
-  getBiasColor,
-  getBiasShortLabel,
-  getFactualityColor,
-} from "@/lib/source-bias-map";
+import { SourceOrientationChip } from "@/components/newsletter/SourceOrientationChip";
 
 interface TickerNewsItem {
   id: string;
@@ -18,6 +13,8 @@ interface TickerNewsItem {
   is_controversy: boolean;
   published_at: string | null;
   jackye_take: string | null;
+  source_bias_override: string | null;
+  developing_label: string | null;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -43,7 +40,7 @@ export function LiveIntelligenceTicker() {
       const { data, error } = await supabase
         .from("work_news")
         .select(
-          "id, headline, source_name, source_url, category, is_controversy, published_at, jackye_take"
+          "id, headline, source_name, source_url, category, is_controversy, published_at, jackye_take, source_bias_override, developing_label"
         )
         .order("published_at", { ascending: false })
         .limit(40);
@@ -78,6 +75,8 @@ export function LiveIntelligenceTicker() {
             is_controversy: false,
             published_at: null,
             jackye_take: null,
+            source_bias_override: null,
+            developing_label: null,
           },
         ];
 
@@ -90,10 +89,6 @@ export function LiveIntelligenceTicker() {
   const duration = Math.max(80, Math.min((totalChars * 0.35), 200));
 
   const renderItem = (item: TickerNewsItem, key: string) => {
-    const profile = getSourceProfile(item.source_name);
-    const biasColor = getBiasColor(profile.bias);
-    const biasLabel = getBiasShortLabel(profile.bias);
-    const factColor = getFactualityColor(profile.factuality);
     const catLabel = CATEGORY_LABELS[item.category] || "NEWS";
 
     const headlineText =
@@ -136,50 +131,32 @@ export function LiveIntelligenceTicker() {
         {/* Jackye's take (if curated) */}
         {item.jackye_take && (
           <span className="font-sans text-ticker text-primary/80 italic shrink-0">
-            \u2014 {item.jackye_take}
+            {"\u2014 "}
+            {item.jackye_take}
           </span>
         )}
 
-        {/* Source + bias label */}
+        {/* Source + desk orientation (compact) */}
         {item.source_name && (
           <span className="inline-flex items-center gap-1 shrink-0">
-            <span className="font-sans text-ticker text-muted-foreground/60">
-              via
-            </span>
-            <span className="font-sans text-ticker text-muted-foreground">
-              {item.source_name}
-            </span>
-            {profile.bias !== "Unknown" && (
-              <span
-                className={`font-mono text-[9px] font-bold px-1 py-px border rounded ${biasColor}`}
-                style={{
-                  borderColor: "currentColor",
-                  opacity: 0.8,
-                  lineHeight: 1,
-                }}
-                title={`Bias: ${profile.bias} \u00B7 Factuality: ${profile.factuality}`}
-              >
-                {biasLabel}
-              </span>
-            )}
-            {profile.factuality !== "Unknown" && (
-              <span
-                className={`font-mono text-[9px] ${factColor}`}
-                style={{ opacity: 0.6 }}
-                title={`Factuality: ${profile.factuality}`}
-              >
-                {profile.factuality === "High"
-                  ? "\u2713"
-                  : profile.factuality === "Mixed"
-                  ? "~"
-                  : "\u2717"}
-              </span>
-            )}
+            <span className="font-sans text-ticker text-muted-foreground/60">via</span>
+            <span className="font-sans text-ticker text-muted-foreground">{item.source_name}</span>
+            <SourceOrientationChip
+              sourceName={item.source_name}
+              biasOverride={item.source_bias_override}
+              variant="compact"
+            />
+          </span>
+        )}
+
+        {item.developing_label?.trim() && (
+          <span className="font-mono text-[9px] text-amber-500/90 shrink-0 px-1 border border-amber-500/40 rounded">
+            {item.developing_label.trim()}
           </span>
         )}
 
         <span className="px-2" style={{ color: "hsl(43 85% 59% / 0.5)" }}>
-          \u00B7
+          {"\u00B7"}
         </span>
       </span>
     );

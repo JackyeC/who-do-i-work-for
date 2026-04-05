@@ -10,16 +10,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTurnstile } from "@/hooks/useTurnstile";
 import { verifyTurnstileToken } from "@/lib/verifyTurnstile";
 import {
-  getSourceProfile,
-  getBiasColor,
-} from "@/lib/source-bias-map";
-import {
   Mail, ArrowRight, Check, ExternalLink, Newspaper,
   AlertTriangle, Flame, ChevronRight, Radio,
   Eye, TrendingUp, RefreshCw,
 } from "lucide-react";
 import { NewsletterDeskPreview } from "@/components/newsletter/NewsletterDeskPreview";
 import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
+import { SourceOrientationChip } from "@/components/newsletter/SourceOrientationChip";
+import { WorkNewsSourceMap } from "@/components/newsletter/WorkNewsSourceMap";
+import { parseWorkNewsSourceMap } from "@/hooks/use-work-news";
 
 /* ── Category config ── */
 const CATEGORY_CONFIG: Record<string, { label: string; color: string }> = {
@@ -64,7 +63,10 @@ function spiceLevel(article: WorkNewsArticle): number {
 
 function SpiceMeter({ level }: { level: number }) {
   return (
-    <span className="flex items-center gap-0.5" title={`Spice level: ${level}/5`}>
+    <span
+      className="flex items-center gap-0.5"
+      title={`Coverage intensity from ingest signals (controversy, tone) — ${level}/5, not a mood score`}
+    >
       {Array.from({ length: 5 }).map((_, i) => (
         <span key={i} className={i < level ? "opacity-100" : "opacity-20"}>
           🌶️
@@ -78,23 +80,28 @@ function SpiceMeter({ level }: { level: number }) {
 function StoryCard({ article }: { article: WorkNewsArticle }) {
   const cat = getCategoryConfig(article.category);
   const spice = spiceLevel(article);
-  const sourceProfile = article.source_name
-    ? getSourceProfile(article.source_name)
-    : null;
-  const biasColor = sourceProfile ? getBiasColor(sourceProfile.bias) : "";
+  const sourceMapEntries = parseWorkNewsSourceMap(article.source_map_json);
 
   return (
     <Card className="bg-card border border-border/40 hover:border-primary/30 transition-all group">
       <CardContent className="p-0">
         {/* Header bar */}
         <div className="flex items-center justify-between px-5 pt-4 pb-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge
               variant="outline"
               className={`text-[10px] font-mono tracking-wider border ${cat.color}`}
             >
               {cat.label}
             </Badge>
+            {article.developing_label?.trim() && (
+              <Badge
+                variant="outline"
+                className="text-[10px] font-mono tracking-wider border-amber-500/40 text-amber-600 dark:text-amber-400"
+              >
+                {article.developing_label.trim()}
+              </Badge>
+            )}
             {article.is_controversy && (
               <AlertTriangle className="w-3.5 h-3.5 text-destructive animate-pulse" />
             )}
@@ -105,20 +112,31 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
         </div>
 
         {/* Headline */}
-        <div className="px-5 pb-3">
+        <div className="px-5 pb-3 space-y-2">
           <h3 className="text-[15px] font-semibold text-foreground leading-snug">
             {article.headline}
           </h3>
+          {sourceMapEntries.length > 0 && (
+            <WorkNewsSourceMap entries={sourceMapEntries} className="mx-0" />
+          )}
         </div>
 
         {/* The Take — ALWAYS OPEN */}
         {article.jackye_take && (
           <div className="mx-4 mb-3 rounded-xl bg-primary/5 border border-primary/20 p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
               <Eye className="w-3.5 h-3.5 text-primary" />
               <span className="text-xs font-bold text-primary tracking-wide uppercase">
                 Jackye's Take
               </span>
+              {!article.jackye_take_approved && (
+                <Badge
+                  variant="outline"
+                  className="text-[9px] font-mono tracking-wider border-muted-foreground/40 text-muted-foreground"
+                >
+                  Pending desk review
+                </Badge>
+              )}
             </div>
             <p className="text-sm text-foreground/90 leading-relaxed">
               {article.jackye_take}
@@ -140,13 +158,25 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
           </div>
         )}
 
-        {/* Footer: source + spice + link */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-border/20 bg-muted/20">
-          <div className="flex items-center gap-3">
+        {/* Footer: source + orientation + spice + link */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-5 py-3 border-t border-border/20 bg-muted/20">
+          <div className="flex flex-col gap-1.5 min-w-0">
             {article.source_name && (
-              <span className={`text-xs font-medium ${biasColor || "text-muted-foreground"}`}>
-                {article.source_name}
-              </span>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="text-xs font-medium text-foreground">{article.source_name}</span>
+                <SourceOrientationChip
+                  sourceName={article.source_name}
+                  biasOverride={article.source_bias_override}
+                  variant="default"
+                />
+              </div>
+            )}
+            {!article.source_name && (
+              <SourceOrientationChip
+                sourceName={null}
+                biasOverride={article.source_bias_override}
+                variant="default"
+              />
             )}
             <SpiceMeter level={spice} />
           </div>
@@ -206,13 +236,13 @@ export default function Newsletter() {
   usePageSEO({
     title: "Newsletter & Daily Desk | Signal Check™, Substack, Social | Who Do I Work For",
     description:
-      "Daily desk: website brief with Signal Check™, email (Substack) shape, and social posts — plus the live work intelligence feed with Jackye's Take.",
+      "Radically inclusive work & labor desk: receipts and sources first, outlet orientation on every wire item, and Jackye's read only after the facts — grounded in what you value at work.",
     path: "/newsletter",
     jsonLd: {
       "@type": "WebPage",
       name: "Newsletter & Daily Desk — Who Do I Work For",
       description:
-        "WDIWF daily desk format (Signal Check), Substack and social distribution, and live employer intelligence feed.",
+        "Inclusive work and labor desk: Signal Check brief, Substack and social distribution, live wire with source receipts and outlet orientation, labeled analysis after the facts.",
       url: "https://wdiwf.jackyeclayton.com/newsletter",
       author: { "@type": "Person", name: "Jackye Clayton" },
     },
@@ -278,17 +308,18 @@ export default function Newsletter() {
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 mb-5">
           <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
           <span className="text-xs font-mono tracking-wider text-primary uppercase">
-            Live desk & wire
+            Receipts · desk · wire
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
           The Daily Grind
         </h1>
         <p className="text-base text-muted-foreground mb-6 max-w-lg mx-auto leading-relaxed">
-          Daily desk on this page: <strong className="text-foreground">website brief</strong>,{" "}
-          <strong className="text-foreground">email (Substack)</strong>, and{" "}
-          <strong className="text-foreground">social</strong> — same shape the content engine ships. Below that: the
-          live feed with Jackye&apos;s Take.
+          Built for <strong className="text-foreground">every kind of worker</strong> — hourly, salary, gig, public
+          sector, job hunting, leading teams.{" "}
+          <strong className="text-foreground">Facts and receipts first</strong> (sources, links, how outlets lean). When
+          you see Jackye&apos;s read, it&apos;s labeled analysis grounded in what people in this community actually
+          value — not vibes, not a bot, not faceless wire copy.
         </p>
 
         {/* ── Subscribe bar ── */}
@@ -332,7 +363,7 @@ export default function Newsletter() {
           </form>
         )}
         <p className="text-xs text-muted-foreground/60 mt-3">
-          Free forever. One email per week. No spam.
+          Free forever. One email per week. No spam. You&apos;re joining a desk that shows its work.
         </p>
 
         <FoundingMemberRecognition className="mt-8 max-w-md mx-auto" />
@@ -343,7 +374,8 @@ export default function Newsletter() {
         <div className="mb-4 text-center sm:text-left">
           <h2 className="text-lg font-semibold text-foreground tracking-tight">Today&apos;s Signal Check™ desk</h2>
           <p className="text-xs text-muted-foreground mt-1 font-mono">
-            Website brief · same shape as email & social · updates when a new edition goes live
+            Flagship brief with sources and coverage map · same shape as email & social · updates when a new edition
+            goes live
           </p>
         </div>
         <NewsletterDeskPreview />
@@ -354,7 +386,24 @@ export default function Newsletter() {
         <div className="mb-3">
           <h2 className="text-lg font-semibold text-foreground tracking-tight">Work intelligence wire</h2>
           <p className="text-xs text-muted-foreground mt-1 font-mono">
-            Rolling ingest — use Refresh for the latest pull
+            Rolling ingest — use Refresh for the latest pull. Every card shows{" "}
+            <strong className="text-foreground font-medium">receipts-level context</strong>: who published it and how
+            that outlet tends to lean. Multi-outlet source maps and full Signal Check™ sit on Today&apos;s desk above and
+            in email — that&apos;s where we show who said what, side by side.
+          </p>
+        </div>
+
+        <div
+          id="source-orientation"
+          className="mb-4 rounded-lg border border-border/40 bg-muted/20 px-3 py-2.5 scroll-mt-24"
+        >
+          <p className="text-[11px] font-mono text-muted-foreground leading-relaxed">
+            <span className="text-foreground font-semibold">Radical transparency, radically inclusive.</span> We label
+            how outlets tend to frame work and labor so you can read with your eyes open — same information whether
+            you&apos;re HR, a union member, a job seeker, or the C-suite. That&apos;s{" "}
+            <span className="text-foreground">orientation and receipts</span>, not a pile-on of any reporter.
+            Factuality is a general reliability tier for the outlet. Unknown means we haven&apos;t mapped it yet; the
+            desk can override a row when we need a correction.
           </p>
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
@@ -413,8 +462,8 @@ export default function Newsletter() {
                   <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-primary">
                     Jackye's Takes
                   </h2>
-                  <span className="text-[10px] text-muted-foreground/60 font-mono ml-1">
-                    {withTakes.length} stories with takes
+                  <span className="text-[10px] text-muted-foreground/60 font-mono ml-1 max-w-[14rem] sm:max-w-none leading-tight text-left">
+                    {withTakes.length} with read · facts first, then Jackye — tied to what you care about at work
                   </span>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -437,40 +486,66 @@ export default function Newsletter() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {withoutTakes.map((article) => {
                     const cat = getCategoryConfig(article.category);
+                    const wireMap = parseWorkNewsSourceMap(article.source_map_json);
+                    const primaryUrl = article.source_url || "#";
                     return (
-                      <a
+                      <div
                         key={article.id}
-                        href={article.source_url || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group block"
+                        className="rounded-xl border border-border/30 bg-card p-4 hover:border-primary/30 transition-all h-full flex flex-col"
                       >
-                        <div className="rounded-xl border border-border/30 bg-card p-4 hover:border-primary/30 transition-all h-full flex flex-col">
-                          <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <Badge
+                            variant="outline"
+                            className={`text-[10px] font-mono tracking-wider border ${cat.color}`}
+                          >
+                            {cat.label}
+                          </Badge>
+                          {article.developing_label?.trim() && (
                             <Badge
                               variant="outline"
-                              className={`text-[10px] font-mono tracking-wider border ${cat.color}`}
+                              className="text-[10px] font-mono tracking-wider border-amber-500/40 text-amber-600 dark:text-amber-400"
                             >
-                              {cat.label}
+                              {article.developing_label.trim()}
                             </Badge>
-                            {article.is_controversy && (
-                              <AlertTriangle className="w-3 h-3 text-destructive" />
-                            )}
-                            <span className="ml-auto text-[10px] text-muted-foreground/50 font-mono">
-                              {timeAgo(article.published_at)}
-                            </span>
-                          </div>
-                          <p className="text-sm font-medium text-foreground leading-snug flex-1 group-hover:text-primary transition-colors">
+                          )}
+                          {article.is_controversy && (
+                            <AlertTriangle className="w-3 h-3 text-destructive" />
+                          )}
+                          <span className="ml-auto text-[10px] text-muted-foreground/50 font-mono">
+                            {timeAgo(article.published_at)}
+                          </span>
+                        </div>
+                        {primaryUrl !== "#" ? (
+                          <a
+                            href={primaryUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm font-medium text-foreground leading-snug flex-1 hover:text-primary transition-colors"
+                          >
+                            {article.headline}
+                          </a>
+                        ) : (
+                          <p className="text-sm font-medium text-foreground leading-snug flex-1">
                             {article.headline}
                           </p>
-                          <div className="flex items-center justify-between mt-3 pt-2 border-t border-border/20">
-                            <span className="text-[10px] text-muted-foreground">
+                        )}
+                        {wireMap.length > 0 && (
+                          <WorkNewsSourceMap entries={wireMap} className="mt-3 border-border/25" />
+                        )}
+                        <div className="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2 border-t border-border/20">
+                          <div className="flex flex-wrap items-center gap-2 min-w-0">
+                            <span className="text-[10px] text-muted-foreground truncate max-w-[10rem]">
                               {article.source_name || "Source"}
                             </span>
-                            <SpiceMeter level={spiceLevel(article)} />
+                            <SourceOrientationChip
+                              sourceName={article.source_name}
+                              biasOverride={article.source_bias_override}
+                              variant="compact"
+                            />
                           </div>
+                          <SpiceMeter level={spiceLevel(article)} />
                         </div>
-                      </a>
+                      </div>
                     );
                   })}
                 </div>
@@ -482,8 +557,11 @@ export default function Newsletter() {
 
       {/* ── Bottom CTA ── */}
       <section className="text-center py-10 px-4 border-t border-border/30">
-        <p className="text-muted-foreground text-sm mb-3">
-          Receipts-first intelligence — pipeline live, editor in the loop, Signal Check™ on what matters for work.
+        <p className="text-muted-foreground text-sm mb-3 max-w-xl mx-auto leading-relaxed">
+          <strong className="text-foreground font-medium">Receipts, not vibes.</strong> Inclusive by design — if it
+          affects how you earn a living, it belongs here. Opinions show up only after the facts, labeled, and aimed at
+          what this community values: clarity, dignity at work, and knowing who benefits from the story you&apos;re
+          being sold.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button
