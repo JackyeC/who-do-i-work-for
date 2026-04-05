@@ -43,7 +43,22 @@ serve(async (req: Request) => {
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
-    const { priceId } = await req.json();
+    const body = await req.json();
+    const priceId = body?.priceId;
+    if (typeof priceId !== "string" || !priceId.trim()) {
+      return new Response(JSON.stringify({ error: "priceId is required" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+    const allowed =
+      ONE_TIME_PRICES.has(priceId) || SUBSCRIPTION_PRICES.has(priceId);
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: "Invalid price ID" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
