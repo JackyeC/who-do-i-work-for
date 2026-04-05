@@ -1,4 +1,4 @@
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import { AlertTriangle, Info, RefreshCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -56,25 +56,40 @@ export function NewsletterDeskPreview() {
     );
   }
 
+  const bannerClass = isError
+    ? "border-amber-500/30 bg-amber-500/10 text-amber-950 dark:text-amber-100"
+    : "border-primary/20 bg-primary/5 text-foreground";
+
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap items-center gap-2 justify-between rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-950 dark:text-amber-100">
+      <div
+        className={`flex flex-wrap items-center gap-2 justify-between rounded-lg border px-3 py-2 text-xs ${bannerClass}`}
+      >
         <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+          {isError ? (
+            <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+          ) : (
+            <Info className="w-3.5 h-3.5 shrink-0 text-primary" />
+          )}
           <span>
-            <Badge variant="outline" className="mr-2 border-amber-600/40 text-[10px] uppercase">
-              Fallback
+            <Badge
+              variant="outline"
+              className={`mr-2 text-[10px] uppercase ${
+                isError ? "border-amber-600/40" : "border-primary/30 text-primary"
+              }`}
+            >
+              {isError ? "Connection" : "Preview"}
             </Badge>
             {isError
-              ? "Could not load live desk from the database. Showing sample layout until the connection is fixed."
-              : "No live desk row is published yet. The site shows your copy only after a completed run is POSTed to publish-desk-publication (see repo scripts/content-engine). This panel rechecks every minute."}
+              ? "Could not load the desk from the database. Showing sample layout until the connection is fixed."
+              : "Pipeline is live — when the next desk edition is published to the site, it appears here automatically. Below is the layout reference until then."}
           </span>
         </div>
         <Button
           type="button"
           variant="outline"
           size="sm"
-          className="h-8 shrink-0 border-amber-600/40 text-amber-950 dark:text-amber-100"
+          className={`h-8 shrink-0 ${isError ? "border-amber-600/40 text-amber-950 dark:text-amber-100" : "border-primary/25"}`}
           disabled={isFetching}
           onClick={() => refetch()}
         >

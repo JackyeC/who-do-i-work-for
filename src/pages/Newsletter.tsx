@@ -203,15 +203,15 @@ export default function Newsletter() {
   };
 
   usePageSEO({
-    title: "Newsletter & Daily Desk | Signal Check™, Substack, Social | Who Do I Work For",
+    title: "Newsletter & Daily Desk | Live Wire + Signal Check™ | Who Do I Work For",
     description:
-      "Jackye Clayton's lens on the world of work: Signal Check™ desk, weekly email, and a live intelligence feed with Jackye's Take on the stories that shape employers and workers.",
+      "Live work-intelligence wire plus Signal Check™ desk — Jackye Clayton's editorial lens on the world of work, with Jackye's Take on the stories that shape employers and workers.",
     path: "/newsletter",
     jsonLd: {
       "@type": "WebPage",
       name: "Newsletter & Daily Desk — Who Do I Work For",
       description:
-        "Jackye Clayton's editorial lens on the world of work: Signal Check desk, email, social, and live intelligence with Jackye's Take.",
+        "Live intelligence wire and Signal Check desk — editorial lens on work, policy, and employers, with Jackye's Take.",
       url: "https://wdiwf.jackyeclayton.com/newsletter",
       author: { "@type": "Person", name: "Jackye Clayton" },
     },
@@ -274,10 +274,10 @@ export default function Newsletter() {
     <div className="min-h-screen bg-background">
       {/* ── Hero ── */}
       <section className="text-center py-12 lg:py-16 px-4 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-destructive/10 border border-destructive/20 mb-5">
-          <Radio className="w-3.5 h-3.5 text-destructive animate-pulse" />
-          <span className="text-xs font-mono tracking-wider text-destructive uppercase">
-            Live Intelligence Feed
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 mb-5">
+          <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
+          <span className="text-xs font-mono tracking-wider text-primary uppercase">
+            Live desk & wire
           </span>
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
@@ -285,10 +285,11 @@ export default function Newsletter() {
         </h1>
         <p className="text-base text-muted-foreground mb-6 max-w-lg mx-auto leading-relaxed">
           <strong className="text-foreground">Your source for the world of work</strong> — Signal Check™ on the
-          headlines that move employers, workers, and policy. On this page: the{" "}
-          <strong className="text-foreground">daily desk</strong> (site + email + social shape), then a{" "}
-          <strong className="text-foreground">live wire</strong> refreshed from our database, with{" "}
-          <strong className="text-foreground">Jackye&apos;s Take</strong> where we&apos;ve added editorial lens.
+          headlines that move employers, workers, and policy. The{" "}
+          <strong className="text-foreground">desk</strong> is the edition we publish to the site; the{" "}
+          <strong className="text-foreground">wire</strong> syncs on a rolling schedule with fresh rows from our
+          pipeline, plus <strong className="text-foreground">Jackye&apos;s Take</strong> wherever the editorial lens
+          is on the record.
         </p>
 
         {/* ── Subscribe bar ── */}
@@ -336,13 +337,25 @@ export default function Newsletter() {
         </p>
       </section>
 
-      {/* ── Desk: live Supabase row (bi-hourly) or fallback sample ── */}
+      {/* ── Desk: latest published site edition or preview sample ── */}
       <section className="max-w-3xl mx-auto px-4 pb-10">
+        <div className="mb-4 text-center sm:text-left">
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">Today&apos;s Signal Check™ desk</h2>
+          <p className="text-xs text-muted-foreground mt-1 font-mono">
+            Website brief · same shape as email & social · updates when a new edition goes live
+          </p>
+        </div>
         <NewsletterDeskPreview />
       </section>
 
       {/* ── Filter bar ── */}
       <section className="max-w-5xl mx-auto px-4 pb-4">
+        <div className="mb-3">
+          <h2 className="text-lg font-semibold text-foreground tracking-tight">Work intelligence wire</h2>
+          <p className="text-xs text-muted-foreground mt-1 font-mono">
+            Rolling ingest — use Refresh for the latest pull
+          </p>
+        </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           {FILTER_OPTIONS.map((opt) => (
             <button
@@ -469,7 +482,7 @@ export default function Newsletter() {
       {/* ── Bottom CTA ── */}
       <section className="text-center py-10 px-4 border-t border-border/30">
         <p className="text-muted-foreground text-sm mb-3">
-          Receipts-first intelligence on the world of work — with a human editor in the loop.
+          Receipts-first intelligence — pipeline live, editor in the loop, Signal Check™ on what matters for work.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button
