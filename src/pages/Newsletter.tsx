@@ -19,6 +19,7 @@ import {
   Eye, TrendingUp, RefreshCw,
 } from "lucide-react";
 import { NewsletterDeskPreview } from "@/components/newsletter/NewsletterDeskPreview";
+import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
 
 /* ── Category config ── */
 const CATEGORY_CONFIG: Record<string, { label: string; color: string }> = {
@@ -335,6 +336,8 @@ export default function Newsletter() {
         <p className="text-xs text-muted-foreground/60 mt-3">
           Free forever. One email per week. No spam.
         </p>
+
+        <FoundingMemberRecognition className="mt-8 max-w-md mx-auto" />
       </section>
 
       {/* ── Desk: latest published site edition or preview sample ── */}

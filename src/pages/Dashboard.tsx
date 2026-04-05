@@ -33,6 +33,7 @@ import { ApplyKitSection } from "@/components/dashboard/ApplyKitSection";
 import { MockInterviewSection } from "@/components/dashboard/MockInterviewSection";
 import { InboxSection } from "@/components/dashboard/InboxSection";
 import { SavedSection } from "@/components/dashboard/SavedSection";
+import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
 
 const TAB_TITLES: Record<string, string> = {
   overview: "My Intelligence",
@@ -228,6 +229,9 @@ export default function Dashboard() {
         )}
       </div>
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
+        <div className="max-w-[900px] mx-auto w-full">
+          <FoundingMemberRecognition />
+        </div>
         {!hasTakenQuiz && tab === "overview" && hasValuesProfile === false && <PersonaQuizBanner />}
         {showUpsell && <PostPurchaseUpsell onDismiss={dismissUpsell} />}
         {renderContent()}

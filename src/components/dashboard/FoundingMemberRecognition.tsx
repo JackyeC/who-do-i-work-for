@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRecognitionBadges } from "@/hooks/use-recognition-badges";
 import { FoundingMemberBadge } from "@/components/FoundingMemberBadge";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
 const JACKYE_FOUNDING_EMAIL = "jackyeclayton@gmail.com";
 
@@ -33,13 +34,15 @@ function parseFmRpc(data: unknown): { eligible: boolean; memberNumber: number } 
 type FoundingMemberRecognitionProps = {
   /** Optional greeting name for banner context only */
   firstName?: string;
+  /** Extra classes on the outer animated wrapper (e.g. newsletter spacing) */
+  className?: string;
 };
 
 /**
- * Founding Member card on the dashboard feed + shareable badge modal.
+ * Founding Member card + shareable badge modal (dashboard, newsletter, etc.).
  * Eligible if: RPC says so (badge row OR early_access_signups email), or legacy fallback (badge row / founder email).
  */
-export function FoundingMemberRecognition(_props: FoundingMemberRecognitionProps) {
+export function FoundingMemberRecognition({ className }: FoundingMemberRecognitionProps = {}) {
   const { user } = useAuth();
   const { data: badges, isLoading: badgesLoading } = useRecognitionBadges();
   const [showModal, setShowModal] = useState(false);
@@ -96,7 +99,7 @@ export function FoundingMemberRecognition(_props: FoundingMemberRecognitionProps
 
   return (
     <>
-      <motion.div {...anim(0.03)}>
+      <motion.div {...anim(0.03)} className={cn("mb-6", className)}>
         <div
           className="rounded-2xl p-5 border cursor-pointer transition-all hover:scale-[1.005]"
           style={{

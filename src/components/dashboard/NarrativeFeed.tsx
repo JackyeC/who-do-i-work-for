@@ -25,7 +25,6 @@ import { useState, useMemo } from "react";
 import { useProject2025LinkedCompanyIds } from "@/hooks/use-project2025-linked-companies";
 import { Project2025DashboardBadge } from "@/components/project2025/Project2025DashboardBadge";
 import { DashboardHeartbeat } from "@/components/dashboard/DashboardHeartbeat";
-import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
 
 interface NarrativeFeedProps {
   onNavigate: (tab: string) => void;
@@ -177,10 +176,6 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
 
       <motion.div {...anim(0.02)} className="border-b border-border/30 pb-6">
         <DashboardHeartbeat onNavigate={onNavigate} />
-      </motion.div>
-
-      <motion.div {...anim(0.025)}>
-        <FoundingMemberRecognition firstName={firstName} />
       </motion.div>
 
       {/* ═══════════════════════════════════════════════════════
