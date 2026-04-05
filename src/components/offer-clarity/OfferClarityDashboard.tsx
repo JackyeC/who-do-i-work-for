@@ -177,7 +177,11 @@ export function OfferClarityDashboard({ report, offerData, onStartOver }: Props)
                 <span className={cn("text-sm font-semibold", interp.color)}>{interp.label}</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">{report.summary}</p>
-              <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground/90 mt-2 leading-relaxed border-l-2 border-primary/30 pl-3">
+                These scores apply only to <strong className="text-foreground/90">this offer</strong> (details below) and <strong className="text-foreground/90">public employer signals</strong> we match to{" "}
+                {offerData.companyName}. They are educational, not legal or financial advice.
+              </p>
+              <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                 <Badge variant="outline" className="text-xs">{offerData.companyName}</Badge>
                 <Badge variant="outline" className="text-xs">{offerData.roleTitle}</Badge>
                 {offerData.location && <Badge variant="outline" className="text-xs">{offerData.location}</Badge>}

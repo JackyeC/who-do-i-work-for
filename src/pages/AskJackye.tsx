@@ -389,6 +389,9 @@ export default function AskJackyePage() {
                 style={{ width: `${((scanPhase + 1) / SCAN_PHASES.length) * 100}%` }}
               />
             </div>
+            <p className="text-[11px] text-civic-green/75 mt-2 leading-relaxed max-w-2xl">
+              These steps run against <span className="text-civic-green font-medium">this conversation</span> (your question and the category you picked)—so you always know what the scan is evaluating.
+            </p>
           </div>
         </div>
       )}
