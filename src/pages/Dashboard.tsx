@@ -80,6 +80,21 @@ export default function Dashboard() {
     enabled: !!user,
   });
 
+  /** Values profile = substantive personalization; Workplace DNA quiz only sets copy/lens in localStorage. */
+  const { data: hasValuesProfile } = useQuery({
+    queryKey: ["values-profile-exists", user?.id],
+    queryFn: async () => {
+      const { data } = await (supabase as any)
+        .from("user_values_profile")
+        .select("id")
+        .eq("user_id", user!.id)
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!user,
+    staleTime: 60_000,
+  });
+
   const creditPurchase = searchParams.get("credit_purchase");
   const [showUpsell, setShowUpsell] = useState(creditPurchase === "success");
 
@@ -186,7 +201,7 @@ export default function Dashboard() {
         </h1>
       </div>
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
-        {!hasTakenQuiz && tab === "overview" && <PersonaQuizBanner />}
+        {!hasTakenQuiz && tab === "overview" && hasValuesProfile === false && <PersonaQuizBanner />}
         {showUpsell && <PostPurchaseUpsell onDismiss={dismissUpsell} />}
         {renderContent()}
       </div>

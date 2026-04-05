@@ -106,6 +106,10 @@ export function MyValuesProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-values-profile"] });
       queryClient.invalidateQueries({ queryKey: ["user-alignment-values"] });
+      if (user?.id) {
+        queryClient.invalidateQueries({ queryKey: ["values-profile-exists", user.id] });
+        queryClient.invalidateQueries({ queryKey: ["onboarding-progress", user.id] });
+      }
       toast.success("Values profile saved!");
     },
     onError: () => toast.error("Failed to save values profile"),

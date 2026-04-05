@@ -27,7 +27,10 @@ export function PersonaQuizBanner() {
     >
       <div className="flex-1 min-w-0">
         <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "14px", color: "#f0ebe0" }}>
-          Get your personalized intelligence lens — takes 60 seconds.
+          Set your reader lens (how dossiers talk to you) — about 60 seconds.
+        </p>
+        <p className="mt-1 text-[11px] opacity-75" style={{ fontFamily: "'DM Sans', sans-serif", color: "#f0ebe0" }}>
+          Workplace values and pay-equity weights live under Dashboard → My Values Profile.
         </p>
       </div>
       <div className="flex items-center gap-3 shrink-0">
