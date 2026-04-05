@@ -21,6 +21,7 @@ import { DossierLayer, TransparencyDisclaimer } from "@/components/dossier/Dossi
 import { DossierProtector } from "@/components/dossier/DossierProtector";
 import { InfluenceGauge } from "@/components/dossier/InfluenceGauge";
 import { useTrackedCompanies } from "@/hooks/use-tracked-companies";
+import { useScanTracker } from "@/hooks/use-scan-tracker";
 import { CompanyLogo } from "@/components/CompanyLogo";
 import { Badge } from "@/components/ui/badge";
 import { ExportDossierButton } from "@/components/dossier/ExportDossierButton";
@@ -86,6 +87,7 @@ export default function CompanyDossier() {
   });
 
   const companyId = company?.id;
+  useScanTracker(companyId, company?.name);
   const isTracked = companyId ? isCompanyTracked(companyId) : false;
   const { data: eeocCases } = useEEOCByCompanyName(company?.name);
 

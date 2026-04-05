@@ -25,6 +25,7 @@ import { useState, useMemo } from "react";
 import { useProject2025LinkedCompanyIds } from "@/hooks/use-project2025-linked-companies";
 import { Project2025DashboardBadge } from "@/components/project2025/Project2025DashboardBadge";
 import { DashboardHeartbeat } from "@/components/dashboard/DashboardHeartbeat";
+import { RecentCompanyWork } from "@/components/dashboard/RecentCompanyWork";
 
 interface NarrativeFeedProps {
   onNavigate: (tab: string) => void;
@@ -177,6 +178,12 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
       <motion.div {...anim(0.02)} className="border-b border-border/30 pb-6">
         <DashboardHeartbeat onNavigate={onNavigate} />
       </motion.div>
+
+      {user && (
+        <motion.div {...anim(0.025)}>
+          <RecentCompanyWork onNavigate={onNavigate} />
+        </motion.div>
+      )}
 
       {/* ═══════════════════════════════════════════════════════
           ACT 1: YOUR EMPLOYER RIGHT NOW
