@@ -24,6 +24,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         </div>
         <nav className="flex items-center flex-wrap gap-5 sm:gap-5" style={{ gap: undefined }}>
           {[
+            { label: 'How it works', to: '/#product-key' },
             { label: 'Methodology', to: '/methodology' },
             { label: 'Privacy', to: '/privacy' },
             { label: 'Terms', to: '/terms' },

@@ -34,12 +34,26 @@ export function SiteFooter() {
               —so you evaluate employers with the rigor they use on you. Receipts,
               not opinions.
             </p>
-            <Link
-              to="/about"
-              className="inline-block mt-3 font-sans text-sm text-primary hover:text-primary/80 font-medium"
-            >
-              Meet Jackye →
-            </Link>
+            <div className="flex flex-col gap-1.5 mt-3">
+              <Link
+                to="/about"
+                className="font-sans text-sm text-primary hover:text-primary/80 font-medium"
+              >
+                Meet Jackye →
+              </Link>
+              <Link
+                to="/#product-key"
+                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                How it works &amp; product key →
+              </Link>
+              <Link
+                to="/about#product-key-about"
+                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Same guide on About →
+              </Link>
+            </div>
           </div>
 
           {/* Who Do I Work For Links */}
@@ -71,6 +85,12 @@ export function SiteFooter() {
                 className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 About
+              </Link>
+              <Link
+                to="/#product-key"
+                className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                How it works
               </Link>
               <Link
                 to="/for-employers"
