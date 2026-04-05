@@ -73,7 +73,8 @@ function takeScore(a: WorkNewsArticle): number {
   return a.jackye_take_approved ? 2 : 1;
 }
 
-function publishedMs(iso: string | null): number {
+/** Parse `published_at` to ms for stable sorting (0 if missing/invalid). */
+export function publishedMs(iso: string | null): number {
   if (!iso) return 0;
   const t = new Date(iso).getTime();
   return Number.isFinite(t) ? t : 0;

@@ -30,6 +30,104 @@ interface ScanContext {
   layersChecked: string[];
 }
 
+// ─── Workday (myworkdayjobs.com) — public CXS JSON API used by the careers SPA ───
+const WORKDAY_LOCALE_PATH = /^[a-z]{2}(-[A-Z]{2})?$/;
+
+/** Parse tenant host and careers site slug from a Workday board or job URL. */
+function parseWorkdayBoardUrl(url: string): { origin: string; org: string; site: string } | null {
+  let u: URL;
+  try {
+    u = new URL(url.startsWith('http') ? url : `https://${url}`);
+  } catch {
+    return null;
+  }
+  const host = u.hostname.toLowerCase();
+  const tenantMatch = host.match(/^([^.]+)\.(wd\d+)\.myworkdayjobs\.com$/);
+  if (!tenantMatch) return null;
+  const org = tenantMatch[1];
+  const origin = `${u.protocol}//${host}`;
+
+  let segments = u.pathname.split('/').filter(Boolean);
+  while (segments.length > 0 && WORKDAY_LOCALE_PATH.test(segments[0])) {
+    segments.shift();
+  }
+  const jobIdx = segments.indexOf('job');
+  let site: string | null = null;
+  if (jobIdx > 0) {
+    site = segments[jobIdx - 1];
+  } else if (segments.length > 0) {
+    site = segments[0];
+  }
+  if (!site) return null;
+  return { origin, org, site };
+}
+
+async function fetchWorkdayCxSJobs(url: string): Promise<any[]> {
+  const board = parseWorkdayBoardUrl(url);
+  if (!board) return [];
+
+  const cxsEndpoint = `${board.origin}/wday/cxs/${board.org}/${board.site}/jobs`;
+  const pageLimit = 20;
+  const maxJobs = 50;
+  const collected: any[] = [];
+
+  try {
+    let offset = 0;
+    let total: number | undefined;
+
+    while (collected.length < maxJobs) {
+      const resp = await fetch(cxsEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          appliedFacets: {},
+          limit: pageLimit,
+          offset,
+          searchText: '',
+        }),
+      });
+      if (!resp.ok) {
+        console.warn(`[job-scrape] Workday CXS ${resp.status} for ${cxsEndpoint}`);
+        break;
+      }
+      const data = await resp.json();
+      const postings = data?.jobPostings;
+      if (typeof data?.total === 'number') total = data.total;
+      if (!Array.isArray(postings) || postings.length === 0) break;
+
+      const siteBase = `${board.origin}/${board.site}`;
+      for (const p of postings) {
+        const title = p?.title;
+        const ext = p?.externalPath;
+        if (!title || typeof title !== 'string' || !ext || typeof ext !== 'string') continue;
+        const path = ext.startsWith('/') ? ext : `/${ext}`;
+        const jobUrl = `${siteBase}${path}`;
+        const loc = typeof p.locationsText === 'string' ? p.locationsText : null;
+        collected.push({
+          title,
+          department: null,
+          location: loc,
+          employment_type: 'full-time',
+          description: '',
+          url: jobUrl,
+          salary_range: null,
+          work_mode: detectWorkMode(loc || '', ''),
+        });
+        if (collected.length >= maxJobs) break;
+      }
+
+      if (postings.length < pageLimit) break;
+      offset += pageLimit;
+      if (total !== undefined && offset >= total) break;
+    }
+  } catch (e: any) {
+    console.warn('[job-scrape] Workday CXS error:', e);
+    return [];
+  }
+
+  return collected;
+}
+
 // ─── Expanded ATS detection (detect + public API fetch) ───
 const ATS_CONFIGS: Record<string, { detect: (url: string) => boolean; fetchJobs: (url: string) => Promise<any[]>; platform: string }> = {
   greenhouse: {
@@ -150,10 +248,7 @@ const ATS_CONFIGS: Record<string, { detect: (url: string) => boolean; fetchJobs:
   workday: {
     platform: 'workday',
     detect: (url) => /myworkdayjobs\.com|wd\d+\.myworkdaysite\.com|workday\.com.*careers/i.test(url),
-    fetchJobs: async (_url) => {
-      // Workday doesn't have a public API — we flag it for AI scraping
-      return [];
-    },
+    fetchJobs: async (u) => fetchWorkdayCxSJobs(u),
   },
   icims: {
     platform: 'icims',
