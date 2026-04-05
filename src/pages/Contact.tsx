@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { usePageSEO } from "@/hooks/use-page-seo";
-import { Mail, Linkedin, Mic, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Mail, Linkedin, Mic, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { useTurnstile } from "@/hooks/useTurnstile";
 import { verifyTurnstileToken } from "@/lib/verifyTurnstile";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [verifying, setVerifying] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const { containerRef, getToken, resetToken } = useTurnstile();
 
   usePageSEO({
@@ -24,12 +25,14 @@ export default function Contact() {
     const name = (data.get("name") as string || "").trim();
     const email = (data.get("email") as string || "").trim();
     const message = (data.get("message") as string || "").trim();
+    const reason = (data.get("reason") as string) || "General";
 
     if (!name || !email || !message) {
       setError("Please fill out all required fields.");
       return;
     }
 
+    setError("");
     setVerifying(true);
     const token = await getToken();
     const verified = token ? await verifyTurnstileToken(token) : false;
@@ -41,11 +44,27 @@ export default function Contact() {
       return;
     }
 
-    const subject = `Who Do I Work For Contact: ${data.get("reason") || "General"}`;
-    const body = `From: ${name} (${email})\nReason: ${data.get("reason")}\n\n${message}`;
-    window.open(`mailto:jackye@jackyeclayton.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, "_blank");
+    const subject = `Who Do I Work For Contact: ${reason}`;
+
+    setSubmitting(true);
+    const { error: insertError } = await supabase.from("contact_submissions").insert({
+      name,
+      email,
+      subject,
+      message,
+    });
+    setSubmitting(false);
+
+    if (insertError) {
+      setError(insertError.message || "Something went wrong. Please try again or email us directly.");
+      return;
+    }
+
     setSubmitted(true);
+    form.reset();
   };
+
+  const busy = verifying || submitting;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -92,12 +111,13 @@ export default function Contact() {
             {submitted ? (
               <div className="bg-card border border-border rounded-lg p-8 text-center">
                 <CheckCircle2 className="w-10 h-10 text-primary mx-auto mb-4" />
-                <h3 className="font-sans text-lg font-bold text-foreground mb-2">Message sent.</h3>
+                <h3 className="font-sans text-lg font-bold text-foreground mb-2">Thanks — we got your message.</h3>
                 <p className="text-sm text-muted-foreground">
-                  Your email client opened with the message. If it didn't, email us directly at{" "}
+                  We&apos;ll reply at the email you provided when we can. You can also reach us at{" "}
                   <a href="mailto:jackye@jackyeclayton.com" className="text-primary hover:underline">
                     jackye@jackyeclayton.com
                   </a>
+                  .
                 </p>
               </div>
             ) : (
@@ -126,8 +146,19 @@ export default function Contact() {
                   <textarea id="message" name="message" required placeholder="What's on your mind?" rows={5} className="w-full px-4 py-3 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-colors resize-vertical" />
                 </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
-                <button type="submit" disabled={verifying} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg text-sm font-semibold hover:brightness-110 transition-all disabled:opacity-50">
-                  {verifying ? "Verifying..." : <>Send Message <ArrowRight className="w-4 h-4" /></>}
+                <button type="submit" disabled={busy} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg text-sm font-semibold hover:brightness-110 transition-all disabled:opacity-50">
+                  {verifying ? (
+                    "Verifying..."
+                  ) : submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Message <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </form>
             )}
