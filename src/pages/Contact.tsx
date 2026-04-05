@@ -2,7 +2,6 @@ import { useState } from "react";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { Mail, Linkedin, Mic, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { useTurnstile } from "@/hooks/useTurnstile";
-import { verifyTurnstileToken } from "@/lib/verifyTurnstile";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Contact() {
@@ -21,11 +20,11 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const data = new FormData(form);
-    const name = (data.get("name") as string || "").trim();
-    const email = (data.get("email") as string || "").trim();
-    const message = (data.get("message") as string || "").trim();
-    const reason = (data.get("reason") as string) || "General";
+    const formData = new FormData(form);
+    const name = (formData.get("name") as string || "").trim();
+    const email = (formData.get("email") as string || "").trim();
+    const message = (formData.get("message") as string || "").trim();
+    const reason = (formData.get("reason") as string) || "General";
 
     if (!name || !email || !message) {
       setError("Please fill out all required fields.");
@@ -35,28 +34,33 @@ export default function Contact() {
     setError("");
     setVerifying(true);
     const token = await getToken();
-    const verified = token ? await verifyTurnstileToken(token) : false;
     setVerifying(false);
     resetToken();
 
-    if (!verified) {
+    if (!token) {
       setError("Verification failed. Please try again.");
       return;
     }
 
-    const subject = `Who Do I Work For Contact: ${reason}`;
-
     setSubmitting(true);
-    const { error: insertError } = await supabase.from("contact_submissions").insert({
-      name,
-      email,
-      subject,
-      message,
+    const { data: fnData, error: fnError } = await supabase.functions.invoke("submit-contact-form", {
+      body: { name, email, reason, message, token },
     });
     setSubmitting(false);
 
-    if (insertError) {
-      setError(insertError.message || "Something went wrong. Please try again or email us directly.");
+    if (fnError) {
+      const body = fnData as { error?: string } | null | undefined;
+      setError(body?.error ?? fnError.message ?? "Something went wrong. Please try again or email us directly.");
+      return;
+    }
+
+    const result = fnData as { success?: boolean; error?: string } | null;
+    if (result?.error) {
+      setError(result.error);
+      return;
+    }
+    if (!result?.success) {
+      setError("Something went wrong. Please try again or email us directly.");
       return;
     }
 
