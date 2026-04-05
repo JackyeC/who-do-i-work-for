@@ -47,7 +47,7 @@ const sections: SiteSection[] = [
       { label: "Employer Receipt", path: "/employer-receipt", icon: Receipt, premium: "candidate", description: "See what your labor really funds" },
       { label: "Employer Promise vs. Reality", path: "/employer-promise-check", icon: Shield, premium: "professional", description: "Does the employer brand match reality?" },
       { label: "What Am I Supporting?", path: "/what-am-i-supporting", icon: Globe, description: "Trace your paycheck to political influence" },
-      { label: "Job board (embed)", path: "/embed/jobs", icon: LayoutTemplate, description: "Minimal page for partners — Cavuno job widget iframe" },
+      { label: "Job board (embed)", path: "/embed/jobs", icon: LayoutTemplate, description: "Minimal page for partners — lists company_jobs from our database" },
     ],
   },
   {
