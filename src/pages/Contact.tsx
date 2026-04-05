@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { usePageSEO } from "@/hooks/use-page-seo";
 import { Mail, Linkedin, Mic, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
-import { useTurnstile } from "@/hooks/useTurnstile";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
-  const [verifying, setVerifying] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const { containerRef, getToken, resetToken } = useTurnstile();
 
   usePageSEO({
     title: "Contact — Who Do I Work For",
@@ -32,35 +29,19 @@ export default function Contact() {
     }
 
     setError("");
-    setVerifying(true);
-    const token = await getToken();
-    setVerifying(false);
-    resetToken();
-
-    if (!token) {
-      setError("Verification failed. Please try again.");
-      return;
-    }
+    const subject = `Who Do I Work For Contact: ${reason}`;
 
     setSubmitting(true);
-    const { data: fnData, error: fnError } = await supabase.functions.invoke("submit-contact-form", {
-      body: { name, email, reason, message, token },
+    const { error: insertError } = await supabase.from("contact_submissions").insert({
+      name,
+      email,
+      subject,
+      message,
     });
     setSubmitting(false);
 
-    if (fnError) {
-      const body = fnData as { error?: string } | null | undefined;
-      setError(body?.error ?? fnError.message ?? "Something went wrong. Please try again or email us directly.");
-      return;
-    }
-
-    const result = fnData as { success?: boolean; error?: string } | null;
-    if (result?.error) {
-      setError(result.error);
-      return;
-    }
-    if (!result?.success) {
-      setError("Something went wrong. Please try again or email us directly.");
+    if (insertError) {
+      setError(insertError.message || "Something went wrong. Please try again.");
       return;
     }
 
@@ -68,7 +49,7 @@ export default function Contact() {
     form.reset();
   };
 
-  const busy = verifying || submitting;
+  const busy = submitting;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -97,10 +78,10 @@ export default function Contact() {
               </p>
 
               <div className="space-y-4">
-                <a href="mailto:jackye@jackyeclayton.com" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors">
-                  <Mail className="w-5 h-5 shrink-0" />
-                  jackye@jackyeclayton.com
-                </a>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <Mail className="w-5 h-5 shrink-0" aria-hidden />
+                  <span>jackye@jackyeclayton.com</span>
+                </div>
                 <a href="https://www.linkedin.com/in/jackyeclayton/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors">
                   <Linkedin className="w-5 h-5 shrink-0" />
                   LinkedIn
@@ -118,15 +99,11 @@ export default function Contact() {
                 <h3 className="font-sans text-lg font-bold text-foreground mb-2">Thanks — we got your message.</h3>
                 <p className="text-sm text-muted-foreground">
                   We&apos;ll reply at the email you provided when we can. You can also reach us at{" "}
-                  <a href="mailto:jackye@jackyeclayton.com" className="text-primary hover:underline">
-                    jackye@jackyeclayton.com
-                  </a>
-                  .
+                  <span className="text-foreground font-medium">jackye@jackyeclayton.com</span>.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div ref={containerRef} />
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-foreground block">Name</label>
                   <input type="text" id="name" name="name" required placeholder="Your name" className="w-full px-4 py-3 bg-card border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-colors" />
@@ -151,9 +128,7 @@ export default function Contact() {
                 </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <button type="submit" disabled={busy} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg text-sm font-semibold hover:brightness-110 transition-all disabled:opacity-50">
-                  {verifying ? (
-                    "Verifying..."
-                  ) : submitting ? (
+                  {submitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
                       Sending...
