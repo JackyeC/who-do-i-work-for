@@ -152,6 +152,8 @@ export function ValuesLensResults({ lensKey, onBack }: Props) {
         const sourceLabels: Record<string, string> = {
           campaign_finance: "FEC Filing",
           fec_direct: "FEC Filing",
+          OpenSecrets: "OpenSecrets",
+          opensecrets: "OpenSecrets",
           congress_legislation: "Congress.gov",
           lobbying_disclosure: "Senate LDA",
           government_contract: "USASpending",
@@ -193,6 +195,8 @@ export function ValuesLensResults({ lensKey, onBack }: Props) {
           evidence_url: s.source_url,
           signal_type: s.signal_type,
           evidence_text: s.amount ? `$${Number(s.amount).toLocaleString()}` : undefined,
+          issue_category: s.issue_category,
+          amount_value: s.amount != null ? Number(s.amount) : null,
         });
       }
     }

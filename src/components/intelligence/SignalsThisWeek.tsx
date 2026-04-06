@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { LOBBYING_WHAT_IT_IS } from "@/lib/lobbyingSignalExplainer";
 
 const CATEGORY_CONFIG: Record<string, { label: string; icon: any; color: string; accent: string; headline: string }> = {
   warn_layoffs: { label: "WORKFORCE", icon: TrendingDown, color: "text-destructive", accent: "bg-destructive", headline: "Layoff signal detected" },
@@ -309,6 +310,11 @@ export function SignalsThisWeek() {
                 {translation && !translation.is_fresh && (
                   <span className="text-xs text-civic-yellow italic">{translation.freshness_note}</span>
                 )}
+                {signal.signal_category === "lobbying" && (
+                  <p className="text-[11px] text-muted-foreground mt-2 leading-snug border-l-2 border-primary/30 pl-2">
+                    {LOBBYING_WHAT_IT_IS} Open the company profile for topics, worker context, and filing links.
+                  </p>
+                )}
               </div>
 
               {/* Footer */}
@@ -411,6 +417,11 @@ export function SignalsThisWeek() {
                 </p>
                 {translation && (
                   <p className="text-xs text-muted-foreground mt-0.5 italic">{translation.freshness_note}</p>
+                )}
+                {signal.signal_category === "lobbying" && (
+                  <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">
+                    LDA filings list issues lobbied; profile pages unpack topics and receipts.
+                  </p>
                 )}
               </div>
 

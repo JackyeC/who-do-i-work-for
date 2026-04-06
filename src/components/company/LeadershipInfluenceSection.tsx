@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { formatCurrency } from "@/data/sampleData";
 import { EntityDetailDrawer, type DarkMoneyEntity } from "@/components/company/EntityDetailDrawer";
 import { PartyBadge } from "@/components/PartyBadge";
-import { processExecutives, processBoardMembers } from "@/lib/executive-utils";
+import { processExecutives, processBoardMembers, deduplicatePeople, sortBoardMembers } from "@/lib/executive-utils";
 import { splitByVerification, hasStaleRecords } from "@/lib/freshness-utils";
 import { FreshnessLabel } from "@/components/company/FreshnessLabel";
 import { InlineReportForm } from "@/components/company/InlineReportForm";
@@ -142,6 +142,11 @@ export function LeadershipInfluenceSection({
   const processedExecs = useMemo(() => processExecutives(verifiedExecutives, companyName), [verifiedExecutives, companyName]);
   const processedBoard = useMemo(() => processBoardMembers(boardMembers, companyName), [boardMembers, companyName]);
 
+  const formerBoardMembers = useMemo(() => {
+    const raw = boardMembers.filter((m) => m.departed_at);
+    return sortBoardMembers(deduplicatePeople(raw) as BoardMember[]);
+  }, [boardMembers]);
+
   const { confirmed: confirmedExecs, unverified: unverifiedExecs } = useMemo(
     () => splitByVerification(processedExecs),
     [processedExecs]
@@ -172,9 +177,15 @@ export function LeadershipInfluenceSection({
 
   const totalParty = deduplicatedParty.reduce((s, p) => s + p.amount, 0);
 
-  const hasAnyData = processedExecs.length > 0 || candidates.length > 0 || revolvingDoor.length > 0 || darkMoney.length > 0 || processedBoard.length > 0;
+  const hasAnyData =
+    processedExecs.length > 0 ||
+    candidates.length > 0 ||
+    revolvingDoor.length > 0 ||
+    darkMoney.length > 0 ||
+    processedBoard.length > 0 ||
+    formerBoardMembers.length > 0;
   const showSection = hasAnyData || executives.length === 0;
-  if (!showSection && candidates.length === 0 && revolvingDoor.length === 0 && darkMoney.length === 0) return null;
+  if (!showSection && candidates.length === 0 && revolvingDoor.length === 0 && darkMoney.length === 0 && formerBoardMembers.length === 0) return null;
 
   const renderExecRow = (exec: Executive) => (
     <div key={exec.id}>
@@ -223,12 +234,17 @@ export function LeadershipInfluenceSection({
     </div>
   );
 
-  const renderBoardRow = (member: BoardMember) => (
+  const renderBoardRow = (member: BoardMember, opts?: { former?: boolean }) => (
     <div key={member.id}>
       <div className="flex items-center justify-between py-3 px-1">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-foreground truncate">{member.name}</p>
           <p className="text-xs text-muted-foreground truncate">{member.title}</p>
+          {opts?.former && member.departed_at && (
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Departed {new Date(member.departed_at).toLocaleDateString("en-US", { year: "numeric", month: "short" })}
+            </p>
+          )}
           <FreshnessLabel lastVerifiedAt={member.last_verified_at} />
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -370,6 +386,26 @@ export function LeadershipInfluenceSection({
           <ExecutiveSourceNote />
         </CardContent>
       </Card>
+
+      {formerBoardMembers.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Shield className="w-4 h-4 text-muted-foreground" />
+              Former directors (on record)
+              <Badge variant="outline" className="text-xs ml-auto">{formerBoardMembers.length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <p className="text-xs text-muted-foreground mb-2">
+              Individuals with a documented end date on the board (e.g. proxy or 8-K). Not an endorsement or allegation.
+            </p>
+            <div className="divide-y divide-border">
+              {formerBoardMembers.map((m) => renderBoardRow(m, { former: true }))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* ── PAC & Party Breakdown ── */}
       {(totalPacSpending > 0 || partyBreakdown.length > 0) && (

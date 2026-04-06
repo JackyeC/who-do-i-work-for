@@ -30,6 +30,8 @@ import { NewsIntelligenceCard } from "@/components/NewsIntelligenceCard";
 import { RecruiterIntegrityCard, RecruiterIntegrityCardSkeleton } from "@/components/company/RecruiterIntegrityCard";
 import { useCompanyIntegrity } from "@/hooks/use-company-integrity";
 import { LeadershipInfluenceSection } from "@/components/company/LeadershipInfluenceSection";
+import { BoardInterlocksSnippet } from "@/components/company/BoardInterlocksSnippet";
+import { DocumentedPublicRecordsSection } from "@/components/company/DocumentedPublicRecordsSection";
 import { WhatToWatch } from "@/components/company/WhatToWatch";
 import { WhatToAsk } from "@/components/company/WhatToAsk";
 import { ReportTeaserGate } from "@/components/ReportTeaserGate";
@@ -519,6 +521,7 @@ export default function CompanyProfile() {
               careersUrl={(dbCompany as any)?.careers_url || company?.careersUrl}
               lastReviewed={dbCompany?.last_reviewed}
               updatedAt={dbCompany?.updated_at}
+              onLobbyingDetailClick={() => setLobbyingDrawerOpen(true)}
             />
           </ReportTeaserGate>
 
@@ -541,6 +544,13 @@ export default function CompanyProfile() {
             onLobbyingClick={() => setLobbyingDrawerOpen(true)}
             onContractsClick={() => setContractsDrawerOpen(true)}
           />
+
+          {dbCompanyId && (
+            <BoardInterlocksSnippet companyId={dbCompanyId} companyName={name} companySlug={id || ""} />
+          )}
+          {dbCompanyId && (
+            <DocumentedPublicRecordsSection companyId={dbCompanyId} companyName={name} />
+          )}
 
           {/* ═══════════════════════════════════════════════════════
               2.6 INNOVATION SIGNALS (Patents)

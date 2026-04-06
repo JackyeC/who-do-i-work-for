@@ -3057,6 +3057,59 @@ export type Database = {
           },
         ]
       }
+      company_public_record_items: {
+        Row: {
+          id: string
+          company_id: string
+          title: string
+          neutral_summary: string
+          record_type: string
+          primary_source_url: string
+          source_label: string | null
+          published_at: string | null
+          confidence: string
+          related_person_name: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          company_id: string
+          title: string
+          neutral_summary: string
+          record_type: string
+          primary_source_url: string
+          source_label?: string | null
+          published_at?: string | null
+          confidence?: string
+          related_person_name?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          company_id?: string
+          title?: string
+          neutral_summary?: string
+          record_type?: string
+          primary_source_url?: string
+          source_label?: string | null
+          published_at?: string | null
+          confidence?: string
+          related_person_name?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_public_record_items_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_party_breakdown: {
         Row: {
           amount: number
