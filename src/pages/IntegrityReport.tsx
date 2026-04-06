@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -39,6 +39,14 @@ function formatTime(iso: string) {
   }
 }
 
+function archiveEntryTitle(row: DeskPublicationRow): string {
+  const s = row.email_subject?.trim();
+  if (s) return s;
+  const run = row.run_id?.trim();
+  if (run) return run;
+  return "Forensic report";
+}
+
 function ForensicBody({ row }: { row: DeskPublicationRow }) {
   return (
     <div className={cn(mdProse, "px-1 sm:px-2")}>
@@ -50,16 +58,28 @@ function ForensicBody({ row }: { row: DeskPublicationRow }) {
 }
 
 export default function IntegrityReport() {
-  const { data: rows = [], isLoading, isError, error } = useForensicPublications({ limit: 25 });
+  const { data: rows = [], isLoading, isError, error } = useForensicPublications({ limit: 20 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selectedId && !rows.some((r) => r.id === selectedId)) {
+      setSelectedId(null);
+    }
+  }, [rows, selectedId]);
+
+  const latestRow = rows[0] ?? null;
+  const olderRows = useMemo(() => rows.slice(1), [rows]);
 
   const selectedRow = useMemo(() => {
     if (rows.length === 0) return null;
     if (selectedId) {
-      return rows.find((r) => r.id === selectedId) ?? rows[0];
+      const found = rows.find((r) => r.id === selectedId);
+      if (found) return found;
     }
     return rows[0];
   }, [rows, selectedId]);
+
+  const viewingLatest = !!latestRow && selectedRow?.id === latestRow.id;
 
   usePageSEO({
     title: "Forensic integrity report",
@@ -132,14 +152,24 @@ export default function IntegrityReport() {
             <Card className="border-primary/25 bg-card/80 backdrop-blur-sm ring-1 ring-primary/10">
               <CardContent className="p-0">
                 <div className="px-5 pt-5 pb-2 border-b border-border/40">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <Radio className="w-4 h-4 text-primary shrink-0" />
-                    <h2 className="text-lg font-semibold text-foreground tracking-tight">Current edition</h2>
-                    <Badge className="text-[10px] font-mono uppercase tracking-wide bg-primary/15 text-primary border-primary/30">
-                      Forensic
-                    </Badge>
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Radio className="w-4 h-4 text-primary shrink-0" />
+                      <h2 className="text-lg font-semibold text-foreground tracking-tight">
+                        {viewingLatest ? "Latest edition" : "Earlier edition"}
+                      </h2>
+                      <Badge className="text-[10px] font-mono uppercase tracking-wide bg-primary/15 text-primary border-primary/30">
+                        Forensic
+                      </Badge>
+                    </div>
+                    {!viewingLatest && latestRow && (
+                      <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={() => setSelectedId(null)}>
+                        View latest
+                      </Button>
+                    )}
                   </div>
-                  <p className="text-xs font-mono text-muted-foreground">
+                  <p className="text-sm text-foreground/90 leading-snug pr-2">{archiveEntryTitle(selectedRow)}</p>
+                  <p className="text-xs font-mono text-muted-foreground mt-1">
                     {formatTime(selectedRow.created_at)}
                     {selectedRow.run_id ? ` · ${selectedRow.run_id}` : ""}
                   </p>
@@ -150,11 +180,11 @@ export default function IntegrityReport() {
               </CardContent>
             </Card>
 
-            {rows.length > 1 && (
+            {olderRows.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-foreground mb-3">Archive</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-3">Earlier reports</h3>
                 <ul className="flex flex-col gap-2">
-                  {rows.map((r) => (
+                  {olderRows.map((r) => (
                     <li key={r.id}>
                       <Button
                         type="button"
@@ -162,12 +192,10 @@ export default function IntegrityReport() {
                         className="w-full justify-start h-auto py-2.5 px-3 font-normal"
                         onClick={() => setSelectedId(r.id)}
                       >
-                        <span className="text-xs font-mono text-muted-foreground shrink-0 mr-3 tabular-nums">
+                        <span className="text-xs font-mono text-muted-foreground shrink-0 mr-3 tabular-nums whitespace-nowrap">
                           {formatTime(r.created_at)}
                         </span>
-                        <span className="text-sm text-left truncate">
-                          {r.run_id || `Edition ${r.id.slice(0, 8)}…`}
-                        </span>
+                        <span className="text-sm text-left truncate">{archiveEntryTitle(r)}</span>
                       </Button>
                     </li>
                   ))}
