@@ -1,14 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Newspaper, AlertTriangle, TrendingUp, TrendingDown, ExternalLink, Sparkles, Search, Clock } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Newspaper, AlertTriangle, TrendingUp, TrendingDown, ExternalLink, Sparkles, Search, Clock, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MediaBiasIndicator } from "@/components/MediaBiasIndicator";
 import { CoverageBalanceChart } from "@/components/CoverageBalanceChart";
+import { GDELT_NEGATIVE_THRESHOLD, GDELT_POSITIVE_THRESHOLD } from "@/lib/gdelt-sentiment";
+import { IntelligenceEmptyState } from "@/components/intelligence/IntelligenceEmptyState";
 
 interface Props {
   companyId: string;
@@ -27,33 +31,132 @@ function coverageTier(n: number): { label: string; className: string } {
 }
 
 function sentimentColor(score: number) {
-  if (score >= 1.5) return "text-[hsl(var(--civic-green))]";
-  if (score <= -1.5) return "text-destructive";
+  if (score >= GDELT_POSITIVE_THRESHOLD) return "text-[hsl(var(--civic-green))]";
+  if (score <= GDELT_NEGATIVE_THRESHOLD) return "text-destructive";
   return "text-muted-foreground";
 }
 
 function sentimentBg(score: number) {
-  if (score >= 1.5) return "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/20";
-  if (score <= -1.5) return "bg-destructive/10 border-destructive/20";
+  if (score >= GDELT_POSITIVE_THRESHOLD) return "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/20";
+  if (score <= GDELT_NEGATIVE_THRESHOLD) return "bg-destructive/10 border-destructive/20";
   return "bg-muted/50 border-border";
 }
 
+/** Full news coverage card (links, bias, tier). For a compact sentiment strip only, see MediaNarrativeCard — avoid both on one screen unless intentional. */
 export function NewsIntelligenceCard({ companyId, companyName }: Props) {
-  const { data: signals, isLoading } = useQuery({
+  const queryClient = useQueryClient();
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncKickoffDone, setSyncKickoffDone] = useState(false);
+
+  const { data, isLoading, isSuccess, isError, isFetching } = useQuery({
     queryKey: ["news-signals", companyId],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data: rows, error } = await supabase
         .from("company_news_signals")
         .select("*")
         .eq("company_id", companyId)
         .order("published_at", { ascending: false })
         .limit(25);
-      return data || [];
+      if (error) throw error;
+      return rows || [];
     },
     enabled: !!companyId,
   });
 
-  if (isLoading || !signals?.length) return null;
+  const signals = data ?? [];
+  const isEmpty = isSuccess && signals.length === 0;
+
+  useEffect(() => {
+    setSyncKickoffDone(false);
+  }, [companyId]);
+
+  const runGdeltSync = useCallback(async () => {
+    if (!companyId || !companyName) return;
+    setIsSyncing(true);
+    try {
+      await supabase.functions.invoke("sync-gdelt", { body: { companyId, companyName } });
+    } catch {
+      // Network / function errors — still refetch in case partial write
+    } finally {
+      await queryClient.invalidateQueries({ queryKey: ["news-signals", companyId] });
+      await queryClient.invalidateQueries({ queryKey: ["media-narrative", companyId] });
+      setIsSyncing(false);
+    }
+  }, [companyId, companyName, queryClient]);
+
+  useEffect(() => {
+    if (!isSuccess || !companyId || !companyName || signals.length > 0 || syncKickoffDone) return;
+    setSyncKickoffDone(true);
+    void runGdeltSync();
+  }, [isSuccess, signals.length, companyId, companyName, syncKickoffDone, runGdeltSync]);
+
+  const showNewsLoader = isLoading || (isEmpty && (!syncKickoffDone || isSyncing || isFetching));
+
+  if (showNewsLoader) {
+    return (
+      <Card className="mb-6 border-border/60">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Newspaper className="w-4 h-4" />
+            News Coverage
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+            <Loader2 className="w-4 h-4 animate-spin shrink-0 text-primary" />
+            <span>Pulling recent headlines from GDELT (last ~90 days)…</span>
+          </div>
+          <Skeleton className="h-16 w-full rounded-lg" />
+          <Skeleton className="h-16 w-full rounded-lg" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="mb-6 border-border/60">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Newspaper className="w-4 h-4" />
+            News Coverage
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">Could not load indexed news. Check your connection and try again.</p>
+          <Button variant="outline" size="sm" className="text-xs" onClick={() => void runGdeltSync()}>
+            Retry
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (signals.length === 0) {
+    return (
+      <Card className="mb-6 border-border/60">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Newspaper className="w-4 h-4" />
+            News Coverage
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <IntelligenceEmptyState category="media" state="after" />
+          <Button variant="outline" size="sm" className="text-xs w-full sm:w-auto" onClick={() => void runGdeltSync()} disabled={isSyncing}>
+            {isSyncing ? (
+              <>
+                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                Refreshing…
+              </>
+            ) : (
+              "Refresh news coverage"
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const controversies = signals.filter((s: any) => s.is_controversy);
   const avgTone = signals.reduce((a: number, s: any) => a + (Number(s.sentiment_score) || 0), 0) / signals.length;
@@ -66,7 +169,12 @@ export function NewsIntelligenceCard({ companyId, companyName }: Props) {
     return new Date(t) > new Date(best) ? t : best;
   }, null as string | null);
 
-  const toneWord = avgTone >= 1.5 ? "tilts positive" : avgTone <= -1.5 ? "tilts negative" : "reads mixed to neutral";
+  const toneWord =
+    avgTone >= GDELT_POSITIVE_THRESHOLD
+      ? "tilts positive"
+      : avgTone <= GDELT_NEGATIVE_THRESHOLD
+        ? "tilts negative"
+        : "reads mixed to neutral";
   const foundLine = `We found ${signals.length} recent article${signals.length !== 1 ? "s" : ""} mentioning ${companyName} in the last ~90 days — enough to ${controversies.length ? "spot controversies and " : ""}see how media coverage ${toneWord}.`;
   const meansLine =
     "Use the links to read originals, then come back: cross-check against PAC, lobbying, and workforce signals on this profile so the story isn't one headline deep.";
@@ -114,7 +222,11 @@ export function NewsIntelligenceCard({ companyId, companyName }: Props) {
             <p className="text-sm font-medium text-foreground">
               Overall tone:{" "}
               <span className={sentimentColor(avgTone)}>
-                {avgTone >= 1.5 ? "Positive" : avgTone <= -1.5 ? "Negative" : "Neutral / mixed"}
+                {avgTone >= GDELT_POSITIVE_THRESHOLD
+                  ? "Positive"
+                  : avgTone <= GDELT_NEGATIVE_THRESHOLD
+                    ? "Negative"
+                    : "Neutral / mixed"}
               </span>
             </p>
             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground mt-0.5">
@@ -202,6 +314,9 @@ export function NewsIntelligenceCard({ companyId, companyName }: Props) {
           </Button>
           <Button variant="outline" size="sm" className="text-xs h-8" asChild>
             <Link to="/values-search">Values match</Link>
+          </Button>
+          <Button variant="outline" size="sm" className="text-xs h-8" onClick={() => void runGdeltSync()} disabled={isSyncing}>
+            {isSyncing ? <Loader2 className="w-3 h-3 animate-spin" /> : "Refresh from GDELT"}
           </Button>
         </div>
 

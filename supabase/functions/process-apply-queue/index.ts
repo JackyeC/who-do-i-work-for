@@ -57,12 +57,35 @@ Deno.serve(async (req: Request) => {
       .eq('status', 'completed')
       .gte('processed_at', todayStart.toISOString());
 
-    const remaining = settings.max_daily_applications - (todayCompleted || 0);
-    if (remaining <= 0) {
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+
+    const { count: monthCompleted } = await supabase
+      .from('apply_queue')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('status', 'completed')
+      .gte('processed_at', monthStart.toISOString());
+
+    const maxMonthly =
+      typeof settings.max_monthly_applications === 'number' ? settings.max_monthly_applications : 5;
+
+    const monthlyRemaining = maxMonthly - (monthCompleted || 0);
+    if (monthlyRemaining <= 0) {
+      return new Response(JSON.stringify({ processed: 0, reason: 'Monthly limit reached' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const dailyRemaining = settings.max_daily_applications - (todayCompleted || 0);
+    if (dailyRemaining <= 0) {
       return new Response(JSON.stringify({ processed: 0, reason: 'Daily limit reached' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    const remaining = Math.min(dailyRemaining, monthlyRemaining);
 
     // Queued items that meet the user's minimum match (others stay queued until threshold is lowered)
     const { data: queueItems } = await supabase

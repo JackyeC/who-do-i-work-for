@@ -20,6 +20,7 @@ Use this document to keep **voice, structure, and pacing** consistent across iss
 - **Specific beats vague**: name the regulation, the survey, the company when it’s public and material.
 - **One sharp observation per story**—the “so what” for the reader.
 - **Humor**: wink, don’t punch down. Avoid jokes at the expense of employees or protected groups.
+- **Social / ticker copy**: Sharp and observational — like a senior operator naming a pattern (“the language shifted — that’s usually a tell”), not a wire headline or earnings recap.
 
 ## Structural pattern (scannable daily)
 

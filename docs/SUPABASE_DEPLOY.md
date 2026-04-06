@@ -254,10 +254,11 @@ Then run **`supabase db push`** (or **`supabase db push --include-all`** if the 
 
 ### Desk health: `publish_status` missing / `wdiwf_desk_publications` not in schema cache
 
-The desk pipeline uses **two** migrations in order:
+The desk pipeline uses these migrations in order:
 
 1. **`20260404210000_wdiwf_desk_publications.sql`** — creates **`wdiwf_desk_publications`**
 2. **`20260405120000_wdiwf_desk_publications_operability.sql`** — adds **`publish_status`**, **`failure_*`**, **`wdiwf_latest_live_desk_publication()`**, and updates RLS
+3. **`20260405180000_wdiwf_forensic_desk_publications.sql`** — adds **`kind = 'forensic'`**, forensic RPCs, and public read for forensic live rows (**`/integrity-report`**)
 
 If you applied **(1)** manually (or partially) but **not (2)**, **`db push`** can still say **“Remote database is up to date”** while the health function fails on missing columns.
 

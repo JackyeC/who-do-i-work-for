@@ -11,6 +11,36 @@ const logStep = (step: string, details?: any) => {
   console.log(`[LINKEDIN-SHARE-CERTIFICATE] ${step}${detailsStr}`);
 };
 
+const DEFAULT_CHECK_URL = "https://wdiwf.jackyeclayton.com/check?tab=company";
+
+function buildCertificatePostText(input: {
+  certName: string;
+  certBadge: string;
+  insightQuote: string;
+  realWorld: string;
+  credibilityPct?: number | string;
+  checkUrl: string;
+}): string {
+  const credPart =
+    input.credibilityPct != null && input.credibilityPct !== ""
+      ? `Behavioral credibility: ${input.credibilityPct}%. `
+      : "";
+
+  const rw = input.realWorld.trim()
+    ? input.realWorld.trim()
+    : "Patterns beat vibes when you're choosing who to work for.";
+
+  return `${credPart}I ran PeoplePuzzles™ — Jackye Clayton's decision simulation on WDIWF — and earned "${input.certName}" ${input.certBadge}.
+
+"${input.insightQuote}"
+
+What that means when stakes are real: ${rw}
+
+Next move I'm making: run a company scan before I sign — ${input.checkUrl}
+
+#PeoplePuzzles #WDIWF #CareerIntelligence`;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -88,26 +118,35 @@ Deno.serve(async (req: Request) => {
     }
 
     const body = await req.json();
-    const { playerName, certName, certBadge, score, insightQuote, imageBase64 } = body;
+    const {
+      certName,
+      certBadge,
+      insightQuote,
+      imageBase64,
+      realWorld,
+      credibilityPct,
+      checkUrl,
+    } = body;
 
-    logStep("Preparing LinkedIn post", { certName, playerName });
+    logStep("Preparing LinkedIn post", { certName });
 
     const personUrn = `urn:li:person:${profile.linkedin_id}`;
     // Use plaintext token (will be migrated to encrypted in future)
     const accessToken = profile.access_token;
 
-    // Build post text
-    const postText = `🏆 I just earned the "${certName}" ${certBadge} certification in PeoplePuzzles™ by @Jackye Clayton!
+    const scanUrl =
+      typeof checkUrl === "string" && checkUrl.startsWith("http")
+        ? checkUrl
+        : DEFAULT_CHECK_URL;
 
-"${insightQuote}"
-
-Score: ${score || "Certified"}
-Player: ${playerName}
-
-Think you know how companies REALLY operate? Play the game and find out. 👇
-https://wdiwf.jackyeclayton.com/peoplepuzzles
-
-#PeoplePuzzles #WDIWF #TalentAcquisition #Recruiting #HRTech #CareerIntelligence`;
+    const postText = buildCertificatePostText({
+      certName: certName ?? "",
+      certBadge: certBadge ?? "",
+      insightQuote: insightQuote ?? "",
+      realWorld: typeof realWorld === "string" ? realWorld : "",
+      credibilityPct,
+      checkUrl: scanUrl,
+    });
 
     let imageUrn: string | undefined;
 

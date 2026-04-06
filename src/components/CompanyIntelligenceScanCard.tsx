@@ -114,6 +114,8 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       // Keep overlay open so user can see "Scan Complete" and click "View Results"
       const keys = ["ai-hr-signals", "worker-benefit-signals", "pay-equity-signals", "worker-sentiment", "ideology-flags", "social-media-scans", "agency-contracts", "ai-accountability"];
       keys.forEach(k => queryClient.invalidateQueries({ queryKey: [k] }));
+      queryClient.invalidateQueries({ queryKey: ["news-signals", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["media-narrative", companyId] });
     }
   }, [isScanning, latestScan?.scan_status, queryClient]);
 
@@ -191,6 +193,8 @@ export function CompanyIntelligenceScanCard({ companyId, companyName }: Props) {
       setIsScanning(false);
       const allKeys = ["latest-scan-run", "ai-hr-signals", "ai-hiring-signals", "worker-benefit-signals", "pay-equity-signals", "worker-sentiment", "ideology-flags", "social-media-scans", "agency-contracts", "ai-accountability", "roi-pipeline", "influence-chain"];
       allKeys.forEach(k => queryClient.invalidateQueries({ queryKey: k === "latest-scan-run" ? [k, companyId] : [k] }));
+      queryClient.invalidateQueries({ queryKey: ["news-signals", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["media-narrative", companyId] });
     }
   };
 

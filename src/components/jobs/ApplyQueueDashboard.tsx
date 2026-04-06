@@ -145,7 +145,8 @@ function QueueItemCard({
 type StatusFilter = "all" | "queued" | "completed" | "failed";
 
 export function ApplyQueueDashboard() {
-  const { queue, isLoading, processQueue, removeFromQueue, addToQueue, todayCount } = useApplyQueue();
+  const { queue, isLoading, processQueue, removeFromQueue, addToQueue, todayCount, monthCount } =
+    useApplyQueue();
   const { settings } = useAutoApplySettings();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
@@ -200,7 +201,10 @@ export function ApplyQueueDashboard() {
               <strong className="text-foreground">{failedCount}</strong> failed
             </span>
           )}
-          <span className="text-xs ml-1 px-1.5 py-0.5 rounded bg-muted border border-border">
+          <span className="text-xs ml-1 px-1.5 py-0.5 rounded bg-muted border border-border tabular-nums">
+            {monthCount}/{settings?.max_monthly_applications ?? 5} this month
+          </span>
+          <span className="text-xs px-1.5 py-0.5 rounded bg-muted/60 border border-border tabular-nums">
             {todayCount}/{settings?.max_daily_applications || 5} today
           </span>
         </div>

@@ -392,6 +392,7 @@ export default function AutoApply() {
             is_paused: false,
             min_alignment_threshold: form.minIntegrityScore,
             max_daily_applications: 5,
+            max_monthly_applications: 5,
           },
           { onConflict: "user_id" }
         );

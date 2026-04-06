@@ -551,19 +551,30 @@ export default function Newsletter() {
           {(
             [
               ["#newsletter-desk", "Today's desk"],
+              ["/integrity-report", "Forensic report"],
               ["#newsletter-wire", "Live wire"],
               ["#source-orientation", "How labels work"],
               ["#newsletter-subscribe", "Subscribe"],
             ] as const
-          ).map(([href, label]) => (
-            <a
-              key={href}
-              href={href}
-              className="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
-            >
-              {label}
-            </a>
-          ))}
+          ).map(([href, label]) =>
+            href.startsWith("/") ? (
+              <Link
+                key={href}
+                to={href}
+                className="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+              >
+                {label}
+              </Link>
+            ) : (
+              <a
+                key={href}
+                href={href}
+                className="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors"
+              >
+                {label}
+              </a>
+            ),
+          )}
         </div>
       </nav>
 
@@ -581,6 +592,16 @@ export default function Newsletter() {
           <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             Flagship brief with sources and coverage map — same layout we ship to email and social. Updates when a new
             edition is published.
+          </p>
+          <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
+            <Link
+              to="/integrity-report"
+              className="text-primary font-medium underline underline-offset-2 hover:no-underline"
+            >
+              Forensic integrity report
+            </Link>{" "}
+            — long-form ledger editions (labor, procurement, preemption) live here so they do not replace the bi-hourly
+            desk.
           </p>
         </div>
         <div className="rounded-2xl border border-border/50 bg-card/40 p-3 sm:p-5 shadow-sm">

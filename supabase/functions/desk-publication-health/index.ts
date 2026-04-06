@@ -93,6 +93,14 @@ Deno.serve(async (req: Request) => {
     logInfo("rpc_error", { message: rpcRes.error.message });
   }
 
+  const rpcForensic = await supabase.rpc("wdiwf_latest_forensic_publication");
+  const rpcForensicOk = !rpcForensic.error;
+  const rpcForensicDetail = rpcForensic.error ? `error: ${rpcForensic.error.message}` : "ok";
+
+  if (rpcForensic.error) {
+    logInfo("rpc_forensic_error", { message: rpcForensic.error.message });
+  }
+
   const runs = (rows ?? []).map((r) => ({
     id: r.id,
     created_at: r.created_at,
@@ -114,11 +122,18 @@ Deno.serve(async (req: Request) => {
     r.kind === "bi_hourly" &&
     (r.site_markdown_chars ?? 0) > 0;
 
+  const liveForensicContract = (r: (typeof runs)[0]) =>
+    r.publish_status === "success" &&
+    r.published_to_site === true &&
+    r.generation_status === "completed" &&
+    r.kind === "forensic" &&
+    (r.site_markdown_chars ?? 0) > 0;
+
   const engine_alive = runs.length > 0;
   /** False if operability migration / RPC missing — /newsletter desk hook will fail. */
   const safe_for_newsletter_desk = rpcOk;
 
-  logInfo("ok", { limit, returned: runs.length, rpc_ok: rpcOk });
+  logInfo("ok", { limit, returned: runs.length, rpc_ok: rpcOk, rpc_forensic_ok: rpcForensicOk });
 
   return new Response(
     JSON.stringify({
@@ -127,12 +142,15 @@ Deno.serve(async (req: Request) => {
       checks: {
         publications_table: "ok",
         rpc_latest_live_desk: rpcDetail,
+        rpc_latest_forensic: rpcForensicDetail,
       },
       safe_for_newsletter_desk,
+      safe_for_integrity_report: rpcForensicOk,
       limit,
       engine_alive,
       /** Newest row that is actually live on the site (same contract as RLS). */
       newest_live: runs.find(liveContract) ?? null,
+      newest_forensic: runs.find(liveForensicContract) ?? null,
       runs,
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },

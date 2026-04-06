@@ -1,9 +1,9 @@
 /**
- * Publish a WDIWF desk row (bi-hourly or Friday) to Supabase.
+ * Publish a WDIWF desk row (bi-hourly, forensic, or Friday) to Supabase.
  * Auth: Authorization: Bearer <WDIWF_DESK_PUBLISH_SECRET>
  * Sets publish_status server-side (success | skipped | failed). Never trust client for final outcome.
  *
- * published_to_site: when true, DB + RLS enforce the full live contract; only then is content visible on /newsletter.
+ * published_to_site: when true for bi_hourly or forensic, DB + RLS enforce the live contract; bi_hourly → /newsletter, forensic → /integrity-report.
  */
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
@@ -22,7 +22,7 @@ function logInfo(step: string, details?: Record<string, unknown>) {
 
 type Body = {
   run_id?: string | null;
-  kind: "bi_hourly" | "friday";
+  kind: "bi_hourly" | "friday" | "forensic";
   generation_status: "completed" | "skipped";
   site_markdown?: string | null;
   newsletter_markdown?: string | null;
@@ -43,7 +43,7 @@ async function recordFailure(
   supabase: SupabaseClient,
   params: {
     run_id?: string | null;
-    kind?: "bi_hourly" | "friday" | null;
+    kind?: "bi_hourly" | "friday" | "forensic" | null;
     generation_status?: "completed" | "skipped" | null;
     failure_code: string;
     failure_message: string;
@@ -191,20 +191,25 @@ Deno.serve(async (req: Request) => {
   const published = body.published_to_site === true;
   const publishStatus: PublishStatus = body.generation_status === "skipped" ? "skipped" : "success";
 
-  if (body.generation_status === "completed" && body.kind === "bi_hourly" && published) {
+  const liveSiteKind =
+    body.generation_status === "completed" &&
+    published &&
+    (body.kind === "bi_hourly" || body.kind === "forensic");
+  if (liveSiteKind) {
     const md = (body.site_markdown ?? "").trim();
     if (!md) {
       const audit = await recordFailure(supabase, {
         run_id: body.run_id ?? null,
         kind: body.kind,
         generation_status: body.generation_status,
-        failure_code: "empty_site_markdown_bi_hourly_live",
-        failure_message: "site_markdown is required when publishing bi_hourly completed content to the site",
+        failure_code: "empty_site_markdown_live_kind",
+        failure_message:
+          "site_markdown is required when publishing completed bi_hourly or forensic content to the site",
         run_log: {},
       });
       logInfo("FINAL", {
         outcome: "failed",
-        failure_code: "empty_site_markdown_bi_hourly_live",
+        failure_code: "empty_site_markdown_live_kind",
         audit_id: audit?.id ?? null,
         run_id: body.run_id ?? null,
       });
@@ -213,7 +218,7 @@ Deno.serve(async (req: Request) => {
           ok: false,
           publish_status: "failed" as PublishStatus,
           audit_id: audit?.id ?? null,
-          error: "site_markdown required for completed bi_hourly with published_to_site",
+          error: "site_markdown required for completed bi_hourly or forensic with published_to_site",
         },
         400,
       );

@@ -8,6 +8,8 @@ export interface AutoApplySettings {
   is_enabled: boolean;
   min_alignment_threshold: number;
   max_daily_applications: number;
+  /** Completed queue items per calendar month (hard pacing cap). */
+  max_monthly_applications?: number;
   is_paused: boolean;
 }
 
@@ -142,7 +144,8 @@ export function useApplyQueue() {
         description:
           n > 0
             ? "Open each row to copy your statement and apply on the employer site."
-            : reason || "Check auto-apply is on, daily limit, and queued jobs meet your minimum match.",
+            : reason ||
+              "Check auto-apply is on, daily/monthly limits, and queued jobs meet your minimum match.",
       });
     },
     onError: (e: any) => {
@@ -171,6 +174,13 @@ export function useApplyQueue() {
       new Date(item.processed_at).toDateString() === new Date().toDateString()
   ).length;
 
+  const now = new Date();
+  const monthCount = (query.data || []).filter((item) => {
+    if (item.status !== "completed" || !item.processed_at) return false;
+    const d = new Date(item.processed_at);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+
   return {
     queue: query.data || [],
     isLoading: query.isLoading,
@@ -178,5 +188,6 @@ export function useApplyQueue() {
     processQueue,
     removeFromQueue,
     todayCount,
+    monthCount,
   };
 }

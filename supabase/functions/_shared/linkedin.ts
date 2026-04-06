@@ -114,7 +114,7 @@ export async function createLinkedInPost(
   if (imageUrn) {
     body.content = {
       media: {
-        title: 'PeoplePuzzles Certificate',
+        title: 'PeoplePuzzles validation',
         id: imageUrn,
       },
     };

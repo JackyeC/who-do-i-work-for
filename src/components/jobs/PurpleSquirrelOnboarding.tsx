@@ -92,6 +92,7 @@ export function PurpleSquirrelOnboarding({ onComplete }: PurpleSquirrelOnboardin
       is_enabled: true,
       min_alignment_threshold: dnaLockThreshold,
       max_daily_applications: 5,
+      max_monthly_applications: 5,
       is_paused: false,
     });
 
