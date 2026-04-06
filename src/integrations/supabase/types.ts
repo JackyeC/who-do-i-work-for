@@ -336,6 +336,7 @@ export type Database = {
           is_enabled: boolean
           is_paused: boolean
           max_daily_applications: number
+          max_monthly_applications: number
           min_alignment_threshold: number
           updated_at: string
           user_id: string
@@ -346,6 +347,7 @@ export type Database = {
           is_enabled?: boolean
           is_paused?: boolean
           max_daily_applications?: number
+          max_monthly_applications?: number
           min_alignment_threshold?: number
           updated_at?: string
           user_id: string
@@ -356,6 +358,7 @@ export type Database = {
           is_enabled?: boolean
           is_paused?: boolean
           max_daily_applications?: number
+          max_monthly_applications?: number
           min_alignment_threshold?: number
           updated_at?: string
           user_id?: string

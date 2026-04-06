@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Shield, Zap, Pause, Play, Settings, CheckCircle2,
-  ChevronDown, ChevronUp, Sparkles
+  Shield, Zap, Pause, Play, CheckCircle2,
+  ChevronDown, ChevronUp, Sparkles, CalendarRange,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,6 +31,7 @@ export function AutoApplySettings() {
   const { settings, isLoading, upsert } = useAutoApplySettings();
   const [threshold, setThreshold] = useState(70);
   const [dailyLimit, setDailyLimit] = useState(5);
+  const [monthlyLimit, setMonthlyLimit] = useState(5);
   const [enabled, setEnabled] = useState(true);
   const [paused, setPaused] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -39,6 +40,7 @@ export function AutoApplySettings() {
     if (settings) {
       setThreshold(settings.min_alignment_threshold);
       setDailyLimit(settings.max_daily_applications);
+      setMonthlyLimit(settings.max_monthly_applications ?? 5);
       setEnabled(settings.is_enabled);
       setPaused(settings.is_paused);
     }
@@ -49,6 +51,7 @@ export function AutoApplySettings() {
       is_enabled: enabled,
       min_alignment_threshold: threshold,
       max_daily_applications: dailyLimit,
+      max_monthly_applications: monthlyLimit,
       is_paused: paused,
     });
   };
@@ -63,6 +66,7 @@ export function AutoApplySettings() {
   const hasChanges = settings && (
     threshold !== settings.min_alignment_threshold ||
     dailyLimit !== settings.max_daily_applications ||
+    monthlyLimit !== (settings.max_monthly_applications ?? 5) ||
     enabled !== settings.is_enabled
   );
 
@@ -82,7 +86,7 @@ export function AutoApplySettings() {
             <div>
               <CardTitle className="text-base">Auto-Apply</CardTitle>
               <CardDescription className="text-xs mt-0.5">
-                AI-generated applications for values-aligned jobs
+                Values-aligned drafts with a strict monthly cap—intentional pacing, not bulk apply bots
               </CardDescription>
             </div>
           </div>
@@ -143,23 +147,46 @@ export function AutoApplySettings() {
           </motion.div>
         </div>
 
-        {/* Daily limit — compact inline */}
-        <div className="flex items-center justify-between gap-4 py-3 border-t border-border">
-          <div>
-            <Label className="text-sm font-medium flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-primary" />
-              Daily Limit
-            </Label>
-            <p className="text-xs text-muted-foreground mt-0.5">Max applications per day</p>
+        {/* Daily + monthly caps */}
+        <div className="space-y-3 py-3 border-t border-border">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <Label className="text-sm font-medium flex items-center gap-1.5">
+                <CalendarRange className="w-3.5 h-3.5 text-primary" />
+                Monthly cap
+              </Label>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Max drafted applications per calendar month (overall guardrail)
+              </p>
+            </div>
+            <Input
+              type="number"
+              min={1}
+              max={15}
+              value={monthlyLimit}
+              onChange={(e) => setMonthlyLimit(Math.max(1, Math.min(15, Number(e.target.value) || 1)))}
+              className="w-16 h-8 text-center text-sm font-medium"
+            />
           </div>
-          <Input
-            type="number"
-            min={1}
-            max={25}
-            value={dailyLimit}
-            onChange={(e) => setDailyLimit(Math.max(1, Math.min(25, Number(e.target.value))))}
-            className="w-16 h-8 text-center text-sm font-medium"
-          />
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <Label className="text-sm font-medium flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-muted-foreground" />
+                Per day
+              </Label>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Max processed in one day (cannot exceed what’s left this month)
+              </p>
+            </div>
+            <Input
+              type="number"
+              min={1}
+              max={25}
+              value={dailyLimit}
+              onChange={(e) => setDailyLimit(Math.max(1, Math.min(25, Number(e.target.value) || 1)))}
+              className="w-16 h-8 text-center text-sm font-medium"
+            />
+          </div>
         </div>
 
         {/* How it works — collapsible */}
