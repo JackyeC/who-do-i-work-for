@@ -498,14 +498,13 @@ export default function Quiz() {
           .from("wdiwf_quiz_results" as any)
           .insert(payload as any);
 
-        if (error) {
+        if (!error) {
+          localStorage.setItem(writeKey, "1");
+        } else {
           // Don't break the quiz UX; just surface in console.
           // eslint-disable-next-line no-console
-          console.warn("Quiz results write failed:", error);
-          return;
+          console.error("Quiz write failed:", error);
         }
-
-        localStorage.setItem(writeKey, "1");
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn("Quiz results write exception:", err);
