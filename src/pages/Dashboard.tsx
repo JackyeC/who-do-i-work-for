@@ -95,7 +95,7 @@ export default function Dashboard() {
   });
 
   /** Values profile = substantive personalization; Workplace DNA quiz only sets copy/lens in localStorage. */
-  const { data: hasValuesProfile } = useQuery({
+  const { data: hasValuesProfile, isFetched: valuesProfileFetched } = useQuery({
     queryKey: ["values-profile-exists", user?.id],
     queryFn: async () => {
       const { data } = await (supabase as any)
@@ -108,6 +108,15 @@ export default function Dashboard() {
     enabled: !!user,
     staleTime: 60_000,
   });
+
+  /** Dev only: `?previewPersonaBanner=1` on Overview forces the banner so you can verify copy/layout without wiping values profile. */
+  const previewPersonaBanner =
+    import.meta.env.DEV && searchParams.get("previewPersonaBanner") === "1";
+
+  const showPersonaQuizBanner =
+    !hasTakenQuiz &&
+    tab === "overview" &&
+    (previewPersonaBanner || (valuesProfileFetched && hasValuesProfile === false));
 
   const creditPurchase = searchParams.get("credit_purchase");
   const [showUpsell, setShowUpsell] = useState(creditPurchase === "success");
@@ -232,7 +241,7 @@ export default function Dashboard() {
         <div className="max-w-[900px] mx-auto w-full">
           <FoundingMemberRecognition />
         </div>
-        {!hasTakenQuiz && tab === "overview" && hasValuesProfile === false && <PersonaQuizBanner />}
+        {showPersonaQuizBanner && <PersonaQuizBanner />}
         {showUpsell && <PostPurchaseUpsell onDismiss={dismissUpsell} />}
         {renderContent()}
       </div>
