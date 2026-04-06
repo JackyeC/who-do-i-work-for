@@ -20,6 +20,7 @@ import {
   Search, ArrowRight, ExternalLink, AlertTriangle, Shield,
   FileText, BookOpen, TrendingDown, Eye, Building2,
   Briefcase, Zap, ChevronRight, Flame, Target, Mic,
+  Sparkles, Bell,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useProject2025LinkedCompanyIds } from "@/hooks/use-project2025-linked-companies";
@@ -64,7 +65,7 @@ const SEVERITY_CLASSES: Record<string, string> = {
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`rounded-2xl p-6 bg-card border border-border/30 ${className}`}>
+    <div className={`rounded-2xl p-5 sm:p-6 bg-card border border-border/30 ${className}`}>
       {children}
     </div>
   );
@@ -94,6 +95,39 @@ function ActDivider({ number, title, subtitle, icon: Icon }: {
 
 function Skeleton({ className = "" }: { className?: string }) {
   return <div className={`rounded-lg animate-pulse bg-muted ${className}`} />;
+}
+
+/* ── Empty state component ── */
+function EmptyState({
+  icon: Icon,
+  title,
+  description,
+  actionLabel,
+  onAction,
+}: {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}) {
+  return (
+    <Card className="text-center py-10">
+      <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 mb-4">
+        <Icon className="w-6 h-6 text-primary" />
+      </div>
+      <h3 className="text-base font-bold text-foreground mb-2">{title}</h3>
+      <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">{description}</p>
+      {actionLabel && onAction && (
+        <button
+          onClick={onAction}
+          className="mt-4 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+        >
+          {actionLabel} <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      )}
+    </Card>
+  );
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -137,6 +171,11 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
   if (isLoading) {
     return (
       <div className="space-y-5 max-w-[900px] mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-16 w-full rounded-xl" />
+          ))}
+        </div>
         <Skeleton className="h-28 w-full" />
         <Skeleton className="h-48 w-full" />
         <Skeleton className="h-48 w-full" />
@@ -151,7 +190,7 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
 
       {/* ═══ MASTHEAD — Date + greeting (Bloomberg terminal header energy) ═══ */}
       <motion.div {...anim(0)}>
-        <div className="flex items-end justify-between border-b border-border/40 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 border-b border-border/40 pb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="inline-flex items-center gap-1.5 rounded-full text-xs font-bold px-2.5 py-0.5 bg-primary/10 border border-primary/20 text-primary font-mono">
@@ -162,8 +201,13 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
             <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
               Good morning, {firstName}.
             </h1>
+            {alerts.length > 0 && (
+              <p className="text-sm text-muted-foreground mt-1">
+                {alerts.length} signal{alerts.length !== 1 ? "s" : ""} require your attention today.
+              </p>
+            )}
           </div>
-          <form onSubmit={handleSearch} className="hidden md:flex items-center rounded-lg px-3 py-2 bg-muted/30 border border-border/30 w-64">
+          <form onSubmit={handleSearch} className="flex items-center rounded-xl px-3 py-2.5 bg-muted/30 border border-border/30 w-full sm:w-72">
             <Search className="w-3.5 h-3.5 shrink-0 mr-2 text-muted-foreground" />
             <input
               value={searchQuery}
@@ -175,6 +219,7 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
         </div>
       </motion.div>
 
+      {/* ═══ HEARTBEAT — Live pulse tiles ═══ */}
       <motion.div {...anim(0.02)} className="border-b border-border/30 pb-6">
         <DashboardHeartbeat onNavigate={onNavigate} />
       </motion.div>
@@ -236,9 +281,14 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground mb-4">
-                No active alerts on {employer.company.name} right now. We're watching.
-              </p>
+              <div className="rounded-lg p-3 bg-civic-green/5 border border-civic-green/20 mb-4">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-3.5 h-3.5 text-civic-green" />
+                  <p className="text-sm text-muted-foreground">
+                    No active alerts on {employer.company.name} right now. We're watching.
+                  </p>
+                </div>
+              </div>
             )}
 
             <Link
@@ -250,29 +300,15 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
           </Card>
         </motion.div>
       ) : (
-        /* No employer detected — prompt to search */
+        /* No employer detected — compelling prompt to search */
         <motion.div {...anim(0.1)}>
-          <Card className="text-center py-8">
-            <Building2 className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-foreground mb-1">
-              Who do you work for?
-            </h3>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto mb-4">
-              Sign in with your work email and we'll automatically pull intelligence about your employer.
-              Or search any company to see their public record.
-            </p>
-            <form onSubmit={handleSearch} className="max-w-sm mx-auto">
-              <div className="flex items-center rounded-xl px-4 py-3 bg-muted/30 border border-border/30">
-                <Search className="w-4 h-4 shrink-0 mr-3 text-primary" />
-                <input
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Search any employer..."
-                  className="bg-transparent border-none outline-none w-full text-sm text-foreground placeholder:text-muted-foreground/50"
-                />
-              </div>
-            </form>
-          </Card>
+          <EmptyState
+            icon={Building2}
+            title="Who do you work for?"
+            description="Sign in with your work email and we'll automatically pull intelligence about your employer. Or search any company to see their public record."
+            actionLabel="Search any employer"
+            onAction={() => navigate("/search")}
+          />
         </motion.div>
       )}
 
@@ -286,12 +322,15 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
       </motion.div>
 
       {/* Watchlist alerts */}
-      {alerts.length > 0 && (
+      {alerts.length > 0 ? (
         <motion.div {...anim(0.2)}>
           <Card>
             <h3 className="text-sm font-extrabold text-foreground mb-3 flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-primary" />
               Signal Alerts on Your Watchlist
+              <span className="ml-auto rounded-full px-2 py-0.5 text-xs font-bold bg-destructive/10 text-destructive border border-destructive/30">
+                {alerts.length} NEW
+              </span>
             </h3>
             <div className="space-y-2">
               {alerts.map((alert: any) => (
@@ -322,6 +361,16 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
             </button>
           </Card>
         </motion.div>
+      ) : (
+        <motion.div {...anim(0.2)}>
+          <EmptyState
+            icon={Bell}
+            title="Your watchlist is quiet"
+            description="No alerts right now. Track companies to get real-time signal alerts when something changes in the public record."
+            actionLabel="Track a company"
+            onAction={() => onNavigate("tracked")}
+          />
+        </motion.div>
       )}
 
       {/* Daily briefing feed — latest intelligence stories */}
@@ -330,7 +379,7 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
       </motion.div>
 
       {/* Tracked companies grid */}
-      {trackedCompanies.length > 0 && (
+      {trackedCompanies.length > 0 ? (
         <motion.div {...anim(0.3)}>
           <Card>
             <div className="flex items-center justify-between mb-3">
@@ -375,6 +424,16 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
             </button>
           </Card>
         </motion.div>
+      ) : (
+        <motion.div {...anim(0.3)}>
+          <EmptyState
+            icon={Eye}
+            title="No companies tracked yet"
+            description="Start watching companies to see their civic scores, alerts, and intelligence all in one place."
+            actionLabel="Browse the directory"
+            onAction={() => navigate("/browse")}
+          />
+        </motion.div>
       )}
 
 
@@ -387,11 +446,11 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
       </motion.div>
 
       <motion.div {...anim(0.4)}>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 gap-3">
           {/* Action card: Interview prep */}
           <Card className="group cursor-pointer hover:border-primary/30 transition-all" onClick={() => navigate("/interview-dossier")}>
             <div className="flex items-center gap-3 mb-2">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-civic-blue/10">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-civic-blue/10">
                 <FileText className="w-4 h-4 text-civic-blue" />
               </span>
               <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
@@ -399,14 +458,14 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
               </h4>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Pull the dossier on any company before you walk in. OSHA violations, pay equity, leadership changes — the questions they don't expect you to ask.
+              Pull the dossier on any company before you walk in. The questions they don't expect you to ask.
             </p>
           </Card>
 
-          {/* Action card: AI mock interview (dashboard tab) */}
+          {/* Action card: AI mock interview */}
           <Card className="group cursor-pointer hover:border-primary/30 transition-all" onClick={() => onNavigate("mock-interview")}>
             <div className="flex items-center gap-3 mb-2">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-primary/10">
                 <Mic className="w-4 h-4 text-primary" />
               </span>
               <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
@@ -414,14 +473,14 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
               </h4>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Practice answers with structured feedback — build confidence before you’re in front of a hiring panel.
+              Practice with structured feedback before you're in front of a hiring panel.
             </p>
           </Card>
 
           {/* Action card: Offer check */}
           <Card className="group cursor-pointer hover:border-primary/30 transition-all" onClick={() => navigate("/offer-check")}>
             <div className="flex items-center gap-3 mb-2">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-civic-green/10">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-civic-green/10">
                 <Shield className="w-4 h-4 text-civic-green" />
               </span>
               <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
@@ -429,14 +488,14 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
               </h4>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Before you sign, run the employer through our integrity check. See how the comp stacks up against what the public record shows about this company.
+              Run the employer through our integrity check before you sign.
             </p>
           </Card>
 
           {/* Action card: Career map */}
           <Card className="group cursor-pointer hover:border-primary/30 transition-all" onClick={() => navigate("/career-map")}>
             <div className="flex items-center gap-3 mb-2">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-primary/10">
                 <Briefcase className="w-4 h-4 text-primary" />
               </span>
               <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
@@ -444,28 +503,30 @@ export function NarrativeFeed({ onNavigate }: NarrativeFeedProps) {
               </h4>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Based on your skills and values, see which roles and companies align with where you want to go — not just where you've been.
+              See which roles and companies align with where you want to go.
             </p>
           </Card>
 
           {/* Action card: Work DNA quiz */}
           <Card
-            className="group cursor-pointer hover:border-primary/30 transition-all"
+            className="group cursor-pointer hover:border-primary/30 transition-all sm:col-span-2"
             onClick={() => navigate(hasTakenQuiz ? "/values-search" : "/quiz")}
           >
             <div className="flex items-center gap-3 mb-2">
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-civic-yellow/10">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-civic-yellow/10">
                 <Zap className="w-4 h-4 text-civic-yellow" />
               </span>
-              <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
-                {hasTakenQuiz ? "Explore values-aligned companies" : "Take the Work DNA quiz"}
-              </h4>
+              <div>
+                <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                  {hasTakenQuiz ? "Explore values-aligned companies" : "Take the Work DNA quiz"}
+                </h4>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                  {hasTakenQuiz
+                    ? "Your values profile is active. See which companies actually match."
+                    : "5 minutes. Find out what kind of workplace you actually thrive in."}
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {hasTakenQuiz
-                ? "Your values profile is active. See which companies actually match what matters to you."
-                : "5 minutes. Find out what kind of workplace you actually thrive in — then search companies that match."}
-            </p>
           </Card>
         </div>
       </motion.div>

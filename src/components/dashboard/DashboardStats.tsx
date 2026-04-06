@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, Target, Bell, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export function DashboardStats() {
   const { user } = useAuth();
@@ -31,49 +32,63 @@ export function DashboardStats() {
       label: "Applications",
       value: stats?.applications ?? 0,
       icon: Briefcase,
-      color: "text-[hsl(var(--civic-blue))]",
-      bg: "bg-[hsl(var(--civic-blue))]/[0.08]",
+      color: "text-civic-blue",
+      bg: "bg-civic-blue/[0.08]",
+      borderAccent: "border-civic-blue/10",
     },
     {
       label: "Growth Tracks",
       value: stats?.growthTracks ?? 0,
       icon: Target,
-      color: "text-[hsl(var(--civic-green))]",
-      bg: "bg-[hsl(var(--civic-green))]/[0.08]",
+      color: "text-civic-green",
+      bg: "bg-civic-green/[0.08]",
+      borderAccent: "border-civic-green/10",
     },
     {
       label: "Unread Alerts",
       value: stats?.unreadAlerts ?? 0,
       icon: Bell,
-      color: "text-[hsl(var(--civic-gold))]",
-      bg: "bg-[hsl(var(--civic-gold))]/[0.08]",
+      color: stats?.unreadAlerts ? "text-destructive" : "text-civic-gold",
+      bg: stats?.unreadAlerts ? "bg-destructive/[0.08]" : "bg-civic-gold/[0.08]",
+      borderAccent: stats?.unreadAlerts ? "border-destructive/10" : "border-civic-gold/10",
     },
     {
       label: "Values Profile",
-      value: stats?.hasValues ? "Complete" : "Incomplete",
+      value: stats?.hasValues ? "Active" : "—",
       icon: CheckCircle2,
-      color: stats?.hasValues ? "text-[hsl(var(--civic-green))]" : "text-muted-foreground",
-      bg: stats?.hasValues ? "bg-[hsl(var(--civic-green))]/[0.08]" : "bg-muted/50",
+      color: stats?.hasValues ? "text-civic-green" : "text-muted-foreground",
+      bg: stats?.hasValues ? "bg-civic-green/[0.08]" : "bg-muted/50",
+      borderAccent: stats?.hasValues ? "border-civic-green/10" : "border-border/30",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {cards.map((card, i) => (
         <motion.div
           key={card.label}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="bg-card rounded-2xl border border-border/40 p-5 shadow-sm hover:shadow-md transition-shadow"
+          transition={{ delay: i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className={cn(
+            "bg-card rounded-xl border p-4 transition-shadow hover:shadow-sm",
+            card.borderAccent
+          )}
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{card.label}</span>
-            <div className={`w-9 h-9 rounded-xl ${card.bg} flex items-center justify-center`}>
-              <card.icon className={`w-4 h-4 ${card.color}`} />
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide leading-none">
+              {card.label}
+            </span>
+            <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center", card.bg)}>
+              <card.icon className={cn("w-3.5 h-3.5", card.color)} />
             </div>
           </div>
-          <p className="text-2xl font-bold text-foreground font-display-number">{card.value}</p>
+          <p className={cn(
+            "text-xl font-bold text-foreground leading-none tracking-tight",
+            typeof card.value === "number" && "font-mono"
+          )}>
+            {card.value}
+          </p>
         </motion.div>
       ))}
     </div>

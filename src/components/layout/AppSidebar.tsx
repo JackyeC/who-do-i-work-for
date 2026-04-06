@@ -23,9 +23,8 @@ import {
   Home, Search, Building2, PlusCircle, TrendingUp, ScanSearch, Heart,
   Briefcase, FileCheck, Map, FileText, BarChart3, Eye, Landmark, Network,
   Megaphone, Users, Target, CreditCard,
-  LayoutDashboard, Zap, Bell, Settings, User, ClipboardCheck,
-  LogIn, LogOut, Compass, Flame, Shield,
-  Bookmark, Inbox, MessageSquare, Columns3, FileEdit, Mic,
+  LayoutDashboard, Zap, Bell, Settings, User,
+  LogIn, LogOut, Flame, Shield,
 } from "lucide-react";
 import logoSquare from "@/assets/wdiwf-logo-square.png";
 import logoNav from "@/assets/wdiwf-logo-nav-light.png";
@@ -72,27 +71,14 @@ const NAV_GROUPS_TAIL = [
     ],
   },
   {
-    label: "My Search",
+    label: "My Dashboard",
     auth: true,
     items: [
-      { id: "jobs-feed", label: "Jobs", icon: Briefcase, path: "/jobs-feed" },
-      { id: "tracker", label: "Tracker", icon: Columns3, path: "/tracker" },
-      { id: "apply-kit", label: "Apply Kit", icon: FileEdit, path: "/apply-kit" },
-      { id: "mock-interview", label: "Mock Interview", icon: Mic, path: "/mock-interview" },
-      { id: "inbox", label: "Inbox", icon: Inbox, path: "/inbox" },
-      { id: "saved", label: "Saved", icon: Bookmark, path: "/saved" },
-    ],
-  },
-  {
-    label: "My dashboard",
-    auth: true,
-    items: [
-      { id: "tracked", label: "Tracked Companies", icon: Building2, path: "/dashboard?tab=tracked" },
-      { id: "matched-jobs", label: "Matched Jobs", icon: Briefcase, path: "/dashboard?tab=matches" },
-      { id: "auto-apply", label: "Auto-Apply", icon: Zap, path: "/dashboard?tab=auto-apply" },
+      { id: "my-search", label: "My Search", icon: Briefcase, path: "/dashboard?tab=jobs" },
+      { id: "intelligence", label: "Intelligence", icon: Shield, path: "/dashboard?tab=tracked" },
+      { id: "auto-apply", label: "Apply", icon: Zap, path: "/dashboard?tab=auto-apply" },
       { id: "alerts", label: "Signal Alerts", icon: Bell, path: "/dashboard?tab=alerts" },
-      { id: "preferences", label: "Preferences", icon: Settings, path: "/dashboard?tab=preferences" },
-      { id: "profile", label: "Profile", icon: User, path: "/dashboard?tab=profile" },
+      { id: "settings-nav", label: "Settings", icon: Settings, path: "/dashboard?tab=preferences" },
       { id: "pricing", label: "Pricing & Plans", icon: CreditCard, path: "/pricing" },
     ],
   },
