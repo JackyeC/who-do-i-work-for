@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { ContentProtector } from "@/components/ContentProtector";
 import { useParams, Link } from "react-router-dom";
 import { CompanyZeroState } from "@/components/CompanyZeroState";
@@ -27,6 +27,7 @@ import { Badge } from "@/components/ui/badge";
 import { ExportDossierButton } from "@/components/dossier/ExportDossierButton";
 import { useDossierLens } from "@/contexts/DossierLensContext";
 import { TopFlagsSection } from "@/components/dossier/TopFlagsSection";
+import { getScoreContextLabel, getCompositeContextLabel } from "@/lib/scoreContext";
 
 // Layer components
 import { ProductsPlatformsLayer } from "@/components/dossier/ProductsPlatformsLayer";
@@ -131,6 +132,41 @@ export default function CompanyDossier() {
     },
     enabled: !!id,
   });
+
+  // Auto-research state (must be before any early returns)
+  const [apiData, setApiData] = useState<any>(null);
+  const [isResearching, setIsResearching] = useState(false);
+  const [researchError, setResearchError] = useState<string | null>(null);
+
+  const unslugify = useCallback((slug: string) => {
+    return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  }, []);
+
+  // Trigger auto-research when company not found in DB
+  useEffect(() => {
+    if (!isLoading && !company && id && !apiData && !isResearching && !researchError) {
+      setIsResearching(true);
+      setResearchError(null);
+      const companyName = unslugify(id);
+      fetch("https://wdiwf-integrity-api.onrender.com/api/company-integrity-check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ company_name: companyName }),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error(`API error ${res.status}`);
+          return res.json();
+        })
+        .then((data) => {
+          setApiData(data);
+          setIsResearching(false);
+        })
+        .catch((err) => {
+          setResearchError(err.message);
+          setIsResearching(false);
+        });
+    }
+  }, [isLoading, company, id, apiData, isResearching, researchError, unslugify]);
 
   const companyId = company?.id;
   const isTracked = companyId ? isCompanyTracked(companyId) : false;
@@ -273,6 +309,156 @@ export default function CompanyDossier() {
     );
   }
 
+  // Show researching state
+  if (!company && isResearching) {
+    const displayName = id ? unslugify(id) : "Company";
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
+          <div className="flex flex-col items-center justify-center py-20 gap-6">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-foreground mb-2">Researching {displayName}</h2>
+              <p className="text-sm text-muted-foreground max-w-md">
+                Running an integrity check across public records, financial disclosures, and workforce data. This may take a moment.
+              </p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show error state if research failed and no company in DB
+  if (!company && researchError) {
+    const displayName = id ? unslugify(id) : "Company";
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
+          <div className="flex flex-col items-center justify-center py-20 gap-6">
+            <AlertTriangle className="w-10 h-10 text-destructive" />
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-foreground mb-2">Could not research {displayName}</h2>
+              <p className="text-sm text-muted-foreground max-w-md mb-4">{researchError}</p>
+              <Button onClick={() => { setApiData(null); setIsResearching(false); setResearchError(null); }}>
+                Try Again
+              </Button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show live results from API (company not in DB but API returned data)
+  if (!company && apiData) {
+    const displayName = id ? unslugify(id) : "Company";
+    const liveIntegrityGap = apiData.civic_footprint_score ?? 0;
+    const liveLaborImpact = (() => {
+      let s = 0;
+      if (apiData.glassdoor_rating) s = Math.round((1 - apiData.glassdoor_rating / 5) * 60);
+      if (apiData.workforce_stability === "unstable") s += 30;
+      else if (apiData.workforce_stability === "mixed") s += 15;
+      if (apiData.glassdoor_trajectory === "declining") s += 10;
+      return Math.max(0, Math.min(100, s));
+    })();
+    const liveSafetyAlert = apiData.risk_level === "high" ? 60 : apiData.risk_level === "medium" ? 35 : 10;
+    const liveConnectedDots = apiData.insider_score ?? 0;
+    const liveComposite = Math.round(
+      0.30 * liveIntegrityGap + 0.25 * liveLaborImpact + 0.20 * liveSafetyAlert + 0.25 * liveConnectedDots
+    );
+
+    return (
+      <ContentProtector className="min-h-screen flex flex-col bg-background">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
+          <div className="space-y-4">
+            {/* Live research banner */}
+            <div className="flex items-center gap-3 p-4 mb-2 rounded-xl border border-primary/30 bg-primary/[0.06]">
+              <Scan className="w-5 h-5 text-primary flex-shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-foreground">Live Research Results</p>
+                <p className="text-xs text-muted-foreground">This data was just generated and may update as more sources are indexed.</p>
+              </div>
+            </div>
+
+            {/* Company header */}
+            <div className="flex items-center gap-5 mb-4">
+              <CompanyLogo companyName={displayName} size="lg" />
+              <div className="flex-1 min-w-0">
+                <h1 className="text-h1 truncate">{displayName}</h1>
+                <p className="text-body text-muted-foreground">
+                  {apiData.data_confidence ? `${apiData.data_confidence} confidence` : "Live analysis"}
+                </p>
+              </div>
+            </div>
+
+            {/* Composite score */}
+            <div className="flex flex-col items-center gap-2 py-6">
+              <InfluenceGauge value={liveComposite} label="Integrity Score" size="lg" />
+              <p className="text-sm text-muted-foreground">{getCompositeContextLabel(liveComposite)}</p>
+            </div>
+
+            {/* 4 pillar gauges */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 p-6 rounded-2xl border border-border/40 bg-card">
+              <div className="flex flex-col items-center gap-1">
+                <InfluenceGauge value={liveIntegrityGap} label="Integrity Gap" />
+                <p className="text-xs text-muted-foreground text-center">{getScoreContextLabel(liveIntegrityGap)}</p>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <InfluenceGauge value={liveLaborImpact} label="Labor Impact" />
+                <p className="text-xs text-muted-foreground text-center">{getScoreContextLabel(liveLaborImpact)}</p>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <InfluenceGauge value={liveSafetyAlert} label="Safety Alert" />
+                <p className="text-xs text-muted-foreground text-center">{getScoreContextLabel(liveSafetyAlert)}</p>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <InfluenceGauge value={liveConnectedDots} label="Connected Dots" />
+                <p className="text-xs text-muted-foreground text-center">{getScoreContextLabel(liveConnectedDots)}</p>
+              </div>
+            </div>
+
+            {/* Flags from API data */}
+            {apiData.reality_gap_evidence?.length > 0 && (
+              <Card className="border-border/40">
+                <CardContent className="p-4">
+                  <h3 className="text-sm font-semibold text-foreground mb-3">Top Flags</h3>
+                  <div className="space-y-2">
+                    {apiData.reality_gap_evidence.slice(0, 3).map((ev: any, i: number) => (
+                      <div key={i} className="flex items-start gap-2 text-sm">
+                        <span className="text-primary mt-0.5">▸</span>
+                        <span className="text-muted-foreground">{typeof ev === "string" ? ev : ev.summary || ev.description || JSON.stringify(ev)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* CTA to get full dossier */}
+            <Card className="border-primary/20 bg-primary/[0.04]">
+              <CardContent className="p-6 text-center">
+                <h3 className="text-base font-semibold text-foreground mb-2">Want the full dossier?</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Request a deep-dive audit with EEOC cases, political giving, interview questions, and more.
+                </p>
+                <AuditRequestForm companyName={displayName} />
+              </CardContent>
+            </Card>
+
+            <TransparencyDisclaimer />
+          </div>
+        </main>
+        <Footer />
+      </ContentProtector>
+    );
+  }
+
   if (!company) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
@@ -341,13 +527,27 @@ export default function CompanyDossier() {
       <TrustFramingLine />
       <SituationContextBanner companyName={company.name} />
 
-      {/* Score gauges */}
+      {/* Score gauges with percentile context */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 p-6 rounded-2xl border border-border/40 bg-card">
-        <InfluenceGauge value={integrityGapScore} label="Integrity Gap" />
-        <InfluenceGauge value={laborImpactScore} label="Labor Impact" />
-        <InfluenceGauge value={safetyAlertScore} label="Safety Alert" />
-        <InfluenceGauge value={connectedDotsScore} label="Connected Dots" />
+        <div className="flex flex-col items-center gap-1">
+          <InfluenceGauge value={integrityGapScore} label="Integrity Gap" />
+          <p className="text-xs text-muted-foreground text-center">{getScoreContextLabel(integrityGapScore)}</p>
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <InfluenceGauge value={laborImpactScore} label="Labor Impact" />
+          <p className="text-xs text-muted-foreground text-center">{getScoreContextLabel(laborImpactScore)}</p>
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <InfluenceGauge value={safetyAlertScore} label="Safety Alert" />
+          <p className="text-xs text-muted-foreground text-center">{getScoreContextLabel(safetyAlertScore)}</p>
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <InfluenceGauge value={connectedDotsScore} label="Connected Dots" />
+          <p className="text-xs text-muted-foreground text-center">{getScoreContextLabel(connectedDotsScore)}</p>
+        </div>
       </div>
+      {/* Composite context */}
+      <p className="text-sm text-muted-foreground text-center -mt-4 mb-4">{getCompositeContextLabel(compositeIntegrityScore)}</p>
 
       {/* Jackye's Insight — shared component */}
       <JackyesInsightBlock insight={company.jackye_insight} description={(company as any)?.description} />
