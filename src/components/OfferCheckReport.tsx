@@ -1,11 +1,20 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import {
+  NLRB_CASES_URL,
+  NLRB_EXPLAINER_TITLE,
+  NLRB_RECORDS_BADGE,
+  NLRB_URL,
+  nlrbExplainerParagraphs,
+  textLooksLikeNlrbSignal,
+} from "@/content/nlrbExplainer";
 import {
   Building2, Briefcase, Shield, Bot, BarChart3, ClipboardCheck,
   ExternalLink, Clock, CheckCircle2, AlertTriangle, Lock, Search,
-  Heart, Users, Flag, MessageSquareWarning
+  Heart, Users, Flag, MessageSquareWarning, ChevronDown, Info,
 } from "lucide-react";
 import { type OfferCheckSection, type OfferCheckSignal } from "@/hooks/use-offer-check";
 
@@ -39,6 +48,52 @@ interface OfferCheckReportProps {
   sections: OfferCheckSection[];
   lockedSections?: string[];
   onUnlock?: () => void;
+}
+
+function WorkplaceNlrExplainer({ signals }: { signals: OfferCheckSignal[] }) {
+  const hasNlr = signals.some((s) =>
+    textLooksLikeNlrbSignal(s.type, s.description, s.detectionMethod)
+  );
+
+  return (
+    <Collapsible className="group mb-4 rounded-xl border border-border/50 bg-muted/20">
+      <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-foreground hover:bg-muted/35 transition-colors">
+        <Info className="w-4 h-4 shrink-0 text-muted-foreground" aria-hidden />
+        <span className="flex-1 min-w-0">{NLRB_EXPLAINER_TITLE}</span>
+        {hasNlr && (
+          <Badge variant="outline" className="text-[10px] shrink-0 font-semibold uppercase tracking-wide border-primary/30">
+            {NLRB_RECORDS_BADGE}
+          </Badge>
+        )}
+        <ChevronDown className="w-4 h-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="space-y-2 px-3 pb-3 pt-0 text-xs text-muted-foreground leading-relaxed border-t border-border/40">
+          {nlrbExplainerParagraphs.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1">
+            <a
+              href={NLRB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium hover:underline inline-flex items-center gap-0.5"
+            >
+              About the NLRB <ExternalLink className="w-3 h-3" />
+            </a>
+            <a
+              href={NLRB_CASES_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium hover:underline inline-flex items-center gap-0.5"
+            >
+              Cases &amp; decisions <ExternalLink className="w-3 h-3" />
+            </a>
+          </p>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
 }
 
 function SignalRow({ signal }: { signal: OfferCheckSignal }) {
@@ -135,6 +190,9 @@ export function OfferCheckReport({ sections, lockedSections = [], onUnlock }: Of
                 </div>
               ) : (
                 <div>
+                  {section.id === "workplace-enforcement" && (
+                    <WorkplaceNlrExplainer signals={section.signals} />
+                  )}
                   {section.signals.map((signal, i) => (
                     <SignalRow key={i} signal={signal} />
                   ))}

@@ -145,8 +145,12 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
               </button>
             </div>
           </form>
-          <p className="font-mono text-[10px] text-muted-foreground/50 mt-3 tracking-wide" style={{ opacity: 0, animation: "heroFadeIn 0.4s ease 1.2s forwards" }}>
-            Powered by FEC, SEC EDGAR, BLS, OSHA, NLRB, and Senate Lobbying data.
+          <p className="font-mono text-[10px] text-muted-foreground/50 mt-3 tracking-wide max-w-[56ch] mx-auto leading-relaxed" style={{ opacity: 0, animation: "heroFadeIn 0.4s ease 1.2s forwards" }}>
+            Powered by FEC, SEC EDGAR, BLS, OSHA,{" "}
+            <Link to="/methodology" className="text-muted-foreground/70 hover:text-foreground/90 underline underline-offset-2">
+              National Labor Relations Board (NLRB)
+            </Link>
+            , and Senate Lobbying data.
           </p>
         </div>
       </section>
