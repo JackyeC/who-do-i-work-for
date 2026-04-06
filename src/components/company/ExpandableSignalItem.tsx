@@ -14,7 +14,7 @@ interface Signal {
   direction?: string;
   /** Extra detail shown when expanded */
   detail?: string;
-  /** Deep-link routes to show in expanded state */
+  /** In-app routes or https URLs — always shown (expand only toggles detail text). */
   deepLinks?: { label: string; to: string }[];
 }
 
@@ -48,14 +48,13 @@ export function ExpandableSignalItem({ signal }: { signal: Signal }) {
   const [open, setOpen] = useState(false);
   const DirIcon = signal.direction ? DIRECTION_ICON[signal.direction] : null;
   const dirColor = signal.direction ? DIRECTION_COLOR[signal.direction] : "";
-  const hasExpandable = signal.detail || (signal.deepLinks && signal.deepLinks.length > 0);
+  /** Detail text is behind the chevron; deep links stay visible so users don't have to expand to act. */
+  const hasExpandable = !!signal.detail;
+  const hasDeepLinks = signal.deepLinks && signal.deepLinks.length > 0;
 
   return (
     <div
-      className={cn(
-        "space-y-1 rounded-md transition-colors",
-        hasExpandable && "cursor-pointer hover:bg-muted/30"
-      )}
+      className={cn("space-y-1 rounded-md transition-colors", hasExpandable && "cursor-pointer hover:bg-muted/30")}
       onClick={() => hasExpandable && setOpen(!open)}
     >
       {/* Header row */}
@@ -66,13 +65,15 @@ export function ExpandableSignalItem({ signal }: { signal: Signal }) {
             {safeSignalSummary(signal.uiStatement, "Signal observed")}
           </span>
         )}
-        {hasExpandable && (
+        {hasExpandable ? (
           <ChevronDown
             className={cn(
               "w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform duration-200",
               open && "rotate-180"
             )}
           />
+        ) : (
+          <span className="w-3.5 shrink-0" aria-hidden />
         )}
       </div>
 
@@ -92,7 +93,38 @@ export function ExpandableSignalItem({ signal }: { signal: Signal }) {
         </div>
       </div>
 
-      {/* Expandable detail */}
+      {hasDeepLinks && (
+        <div
+          className="flex flex-wrap gap-2 pt-1.5"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {signal.deepLinks!.map((link) =>
+            link.to.startsWith("http://") || link.to.startsWith("https://") ? (
+              <a
+                key={`${link.label}-${link.to}`}
+                href={link.to}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+              >
+                {link.label}
+                <ArrowRight className="w-3 h-3" />
+              </a>
+            ) : (
+              <Link
+                key={`${link.label}-${link.to}`}
+                to={link.to}
+                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+              >
+                {link.label}
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            ),
+          )}
+        </div>
+      )}
+
+      {/* Expandable detail (links above stay visible) */}
       <AnimatePresence>
         {open && hasExpandable && (
           <motion.div
@@ -108,20 +140,6 @@ export function ExpandableSignalItem({ signal }: { signal: Signal }) {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   {signal.detail}
                 </p>
-              )}
-              {signal.deepLinks && signal.deepLinks.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {signal.deepLinks.map((link) => (
-                    <Link
-                      key={link.to}
-                      to={link.to}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                    >
-                      {link.label}
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  ))}
-                </div>
               )}
             </div>
           </motion.div>

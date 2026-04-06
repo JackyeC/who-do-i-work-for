@@ -298,8 +298,8 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
         leadershipSignals.push(buildSignalFromCanonical(
           bc,
           [
-            { label: "Follow the Money", to: `/follow-the-money?company=${slug}` },
-            { label: "Influence Graph", to: `/influence-graph?company=${slug}` },
+            { label: "Follow the Money", to: `/follow-the-money?company=${encodeURIComponent(slug)}` },
+            { label: "Influence Graph", to: `/company/${encodeURIComponent(slug)}/influence` },
           ],
           "Company behavior signals aggregate political spending, lobbying activity, revolving-door connections, and public policy positions into a holistic influence profile."
         ));
@@ -313,8 +313,8 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
         confidence: "Medium", recency,
         detail: "Executive data sourced from SEC proxy statements, public disclosures, and FEC filings. Only individuals with verified executive-level titles (C-suite, VP+, President, Founder, etc.) are shown.",
         deepLinks: [
-          { label: "Follow the Money", to: `/follow-the-money?company=${slug}` },
-          { label: "Influence Graph", to: `/influence-graph?company=${slug}` },
+          { label: "Follow the Money", to: `/follow-the-money?company=${encodeURIComponent(slug)}` },
+          { label: "Influence Graph", to: `/company/${encodeURIComponent(slug)}/influence` },
         ],
       });
     if (props.totalPacSpending > 0 || props.lobbyingSpend > 0) {
@@ -326,8 +326,16 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
         confidence: "High", recency,
         detail: "PAC spending and lobbying data come from FEC and Senate LDA disclosures. These expenditures fund political campaigns and legislative influence efforts that may affect workers and communities.",
         deepLinks: [
-          { label: "Follow the Money", to: `/follow-the-money?company=${slug}` },
-          { label: "Policy Intelligence", to: `/policy-intelligence?company=${slug}` },
+          { label: "Follow the Money", to: `/follow-the-money?company=${encodeURIComponent(slug)}` },
+          { label: "Policy Intelligence", to: `/policy-intelligence?company=${encodeURIComponent(slug)}` },
+          {
+            label: "OpenSecrets",
+            to: `https://www.opensecrets.org/search?q=${encodeURIComponent(props.companyName)}`,
+          },
+          {
+            label: "Senate LDA",
+            to: `https://lda.senate.gov/filings/public/filing/search/?q=${encodeURIComponent(props.companyName)}`,
+          },
         ],
       });
     }
@@ -336,7 +344,7 @@ export function StructuredSignalsSection(props: StructuredSignalsProps) {
         summary: `${props.revolvingDoorCount} revolving door connection(s) between government and corporate roles.`,
         confidence: "Medium", recency,
         detail: "Revolving-door connections occur when individuals move between government positions and corporate roles. These connections can create regulatory conflicts of interest.",
-        deepLinks: [{ label: "Influence Graph", to: `/influence-graph?company=${slug}` }],
+        deepLinks: [{ label: "Influence Graph", to: `/company/${encodeURIComponent(slug)}/influence` }],
       });
   }
 

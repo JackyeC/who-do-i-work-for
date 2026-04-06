@@ -18,6 +18,7 @@ import { Loader2 } from "lucide-react";
 // Only the landing page is eagerly loaded
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import InfluenceGraphLegacyRedirect from "./pages/InfluenceGraphLegacyRedirect";
 
 // Everything else is lazy-loaded per route
 const CompanyProfile = lazy(() => import("./pages/CompanyProfile"));
@@ -209,6 +210,7 @@ const App = () => (
                   <Route path="/hrtech" element={<HRTechIntelligence />} />
                   <Route path="/company/:id" element={<CompanyProfile />} />
                   <Route path="/company/:id/influence" element={<ProtectedRoute><InfluenceGraph /></ProtectedRoute>} />
+                  <Route path="/influence-graph" element={<ProtectedRoute><InfluenceGraphLegacyRedirect /></ProtectedRoute>} />
                   <Route path="/dossier/:id" element={<CompanyDossier />} />
                   <Route path="/dossier/guide/:slug" element={<DossierCoachingGuide />} />
                   <Route path="/pricing" element={<Pricing />} />

@@ -651,6 +651,15 @@ if (new URLSearchParams(location.search).get('embed') === 'true') {
 
 // ============== INIT ==============
 renderChips();
+
+// Deep link from app: ?embed=true&q=Company+Name — run search once on load
+(function autoSearchFromQuery() {
+  const q = new URLSearchParams(location.search).get('q');
+  if (!q || !q.trim()) return;
+  const input = document.getElementById('co-input');
+  if (input) input.value = q.trim();
+  handleSearch();
+})();
 </script>
 </body>
 </html>

@@ -42,11 +42,22 @@ export default function PolicyIntelligence() {
     enabled: searchTerm.length >= 2 && !selectedCompanyId,
   });
 
-  // Auto-select if query param matches
+  // Auto-select if query param matches (company profiles pass URL slug; fall back to name substring)
   useQuery({
     queryKey: ["pi-auto", initialCompany],
     queryFn: async () => {
       if (!initialCompany) return null;
+      const bySlug = await supabase
+        .from("companies")
+        .select("id, name")
+        .eq("slug", initialCompany)
+        .maybeSingle();
+      if (bySlug.data) {
+        setSelectedCompanyId(bySlug.data.id);
+        setSelectedCompanyName(bySlug.data.name);
+        setSearchTerm(bySlug.data.name);
+        return bySlug.data;
+      }
       const { data } = await supabase
         .from("companies")
         .select("id, name")

@@ -100,18 +100,31 @@ export function WhatToAsk({
       });
     }
 
-    // Default questions if none triggered
+    // Default questions if none triggered — if PAC/lobbying is already on the report, don't stack generic "ask for proof" prompts
     if (qs.length === 0) {
-      qs.push({
-        question: `"What does ${companyName}'s leadership team prioritize for the next 12 months?"`,
-        context: "General leadership clarity question",
-        category: "Leadership",
-      });
-      qs.push({
-        question: `"How does ${companyName} handle internal mobility and career progression?"`,
-        context: "Career growth assessment",
-        category: "Growth",
-      });
+      if (totalPacSpending > 0 || lobbyingSpend > 0) {
+        qs.push({
+          question: `"I've reviewed ${companyName}'s public PAC and lobbying disclosures on the record — how does leadership talk about that footprint with employees?"`,
+          context: "Political spending already documented from public filings",
+          category: "Values",
+        });
+        qs.push({
+          question: `"How does ${companyName} handle internal mobility and career progression?"`,
+          context: "Career growth assessment",
+          category: "Growth",
+        });
+      } else {
+        qs.push({
+          question: `"What does ${companyName}'s leadership team prioritize for the next 12 months?"`,
+          context: "General leadership clarity question",
+          category: "Leadership",
+        });
+        qs.push({
+          question: `"How does ${companyName} handle internal mobility and career progression?"`,
+          context: "Career growth assessment",
+          category: "Growth",
+        });
+      }
     }
 
     return qs.slice(0, 3);
