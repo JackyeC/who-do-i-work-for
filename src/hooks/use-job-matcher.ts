@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { usePlacementToolkit } from "@/hooks/use-premium";
 
 export interface MatchedJob {
   job_id: string;
@@ -28,9 +29,10 @@ export interface MatchedJob {
 
 export function useJobMatcher() {
   const { session } = useAuth();
+  const { hasPlacementToolkit } = usePlacementToolkit();
 
   return useQuery({
-    queryKey: ["values-job-matches"],
+    queryKey: ["values-job-matches", hasPlacementToolkit],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("values-job-matcher", {
         body: { limit: 100 },
@@ -38,7 +40,7 @@ export function useJobMatcher() {
       if (error) throw error;
       return data as { matches: MatchedJob[]; total: number; preferences_applied: number };
     },
-    enabled: !!session,
+    enabled: !!session && hasPlacementToolkit,
     staleTime: 60_000,
   });
 }

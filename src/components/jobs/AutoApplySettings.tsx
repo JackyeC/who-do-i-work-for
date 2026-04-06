@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAutoApplySettings } from "@/hooks/use-auto-apply";
+import { usePlacementToolkit } from "@/hooks/use-premium";
+import { PlacementToolkitUpsell } from "@/components/jobs/PlacementToolkitUpsell";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -28,6 +30,7 @@ function getTier(threshold: number) {
 }
 
 export function AutoApplySettings() {
+  const { hasPlacementToolkit } = usePlacementToolkit();
   const { settings, isLoading, upsert } = useAutoApplySettings();
   const [threshold, setThreshold] = useState(70);
   const [dailyLimit, setDailyLimit] = useState(5);
@@ -72,6 +75,11 @@ export function AutoApplySettings() {
 
   return (
     <Card className="overflow-hidden">
+      {!hasPlacementToolkit && (
+        <div className="px-6 pt-4">
+          <PlacementToolkitUpsell compact />
+        </div>
+      )}
       {/* Compact header with status */}
       <CardHeader className="pb-0">
         <div className="flex items-center justify-between">

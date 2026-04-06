@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePlacementToolkit } from "@/hooks/use-premium";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Zap, Upload, CheckCircle2 } from "lucide-react";
+import { Zap, Upload, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { QuickApplyDialog } from "./QuickApplyDialog";
 
 interface EasyApplyButtonProps {
   job: any;
   className?: string;
+  /** When false, button is disabled (e.g. free tier). */
+  disabled?: boolean;
 }
 
-export function EasyApplyButton({ job, className }: EasyApplyButtonProps) {
+export function EasyApplyButton({ job, className, disabled: disabledProp }: EasyApplyButtonProps) {
   const { user } = useAuth();
+  const { hasPlacementToolkit } = usePlacementToolkit();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [applied, setApplied] = useState(false);
 
@@ -56,7 +60,16 @@ export function EasyApplyButton({ job, className }: EasyApplyButtonProps) {
   const hasResume = !!latestDoc;
   const alreadyApplied = !!existingApp || applied;
 
+  const placementLocked = disabledProp === true || !hasPlacementToolkit;
+
   const handleClick = () => {
+    if (placementLocked) {
+      toast.error("Placement toolkit", {
+        description:
+          "Quick Apply and dossier-backed materials are included with The Signal, The Match, or the Auto-Apply add-on. See Pricing.",
+      });
+      return;
+    }
     if (!hasResume) {
       toast.error("Upload your resume first", {
         description:
@@ -80,7 +93,8 @@ export function EasyApplyButton({ job, className }: EasyApplyButtonProps) {
     <>
       <Button
         onClick={handleClick}
-        className={cn("gap-1.5", className)}
+        disabled={alreadyApplied}
+        className={cn("gap-1.5", placementLocked && "opacity-60", className)}
       >
         <Zap className="w-3.5 h-3.5" />
         Quick Apply

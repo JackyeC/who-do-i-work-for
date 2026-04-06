@@ -102,6 +102,17 @@ export const STRIPE_TIERS = {
   },
 } as const;
 
+/** Stripe products that include values-scored job matching, apply queue / drafts, and related placement tooling. */
+export const PLACEMENT_TOOLKIT_PRODUCT_IDS: readonly string[] = [
+  STRIPE_TIERS.auto_apply.product_id,
+  STRIPE_TIERS.signal.product_id,
+  STRIPE_TIERS.match.product_id,
+  STRIPE_TIERS.candidate.product_id,
+  STRIPE_TIERS.professional.product_id,
+  STRIPE_TIERS.executive_autopilot.product_id,
+  STRIPE_TIERS.scout.product_id,
+];
+
 export interface PremiumFeatures {
   tier: PremiumTier;
   maxScansPerMonth: number;
@@ -209,17 +220,35 @@ export function usePremium(): PremiumFeatures & { isPremium: boolean; isLoggedIn
   };
 }
 
-export function useAutoApplySubscription() {
+/**
+ * Paid “placement toolkit”: we surface values-scored roles, dossier-backed drafts, and apply flow—
+ * not a free bulk bot. Aligns with Signal, Match, legacy tiers, standalone Auto-Apply add-on, or demo overrides.
+ */
+export function usePlacementToolkit() {
   const { user, subscriptionStatus } = useAuth();
+  const { isDemoSafe, previewTier } = useDemoSafeMode();
 
-  const hasAutoApply =
+  if (previewTier && user && previewTier !== "free") {
+    return { hasPlacementToolkit: true, isLoggedIn: true };
+  }
+  if (isDemoSafe && user) {
+    return { hasPlacementToolkit: true, isLoggedIn: true };
+  }
+
+  const pid = subscriptionStatus?.product_id ?? null;
+  const hasPlacementToolkit =
     subscriptionStatus?.subscribed === true &&
-    (subscriptionStatus?.product_id === STRIPE_TIERS.auto_apply.product_id ||
-     subscriptionStatus?.product_id === STRIPE_TIERS.professional.product_id ||
-     subscriptionStatus?.product_id === STRIPE_TIERS.executive_autopilot.product_id);
+    !!pid &&
+    PLACEMENT_TOOLKIT_PRODUCT_IDS.includes(pid);
 
   return {
-    hasAutoApply: hasAutoApply ?? false,
+    hasPlacementToolkit,
     isLoggedIn: !!user,
   };
+}
+
+/** @deprecated Use usePlacementToolkit — same access flag, clearer product name */
+export function useAutoApplySubscription() {
+  const t = usePlacementToolkit();
+  return { hasAutoApply: t.hasPlacementToolkit, isLoggedIn: t.isLoggedIn };
 }

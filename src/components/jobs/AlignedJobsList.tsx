@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useJobMatcher, MatchedJob } from "@/hooks/use-job-matcher";
 import { useApplyQueue } from "@/hooks/use-auto-apply";
+import { usePlacementToolkit } from "@/hooks/use-premium";
+import { PlacementToolkitUpsell } from "@/components/jobs/PlacementToolkitUpsell";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,11 +41,12 @@ function AlignmentGuardBadge() {
   );
 }
 
-function JobCard({ job, onQueue, queueing, isQueued }: {
+function JobCard({ job, onQueue, queueing, isQueued, canQueue }: {
   job: MatchedJob;
   onQueue: (job: MatchedJob) => void;
   queueing: boolean;
   isQueued: boolean;
+  canQueue: boolean;
 }) {
   const belowThreshold = job.alignment_score < AI_TRANSPARENCY_THRESHOLD;
 
@@ -108,7 +111,7 @@ function JobCard({ job, onQueue, queueing, isQueued }: {
                 size="sm"
                 variant="outline"
                 onClick={() => onQueue(job)}
-                disabled={queueing || isQueued}
+                disabled={!canQueue || queueing || isQueued}
                 className="gap-1.5 text-xs"
               >
                 {isQueued ? (
@@ -119,7 +122,7 @@ function JobCard({ job, onQueue, queueing, isQueued }: {
                 ) : (
                   <>
                     <Zap className="w-3.5 h-3.5" />
-                    Auto-Apply
+                    {canQueue ? "Auto-Apply" : "Plans only"}
                   </>
                 )}
               </Button>
@@ -229,6 +232,7 @@ function ClipboardBanner({ payload, onDismiss }: {
 }
 
 export function AlignedJobsList() {
+  const { hasPlacementToolkit } = usePlacementToolkit();
   const { data, isLoading, error } = useJobMatcher();
   const { queue, addToQueue } = useApplyQueue();
   const { toast } = useToast();
@@ -248,6 +252,10 @@ export function AlignedJobsList() {
     });
   };
 
+
+  if (!hasPlacementToolkit) {
+    return <PlacementToolkitUpsell />;
+  }
 
   if (isLoading) {
     return (
@@ -306,6 +314,7 @@ export function AlignedJobsList() {
           onQueue={handleQueue}
           queueing={addToQueue.isPending}
           isQueued={queuedJobIds.has(job.job_id)}
+          canQueue={hasPlacementToolkit}
         />
       ))}
     </div>

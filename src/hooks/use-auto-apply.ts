@@ -2,6 +2,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { usePlacementToolkit } from "@/hooks/use-premium";
+
+const PLACEMENT_UPGRADE_CODE = "PLACEMENT_TOOLKIT_REQUIRED";
+
+function placementGateError() {
+  const e = new Error(PLACEMENT_UPGRADE_CODE);
+  (e as Error & { code?: string }).code = PLACEMENT_UPGRADE_CODE;
+  return e;
+}
 
 export interface AutoApplySettings {
   id?: string;
@@ -78,6 +87,7 @@ export function useAutoApplySettings() {
 
 export function useApplyQueue() {
   const { user } = useAuth();
+  const { hasPlacementToolkit } = usePlacementToolkit();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -105,6 +115,7 @@ export function useApplyQueue() {
       matched_signals: string[];
       application_url?: string;
     }) => {
+      if (!hasPlacementToolkit) throw placementGateError();
       const { error } = await supabase.from("apply_queue").insert({
         user_id: user!.id,
         job_id: item.job_id || null,
@@ -122,10 +133,22 @@ export function useApplyQueue() {
       queryClient.invalidateQueries({ queryKey: ["apply-queue"] });
       toast({ title: "Added to auto-apply queue" });
     },
+    onError: (e: Error & { code?: string }) => {
+      if (e?.message === PLACEMENT_UPGRADE_CODE || e?.code === PLACEMENT_UPGRADE_CODE) {
+        toast({
+          title: "Placement toolkit",
+          description:
+            "Queue and drafts are included with The Signal, The Match, or the Auto-Apply add-on. See Pricing to subscribe.",
+        });
+        return;
+      }
+      toast({ title: "Could not add to queue", description: e.message, variant: "destructive" });
+    },
   });
 
   const processQueue = useMutation({
     mutationFn: async () => {
+      if (!hasPlacementToolkit) throw placementGateError();
       const { data, error } = await supabase.functions.invoke("process-apply-queue", {
         body: { user_id: user!.id },
       });
@@ -145,7 +168,15 @@ export function useApplyQueue() {
             : reason || "Check auto-apply is on, daily limit, and queued jobs meet your minimum match.",
       });
     },
-    onError: (e: any) => {
+    onError: (e: Error & { code?: string }) => {
+      if (e?.message === PLACEMENT_UPGRADE_CODE || e?.code === PLACEMENT_UPGRADE_CODE) {
+        toast({
+          title: "Placement toolkit",
+          description:
+            "Processing the queue is included with The Signal, The Match, or the Auto-Apply add-on. See Pricing to subscribe.",
+        });
+        return;
+      }
       toast({ title: "Queue processing failed", description: e.message, variant: "destructive" });
     },
   });
@@ -178,5 +209,6 @@ export function useApplyQueue() {
     processQueue,
     removeFromQueue,
     todayCount,
+    hasPlacementToolkit,
   };
 }

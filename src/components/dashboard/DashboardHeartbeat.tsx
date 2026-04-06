@@ -2,6 +2,7 @@ import { lazy, Suspense, type ElementType } from "react";
 import { Link } from "react-router-dom";
 import { useJobMatcher, useApplicationsTracker } from "@/hooks/use-job-matcher";
 import { useApplyQueue } from "@/hooks/use-auto-apply";
+import { usePlacementToolkit } from "@/hooks/use-premium";
 import {
   Briefcase, ClipboardList, Mic, Radio, Sparkles, ArrowRight, Zap,
 } from "lucide-react";
@@ -59,6 +60,7 @@ function PulseTile({
  * feels like a daily destination, not a settings dump.
  */
 export function DashboardHeartbeat({ onNavigate }: DashboardHeartbeatProps) {
+  const { hasPlacementToolkit } = usePlacementToolkit();
   const { data: jobData, isLoading: jobsLoading } = useJobMatcher();
   const { applications, isLoading: appsLoading } = useApplicationsTracker();
   const { queue, isLoading: queueLoading, todayCount } = useApplyQueue();
@@ -68,11 +70,13 @@ export function DashboardHeartbeat({ onNavigate }: DashboardHeartbeatProps) {
   const matchSubtitle =
     jobsLoading
       ? "Loading your matches…"
-      : matches.length === 0
-        ? "Add your values and preferences — we’ll surface roles worth your energy."
-        : topMatches.length
-          ? `${topMatches.map((m) => m.title).join(" · ")}${matches.length > 2 ? ` +${matches.length - 2} more` : ""}`
-          : `${matches.length} role${matches.length === 1 ? "" : "s"} aligned with your profile`;
+      : !hasPlacementToolkit
+        ? "Included with The Signal or Match: we find and score roles against your values—not a free firehose."
+        : matches.length === 0
+          ? "Add your values and preferences — we’ll surface roles worth your energy."
+          : topMatches.length
+            ? `${topMatches.map((m) => m.title).join(" · ")}${matches.length > 2 ? ` +${matches.length - 2} more` : ""}`
+            : `${matches.length} role${matches.length === 1 ? "" : "s"} aligned with your profile`;
 
   const activeApps = applications.filter((a) =>
     ["Submitted", "Interviewing", "Offered"].includes(a.status)

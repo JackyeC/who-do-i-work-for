@@ -1,4 +1,5 @@
 import { useApplyQueue, useAutoApplySettings } from "@/hooks/use-auto-apply";
+import { PlacementToolkitUpsell } from "@/components/jobs/PlacementToolkitUpsell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -145,7 +146,8 @@ function QueueItemCard({
 type StatusFilter = "all" | "queued" | "completed" | "failed";
 
 export function ApplyQueueDashboard() {
-  const { queue, isLoading, processQueue, removeFromQueue, addToQueue, todayCount } = useApplyQueue();
+  const { queue, isLoading, processQueue, removeFromQueue, addToQueue, todayCount, hasPlacementToolkit } =
+    useApplyQueue();
   const { settings } = useAutoApplySettings();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
@@ -183,6 +185,7 @@ export function ApplyQueueDashboard() {
 
   return (
     <div className="space-y-3">
+      {!hasPlacementToolkit && <PlacementToolkitUpsell compact />}
       {/* Compact stats + filter row */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -207,7 +210,9 @@ export function ApplyQueueDashboard() {
         {queuedCount > 0 && (
           <Button
             onClick={() => processQueue.mutate()}
-            disabled={processQueue.isPending || (settings?.is_paused ?? false)}
+            disabled={
+              !hasPlacementToolkit || processQueue.isPending || (settings?.is_paused ?? false)
+            }
             size="sm"
             className="gap-1.5 h-7 text-xs"
           >
