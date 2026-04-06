@@ -50,6 +50,43 @@ function MarkdownImage({
 }
 
 export const newsletterMarkdownComponents: Partial<Components> = {
+  a: ({ href, children }) => {
+    const raw = Array.isArray(children) ? children.join("") : String(children ?? "");
+    const text = raw.trim();
+    const isChip =
+      text.length > 0 &&
+      (text.toLowerCase() === "read" ||
+        text.toLowerCase() === "source" ||
+        text.toLowerCase().startsWith("read ") ||
+        text.length <= 22);
+
+    if (!href) return <span className="text-muted-foreground underline underline-offset-2">{children}</span>;
+
+    if (isChip) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-[11px] font-mono text-foreground/90 no-underline hover:border-primary/30 hover:bg-primary/5 transition-colors"
+        >
+          <span className="opacity-80">↗</span>
+          <span className="truncate max-w-[18rem]">{children}</span>
+        </a>
+      );
+    }
+
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary underline underline-offset-2 hover:opacity-90"
+      >
+        {children}
+      </a>
+    );
+  },
   img: ({ src, alt, title }) => (
     <MarkdownImage src={src} alt={alt} title={title} />
   ),

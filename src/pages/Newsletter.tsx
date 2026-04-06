@@ -41,6 +41,73 @@ function getCategoryConfig(cat: string) {
   return CATEGORY_CONFIG[cat] || CATEGORY_CONFIG.general;
 }
 
+function DiscoverStrip({
+  articles,
+  onPick,
+}: {
+  articles: WorkNewsArticle[];
+  onPick: (category: string) => void;
+}) {
+  const counts = new Map<string, number>();
+  for (const a of articles) counts.set(a.category, (counts.get(a.category) ?? 0) + 1);
+
+  const top = Array.from(counts.entries())
+    .filter(([k]) => k !== "general")
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6);
+
+  if (top.length === 0) return null;
+
+  return (
+    <div className="mt-8">
+      <div className="flex items-end justify-between gap-3 mb-3">
+        <div>
+          <h2 className="text-sm font-mono tracking-[0.15em] uppercase text-muted-foreground">Discover</h2>
+          <p className="text-xs text-muted-foreground/70 mt-1">
+            Pick a lane. Same receipts. Different stakes.
+          </p>
+        </div>
+        <span className="text-[10px] font-mono text-muted-foreground/60">tap to filter the wire</span>
+      </div>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {top.map(([cat, n]) => {
+          const cfg = getCategoryConfig(cat);
+          return (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => onPick(cat)}
+              className="text-left rounded-2xl border border-border/40 bg-card/70 hover:bg-card hover:border-primary/25 transition-all p-4"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <Badge variant="outline" className={`text-[10px] font-mono tracking-wider border ${cfg.color}`}>
+                  {cfg.label}
+                </Badge>
+                <span className="text-[10px] font-mono text-muted-foreground/60">{n} stories</span>
+              </div>
+              <div className="mt-2">
+                <p className="text-sm font-semibold text-foreground leading-snug capitalize">
+                  {cat.replace(/_/g, " ")}
+                </p>
+                <p className="text-xs text-muted-foreground/70 mt-1 line-clamp-2">
+                  {cat === "layoffs"
+                    ? "The part where “strategy” is delivered as a calendar invite."
+                    : cat === "labor_organizing"
+                      ? "Bargaining, lockouts, and the “we’re a family” myth getting audited."
+                      : cat === "regulation"
+                        ? "The rules your managers break before legal reads the memo."
+                        : "Follow the pattern, not the press release."}
+                </p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ── Time helpers ── */
 function timeAgo(dateStr: string | null) {
   if (!dateStr) return "";
@@ -84,7 +151,7 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
   const biasColor = sourceProfile ? getBiasColor(sourceProfile.bias) : "";
 
   return (
-    <Card className="bg-card border border-border/40 hover:border-primary/30 transition-all group">
+    <Card className="bg-card/70 border border-border/35 hover:border-primary/25 hover:bg-card transition-all group">
       <CardContent className="p-0">
         {/* Header bar */}
         <div className="flex items-center justify-between px-5 pt-4 pb-2">
@@ -106,7 +173,7 @@ function StoryCard({ article }: { article: WorkNewsArticle }) {
 
         {/* Headline */}
         <div className="px-5 pb-3">
-          <h3 className="text-[15px] font-semibold text-foreground leading-snug">
+          <h3 className="text-[15px] font-semibold text-foreground leading-snug tracking-[-0.01em]">
             {article.headline}
           </h3>
         </div>
@@ -274,7 +341,7 @@ export default function Newsletter() {
   return (
     <div className="min-h-screen bg-background">
       {/* ── Hero ── */}
-      <section className="text-center py-12 lg:py-16 px-4 max-w-2xl mx-auto">
+      <section className="text-center py-12 lg:py-16 px-4 max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 mb-5">
           <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
           <span className="text-xs font-mono tracking-wider text-primary uppercase">
@@ -341,18 +408,28 @@ export default function Newsletter() {
       </section>
 
       {/* ── Desk: latest published site edition or preview sample ── */}
-      <section className="max-w-3xl mx-auto px-4 pb-10">
-        <div className="mb-4 text-center sm:text-left">
-          <h2 className="text-lg font-semibold text-foreground tracking-tight">Today&apos;s Signal Check™ desk</h2>
-          <p className="text-xs text-muted-foreground mt-1 font-mono">
-            Website brief · same shape as email & social · updates when a new edition goes live
-          </p>
+      <section className="max-w-5xl mx-auto px-4 pb-12">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-foreground tracking-tight">Today’s desk (Signal Check™)</h2>
+            <p className="text-xs text-muted-foreground mt-1 font-mono">
+              Clean layout. Same tone. Receipts stay on the page.
+            </p>
+          </div>
+          <NewsletterDeskPreview />
+
+          <DiscoverStrip
+            articles={articles}
+            onPick={(cat) => {
+              setFilter(cat);
+              document.querySelector("[data-wire]")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          />
         </div>
-        <NewsletterDeskPreview />
       </section>
 
       {/* ── Filter bar ── */}
-      <section className="max-w-5xl mx-auto px-4 pb-4">
+      <section className="max-w-5xl mx-auto px-4 pb-4" data-wire>
         <div className="mb-3">
           <h2 className="text-lg font-semibold text-foreground tracking-tight">Work intelligence wire</h2>
           <p className="text-xs text-muted-foreground mt-1 font-mono">
