@@ -1,5 +1,15 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { WorkplaceDNAShareCard } from "@/components/quiz/WorkplaceDNAShareCard";
+import { supabase } from "@/integrations/supabase/client";
+
+function getOrCreateQuizSessionId(): string {
+  const key = "wdiwf_quiz_session_id";
+  const existing = localStorage.getItem(key);
+  if (existing) return existing;
+  const id = crypto.randomUUID();
+  localStorage.setItem(key, id);
+  return id;
+}
 
 // ─── TYPES ───────────────────────────────────────────────
 type PersonaKey =
@@ -457,6 +467,51 @@ export default function Quiz() {
 
     setResult({ primary, secondary, meta: m });
   }, [answers, sliderVal]);
+
+  // One-time persistence: write quiz results to Supabase for funnel visibility.
+  useEffect(() => {
+    if (!isResults || !result) return;
+
+    const writeKey = "wdiwf_quiz_results_written_v1";
+    if (localStorage.getItem(writeKey) === "1") return;
+
+    const session_id = getOrCreateQuizSessionId();
+
+    const payload = {
+      session_id,
+      result_group_id: result.primary,
+      answers: {
+        answers,
+        sliderVal,
+      },
+      scores: {
+        primary: result.primary,
+        secondary: result.secondary,
+        meta: result.meta,
+      },
+    };
+
+    (async () => {
+      try {
+        const { error } = await supabase
+          // `wdiwf_quiz_results` may not be in generated types yet.
+          .from("wdiwf_quiz_results" as any)
+          .insert(payload as any);
+
+        if (error) {
+          // Don't break the quiz UX; just surface in console.
+          // eslint-disable-next-line no-console
+          console.warn("Quiz results write failed:", error);
+          return;
+        }
+
+        localStorage.setItem(writeKey, "1");
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn("Quiz results write exception:", err);
+      }
+    })();
+  }, [isResults, result, answers, sliderVal]);
 
   const advance = useCallback(() => {
     if (!canAdvance) return;
