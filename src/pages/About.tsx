@@ -10,7 +10,6 @@ const CREDENTIAL_BADGES: { label: string; url: string | null }[] = [
   { label: "Associate Editor, HR Gazette", url: "https://hr-gazette.com/category/news-reviews/events/" },
   { label: "Inclusive AF Podcast", url: "https://www.inclusiveafpodcast.com" },
   { label: "But First, Coffee", url: "https://wrkdefined.com/podcast/but-first-coffee" },
-  { label: "People in Squares", url: "https://www.linkedin.com/posts/jackyeclayton_people-in-squares-valentines-day-show-activity-7428078957075525633-kxn8" },
   { label: "People Puzzles Collective", url: "https://podcasts.apple.com/us/podcast/the-people-puzzles-collective/id1810747382" },
   { label: "Leapsome Top 26 HR Influencer 2026", url: "https://www.leapsome.com/blog/hr-influencers" },
   { label: "Peoplebox Top 68 HR Experts 2026", url: "https://www.peoplebox.ai/blog/top-50-hr-influencers-2024/" },
@@ -101,7 +100,7 @@ const About = () => {
               <div>
                 <h2 className="font-sans text-lg font-bold text-foreground mb-3">The Voice Behind It</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  As the host of the <a href="https://www.inclusiveafpodcast.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Inclusive AF Podcast</a>, co-host of <a href="https://wrkdefined.com/podcast/but-first-coffee" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">But First, Coffee</a> and <a href="https://www.linkedin.com/posts/jackyeclayton_people-in-squares-valentines-day-show-activity-7428078957075525633-kxn8" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">People in Squares</a>, and as a <a href="https://www.linkedin.com/learning/human-resources-writing-an-effective-job-description" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LinkedIn Learning instructor</a>, Jackye has spent years having the conversations that most people avoid. Who Do I Work For is the logical next step: turning those conversations into a tool.
+                  As the host of the <a href="https://www.inclusiveafpodcast.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Inclusive AF Podcast</a>, co-host of <a href="https://wrkdefined.com/podcast/but-first-coffee" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">But First, Coffee</a>, and as a <a href="https://www.linkedin.com/learning/human-resources-writing-an-effective-job-description" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LinkedIn Learning instructor</a>, Jackye has spent years having the conversations that most people avoid. Who Do I Work For is the logical next step: turning those conversations into a tool.
                 </p>
               </div>
 

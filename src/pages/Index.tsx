@@ -497,7 +497,7 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                 />
                 <div>
                   <p className="font-sans text-muted-foreground leading-relaxed mb-6" style={{ fontSize: "15px", maxWidth: "56ch" }}>
-                    Who Do I Work For is created by Jackye Clayton — TA architect, HR Tech strategist, LinkedIn Learning instructor, and Associate Editor at The HR Gazette. Host of the Inclusive AF podcast, co-host of But First, Coffee and People in Squares. After years inside the hiring machines of major HR tech companies, she's now building the tool she wished candidates always had.
+                    Who Do I Work For is created by Jackye Clayton — TA architect, HR Tech strategist, LinkedIn Learning instructor, and Associate Editor at The HR Gazette. Host of the Inclusive AF podcast and co-host of But First, Coffee. After years inside the hiring machines of major HR tech companies, she's now building the tool she wished candidates always had.
                   </p>
                   <div className="flex items-center gap-3 flex-wrap">
                     {[
@@ -505,7 +505,6 @@ const Index = forwardRef<HTMLDivElement>((_, ref) => {
                       { label: "Associate Editor, HR Gazette", url: "https://hr-gazette.com/category/news-reviews/events/" },
                       { label: "Inclusive AF Podcast", url: "https://www.inclusiveafpodcast.com" },
                       { label: "But First, Coffee", url: "https://wrkdefined.com/podcast/but-first-coffee" },
-                      { label: "People in Squares", url: "https://www.linkedin.com/posts/jackyeclayton_people-in-squares-valentines-day-show-activity-7428078957075525633-kxn8" },
                       { label: "Leapsome Top 26 HR Influencer", url: "https://www.leapsome.com/blog/hr-influencers" },
                       { label: "Peoplebox Top 68 HR Experts", url: "https://www.peoplebox.ai/blog/top-50-hr-influencers-2024/" },
                       { label: "Unleash 2025 Speaker", url: "https://hr-gazette.com/unleash-america-2025-preview-with-jackye-clayton/" },

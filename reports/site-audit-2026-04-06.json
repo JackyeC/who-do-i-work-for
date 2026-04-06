@@ -1,0 +1,175 @@
+{
+  "base": "https://wdiwf.jackyeclayton.com/",
+  "generatedAt": "2026-04-06T09:26:49.128Z",
+  "maxPages": 500,
+  "crawledInternalCount": 9,
+  "discoveredInternalTargets": 9,
+  "internalPages": [
+    {
+      "url": "https://wdiwf.jackyeclayton.com/",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/",
+      "contentType": "text/html",
+      "title": "Who Do I Work For — Know Who You're Really Working For | Career Intelligence by Jackye Clayton",
+      "metaDescription": "Who Do I Work For is career intelligence for people who refuse to find out the hard way. Forensically evaluate companies — leadership turnover, DEIB follow-through, legal filings, and the gap between what they promise and what they deliver. Built by Jackye Clayton.",
+      "placeholder": false
+    },
+    {
+      "url": "https://wdiwf.jackyeclayton.com/~flock.js",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/~flock.js",
+      "contentType": "text/javascript; charset=utf-8",
+      "title": "",
+      "metaDescription": "",
+      "placeholder": false
+    },
+    {
+      "url": "https://wdiwf.jackyeclayton.com/favicon.ico",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/favicon.ico",
+      "contentType": "image/vnd.microsoft.icon",
+      "title": "",
+      "metaDescription": "",
+      "placeholder": false
+    },
+    {
+      "url": "https://wdiwf.jackyeclayton.com/assets/index-Bovo6s_3.css",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/assets/index-Bovo6s_3.css",
+      "contentType": "text/css",
+      "title": "",
+      "metaDescription": "",
+      "placeholder": false
+    },
+    {
+      "url": "https://wdiwf.jackyeclayton.com/assets/index-B0EdIbSz.js",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/assets/index-B0EdIbSz.js",
+      "contentType": "text/javascript",
+      "title": "",
+      "metaDescription": "",
+      "placeholder": false
+    },
+    {
+      "url": "https://wdiwf.jackyeclayton.com/favicon-32x32.png",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/favicon-32x32.png",
+      "contentType": "image/png",
+      "title": "",
+      "metaDescription": "",
+      "placeholder": false
+    },
+    {
+      "url": "https://wdiwf.jackyeclayton.com/favicon-192x192.png",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/favicon-192x192.png",
+      "contentType": "image/png",
+      "title": "",
+      "metaDescription": "",
+      "placeholder": false
+    },
+    {
+      "url": "https://wdiwf.jackyeclayton.com/favicon-512x512.png",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/favicon-512x512.png",
+      "contentType": "image/png",
+      "title": "",
+      "metaDescription": "",
+      "placeholder": false
+    },
+    {
+      "url": "https://wdiwf.jackyeclayton.com/favicon-180x180.png",
+      "status": 200,
+      "finalUrl": "https://wdiwf.jackyeclayton.com/favicon-180x180.png",
+      "contentType": "image/png",
+      "title": "",
+      "metaDescription": "",
+      "placeholder": false
+    }
+  ],
+  "externalSample": [
+    {
+      "url": "https://fonts.googleapis.com/",
+      "status": 404,
+      "finalUrl": "https://fonts.googleapis.com/"
+    },
+    {
+      "url": "https://fonts.gstatic.com/",
+      "status": 404,
+      "finalUrl": "https://fonts.gstatic.com/"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@900&display=swap",
+      "status": 200,
+      "finalUrl": "https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@900&display=swap"
+    },
+    {
+      "url": "https://aeulesuqxcnaonlxcjcm.supabase.co/",
+      "status": 404,
+      "finalUrl": "https://aeulesuqxcnaonlxcjcm.supabase.co/"
+    },
+    {
+      "url": "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit",
+      "status": 200,
+      "finalUrl": "https://challenges.cloudflare.com/turnstile/v0/b/625261456364/api.js"
+    }
+  ],
+  "edges": [
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://fonts.googleapis.com/"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://fonts.gstatic.com/"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://aeulesuqxcnaonlxcjcm.supabase.co/"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Inter:wght@900&display=swap"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/favicon.ico"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/favicon-32x32.png"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/favicon-180x180.png"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/favicon-192x192.png"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/favicon-512x512.png"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/assets/index-Bovo6s_3.css"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/assets/index-B0EdIbSz.js"
+    },
+    {
+      "from": "https://wdiwf.jackyeclayton.com/",
+      "to": "https://wdiwf.jackyeclayton.com/~flock.js"
+    }
+  ]
+}
