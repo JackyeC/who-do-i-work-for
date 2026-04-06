@@ -1157,6 +1157,266 @@ function ConnectedDotsSection({ data }: { data: MetaReportData }) {
 }
 
 // ---------------------------------------------------------------------------
+// Demo Data & Demo Report Component (for companies without full reports)
+// ---------------------------------------------------------------------------
+
+// Slugs with real (non-demo) data — these won't show the "Demo Data" badge
+const REAL_REPORT_SLUGS = new Set(["meta", "microsoft", "boeing", "booz-allen-hamilton", "accenture", "verizon", "t-mobile", "att"]);
+
+const DEMO_INTEGRITY: Record<string, { quotes: { text: string; source: string }[]; findings: string[] }> = {
+  google: {
+    quotes: [
+      { text: "Our mission is to organize the world's information and make it universally accessible and useful.", source: "Google Mission Statement, about.google" },
+      { text: "We are committed to significantly increasing the leadership representation of underrepresented groups.", source: "Google Diversity Report, 2022 (discontinued)" },
+    ],
+    findings: [
+      "Published diversity reports annually from 2014 to 2022 — then stopped.",
+      "Hiring targets for underrepresented groups eliminated in February 2025, citing 'legal landscape changes.'",
+      "PAC spending tilted 53% Republican in 2023–2024 cycle, up from 48% in 2021–2022.",
+      "Lobbied on 24 bills in 2024 including AI regulation, antitrust, and content moderation.",
+    ],
+  },
+  amazon: {
+    quotes: [
+      { text: "We strive to be Earth's most customer-centric company.", source: "Amazon Leadership Principles, aboutamazon.com" },
+      { text: "Diversity and inclusion are good for business — and more fundamentally — simply right.", source: "Amazon DEI page, 2023 (removed)" },
+    ],
+    findings: [
+      "14,000+ HR and corporate employees laid off in 2023–2024 restructuring.",
+      "DEI programs described as 'wound down' in internal communications, December 2024.",
+      "WARN Act: 4,085 employees affected in Washington state alone (2022–2026).",
+      "Lobbying spend: $21.8M in 2024, up 18% year-over-year, focused on antitrust and labor regulation.",
+    ],
+  },
+};
+
+const DEMO_LABOR: Record<string, { date: string; title: string; description: string }[]> = {
+  google: [
+    { date: "Jan 2023", title: "12,000 employees laid off (~6% of workforce)", description: "CEO Sundar Pichai cited 'economic reality' and over-hiring during pandemic growth period. Affected every major division." },
+    { date: "Throughout 2024", title: "Additional cuts across YouTube, Hardware, and Recruiting", description: "Targeted layoffs continued with reductions in YouTube content ops, Pixel hardware team, and internal recruiting organization." },
+    { date: "2024\u20132025", title: "Role reposting patterns detected in engineering", description: "Multiple engineering positions reposted within 30\u201360 days of layoffs, suggesting backfill-at-lower-cost strategy." },
+    { date: "2024\u20132025", title: "Hiring freeze in non-AI roles", description: "Internal communications indicated a company-wide hiring freeze for all roles not directly related to AI/ML product development." },
+    { date: "Jan 2023", title: "WARN Act filings in California and New York", description: "California EDD and NY Department of Labor received WARN notices covering thousands of affected workers across Mountain View, Sunnyvale, and New York City offices." },
+    { date: "Feb 2025", title: "Hiring diversity targets eliminated", description: "Internal memo confirmed all demographic hiring goals would be discontinued, citing 'legal landscape changes.'" },
+  ],
+  amazon: [
+    { date: "Nov 2022 \u2013 Mar 2023", title: "27,000 layoffs across two major waves", description: "First wave (Nov 2022): 18,000 employees, the largest layoff in company history. Second wave (Mar 2023): 9,000 additional cuts targeting AWS, Twitch, advertising, and PXT (HR) divisions." },
+    { date: "2023\u20132024", title: "14,000 additional corporate cuts", description: "Continued restructuring affecting corporate, operations, and HR teams across multiple business units." },
+    { date: "2022\u20132026", title: "WARN Act: 4,085 employees in Washington state", description: "WARN filings submitted to Washington Employment Security Department covering Seattle, Bellevue, and Kent facilities." },
+    { date: "Sep 2024", title: "Mandatory return-to-office 5 days/week", description: "CEO Andy Jassy mandated full-time in-office work for all corporate employees, reversing hybrid work policies established during pandemic." },
+    { date: "2021\u2013Present", title: "Union activity at multiple fulfillment centers (ALU)", description: "Amazon Labor Union (ALU) won historic election at Staten Island JFK8 facility. Ongoing organizing efforts at warehouses in Alabama, Kentucky, and California despite company opposition." },
+    { date: "Dec 2024", title: "DEI programs quietly wound down", description: "Internal communications indicated diversity programs being 'streamlined' and 'deprioritized.' DEI page removed from public website." },
+  ],
+};
+
+const DEMO_SAFETY: Record<string, string[]> = {
+  google: [
+    "OSHA complaint filed at a Google data center facility in 2023 regarding contractor working conditions.",
+    "No major workplace safety violations on public OSHA record for Google corporate offices.",
+    "Psychological safety concerns raised in internal Googler surveys (leaked 2024) \u2014 employees cited fear of retaliation for dissent and 'culture of silence' around layoff decisions.",
+    "Antitrust ruling: Found to hold illegal monopoly in search (August 2024, DOJ v. Google).",
+    "ADF Viewpoint Diversity Score: 12% (2025 index).",
+  ],
+  amazon: [
+    "OSHA cited Amazon 17 times for safety violations at warehouses between 2022 and 2024, including ergonomic hazards and pace-of-work injuries.",
+    "Injury rates at Amazon warehouses documented as 2\u00d7 the industry average, per Strategic Organizing Center annual reports using Amazon's own data.",
+    "Settlement reached with New York Attorney General over COVID-19 safety protocols at Staten Island and NYC-area fulfillment centers.",
+    "Largest federal contractor in tech sector \u2014 $15B+ in active government contracts (AWS GovCloud).",
+    "FTC antitrust complaint filed September 2023, alleging monopoly maintenance practices.",
+    "Delivery driver classification disputes ongoing across multiple states.",
+  ],
+};
+
+const DEMO_DOTS: Record<string, string[]> = {
+  google: [
+    "Sundar Pichai donated to Republican candidates in the 2024 election cycle.",
+    "Board interlocks: Stanford University (multiple board members hold faculty/trustee positions), Salesforce (shared board member), John Doerr (KPCB venture capital, major Google investor and board advisor).",
+    "53% of Google's lobbying spend in 2024 was directed at AI regulation \u2014 pushing for federal preemption of state-level AI laws.",
+    "8 external lobbying firms retained in 2024, spending $13.4M on 24 bills.",
+    "Former Google policy leads now holding positions at FTC, FCC, and White House OSTP.",
+    "PAC donated to members on both Judiciary and Commerce committees overseeing tech regulation.",
+  ],
+  amazon: [
+    "Andy Jassy PAC contributions leaned Republican in 2023\u20132024 cycle.",
+    "Board interlocks: JPMorgan Chase (Jamie Dimon \u2014 shared advisory relationships), Starbucks (overlapping board/executive network).",
+    "Amazon lobbying focused on four key areas: antitrust reform, labor regulation, AI governance, and drone delivery authorization.",
+    "12 external lobbying firms retained in 2024, spending $21.8M \u2014 highest in company history.",
+    "Former Amazon executives now serving on federal advisory boards for commerce and logistics.",
+    "PAC contributions concentrated in Commerce and Labor committee members across both parties.",
+  ],
+};
+
+const DEMO_REPORTS: Record<string, { companyName: string; ticker: string; location: string; products: string; stats: { label: string; value: string; detail: string; trend?: string }[] }> = {
+  google: {
+    companyName: "ALPHABET INC. (GOOGLE)",
+    ticker: "NASDAQ: GOOGL",
+    location: "Mountain View, CA",
+    products: "Google Search, YouTube, Android, Cloud, Waymo",
+    stats: [
+      { label: "PAC Raised", value: "$478,200", detail: "2023\u201324 cycle" },
+      { label: "Lobbying", value: "$13.4M", detail: "2024 total" },
+      { label: "WARN Filings", value: "42", detail: "2022\u20132026" },
+      { label: "Diversity Reports", value: "Stopped", detail: "After 11 years", trend: "down" },
+    ],
+  },
+  amazon: {
+    companyName: "AMAZON.COM, INC.",
+    ticker: "NASDAQ: AMZN",
+    location: "Seattle, WA",
+    products: "AWS, Marketplace, Prime, Alexa, Whole Foods",
+    stats: [
+      { label: "PAC Raised", value: "$612,400", detail: "2023\u201324 cycle" },
+      { label: "Lobbying", value: "$21.8M", detail: "2024 total" },
+      { label: "WARN Filings", value: "87", detail: "2022\u20132026" },
+      { label: "HR Cuts", value: "14,000+", detail: "Programs wound down", trend: "down" },
+    ],
+  },
+};
+
+function DemoReceiptsReport({ data, slug }: { data: { companyName: string; ticker: string; location: string; products: string; stats: any[] }; slug: string }) {
+  const [activeTab, setActiveTab] = useState<TabId>("integrity-gap");
+  const key = slug;
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <Link to="/receipts" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-8">
+          <ArrowLeft className="h-3 w-3" /> All Receipts
+        </Link>
+
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">{data.companyName}</h1>
+            {!REAL_REPORT_SLUGS.has(slug) && <Badge variant="secondary" className="text-xs">Demo Data</Badge>}
+          </div>
+          <p className="text-muted-foreground text-sm mt-2 font-mono">{data.ticker} · {data.location} · {data.products}</p>
+          <Badge className="mt-3 bg-primary/15 text-primary border-primary/30">March 2026</Badge>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+          {data.stats.map((s) => (
+            <Card key={s.label} className="bg-card border border-border">
+              <CardContent className="p-4 text-center">
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+                <p className={cn("text-xl font-bold font-mono mt-1", s.trend === "down" ? "text-destructive" : "text-foreground")}>{s.value}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{s.detail}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="flex gap-0 border-b border-border mb-8 overflow-x-auto">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors",
+                activeTab === tab.id ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div key={activeTab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
+
+            {activeTab === "integrity-gap" && (
+              <div className="space-y-6">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 01</p>
+                    {!REAL_REPORT_SLUGS.has(slug) && <Badge variant="secondary" className="text-xs">Demo Data</Badge>}
+                  </div>
+                  <h2 className="text-2xl font-bold text-foreground mt-1">Integrity Gap</h2>
+                  <p className="text-muted-foreground text-sm mt-1">The gap between what a company says and what it does.</p>
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">What They Say</h3>
+                {DEMO_INTEGRITY[key]?.quotes.map((q, i) => <QuoteCard key={i} q={q} />)}
+                <h3 className="text-lg font-semibold text-foreground">Key Findings</h3>
+                {DEMO_INTEGRITY[key]?.findings.map((f, i) => <KeyFinding key={i}>{f}</KeyFinding>)}
+                {!REAL_REPORT_SLUGS.has(slug) && <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>}
+              </div>
+            )}
+
+            {activeTab === "labor-impact" && (
+              <div className="space-y-6">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 02</p>
+                    {!REAL_REPORT_SLUGS.has(slug) && <Badge variant="secondary" className="text-xs">Demo Data</Badge>}
+                  </div>
+                  <h2 className="text-2xl font-bold text-foreground mt-1">Labor Impact</h2>
+                  <p className="text-muted-foreground text-sm mt-1">What happened to workers.</p>
+                </div>
+                {DEMO_LABOR[key]?.map((e, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-border bg-card">
+                    <span className="font-mono text-xs text-muted-foreground whitespace-nowrap mt-0.5">{e.date}</span>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{e.title}</p>
+                      <p className="text-sm text-muted-foreground">{e.description}</p>
+                    </div>
+                  </div>
+                ))}
+                {!REAL_REPORT_SLUGS.has(slug) && <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>}
+              </div>
+            )}
+
+            {activeTab === "safety-alert" && (
+              <div className="space-y-6">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 03</p>
+                    {!REAL_REPORT_SLUGS.has(slug) && <Badge variant="secondary" className="text-xs">Demo Data</Badge>}
+                  </div>
+                  <h2 className="text-2xl font-bold text-foreground mt-1">Safety Alert</h2>
+                  <p className="text-muted-foreground text-sm mt-1">Systemic risk indicators.</p>
+                </div>
+                {DEMO_SAFETY[key]?.map((f, i) => (
+                  <div key={i} className="flex items-start gap-2 p-3 rounded-lg border border-border bg-card">
+                    <span className="text-primary mt-0.5 shrink-0">{"\u203a"}</span>
+                    <span className="text-sm text-foreground">{f}</span>
+                  </div>
+                ))}
+                {!REAL_REPORT_SLUGS.has(slug) && <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>}
+              </div>
+            )}
+
+            {activeTab === "connected-dots" && (
+              <div className="space-y-6">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-mono text-xs text-primary tracking-wider uppercase">Section 04</p>
+                    {!REAL_REPORT_SLUGS.has(slug) && <Badge variant="secondary" className="text-xs">Demo Data</Badge>}
+                  </div>
+                  <h2 className="text-2xl font-bold text-foreground mt-1">Connected Dots</h2>
+                  <p className="text-muted-foreground text-sm mt-1">Follow the money and the relationships.</p>
+                </div>
+                {DEMO_DOTS[key]?.map((c, i) => (
+                  <div key={i} className="flex items-start gap-2 p-3 rounded-lg border border-border bg-card">
+                    <span className="text-primary mt-0.5 shrink-0">{"\u203a"}</span>
+                    <span className="text-sm text-foreground">{c}</span>
+                  </div>
+                ))}
+                {!REAL_REPORT_SLUGS.has(slug) && <p className="text-xs text-muted-foreground italic mt-4">This is a demonstration report. Full investigation in progress.</p>}
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {!REAL_REPORT_SLUGS.has(slug) && (
+          <p className="text-xs text-muted-foreground mt-16 italic text-center">
+            This is a demonstration report using placeholder data. Full investigation report in progress — March 2026.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Generalized Report Component (for all companies except Meta)
 // ---------------------------------------------------------------------------
 
@@ -1491,6 +1751,11 @@ export default function ReceiptsReport() {
   // Route to generalized report for companies with data
   if (slug !== "meta" && companyReport) {
     return <GeneralizedReport data={companyReport} />;
+  }
+
+  // Route to demo report for companies with demo data but no full report
+  if (slug !== "meta" && !companyReport && slug && DEMO_REPORTS[slug]) {
+    return <DemoReceiptsReport data={DEMO_REPORTS[slug]} slug={slug} />;
   }
 
   // Coming Soon for companies without data
