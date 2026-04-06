@@ -35,12 +35,12 @@ The **work intelligence feed** below the desk on `/newsletter` was already live:
 | `id` | uuid | PK |
 | `created_at` | timestamptz | Default now |
 | `run_id` | text | Optional trace / idempotency label |
-| `kind` | text | `bi_hourly` \| `friday` (nullable only on **failed** audit rows) |
+| `kind` | text | `bi_hourly` \| `friday` \| `forensic` (nullable only on **failed** audit rows) |
 | `generation_status` | text | `completed` \| `skipped` (nullable only on **failed** audit rows) |
 | `publish_status` | text | **Final edge outcome:** `success` \| `skipped` \| `failed` (set by Edge, not trusted from client) |
 | `failure_code` | text | Required when `publish_status = failed` (stable machine code) |
 | `failure_message` | text | Operator-readable detail for failures |
-| `site_markdown` | text | **Website body** for desk “Website brief” tab |
+| `site_markdown` | text | **Website body** for desk “Website brief” tab (`bi_hourly`) or **`/integrity-report`** (`forensic`) |
 | `newsletter_markdown` | text | Optional full email body for desk or Friday |
 | `email_subject` | text | Optional |
 | `email_preview_text` | text | Optional |
@@ -50,10 +50,10 @@ The **work intelligence feed** below the desk on `/newsletter` was already live:
 
 ### `published_to_site` — contract (not “just metadata”)
 
-- **Meaning:** “This row is intended to appear on the public **/newsletter** desk.”
-- **Enforcement:** A **CHECK** constraint requires that if `published_to_site = true`, then the row must also be `publish_status = 'success'`, `generation_status = 'completed'`, `kind = 'bi_hourly'`, and `site_markdown` non-null.
+- **Meaning:** “This row is intended to appear on the public site” — either the **`/newsletter`** desk (`kind = 'bi_hourly'`) or the **`/integrity-report`** page (`kind = 'forensic'`).
+- **Enforcement:** A **CHECK** constraint requires that if `published_to_site = true`, then the row must also be `publish_status = 'success'`, `generation_status = 'completed'`, `kind` in **`('bi_hourly','forensic')`**, and `site_markdown` non-null.
 - **RLS:** Anonymous and authenticated users may `SELECT` **only** rows that satisfy that same full live contract (including `publish_status = 'success'`).
-- **So:** The flag is both **intent** and **part of the visibility contract**; the database + RLS together guarantee visitors never see drafts, skips, or failures.
+- **So:** The flag is both **intent** and **part of the visibility contract**; the database + RLS together guarantee visitors never see drafts, skips, or failures. **Forensic** rows do **not** replace the desk: `wdiwf_latest_live_desk_publication()` still returns **only** `bi_hourly`.
 
 ### Final status semantics (`publish_status`)
 
@@ -67,18 +67,19 @@ The **work intelligence feed** below the desk on `/newsletter` was already live:
 
 **Writes:** via Edge Function using **service role** (no public insert policy).
 
-Migrations: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`, `supabase/migrations/20260405120000_wdiwf_desk_publications_operability.sql`.
+Migrations: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`, `supabase/migrations/20260405120000_wdiwf_desk_publications_operability.sql`, `supabase/migrations/20260405180000_wdiwf_forensic_desk_publications.sql`.
 
 ### “What is live right now?”
 
-- **SQL / app:** `select * from wdiwf_latest_live_desk_publication();` — returns **at most one** row, the newest that matches the same filter as RLS.
+- **SQL / app:** `select * from wdiwf_latest_live_desk_publication();` — returns **at most one** row, the newest **bi-hourly** live desk row (same filter as before forensic existed).
 - **Frontend:** `useLatestDeskPublication()` calls that RPC.
+- **Forensic:** `wdiwf_latest_forensic_publication()` and `wdiwf_forensic_publications_recent(p_limit)` — **`/integrity-report`** via `useForensicPublications()`.
 
 ### Operator health (“is the engine alive?” / “safe to test?”)
 
 - **Edge:** `GET` or `POST` `.../functions/v1/desk-publication-health?limit=5` with the same `Authorization: Bearer <WDIWF_DESK_PUBLISH_SECRET>`.
 - **`ok: true`** only when **`checks.rpc_latest_live_desk`** is `"ok"` (RPC exists — same path as **`/newsletter`**). If operability migration wasn’t applied, `ok` is **`false`** even when `runs` can be read.
-- Also returns: `checked_at`, `checks.publications_table`, `safe_for_newsletter_desk`, `runs`, `newest_live`, `engine_alive`.
+- Also returns: `checked_at`, `checks.publications_table`, `checks.rpc_latest_forensic`, `safe_for_newsletter_desk`, `safe_for_integrity_report`, `runs`, `newest_live`, `newest_forensic`, `engine_alive`.
 - **Script:** `./scripts/supabase/health-check.sh` (see **`docs/SUPABASE_DEPLOY.md`**).
 - **Deploy:** `supabase functions deploy desk-publication-health`
 
@@ -96,8 +97,10 @@ Migrations: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`, `s
 | `src/components/newsletter/NewsletterDeskLive.tsx` | **New** — Renders live markdown + email/social tabs. |
 | `src/components/newsletter/NewsletterDeskSample.tsx` | **New** — Extracted sample UI. |
 | `src/components/newsletter/NewsletterDeskPreview.tsx` | **Live + fallback** orchestration. |
-| `src/pages/Newsletter.tsx` | Comment only (desk source clarified). |
-| `src/integrations/supabase/types.ts` | Types for `wdiwf_desk_publications`. |
+| `src/pages/Newsletter.tsx` | Link to **`/integrity-report`**; jump nav. |
+| `src/pages/IntegrityReport.tsx` | **Forensic** long-form surface. |
+| `src/hooks/use-forensic-publications.ts` | RPC `wdiwf_forensic_publications_recent`. |
+| `src/integrations/supabase/types.ts` | Types for desk + forensic RPCs. |
 
 ---
 
@@ -109,6 +112,7 @@ Migrations: `supabase/migrations/20260404210000_wdiwf_desk_publications.sql`, `s
 | Friday spec | Documented in user charter; align with `newsletter/outputs/friday/` contract in `newsletter/delivery/PUBLISHING.md` |
 | **POST to `publish-desk-publication`** | **Operator step:** add to Cursor automation or CI after `Generation status: completed` |
 | Example shell | `scripts/content-engine/publish-desk-publication.example.sh` |
+| **Forensic POST** | `kind: "forensic"`, `published_to_site: true` — **`scripts/content-engine/publish-forensic-publication.example.sh`**; source under **`newsletter/outputs/forensic/`** |
 
 **Skipped runs:** Do not set `published_to_site: true`. Optional: insert `skipped` row with `run_log` for audit (still not visible on public site).
 
