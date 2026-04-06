@@ -1,9 +1,14 @@
 import { useState, useCallback } from "react";
 import { Sun, Moon } from "lucide-react";
 
+/**
+ * Theme toggle that READS the current state from the DOM (set by the inline
+ * script in index.html) rather than re-applying it on mount. This prevents
+ * the dark class from being removed and re-added during React hydration.
+ */
 export function ThemeToggle() {
-  // Read initial state from the DOM — already correct from the inline script in index.html.
-  // Do NOT re-apply on mount (no useEffect) to avoid flash.
+  // Initialize from the DOM truth — the inline <script> in index.html
+  // has already set the correct class before React mounts.
   const [dark, setDark] = useState(() =>
     typeof window !== "undefined"
       ? document.documentElement.classList.contains("dark")
@@ -11,21 +16,23 @@ export function ThemeToggle() {
   );
 
   const toggle = useCallback(() => {
-    const next = !dark;
-    setDark(next);
-    const root = document.documentElement;
-    if (next) {
-      root.classList.add("dark");
-      root.style.colorScheme = "dark";
-      root.style.backgroundColor = "#0a0a0e";
-      localStorage.setItem("theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      root.style.colorScheme = "light";
-      root.style.backgroundColor = "#f7f5f0";
-      localStorage.setItem("theme", "light");
-    }
-  }, [dark]);
+    setDark((prev) => {
+      const next = !prev;
+      const root = document.documentElement;
+      if (next) {
+        root.classList.add("dark");
+        root.style.colorScheme = "dark";
+        root.style.backgroundColor = "#0A0A0E";
+        localStorage.setItem("theme", "dark");
+      } else {
+        root.classList.remove("dark");
+        root.style.colorScheme = "light";
+        root.style.backgroundColor = "#f7f5f0";
+        localStorage.setItem("theme", "light");
+      }
+      return next;
+    });
+  }, []);
 
   return (
     <button

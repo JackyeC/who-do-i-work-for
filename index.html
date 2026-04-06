@@ -9,16 +9,26 @@
     </style>
     <script>
       (function() {
+        var d = document.documentElement;
         var t = localStorage.getItem('theme');
         if (t === 'light') {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.style.colorScheme = 'light';
-          document.documentElement.style.backgroundColor = '#f7f5f0';
+          d.classList.remove('dark');
+          d.style.colorScheme = 'light';
+          d.style.backgroundColor = '#f7f5f0';
         } else {
-          document.documentElement.style.backgroundColor = '#0a0a0e';
+          // Ensure dark is set (it should be from the HTML attribute, but be explicit)
+          d.classList.add('dark');
+          d.style.colorScheme = 'dark';
+          d.style.backgroundColor = '#0A0A0E';
         }
       })();
     </script>
+    <style>
+      /* Inline critical CSS: prevent flash before Tailwind loads */
+      html { background-color: #0A0A0E; }
+      html:not(.dark) { background-color: #f7f5f0; }
+      body { background-color: inherit; }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://tdetybqdxadmowjivtjy.supabase.co" />
