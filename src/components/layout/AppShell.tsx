@@ -64,8 +64,12 @@ export function AppShell({ children }: AppShellProps) {
   // Product/app pages: dark TopBar + compact footer
   return (
     <div className="min-h-screen flex flex-col w-full bg-background">
+      <a href="#main-content" className="skip-to-content">
+        Skip to main content
+      </a>
       <TopBar />
       <main
+        id="main-content"
         className="flex-1 min-w-0"
         style={{ paddingTop: 'var(--nav-offset, 100px)' }}
       >

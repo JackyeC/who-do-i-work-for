@@ -18,6 +18,9 @@ export function IntelligenceTicker() {
     <div
       className="fixed top-0 left-0 right-0 overflow-hidden whitespace-nowrap h-[36px] flex items-center bg-background border-b border-border"
       style={{ zIndex: 1001 }}
+      role="marquee"
+      aria-live="off"
+      aria-label="Live intelligence ticker — hover to pause"
     >
       {hasRealItems ? (
         <div
