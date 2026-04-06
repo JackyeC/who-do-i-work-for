@@ -77,7 +77,7 @@ If **weak:** **`## Generation status: skipped`** + **`Run skipped — no strong 
 
 | File | Rule |
 |------|------|
-| `poster-prompt.md` | Else: `SKIP — no poster this run.` |
+| `poster-prompt.md` | **Default: required** for bi-hourly runs. If you truly cannot meet the satire bar, explicitly write `SKIP — no strong poster concept this run.` and treat as a quality warning (do not ship boring). |
 | `youtube-short.md` | Else: `SKIP — not a Shorts story this run.` |
 
 ### Full channel pack (when `completed`)
