@@ -64,7 +64,7 @@ const SIGNAL_CARDS = [
     severity: "HIGH",
     severityVariant: "warning" as const,
     date: "2025",
-    source: "NLRB / Reuters",
+    source: "Company filings / Reuters",
   },
   {
     company: "Google / Alphabet",
@@ -96,7 +96,7 @@ const INTEL_BULLETS = [
   },
   {
     text: "Starbucks has closed 500+ stores and laid off 2,000 employees while fighting NLRB union complaints in 30+ states — workforce stability is a live concern.",
-    source: "Reuters / NLRB",
+    source: "Reuters / Company filings",
     risk: "MEDIUM",
     variant: "warning" as const,
   },

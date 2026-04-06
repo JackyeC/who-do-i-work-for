@@ -520,8 +520,8 @@ export default function Receipts() {
                   ) : (
                     <Badge variant="secondary">Coming Soon</Badge>
                   )}
-                  <span className="text-xs text-muted-foreground">
-                    {company.date}
+                  <span className="text-xs text-muted-foreground font-mono">
+                    Last verified: {company.date}
                   </span>
                 </div>
               </CardContent>

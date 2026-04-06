@@ -429,7 +429,7 @@ const META_REPORT: MetaReportData = {
     warnSourceUrl: "https://www.warntracker.com/company/meta-facebook",
     warnSourceLabel: "WARN Tracker \u2014 Meta/Facebook CA filings",
     totalImpact:
-      "Approximately 21,000 employees laid off across two waves (2022\u20132023), reducing headcount from ~87,000 to ~67,000. Meta/Facebook filed 155 WARN Act layoff notices from January 2017 to March 2026, affecting 11,675 employees in tracked notices across CA, NJ, NY, OR, TX, and WA.",
+      "Approximately 21,000 employees laid off across two waves (2022\u20132023), reducing headcount from ~86,000 to ~67,000 (current: ~78,865 as of Dec 2025). Meta/Facebook filed 155 WARN Act layoff notices from January 2017 to March 2026, affecting 11,675 employees in tracked notices across CA, NJ, NY, OR, TX, and WA.",
   },
 
   // SECTION 3 — SAFETY ALERT
@@ -1001,7 +1001,7 @@ function LaborImpactSection({ data }: { data: MetaReportData }) {
 
       <KeyFinding label="Total Impact" variant="red">
         <p>
-          Approximately <strong>21,000 employees</strong> laid off across two waves (2022\u20132023), reducing headcount from ~87,000 to ~67,000. Meta/Facebook filed <strong>155 WARN Act layoff notices</strong> from January 2017 to March 2026, affecting <strong>11,675 employees</strong> in tracked notices across CA, NJ, NY, OR, TX, and WA.
+          Approximately <strong>21,000 employees</strong> laid off across two waves (2022\u20132023), reducing headcount from ~86,000 to ~67,000 (current: ~78,865 as of Dec 2025). Meta/Facebook filed <strong>155 WARN Act layoff notices</strong> from January 2017 to March 2026, affecting <strong>11,675 employees</strong> in tracked notices across CA, NJ, NY, OR, TX, and WA.
         </p>
       </KeyFinding>
     </div>
@@ -1182,7 +1182,7 @@ const DEMO_INTEGRITY: Record<string, { quotes: { text: string; source: string }[
       { text: "Diversity and inclusion are good for business — and more fundamentally — simply right.", source: "Amazon DEI page, 2023 (removed)" },
     ],
     findings: [
-      "14,000+ HR and corporate employees laid off in 2023–2024 restructuring.",
+      "30,000+ corporate employees laid off Oct 2025–Jan 2026 — largest corporate restructuring in company history.",
       "DEI programs described as 'wound down' in internal communications, December 2024.",
       "WARN Act: 4,085 employees affected in Washington state alone (2022–2026).",
       "Lobbying spend: $21.8M in 2024, up 18% year-over-year, focused on antitrust and labor regulation.",
@@ -1290,7 +1290,10 @@ function DemoReceiptsReport({ data, slug }: { data: { companyName: string; ticke
             {!REAL_REPORT_SLUGS.has(slug) && <Badge variant="secondary" className="text-xs">Demo Data</Badge>}
           </div>
           <p className="text-muted-foreground text-sm mt-2 font-mono">{data.ticker} · {data.location} · {data.products}</p>
-          <Badge className="mt-3 bg-primary/15 text-primary border-primary/30">March 2026</Badge>
+          <div className="flex items-center gap-2 mt-3">
+            <Badge className="bg-primary/15 text-primary border-primary/30">March 2026</Badge>
+            <Badge variant="outline" className="text-xs text-muted-foreground">Last verified: March 2026</Badge>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
@@ -1787,7 +1790,10 @@ export default function ReceiptsReport() {
           <p className="text-muted-foreground text-sm mt-2 font-mono">
             {data.ticker} · {data.location} · {data.products}
           </p>
-          <Badge className="mt-3 bg-primary/15 text-primary border-primary/30">{data.reportDate}</Badge>
+          <div className="flex items-center gap-2 mt-3">
+            <Badge className="bg-primary/15 text-primary border-primary/30">{data.reportDate}</Badge>
+            <Badge variant="outline" className="text-xs text-muted-foreground">Last verified: March 2026</Badge>
+          </div>
         </div>
 
         {/* Key Stats */}
@@ -1916,7 +1922,7 @@ export default function ReceiptsReport() {
             ))}
           </div>
           <p className="text-xs text-muted-foreground mt-8 italic">
-            Report compiled March 21, 2026. This is a demonstration template for investigative use; it does not constitute legal or financial advice.
+            Last verified: March 2026. Report compiled March 21, 2026. This does not constitute legal or financial advice.
           </p>
         </div>
       </div>
