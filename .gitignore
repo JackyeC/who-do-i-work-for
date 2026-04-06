@@ -38,3 +38,6 @@ supabase/.temp/
 # Optional: ignore timestamped content-engine runs (uncomment if repo gets noisy)
 # newsletter/outputs/live/run-*
 # newsletter/outputs/friday/run-*
+
+# Firecrawl local cache
+.firecrawl/
