@@ -35,6 +35,11 @@ import { InboxSection } from "@/components/dashboard/InboxSection";
 import { SavedSection } from "@/components/dashboard/SavedSection";
 import { FoundingMemberRecognition } from "@/components/dashboard/FoundingMemberRecognition";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
+import { StreakBadge } from "@/components/dashboard/StreakBadge";
+import { InvestigatorRank } from "@/components/dashboard/InvestigatorRank";
+import { DailyMission } from "@/components/dashboard/DailyMission";
+import { CareerReadinessRing } from "@/components/dashboard/CareerReadinessRing";
+import { ReceiptBadges } from "@/components/dashboard/ReceiptBadges";
 import { cn } from "@/lib/utils";
 import {
   Eye, Briefcase, Shield, Zap, Settings, User,
@@ -312,9 +317,40 @@ export default function Dashboard() {
         return (
           <>
             <DashboardStats />
+
+            {/* ═══ DOPAMINE LAYER ═══ */}
+            <div className="mt-6 space-y-4">
+              {/* Top strip: streak flame */}
+              <div className="flex items-center gap-3">
+                <StreakBadge />
+              </div>
+
+              {/* Rank + Career Readiness side by side */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InvestigatorRank />
+                <CareerReadinessRing onNavigate={setTab} />
+              </div>
+
+              {/* Daily Mission — prominent */}
+              <DailyMission onNavigate={setTab} />
+            </div>
+
+            {/* Narrative Feed */}
             <div className="mt-6">
               <NarrativeFeed onNavigate={setTab} />
             </div>
+
+            {/* Receipt Badges — collapsible collection */}
+            <details className="mt-8 group">
+              <summary className="cursor-pointer select-none list-none flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors">
+                <ChevronRight className="w-4 h-4 transition-transform group-open:rotate-90" />
+                Your Badge Collection
+              </summary>
+              <div className="mt-4">
+                <ReceiptBadges />
+              </div>
+            </details>
+
             {hasValuesProfile === true && <ReaderLensFootnote />}
           </>
         );
