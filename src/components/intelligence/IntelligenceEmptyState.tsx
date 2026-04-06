@@ -91,8 +91,9 @@ const SIGNAL_MESSAGES: Record<SignalCategory, IntelligenceMessages> = {
   },
   media: {
     beforeScan: "Media narrative tracking shows how a company is perceived in public discourse.",
-    noData: "Limited media coverage indexed for this company. This may indicate low public profile or industry-specific coverage not yet captured.",
-    checkedSources: ["News APIs", "Press releases", "Industry publications"],
+    noData:
+      "No recent articles for this employer are indexed in our database yet. Coverage is filled by automated GDELT news sync after a scan — not having rows here does not mean the company lacks press attention.",
+    checkedSources: ["GDELT (via sync)", "News APIs", "Press & industry sources"],
   },
 };
 

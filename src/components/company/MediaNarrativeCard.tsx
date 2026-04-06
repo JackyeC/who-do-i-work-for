@@ -1,7 +1,13 @@
+/**
+ * Compact media sentiment strip backed by `company_news_signals` (GDELT via sync-gdelt).
+ * For full article list + bias context on company profile, see NewsIntelligenceCard — avoid rendering both on the same route unless product intentionally wants two modules.
+ */
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Radio, TrendingUp, Minus, TrendingDown, AlertCircle } from "lucide-react";
 import { IntelligenceEmptyState } from "@/components/intelligence/IntelligenceEmptyState";
+import { Skeleton } from "@/components/ui/skeleton";
+import { gdeltToneBucket } from "@/lib/gdelt-sentiment";
 
 interface MediaNarrativeCardProps {
   companyId: string;
@@ -17,52 +23,7 @@ interface NewsItem {
   published_at: string | null;
 }
 
-export function MediaNarrativeCard({ companyId, companyName }: MediaNarrativeCardProps) {
-  // Use work_news which is the actual table in the schema
-  const { data: newsItems } = useQuery({
-    queryKey: ["media-narrative", companyId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("work_news")
-        .select("headline, sentiment_score, tone_label, is_controversy, controversy_type, published_at")
-        .order("published_at", { ascending: false })
-        .limit(20);
-      if (error) throw error;
-      return (data || []) as NewsItem[];
-    },
-    staleTime: 10 * 60 * 1000,
-  });
-
-  if (!newsItems?.length) {
-    return (
-      <div className="bg-card border border-border">
-        <div className="flex items-center gap-2 px-5 py-3 border-b border-border">
-          <Radio className="w-4 h-4 text-primary" strokeWidth={1.5} />
-          <span className="font-mono text-xs tracking-[0.15em] uppercase text-primary font-semibold">
-            Media Narrative
-          </span>
-        </div>
-        <div className="p-4">
-          <IntelligenceEmptyState category="media" state="after" />
-        </div>
-      </div>
-    );
-  }
-
-  const positive = newsItems.filter((s) => (s.sentiment_score ?? 0) > 0.3).length;
-  const neutral = newsItems.filter((s) => {
-    const sc = s.sentiment_score ?? 0;
-    return sc >= -0.3 && sc <= 0.3;
-  }).length;
-  const negative = newsItems.filter((s) => (s.sentiment_score ?? 0) < -0.3).length;
-  const total = newsItems.length;
-
-  const pctPos = total ? Math.round((positive / total) * 100) : 0;
-  const pctNeu = total ? Math.round((neutral / total) * 100) : 0;
-  const pctNeg = total ? Math.round((negative / total) * 100) : 0;
-
-  const controversies = newsItems.filter((s) => s.is_controversy).slice(0, 3);
-
+function MediaNarrativeCardShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-card border border-border">
       <div className="flex items-center gap-2 px-5 py-3 border-b border-border">
@@ -71,8 +32,89 @@ export function MediaNarrativeCard({ companyId, companyName }: MediaNarrativeCar
           Media Narrative
         </span>
       </div>
+      {children}
+    </div>
+  );
+}
+
+export function MediaNarrativeCard({ companyId, companyName }: MediaNarrativeCardProps) {
+  const { data: newsItems, isPending, isError, error, isSuccess } = useQuery({
+    queryKey: ["media-narrative", companyId],
+    queryFn: async () => {
+      const { data, error: qError } = await supabase
+        .from("company_news_signals")
+        .select("headline, sentiment_score, tone_label, is_controversy, controversy_type, published_at")
+        .eq("company_id", companyId)
+        .order("published_at", { ascending: false })
+        .limit(20);
+      if (qError) throw qError;
+      return (data || []) as NewsItem[];
+    },
+    enabled: !!companyId,
+    staleTime: 10 * 60 * 1000,
+  });
+
+  if (!companyId) return null;
+
+  if (isPending) {
+    return (
+      <MediaNarrativeCardShell>
+        <div className="p-5 space-y-3">
+          <Skeleton className="h-2 w-full rounded-full" />
+          <div className="grid grid-cols-3 gap-3">
+            <Skeleton className="h-14 rounded-md" />
+            <Skeleton className="h-14 rounded-md" />
+            <Skeleton className="h-14 rounded-md" />
+          </div>
+        </div>
+      </MediaNarrativeCardShell>
+    );
+  }
+
+  if (isError) {
+    return (
+      <MediaNarrativeCardShell>
+        <div className="p-4">
+          <p className="text-sm text-muted-foreground">
+            Could not load indexed news for {companyName}.{" "}
+            {error instanceof Error ? error.message : "Try again later."}
+          </p>
+        </div>
+      </MediaNarrativeCardShell>
+    );
+  }
+
+  if (isSuccess && (!newsItems || newsItems.length === 0)) {
+    return (
+      <MediaNarrativeCardShell>
+        <div className="p-4">
+          <IntelligenceEmptyState category="media" state="after" />
+        </div>
+      </MediaNarrativeCardShell>
+    );
+  }
+
+  const items = newsItems ?? [];
+  let positive = 0;
+  let neutral = 0;
+  let negative = 0;
+  for (const s of items) {
+    const b = gdeltToneBucket(s.sentiment_score);
+    if (b === "positive") positive += 1;
+    else if (b === "negative") negative += 1;
+    else neutral += 1;
+  }
+  const total = items.length;
+
+  const pctPos = total ? Math.round((positive / total) * 100) : 0;
+  const pctNeu = total ? Math.round((neutral / total) * 100) : 0;
+  const pctNeg = total ? Math.round((negative / total) * 100) : 0;
+
+  const controversies = items.filter((s) => s.is_controversy).slice(0, 3);
+
+  return (
+    <MediaNarrativeCardShell>
       <div className="p-5">
-        {/* Sentiment bar */}
         <div className="flex h-2 rounded-full overflow-hidden mb-4">
           {pctPos > 0 && <div className="bg-primary" style={{ width: `${pctPos}%` }} />}
           {pctNeu > 0 && <div className="bg-muted-foreground/30" style={{ width: `${pctNeu}%` }} />}
@@ -103,13 +145,16 @@ export function MediaNarrativeCard({ companyId, companyName }: MediaNarrativeCar
               <AlertCircle className="w-3 h-3" /> Recent Controversies
             </div>
             {controversies.map((c, i) => (
-              <div key={i} className="text-xs text-foreground border-l-2 border-destructive/50 pl-2.5 py-0.5">
+              <div
+                key={`${c.published_at ?? ""}-${i}`}
+                className="text-xs text-foreground border-l-2 border-destructive/50 pl-2.5 py-0.5"
+              >
                 {c.headline}
               </div>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </MediaNarrativeCardShell>
   );
 }

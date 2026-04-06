@@ -9,6 +9,7 @@ import { Newspaper, AlertTriangle, TrendingUp, TrendingDown, ExternalLink, Spark
 import { cn } from "@/lib/utils";
 import { MediaBiasIndicator } from "@/components/MediaBiasIndicator";
 import { CoverageBalanceChart } from "@/components/CoverageBalanceChart";
+import { GDELT_NEGATIVE_THRESHOLD, GDELT_POSITIVE_THRESHOLD } from "@/lib/gdelt-sentiment";
 
 interface Props {
   companyId: string;
@@ -27,17 +28,18 @@ function coverageTier(n: number): { label: string; className: string } {
 }
 
 function sentimentColor(score: number) {
-  if (score >= 1.5) return "text-[hsl(var(--civic-green))]";
-  if (score <= -1.5) return "text-destructive";
+  if (score >= GDELT_POSITIVE_THRESHOLD) return "text-[hsl(var(--civic-green))]";
+  if (score <= GDELT_NEGATIVE_THRESHOLD) return "text-destructive";
   return "text-muted-foreground";
 }
 
 function sentimentBg(score: number) {
-  if (score >= 1.5) return "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/20";
-  if (score <= -1.5) return "bg-destructive/10 border-destructive/20";
+  if (score >= GDELT_POSITIVE_THRESHOLD) return "bg-[hsl(var(--civic-green))]/10 border-[hsl(var(--civic-green))]/20";
+  if (score <= GDELT_NEGATIVE_THRESHOLD) return "bg-destructive/10 border-destructive/20";
   return "bg-muted/50 border-border";
 }
 
+/** Full news coverage card (links, bias, tier). For a compact sentiment strip only, see MediaNarrativeCard — avoid both on one screen unless intentional. */
 export function NewsIntelligenceCard({ companyId, companyName }: Props) {
   const { data: signals, isLoading } = useQuery({
     queryKey: ["news-signals", companyId],
@@ -66,7 +68,12 @@ export function NewsIntelligenceCard({ companyId, companyName }: Props) {
     return new Date(t) > new Date(best) ? t : best;
   }, null as string | null);
 
-  const toneWord = avgTone >= 1.5 ? "tilts positive" : avgTone <= -1.5 ? "tilts negative" : "reads mixed to neutral";
+  const toneWord =
+    avgTone >= GDELT_POSITIVE_THRESHOLD
+      ? "tilts positive"
+      : avgTone <= GDELT_NEGATIVE_THRESHOLD
+        ? "tilts negative"
+        : "reads mixed to neutral";
   const foundLine = `We found ${signals.length} recent article${signals.length !== 1 ? "s" : ""} mentioning ${companyName} in the last ~90 days — enough to ${controversies.length ? "spot controversies and " : ""}see how media coverage ${toneWord}.`;
   const meansLine =
     "Use the links to read originals, then come back: cross-check against PAC, lobbying, and workforce signals on this profile so the story isn't one headline deep.";
