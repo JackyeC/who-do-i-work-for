@@ -129,6 +129,8 @@ const BriefingPage = lazy(() => import("./pages/BriefingPage"));
 const Tools = lazy(() => import("./pages/Tools"));
 const NewsOnboarding = lazy(() => import("./components/NewsOnboarding"));
 const ReportConfirmation = lazy(() => import("./pages/ReportConfirmation"));
+const DreamJobs = lazy(() => import("./pages/DreamJobs"));
+const DreamJobDossier = lazy(() => import("./pages/DreamJobDossier"));
 
 // Lazy-load floating widgets — not needed on first paint
 const AskJackyeWidget = lazy(() => import("./components/AskJackyeWidget").then(m => ({ default: m.AskJackyeWidget })));
@@ -303,6 +305,8 @@ const App = () => (
                   <Route path="/tools" element={<Tools />} />
                   <Route path="/report-confirmation" element={<ReportConfirmation />} />
                   <Route path="/embed/jobs" element={<JobBoardEmbed />} />
+                  <Route path="/dream-jobs" element={<ProtectedRoute><DreamJobs /></ProtectedRoute>} />
+                  <Route path="/dream-jobs/:id" element={<ProtectedRoute><DreamJobDossier /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

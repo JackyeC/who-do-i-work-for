@@ -23,8 +23,9 @@ import {
   Home, Search, Building2, PlusCircle, TrendingUp, ScanSearch, Heart,
   Briefcase, FileCheck, Map, FileText, BarChart3, Eye, Landmark, Network,
   Megaphone, Users, Target, CreditCard,
-  LayoutDashboard, Zap, Bell, Settings, User,
-  LogIn, LogOut, Flame, Shield,
+  LayoutDashboard, Zap, Bell, Settings, User, ClipboardCheck,
+  LogIn, LogOut, Compass, Flame, Shield,
+  Bookmark, Inbox, MessageSquare, Columns3, FileEdit, Mic, Rocket,
 } from "lucide-react";
 import logoSquare from "@/assets/wdiwf-logo-square.png";
 import logoNav from "@/assets/wdiwf-logo-nav-light.png";
@@ -77,6 +78,12 @@ const NAV_GROUPS_TAIL = [
       { id: "my-search", label: "My Search", icon: Briefcase, path: "/dashboard?tab=jobs" },
       { id: "intelligence", label: "Intelligence", icon: Shield, path: "/dashboard?tab=tracked" },
       { id: "auto-apply", label: "Apply", icon: Zap, path: "/dashboard?tab=auto-apply" },
+      { id: "dream-jobs", label: "Dream Jobs", icon: Rocket, path: "/dream-jobs" },
+      { id: "tracker", label: "Tracker", icon: Columns3, path: "/tracker" },
+      { id: "apply-kit", label: "Apply Kit", icon: FileEdit, path: "/apply-kit" },
+      { id: "mock-interview", label: "Mock Interview", icon: Mic, path: "/mock-interview" },
+      { id: "inbox", label: "Inbox", icon: Inbox, path: "/inbox" },
+      { id: "saved", label: "Saved", icon: Bookmark, path: "/saved" },
       { id: "alerts", label: "Signal Alerts", icon: Bell, path: "/dashboard?tab=alerts" },
       { id: "settings-nav", label: "Settings", icon: Settings, path: "/dashboard?tab=preferences" },
       { id: "pricing", label: "Pricing & Plans", icon: CreditCard, path: "/pricing" },
