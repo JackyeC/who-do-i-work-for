@@ -26,8 +26,8 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
           {[
             { label: 'How it works', to: '/#product-key' },
             { label: 'Methodology', to: '/methodology' },
-            { label: 'Privacy', to: '/privacy' },
-            { label: 'Terms', to: '/terms' },
+            { label: 'Privacy', to: '/privacy-policy' },
+            { label: 'Terms', to: '/terms-of-service' },
             { label: 'Corrections', to: '/request-correction' },
             { label: 'Sitemap', to: '/site-map' },
           ].map((link) => (

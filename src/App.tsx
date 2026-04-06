@@ -218,8 +218,11 @@ const App = () => (
                   <Route path="/methodology" element={<Methodology />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/terms" element={<TermsOfService />} />
-                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/terms-of-service" element={<TermsOfService />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="/terms" element={<Navigate to="/terms-of-service" replace />} />
+                  <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
+                  <Route path="/the-work-signal" element={<Navigate to="/receipts" replace />} />
                   <Route path="/disclaimers" element={<Disclaimers />} />
                   <Route path="/data-ethics" element={<DataEthics />} />
                   <Route path="/about" element={<About />} />

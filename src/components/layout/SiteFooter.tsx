@@ -175,13 +175,13 @@ export function SiteFooter() {
             </p>
             <nav className="flex flex-col gap-2">
               <Link
-                to="/privacy"
+                to="/privacy-policy"
                 className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Privacy Policy
               </Link>
               <Link
-                to="/terms"
+                to="/terms-of-service"
                 className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Terms of Service
