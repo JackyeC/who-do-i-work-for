@@ -9,6 +9,18 @@ interface LinkedInProfile {
   expires_at: string;
 }
 
+export type CertificateShareParams = {
+  playerName: string;
+  certName: string;
+  certBadge: string;
+  insightQuote: string;
+  imageBase64?: string;
+  realWorld?: string;
+  credibilityPct?: number;
+  checkUrl?: string;
+  score?: string | number;
+};
+
 export function useLinkedIn() {
   const [linkedinProfile, setLinkedinProfile] = useState<LinkedInProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,14 +68,7 @@ export function useLinkedIn() {
   }, []);
 
   // Share certificate to LinkedIn
-  const shareCertificate = useCallback(async (params: {
-    playerName: string;
-    certName: string;
-    certBadge: string;
-    score?: string | number;
-    insightQuote: string;
-    imageBase64?: string;
-  }) => {
+  const shareCertificate = useCallback(async (params: CertificateShareParams) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) throw new Error("Not logged in");
 

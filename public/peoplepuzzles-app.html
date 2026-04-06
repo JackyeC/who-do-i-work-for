@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PeoplePuzzles by WDIWF — The Career Intelligence Game</title>
-<meta name="description" content="An alchemy-style strategy game for recruiters. Combine fundamental elements to discover recruiting concepts. Every combo links to a real WDIWF feature.">
-<meta property="og:title" content="PeoplePuzzles — The Career Intelligence Game">
-<meta property="og:description" content="Every company runs a background check on you. This game teaches you to run one on them. 72 elements to discover. Pick your path: Money, Stability, Values, Growth, or Truth.">
+<title>PeoplePuzzles by WDIWF — Decision simulation for hiring intelligence</title>
+<meta name="description" content="Decision training for recruiters and candidates: combine elements, discover patterns, earn validations. Every combo links to a real WDIWF feature — receipts, not vibes.">
+<meta property="og:title" content="PeoplePuzzles — Decision simulation | WDIWF">
+<meta property="og:description" content="Every company runs a background check on you. This simulation trains you to run one on them. 72 combos. Pick your path: Money, Stability, Values, Growth, or Truth.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://wdiwf.jackyeclayton.com/peoplepuzzles-app.html">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="PeoplePuzzles — The Career Intelligence Game">
-<meta name="twitter:description" content="Every company runs a background check on you. This game teaches you to run one on them.">
+<meta name="twitter:title" content="PeoplePuzzles — Decision simulation | WDIWF">
+<meta name="twitter:description" content="Every company runs a background check on you. This simulation trains you to run one on them.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=Inter:wght@900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
@@ -464,6 +464,14 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 }
 .consequence-panel .cq-btn:hover{transform:scale(1.03);background:#FF5060}
 
+.consequence-panel .cq-actions{display:flex;flex-direction:column;gap:12px;margin-top:8px;align-items:stretch}
+.consequence-panel .cq-btn-secondary{
+  background:transparent;color:#E0D8CC;font-weight:600;font-size:14px;
+  padding:12px 24px;border-radius:12px;cursor:pointer;transition:all .15s;
+  border:1px solid rgba(255,255,255,0.35);font-family:var(--font-display);
+}
+.consequence-panel .cq-btn-secondary:hover{transform:scale(1.02);border-color:var(--primary);color:var(--primary)}
+
 /* ===== FEATURE 3: Persona Badge + Share CTA ===== */
 #persona-badge{
   position:absolute;top:40px;left:50%;transform:translateX(-50%);
@@ -494,8 +502,9 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   color:var(--primary);padding:10px 22px;border-radius:10px;
   background:transparent;border:1px solid rgba(186,151,49,0.4);
   animation:splashFade .6s ease-out .45s both;position:relative;z-index:2;
-  cursor:pointer;transition:all .15s;display:none;
+  cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center;max-width:420px;margin-left:auto;margin-right:auto;
 }
+#splash .splash-bridge .splash-bridge-sub{font-size:11px;opacity:0.88;font-weight:500}
 #splash .splash-bridge:hover{background:var(--gold-dim);border-color:var(--primary)}
 
 /* ===== FEATURE 5: Name Input Step ===== */
@@ -558,6 +567,25 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   font-size:28px;font-weight:700;color:var(--fg);font-family:var(--font-display);
   margin-bottom:14px;
 }
+.cert-card .cert-section-label{
+  font-family:var(--font-mono);font-size:9px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:2px;margin-top:12px;margin-bottom:6px;
+}
+.cert-card .cert-cred{
+  font-size:22px;font-weight:700;color:var(--success);font-family:var(--font-display);
+  margin-bottom:4px;
+}
+.cert-card .cert-realworld{
+  font-size:14px;color:#C8C0D8;line-height:1.65;max-width:440px;margin:0 auto 16px;
+  text-align:left;
+}
+.cert-btn-scan{
+  width:100%;max-width:340px;margin:8px auto 4px;display:block;
+  background:var(--primary);color:var(--bg);font-weight:700;font-size:14px;
+  padding:14px 18px;border-radius:12px;border:none;font-family:var(--font-display);
+  cursor:pointer;transition:transform .15s;
+}
+.cert-btn-scan:hover{transform:scale(1.02)}
 .cert-card .cert-insight{
   font-size:15px;color:#D4BFFA;font-style:italic;line-height:1.7;
   max-width:420px;margin:0 auto 16px;
@@ -686,6 +714,8 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   .cert-card .cert-name{font-size:22px}
   .cert-card .cert-player{font-size:22px}
   .cert-card .cert-insight{font-size:13px}
+  .cert-card .cert-realworld{font-size:12px}
+  .cert-btn-scan{font-size:13px;padding:12px 14px}
   .cert-share-btns{flex-direction:column}
   .cert-share-btns button{min-width:100%}
 }
@@ -703,7 +733,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   <div class="onboard-step active" id="onboard-1">
     <div class="intro-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <h1>PeoplePuzzles</h1>
-    <p class="onboard-subtitle">Every company runs a background check on you.<br>This game teaches you to run one on them.</p>
+    <p class="onboard-subtitle">Every company runs a background check on you.<br>This simulation trains you to run one on them.</p>
     <div class="drive-cards" id="drive-cards">
       <div class="drive-card" data-drive="money">
         <div class="dc-emoji">💰</div>
@@ -786,7 +816,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   <div id="canvas">
     <div id="canvas-counter"><span id="cc-found">0</span> / <span id="cc-total">72</span> discovered</div>
     <div id="persona-badge"></div>
-    <div id="share-cta"><span id="share-copied">Copied!</span><button id="share-btn">Share your play style</button></div>
+    <div id="share-cta"><span id="share-copied">Copied!</span><button id="share-btn">Share your simulation style</button></div>
   </div>
 
   <!-- Right sidebar -->
@@ -807,8 +837,8 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   <div class="splash-quote" id="splash-quote"></div>
   <div class="splash-type" id="splash-type"></div>
   <button class="splash-wdiwf" id="splash-wdiwf">Sign up to explore on WDIWF →</button>
-  <button class="splash-bridge" id="splash-bridge">🔍 Want to check a REAL company right now? → wdiwf.jackyeclayton.com</button>
-  <div class="splash-dismiss">Keep playing →</div>
+  <button class="splash-bridge" id="splash-bridge" type="button"><span class="splash-bridge-main">You’ve seen how this works. Now use it on a real company.</span><span class="splash-bridge-sub">Run a company scan →</span></button>
+  <div class="splash-dismiss">Continue simulation →</div>
 </div>
 
 <!-- Trap toast -->
@@ -865,7 +895,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
       <button type="submit" class="signup-submit" id="signup-submit-btn">GET EARLY ACCESS</button>
       <div class="signup-success" id="signup-success">You're on the list. We'll be in touch.</div>
     </form>
-    <div class="signup-later" id="signup-later">Maybe later — keep playing</div>
+    <div class="signup-later" id="signup-later">Maybe later — keep going</div>
   </div>
 </div>
 
@@ -874,7 +904,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
   <div class="gate-panel">
     <div class="gate-logo"><span style="color:#FEFEFE">W</span><span style="color:#BA9731">?</span></div>
     <h2>You're on a roll.</h2>
-    <p class="gate-sub">You've unlocked Tier 1 — but there's more to discover. Enter your info to keep playing and get early access when the full game launches April 6th.</p>
+    <p class="gate-sub">You've unlocked Tier 1 — there's more to discover. Drop your info to keep training and get early access when the full simulation goes wide April 6th.</p>
     <div class="gate-countdown" id="gate-countdown"></div>
     <form class="gate-form" id="gate-form">
       <div>
@@ -889,8 +919,8 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
         <label for="gate-company">Company</label>
         <input type="text" id="gate-company" placeholder="Where do you work?" required>
       </div>
-      <button type="submit" class="gate-submit" id="gate-submit-btn">UNLOCK FULL GAME</button>
-      <div class="gate-success" id="gate-success">You're in — enjoy the full game.</div>
+      <button type="submit" class="gate-submit" id="gate-submit-btn">UNLOCK FULL SIMULATION</button>
+      <div class="gate-success" id="gate-success">You're in — the full simulation is yours.</div>
       <div class="gate-error" id="gate-error"></div>
     </form>
     <div class="gate-divider">or</div>
@@ -909,7 +939,10 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
     <div class="cq-headline">You skipped the receipts.</div>
     <div class="cq-body">You took the job without checking the company. 6 months later: surprise layoffs, a PR scandal, and your name on the wrong side of it.</div>
     <div class="cq-subtext">This is what happens when you don’t follow the money.</div>
-    <button class="cq-btn" id="cq-dismiss">Go back and investigate</button>
+    <div class="cq-actions">
+      <button type="button" class="cq-btn" id="cq-dismiss">Go back and investigate</button>
+      <button type="button" class="cq-btn-secondary" id="cq-scan">Run a company scan →</button>
+    </div>
   </div>
 </div>
 
@@ -922,7 +955,13 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
     <div class="cert-name" id="cert-modal-name"></div>
     <div class="cert-awarded">Awarded to</div>
     <div class="cert-player" id="cert-modal-player"></div>
+    <div class="cert-section-label">Behavioral credibility</div>
+    <div class="cert-cred" id="cert-modal-cred"></div>
+    <div class="cert-section-label">What you demonstrated</div>
     <div class="cert-insight" id="cert-modal-insight"></div>
+    <div class="cert-section-label">What this means in the real world</div>
+    <div class="cert-realworld" id="cert-modal-realworld"></div>
+    <button type="button" class="cert-btn-scan" id="cert-scan-check">Apply this now — run a company scan →</button>
     <div class="cert-date" id="cert-modal-date"></div>
     <div class="cert-issuer">Issued by Jackye Clayton · WDIWF</div>
     <div class="cert-gold-line"></div>
@@ -934,7 +973,7 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
     <button class="cert-btn-x" id="cert-share-x">𝕏 &nbsp;Share on X</button>
     <button class="cert-btn-download" id="cert-download">⬇ &nbsp;Download Certificate</button>
   </div>
-  <button class="cert-continue" id="cert-continue">Continue Playing →</button>
+  <button class="cert-continue" id="cert-continue">Continue simulation →</button>
 </div>
 
 <!-- Certificate Toast -->
@@ -973,6 +1012,9 @@ button{font-family:inherit;cursor:pointer;border:none;outline:none;background:no
 // GAME DATA
 // ============================
 var WDIWF = 'https://wdiwf.jackyeclayton.com';
+function getCheckURL(){
+  return WDIWF + '/check?tab=company';
+}
 
 var STARTERS = [
   {id:'person',       name:'Person',       emoji:'\uD83D\uDC64', tier:0},
@@ -1083,14 +1125,14 @@ var TRAPS = [
 ];
 
 var CERTS = [
-  {name:'Alignment',req:['job','candidate','hiring-manager'],badge:'\uD83D\uDD11',insight:"You\u2019ve aligned the basics. Now you have direction."},
-  {name:'Intelligence',req:['dossier','deep-research','company-profile'],badge:'\uD83D\uDD0D',insight:"Data is your advantage. Use it wisely."},
-  {name:'Process Control',req:['process-control','feedback-sla','acceptance-blockers'],badge:'\uD83C\uDFDB\uFE0F',insight:"You control the process. That\u2019s where outcomes live."},
-  {name:'Due Diligence',req:['reality-check','informed-decision','employer-receipt'],badge:'\uD83D\uDEE1\uFE0F',insight:"You\u2019re protecting candidates from bad fits."},
-  {name:'Advocacy',req:['follow-the-money','fair-process','values-alignment'],badge:'\u2696\uFE0F',insight:"You\u2019re not just filling roles \u2014 you\u2019re fighting for equity."},
-  {name:'Truth-Teller',req:['integrity-score','corporate-xray','accountability-report'],badge:'\uD83E\uDE9E',insight:"You don\u2019t hide the truth. You hand it over and let people choose."},
-  {name:'Mastery',req:['dream-job','recruiter-mastery','the-equity-edge'],badge:'\uD83D\uDC51',insight:"Certified People Puzzler \u2014 you see the whole board."},
-  {name:'Inclusion Architect',req:['inclusive-hiring-system','bias-interruption','neurodiversity'],badge:'\uD83E\uDDE9',insight:"You don\u2019t add inclusion to the process. You build the process around it."},
+  {name:'Alignment',req:['job','candidate','hiring-manager'],badge:'\uD83D\uDD11',insight:"You\u2019ve aligned the basics. Now you have direction.",realWorld:"When role, candidate, and hiring manager actually line up, you stop playing telephone about who wanted what. That\u2019s the gap between a filled req and a hire that sticks."},
+  {name:'Intelligence',req:['dossier','deep-research','company-profile'],badge:'\uD83D\uDD0D',insight:"Data is your advantage. Use it wisely.",realWorld:"Dossiers and deep research aren\u2019t busywork \u2014 they\u2019re how you catch the space between the careers page and the filings."},
+  {name:'Process Control',req:['process-control','feedback-sla','acceptance-blockers'],badge:'\uD83C\uDFDB\uFE0F',insight:"You control the process. That\u2019s where outcomes live.",realWorld:"SLAs and acceptance criteria aren\u2019t bureaucracy \u2014 they\u2019re how candidates know you\u2019re serious and how you keep the process from eating everyone alive."},
+  {name:'Due Diligence',req:['reality-check','informed-decision','employer-receipt'],badge:'\uD83D\uDEE1\uFE0F',insight:"You\u2019re protecting candidates from bad fits.",realWorld:"Reality checks and receipts before the offer mean fewer \u2018I wish I\u2019d known\u2019 conversations six months in \u2014 for them and for you."},
+  {name:'Advocacy',req:['follow-the-money','fair-process','values-alignment'],badge:'\u2696\uFE0F',insight:"You\u2019re not just filling roles \u2014 you\u2019re fighting for equity.",realWorld:"Following the money and guarding fair process is how equity stops living only in the deck and starts living in who gets through."},
+  {name:'Truth-Teller',req:['integrity-score','corporate-xray','accountability-report'],badge:'\uD83E\uDE9E',insight:"You don\u2019t hide the truth. You hand it over and let people choose.",realWorld:"Handing people the uncomfortable pattern isn\u2019t sabotage \u2014 it\u2019s respect. Adults choose better when they can see the board."},
+  {name:'Mastery',req:['dream-job','recruiter-mastery','the-equity-edge'],badge:'\uD83D\uDC51',insight:"Certified People Puzzler \u2014 you see the whole board.",realWorld:"Seeing the whole board means you\u2019re not reacting to every ping \u2014 you\u2019re running the process with intent while everyone else pretends urgency is a strategy."},
+  {name:'Inclusion Architect',req:['inclusive-hiring-system','bias-interruption','neurodiversity'],badge:'\uD83E\uDDE9',insight:"You don\u2019t add inclusion to the process. You build the process around it.",realWorld:"Inclusion that lives in the system beats inclusion that lives in a slide. Candidates feel the difference in week one \u2014 not in your press release."},
 ];
 
 var TOTAL = COMBOS.length;
@@ -1650,7 +1692,7 @@ function showSplash(combo){
     btn.textContent=splashCta.h+' \u2192';
   }
   // Feature 4: WDIWF bridge CTA for high-intent routes
-  updateBridgeCTA(combo);
+  updateBridgeCTA();
   splash.classList.add('show');
 }
 
@@ -1907,13 +1949,13 @@ function updateGateCountdown(){
   var now=new Date();
   var diff=GATE_DATE-now;
   if(diff<=0){
-    document.getElementById('gate-countdown').textContent='The full game is now live.';
+    document.getElementById('gate-countdown').textContent='The full simulation is now live.';
     return;
   }
   var days=Math.floor(diff/(1000*60*60*24));
   var hrs=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
   document.getElementById('gate-countdown').textContent=
-    'Full game launches in '+days+' day'+(days!==1?'s':'')+' '+hrs+' hr'+(hrs!==1?'s':'');
+    'Full simulation launches in '+days+' day'+(days!==1?'s':'')+' '+hrs+' hr'+(hrs!==1?'s':'');
 }
 
 function unlockGate(){
@@ -1942,7 +1984,7 @@ document.getElementById('gate-form').addEventListener('submit',function(e){
   formData.append('_subject','PeoplePuzzles Lead: '+name+' ('+company+')');
   formData.append('_captcha','false');
   formData.append('_template','table');
-  formData.append('game','PeoplePuzzles by WDIWF');
+  formData.append('product','PeoplePuzzles decision simulation (WDIWF)');
   formData.append('discovered',state.discovered.length+'/'+TOTAL);
   formData.append('score',state.score);
 
@@ -2089,7 +2131,7 @@ document.getElementById('signup-form').addEventListener('submit',function(e){
   formData.append('_captcha','false');
   formData.append('_template','table');
   formData.append('feature_discovered',feature);
-  formData.append('game','PeoplePuzzles by WDIWF');
+  formData.append('product','PeoplePuzzles decision simulation (WDIWF)');
   formData.append('discovered',state.discovered.length+'/'+TOTAL);
   formData.append('score',state.score);
 
@@ -2150,6 +2192,11 @@ document.getElementById('cq-dismiss').addEventListener('click',function(){
     createCanvasElement('accountability',cx-60,cy-30);
     createCanvasElement('information',cx+20,cy-30);
   }
+});
+
+document.getElementById('cq-scan').addEventListener('click',function(e){
+  e.stopPropagation();
+  window.open(getCheckURL(),'_blank');
 });
 
 document.getElementById('consequence-modal').addEventListener('click',function(e){
@@ -2218,7 +2265,7 @@ function updatePersonaDisplay(){
   }
 
   currentPersona=persona;
-  badge.textContent=persona.emoji+' You play like '+persona.name;
+  badge.textContent=persona.emoji+' Your pattern: '+persona.name;
   badge.style.display='block';
 
   // Show share at 30+
@@ -2229,7 +2276,7 @@ function updatePersonaDisplay(){
 
 document.getElementById('share-btn').addEventListener('click',function(){
   if(!currentPersona) return;
-  var shareText='I play like '+currentPersona.name+' '+currentPersona.emoji+' on PeoplePuzzles by WDIWF \u2014 \u201C'+currentPersona.quote+'\u201D Play \u2192 '+window.location.href;
+  var shareText='Training on PeoplePuzzles (WDIWF / Jackye Clayton) \u2014 my pattern is '+currentPersona.name+' '+currentPersona.emoji+'. \u201C'+currentPersona.quote+'\u201D Ready to use it on a real employer? Run a company scan \u2192 '+getCheckURL();
 
   if(navigator.share){
     navigator.share({text:shareText}).catch(function(){});
@@ -2251,20 +2298,14 @@ document.getElementById('share-btn').addEventListener('click',function(){
 // ============================
 // FEATURE 4: WDIWF BRIDGE CTA
 // ============================
-var HIGH_INTENT_ROUTES = ['/dossier','/check','/receipts','/follow-the-money'];
-
-function updateBridgeCTA(combo){
+function updateBridgeCTA(){
   var bridge=document.getElementById('splash-bridge');
-  if(HIGH_INTENT_ROUTES.indexOf(combo.l)!==-1){
-    bridge.style.display='block';
-  } else {
-    bridge.style.display='none';
-  }
+  if(bridge) bridge.style.display='flex';
 }
 
 document.getElementById('splash-bridge').addEventListener('click',function(e){
   e.stopPropagation();
-  window.open(WDIWF,'_blank');
+  window.open(getCheckURL(),'_blank');
 });
 
 // ============================
@@ -2286,7 +2327,9 @@ function showCertModal(cert){
   document.getElementById('cert-modal-badge').textContent=cert.badge;
   document.getElementById('cert-modal-name').textContent=cert.name+' '+cert.badge;
   document.getElementById('cert-modal-player').textContent=playerName;
+  document.getElementById('cert-modal-cred').textContent=state.cred+'%';
   document.getElementById('cert-modal-insight').textContent='"'+cert.insight+'"';
+  document.getElementById('cert-modal-realworld').textContent=cert.realWorld||'';
   document.getElementById('cert-modal-date').textContent=formatCertDate();
   document.getElementById('cert-modal').classList.add('show');
   // Email the cert to the player and to Jackye
@@ -2306,6 +2349,8 @@ function emailCertNotification(cert){
   formData.append('date',formatCertDate());
   formData.append('score',state.score);
   formData.append('discovered',state.discovered.length+'/'+TOTAL);
+  formData.append('behavioral_credibility',state.cred+'%');
+  formData.append('real_world',cert.realWorld||'');
   formData.append('_cc',playerEmail); // CC the player so they get it too
   fetch('https://formsubmit.co/ajax/jackye@jackyeclayton.com',{
     method:'POST',
@@ -2335,11 +2380,20 @@ function getGameURL(){
   return window.location.origin+window.location.pathname;
 }
 
+function buildCertLinkedInPost(cert,cred){
+  var scan=getCheckURL();
+  return 'Ran a PeoplePuzzles decision simulation on WDIWF (Jackye Clayton) and earned my '+cert.name+' validation. Behavioral credibility: '+cred+'%.\n\nWhat I demonstrated: "'+cert.insight+'"\n\nWhat that means when stakes are real: '+(cert.realWorld||'')+'\n\nNext move I\'m actually making: run a company scan before I sign anything \u2014 '+scan+'\n\n#PeoplePuzzles #WDIWF';
+}
+
+function buildCertTweet(cert,cred){
+  var scan=getCheckURL();
+  return 'PeoplePuzzles sim on @JackyeClayton\'s WDIWF \u2014 '+cert.name+' ('+cred+'% credibility). "'+cert.insight+'" Real step: scan the actual company before you sign '+scan+' #PeoplePuzzles #WDIWF';
+}
+
 // LinkedIn share — try real API via parent frame, fall back to clipboard+share
 document.getElementById('cert-share-linkedin').addEventListener('click',function(){
   if(!currentCertData) return;
   var cert=currentCertData;
-  var gameURL=getGameURL();
 
   // Try posting via parent frame's LinkedIn API integration
   if(window.parent !== window){
@@ -2352,7 +2406,7 @@ document.getElementById('cert-share-linkedin').addEventListener('click',function
     cCtx.strokeStyle='#F0C040'; cCtx.lineWidth=3;
     cCtx.strokeRect(24,24,1152,582);
     cCtx.fillStyle='#F0C040'; cCtx.font='bold 28px DM Sans,sans-serif'; cCtx.textAlign='center';
-    cCtx.fillText('PeoplePuzzles\u2122 Certificate',600,80);
+    cCtx.fillText('PeoplePuzzles\u2122 validation',600,80);
     cCtx.fillStyle='#fff'; cCtx.font='bold 36px DM Sans,sans-serif';
     cCtx.fillText(playerName||'Player',600,180);
     cCtx.font='24px DM Sans,sans-serif';
@@ -2373,6 +2427,10 @@ document.getElementById('cert-share-linkedin').addEventListener('click',function
         certName: cert.name,
         certBadge: cert.badge,
         insightQuote: cert.insight,
+        realWorld: cert.realWorld||'',
+        credibilityPct: state.cred,
+        checkUrl: getCheckURL(),
+        score: state.score,
         imageBase64: imageBase64
       }
     }, '*');
@@ -2381,7 +2439,7 @@ document.getElementById('cert-share-linkedin').addEventListener('click',function
   }
 
   // Fallback: clipboard + share dialog
-  var postText='\uD83C\uDFC6 I just earned the '+cert.name+' certification on PeoplePuzzles by @Jackye Clayton!\n\n"'+cert.insight+'"\n\n72 elements to discover. Every combo teaches you something real about recruiting, hiring intelligence, and career decisions.\n\nPlay \u2192 '+gameURL+'\n\n#PeoplePuzzles #WDIWF #TalentAcquisition #Recruiting #HRTech';
+  var postText=buildCertLinkedInPost(cert,state.cred);
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(postText).then(function(){
       showCertToast('Post text copied! Paste it in your LinkedIn post.');
@@ -2393,7 +2451,7 @@ document.getElementById('cert-share-linkedin').addEventListener('click',function
     fallbackCopy(postText);
     showCertToast('Post text copied! Paste it in your LinkedIn post.');
   }
-  var shareURL='https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(gameURL);
+  var shareURL='https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(getCheckURL());
   window.open(shareURL,'_blank','width=600,height=600');
 });
 
@@ -2422,8 +2480,7 @@ window.addEventListener('message',function(e){
 document.getElementById('cert-share-x').addEventListener('click',function(){
   if(!currentCertData) return;
   var cert=currentCertData;
-  var gameURL=getGameURL();
-  var tweetText='\uD83C\uDFC6 Just earned the '+cert.name+' cert on PeoplePuzzles by @JackyeClayton!\n\n"'+cert.insight+'"\n\nPlay \u2192 '+gameURL+'\n\n#PeoplePuzzles #WDIWF #Recruiting';
+  var tweetText=buildCertTweet(cert,state.cred);
   var tweetURL='https://twitter.com/intent/tweet?text='+encodeURIComponent(tweetText);
   window.open(tweetURL,'_blank','width=600,height=400');
 });
@@ -2548,6 +2605,11 @@ document.getElementById('cert-download').addEventListener('click',function(){
 });
 
 // Close / continue
+document.getElementById('cert-scan-check').addEventListener('click',function(e){
+  e.stopPropagation();
+  window.open(getCheckURL(),'_blank');
+});
+
 document.getElementById('cert-continue').addEventListener('click',hideCertModal);
 document.getElementById('cert-modal').addEventListener('click',function(e){
   if(e.target===this) hideCertModal();
@@ -2594,7 +2656,7 @@ function renderTutStep(){
   document.getElementById('tut-title').textContent=s.title;
   document.getElementById('tut-desc').textContent=s.desc;
   var btn=document.getElementById('tut-next');
-  btn.textContent=tutStep===TUT_STEPS.length-1?'Start playing \u2192':'Next';
+  btn.textContent=tutStep===TUT_STEPS.length-1?'Start simulation \u2192':'Next';
 }
 
 document.getElementById('tut-next').addEventListener('click',function(){
@@ -2620,7 +2682,7 @@ document.getElementById('tut-skip').addEventListener('click',function(){
 // ============================
 document.getElementById('feedback-btn').addEventListener('click',function(){
   var subject=encodeURIComponent('PeoplePuzzles Feedback \u2014 from '+playerName);
-  var body=encodeURIComponent('Hey Jackye,\n\nJust played PeoplePuzzles and wanted to share some feedback:\n\n[Your feedback here]\n\nDiscovered: '+state.discovered.length+'/'+TOTAL+'\nScore: '+state.score+'\n\n\u2014 '+playerName);
+  var body=encodeURIComponent('Hey Jackye,\n\nwent through PeoplePuzzles and wanted to share some feedback:\n\n[Your feedback here]\n\nDiscovered: '+state.discovered.length+'/'+TOTAL+'\nScore: '+state.score+'\n\n\u2014 '+playerName);
   window.open('mailto:jackye@jackyeclayton.com?subject='+subject+'&body='+body,'_blank');
 });
 
@@ -2646,7 +2708,7 @@ function saveLead(){
     score:state.score,
     certs_earned:earnedCerts,
     traps_hit:state.traps,
-    source:'game'
+    source:'decision_simulation'
   };
   // Try to get company from gate or signup forms
   var gc=document.getElementById('gate-company');

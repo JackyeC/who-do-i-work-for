@@ -76,7 +76,7 @@ Truth-over-Vibes decision support engine. Calibrate your values, scan live jobs,
 Understand corporate board committees, governance structures, and how board decisions affect employees, candidates, and company strategy.
 
 ### PeoplePuzzles™
-The Recruiting Intelligence Game. 72 combos. 6 tiers. 8 certifications. Built on real recruiting intelligence.
+Decision simulation for hiring intelligence. 72 combos. 6 tiers. 8 validations. Built on real recruiting intelligence.
 
 ## About Jackye Clayton
 
@@ -89,7 +89,7 @@ Jackye Clayton is a career strategist, HR intelligence expert, and candidate adv
 
 ## Pricing
 
-- I'm Curious (Free): Receipts, basic intelligence, Workplace DNA quiz
+- I'm Curious (Free): Receipts, basic intelligence, Workplace DNA assessment
 - The Signal ($49/month): Full dossiers, career intelligence, signal alerts
 - The Match ($149/month): Recruiter tools, values-based matching, recruiter briefs
 - The Closer ($199 one-time): Deep-dive dossier for a single company
@@ -115,7 +115,7 @@ Jackye Clayton is a career strategist, HR intelligence expert, and candidate adv
 - Decision Engine: https://wdiwf.jackyeclayton.com/decision-engine
 - Negotiation Simulator: https://wdiwf.jackyeclayton.com/negotiation-simulator
 - Board Intelligence: https://wdiwf.jackyeclayton.com/board-intelligence
-- PeoplePuzzles Game: https://wdiwf.jackyeclayton.com/peoplepuzzles
+- PeoplePuzzles decision simulation: https://wdiwf.jackyeclayton.com/peoplepuzzles
 - Work With Jackye: https://wdiwf.jackyeclayton.com/work-with-jackye
 
 ## Full Documentation
