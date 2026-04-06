@@ -139,6 +139,38 @@ export default function Login() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      toast({
+        title: "Enter your email first",
+        description: "Type the email you used for this account, then click “Forgot password?”.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast({
+        title: "Check your email",
+        description: "We sent a password reset link.",
+      });
+    } catch (err: any) {
+      toast({
+        title: "Couldn’t send reset link",
+        description: err.message || "Something went wrong.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // Show beta activation screen if user is logged in with beta param
   if (user && isBeta) {
     return (
@@ -243,6 +275,18 @@ export default function Login() {
                   autoComplete={mode === "signup" ? "new-password" : "current-password"}
                 />
               </div>
+              {mode === "signin" && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    disabled={submitting}
+                    className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
               <Button type="submit" className="w-full h-12 gap-2 text-base" disabled={submitting}>
                 {submitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

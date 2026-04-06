@@ -25,6 +25,7 @@ const SearchResults = lazy(() => import("./pages/SearchResults"));
 const Browse = lazy(() => import("./pages/Browse"));
 const Methodology = lazy(() => import("./pages/Methodology"));
 const Login = lazy(() => import("./pages/Login"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const WhoDoIWorkFor = lazy(() => import("./pages/WhoDoIWorkFor"));
 const VoterLookup = lazy(() => import("./pages/VoterLookup"));
 const RepresentativeProfile = lazy(() => import("./pages/RepresentativeProfile"));
@@ -216,6 +217,7 @@ const App = () => (
                   <Route path="/browse" element={<Browse />} />
                   <Route path="/methodology" element={<Methodology />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/terms" element={<TermsOfService />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
                   <Route path="/disclaimers" element={<Disclaimers />} />
